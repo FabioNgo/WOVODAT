@@ -1,0 +1,22 @@
+{
+  "name": "eruption",
+  "version": "0.0.0",
+  "homepage": "http://wovodat.org",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "requirejs": null,
+    "jquery": null,
+    "backbone-amd": null,
+    "underscore-amd": null,
+    "moment": null,
+    "requirejs-text": null,
+    "pace": null
+  }
+}

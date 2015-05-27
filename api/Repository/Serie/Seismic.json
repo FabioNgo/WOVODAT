@@ -1,0 +1,168 @@
+{
+	"sd_evs" : {
+		"data_type" : "Evs",
+		"time" : "sd_evs_time",
+		"timems" : "sd_evs_time_ms",
+		"params" : [
+			{
+				"cols" : "sd_evs_spint",
+				"name" : "Spint",
+				"filter" : "sd_evs_eqtype"
+			},
+			{
+				"cols" : "sd_evs_maxamptrac",
+				"name" : "Maxamptrac",
+				"filter" : "sd_evs_eqtype"
+			},
+			{
+				"cols" : "sd_evs_dur",
+				"name" : "Dur",
+				"filter" : "sd_evs_eqtype"
+			}
+		]
+	},
+
+	"sd_int" : {
+		"data_type" : "Interval",
+		"time" : "sd_int_time",
+		"params" : [
+			{
+				"cols" : "sd_int_maxdist",
+				"name" : "Maxdist"
+			},
+			{
+				"cols" : "sd_int_maxrint",
+				"name" : "Maxrint"
+			},
+			{
+				"cols" : "sd_int_maxrint_dist",
+				"name" : "Maxrint_dist"
+			}
+		]
+	},
+
+	"sd_trm" : {
+		"data_type" : "Trm",
+		"stime" : "sd_trm_stime",
+		"etime" : "sd_trm_etime",
+		"params" : [
+			{
+				"cols" : "sd_trm_dur_day",
+				"name" : "Dur_day"
+			}, 
+			{
+				"cols" : "sd_trm_domfreq1",
+				"name" : "Domfreq1"
+			}, 
+			{
+				"cols" : "sd_trm_domfreq2",
+				"name" : "Domfreq2"
+			}, 
+			{
+				"cols" : "sd_trm_maxamp",
+				"name" : "Maxamp"
+			}, 
+			{
+				"cols" : "sd_trm_reddis",
+				"name" : "Reddis"
+			}
+		]
+	},
+
+	"sd_ivl" : {
+		"data_type" : "Ivl",
+		"stime" : "sd_ivl_stime",
+		"etime" : "sd_ivl_etime",
+		"params" : [
+			{
+				"cols" : "sd_ivl_hdist",
+				"name" : "Hdist",
+				"unit" : "km"
+			}, 
+			{
+				"cols" : "sd_ivl_avgdepth",
+				"name" : "Avgdepth",
+				"unit" : "m"
+			}, 
+			{
+				"cols" : "sd_ivl_vdispers",
+				"name" : "Vdispers",
+				"unit" : "km"
+			}, 
+			{
+				"cols" : "sd_ivl_hmigr_hyp",
+				"name" : "Hmigr_hyp",
+				"unit" : "km"
+			}, 
+			{
+				"cols" : "sd_ivl_vmigr_hyp",
+				"name" : "Vmigr_hyp",
+				"unit" : "km"
+			},
+			{
+				"cols" : "sd_ivl_nrec",
+				"name" : "Nrec"
+			}, 
+			{
+				"cols" : "sd_ivl_nfelt",
+				"name" : "Nfelt"
+			}, 
+			{
+				"cols" : "sd_ivl_etot",
+				"name" : "Etot",
+				"unit" : "erg"
+			}, 
+			{
+				"cols" : "sd_ivl_fmin",
+				"name" : "Fmin",
+				"unit" : "Hz"
+			},
+			{
+				"cols" : "sd_ivl_fmax",
+				"name" : "Fmax",
+				"unit" : "Hz"
+			}, 
+			{
+				"cols" : "sd_ivl_amin",
+				"name" : "Amin"
+			},
+			{
+				"cols" : "sd_ivl_amax",
+				"name" : "Amax"
+			}
+			
+		]
+	},
+
+	"sd_rsm" : {
+		"data_type" : "RSAM",
+		"time" : "sd_rsm_stime",
+		"params" : [
+			{
+				"cols" : "sd_rsm_count",
+				"name" : "Count"
+			}
+		]
+	},
+
+	"sd_ssm" : {
+		"data_type" : "SSAM",
+		"time" : "sd_ssm_stime",
+		"params" : [
+			{
+				"cols" : "sd_ssm_lowf",
+				"name" : "Lowf",
+				"unit" : "Hz"
+			},
+			{
+				"cols" : "sd_ssm_highf",
+				"name" : "Highf",
+				"unit" : "Hz"
+			},
+			{
+				"cols" : "sd_ssm_count",
+				"name" : "Count"
+			}
+		]
+	}
+}
