@@ -4,21 +4,16 @@ define(function(require) {
       Backbone = require('backbone'),
       _ = require('underscore'),
       flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection']);
-  var template = require("text!templates/overview_graph.html");
-      
+
   return Backbone.View.extend({
     initialize: function(options) {
       _(this).bindAll('update', 'onSelect', 'onTimeRangeChange', 'onSelectingTimeRangeChange');
       this.timeRange = options.timeRange;
       this.selectingTimeRange = options.selectingTimeRange;
-      this.filterObserver = options.filterObserver;
-      this.listenTo(this.collection, 'remove', this.update);
+      this.listenTo(this.collection, 'change remove', this.update);
       this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
       this.listenTo(this.selectingTimeRange, 'change', this.onSelectingTimeRangeChange);
-      this.listenTo(this.filterObserver, 'filter-change', this.update);
     },
-
-    template : _.template(template),
 
     onSelect: function(event, ranges) {
       var startTime = ranges.xaxis.from,
@@ -78,17 +73,11 @@ define(function(require) {
         return;
       }
 
-      this.$el.html(this.template());
+      this.$el.width(800);
+      this.$el.height(60);
 
-      this.graphContainer = this.$el.find("div").first();
-
-      this.graphContainer.width(800);
-      this.graphContainer.height(60);
-
-      this.graph = $.plot(this.graphContainer, this.data, options);
-      this.graphContainer.bind('plotselected', this.onSelect);
-
-      return this;
+      this.graph = $.plot(this.$el, this.data, options);
+      this.$el.bind('plotselected', this.onSelect);
     },
 
     update: function() {
@@ -101,26 +90,24 @@ define(function(require) {
           maxX = undefined,
           data = [],
           i;
-      //console.log(this.collection);
-      this.collection.models.forEach(function(serie) {
-        serie.get("selectingFilter").models.forEach(function(filter) {
-          var list = [];
-          serie.get('data').forEach(function(d) {
-            if ( !filter.get("filter") || _.isEqual(d.filter, filter.get("filter") ) ) {
-              var x = d.start_time || d.time;
-              if (minX === undefined || x < minX)
-                minX = x;
-              if (maxX === undefined || x > maxX)
-                maxX = x;
 
-              list.push([x, d.value]);
-            }
+      this.collection.models.forEach(function(serie) {
+        var list = [];
+        if (serie.get('data')) {
+          serie.get('data').forEach(function(d) {
+            var x = d.start_time || d.time;
+            if (minX === undefined || x < minX)
+              minX = x;
+            if (maxX === undefined || x > maxX)
+              maxX = x;
+
+            list.push([x, d.value]);
           });
-          data.push({
-            data: list
-          });
+        }
+
+        data.push({
+          data: list
         });
-      
       });
 
       this.minX = minX;

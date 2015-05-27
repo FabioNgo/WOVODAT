@@ -7,20 +7,15 @@ define(function(require) {
       template = require('text!templates/page.html'),
       Volcano = require('models/volcano'),
       Volcanoes = require('collections/volcanoes'),
-      VolcanoSelect = require('views/volcano_select'),
       Eruption = require('models/eruption'),
       Eruptions = require('collections/eruptions'),
+      VolcanoSelect = require('views/volcano_select'),
       EruptionSelect = require('views/eruption_select'),
       EruptionGraph = require('views/eruption_graph'),
       EruptionForecasts = require('collections/eruption_forecasts'),
       EruptionForecastGraph = require('views/eruption_forecast_graph'),
       TimeSeries = require('collections/time_series'),
-      TimeSeriesSelect = require('views/time_series_select'),   
-      
-      Filter = require('models/filter'),
-      FilterSelect = require('views/filter_select'),
-      Filters = require('collections/filters'),
-      
+      TimeSeriesSelect = require('views/time_series_select'),
       TimeRange = require('models/time_range'),
       SelectingTimeSeries = require('collections/selecting_time_series'),
       TimeSeriesContainer = require('views/time_series_container'),
@@ -32,6 +27,7 @@ define(function(require) {
     initialize: function() {
       this.render();
     },
+
     render: function() {
       var eruptions = new Eruptions(),
           observer = new (Backbone.Model.extend())(),

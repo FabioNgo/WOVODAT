@@ -1,0 +1,52 @@
+[05-Jan-2015 19:02:12] PHP Notice:  Undefined index: 0 in /home/wovodat/public_html/WOVOdat/eruption/api/Repository/TimeSeriesRepository.php on line 41
+[05-Jan-2015 19:02:12] PHP Stack trace:
+[05-Jan-2015 19:02:12] PHP   1. {main}() /home/wovodat/public_html/WOVOdat/eruption/api/index.php:0
+[05-Jan-2015 19:02:12] PHP   2. Routing::route() /home/wovodat/public_html/WOVOdat/eruption/api/index.php:27
+[05-Jan-2015 19:02:12] PHP   3. call_user_func_array() /home/wovodat/public_html/WOVOdat/eruption/api/Include/Routing.php:14
+[05-Jan-2015 19:02:12] PHP   4. TimeSeriesController::loadTimeSerie() /home/wovodat/public_html/WOVOdat/eruption/api/Include/Routing.php:14
+[05-Jan-2015 19:02:12] PHP   5. TimeSeriesRepository::getTimeSerie() /home/wovodat/public_html/WOVOdat/eruption/api/Controller/TimeSeriesController.php:16
+[05-Jan-2015 19:02:12] PHP   6. TimeSeriesRepository::preprocessSerieData() /home/wovodat/public_html/WOVOdat/eruption/api/Repository/TimeSeriesRepository.php:105
+[05-Jan-2015 19:02:12] PHP Notice:  Undefined index: 1 in /home/wovodat/public_html/WOVOdat/eruption/api/Repository/TimeSeriesRepository.php on line 43
+[05-Jan-2015 19:02:12] PHP Stack trace:
+[05-Jan-2015 19:02:12] PHP   1. {main}() /home/wovodat/public_html/WOVOdat/eruption/api/index.php:0
+[05-Jan-2015 19:02:12] PHP   2. Routing::route() /home/wovodat/public_html/WOVOdat/eruption/api/index.php:27
+[05-Jan-2015 19:02:12] PHP   3. call_user_func_array() /home/wovodat/public_html/WOVOdat/eruption/api/Include/Routing.php:14
+[05-Jan-2015 19:02:12] PHP   4. TimeSeriesController::loadTimeSerie() /home/wovodat/public_html/WOVOdat/eruption/api/Include/Routing.php:14
+[05-Jan-2015 19:02:12] PHP   5. TimeSeriesRepository::getTimeSerie() /home/wovodat/public_html/WOVOdat/eruption/api/Controller/TimeSeriesController.php:16
+[05-Jan-2015 19:02:12] PHP   6. TimeSeriesRepository::preprocessSerieData() /home/wovodat/public_html/WOVOdat/eruption/api/Repository/TimeSeriesRepository.php:105
+[05-Jan-2015 19:02:12] PHP Notice:  Undefined index: 0 in /home/wovodat/public_html/WOVOdat/eruption/api/Repository/TimeSeriesRepository.php on line 41
+[05-Jan-2015 19:02:12] PHP Stack trace:
+[05-Jan-2015 19:02:12] PHP   1. {main}() /home/wovodat/public_html/WOVOdat/eruption/api/index.php:0
+[05-Jan-2015 19:02:12] PHP   2. Routing::route() /home/wovodat/public_html/WOVOdat/eruption/api/index.php:27
+[05-Jan-2015 19:02:12] PHP   3. call_user_func_array() /home/wovodat/public_html/WOVOdat/eruption/api/Include/Routing.php:14
+[05-Jan-2015 19:02:12] PHP   4. TimeSeriesController::loadTimeSerie() /home/wovodat/public_html/WOVOdat/eruption/api/Include/Routing.php:14
+[05-Jan-2015 19:02:12] PHP   5. TimeSeriesRepository::getTimeSerie() /home/wovodat/public_html/WOVOdat/eruption/api/Controller/TimeSeriesController.php:16
+[05-Jan-2015 19:02:12] PHP   6. TimeSeriesRepository::preprocessSerieData() /home/wovodat/public_html/WOVOdat/eruption/api/Repository/TimeSeriesRepository.php:105
+[05-Jan-2015 19:02:12] PHP Notice:  Undefined index: 1 in /home/wovodat/public_html/WOVOdat/eruption/api/Repository/TimeSeriesRepository.php on line 43
+[05-Jan-2015 19:02:12] PHP Stack trace:
+[05-Jan-2015 19:02:12] PHP   1. {main}() /home/wovodat/public_html/WOVOdat/eruption/api/index.php:0
+[05-Jan-2015 19:02:12] PHP   2. Routing::route() /home/wovodat/public_html/WOVOdat/eruption/api/index.php:27
+[05-Jan-2015 19:02:12] PHP   3. call_user_func_array() /home/wovodat/public_html/WOVOdat/eruption/api/Include/Routing.php:14
+[05-Jan-2015 19:02:12] PHP   4. TimeSeriesController::loadTimeSerie() /home/wovodat/public_html/WOVOdat/eruption/api/Include/Routing.php:14
+[05-Jan-2015 19:02:12] PHP   5. TimeSeriesRepository::getTimeSerie() /home/wovodat/public_html/WOVOdat/eruption/api/Controller/TimeSeriesController.php:16
+[05-Jan-2015 19:02:12] PHP   6. TimeSeriesRepository::preprocessSerieData() /home/wovodat/public_html/WOVOdat/eruption/api/Repository/TimeSeriesRepository.php:105
+[21-Jan-2015 10:36:36] PHP Parse error:  syntax error, unexpected '[' in /home/wovodat/public_html/WOVOdat/eruption/api/Repository/TimeSeriesRepository.php on line 104
+[21-Jan-2015 10:36:36] PHP Stack trace:
+[21-Jan-2015 10:36:36] PHP   1. {main}() /home/wovodat/public_html/WOVOdat/eruption/api/index.php:0
+[21-Jan-2015 10:36:36] PHP   2. Loader::loadRepository() /home/wovodat/public_html/WOVOdat/eruption/api/index.php:19
+[21-Jan-2015 10:36:36] PHP   3. Loader::loadFolder() /home/wovodat/public_html/WOVOdat/eruption/api/Include/Loader.php:19
+[21-Jan-2015 10:36:41] PHP Parse error:  syntax error, unexpected '[' in /home/wovodat/public_html/WOVOdat/eruption/api/Repository/TimeSeriesRepository.php on line 104
+[21-Jan-2015 10:36:41] PHP Stack trace:
+[21-Jan-2015 10:36:41] PHP   1. {main}() /home/wovodat/public_html/WOVOdat/eruption/api/index.php:0
+[21-Jan-2015 10:36:41] PHP   2. Loader::loadRepository() /home/wovodat/public_html/WOVOdat/eruption/api/index.php:19
+[21-Jan-2015 10:36:41] PHP   3. Loader::loadFolder() /home/wovodat/public_html/WOVOdat/eruption/api/Include/Loader.php:19
+[21-Jan-2015 10:39:32] PHP Parse error:  syntax error, unexpected '[' in /home/wovodat/public_html/WOVOdat/eruption/api/Repository/TimeSeriesRepository.php on line 104
+[21-Jan-2015 10:39:32] PHP Stack trace:
+[21-Jan-2015 10:39:32] PHP   1. {main}() /home/wovodat/public_html/WOVOdat/eruption/api/index.php:0
+[21-Jan-2015 10:39:32] PHP   2. Loader::loadRepository() /home/wovodat/public_html/WOVOdat/eruption/api/index.php:19
+[21-Jan-2015 10:39:32] PHP   3. Loader::loadFolder() /home/wovodat/public_html/WOVOdat/eruption/api/Include/Loader.php:19
+[21-Jan-2015 10:39:35] PHP Parse error:  syntax error, unexpected '[' in /home/wovodat/public_html/WOVOdat/eruption/api/Repository/TimeSeriesRepository.php on line 104
+[21-Jan-2015 10:39:35] PHP Stack trace:
+[21-Jan-2015 10:39:35] PHP   1. {main}() /home/wovodat/public_html/WOVOdat/eruption/api/index.php:0
+[21-Jan-2015 10:39:35] PHP   2. Loader::loadRepository() /home/wovodat/public_html/WOVOdat/eruption/api/index.php:19
+[21-Jan-2015 10:39:35] PHP   3. Loader::loadFolder() /home/wovodat/public_html/WOVOdat/eruption/api/Include/Loader.php:19

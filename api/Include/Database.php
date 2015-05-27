@@ -33,7 +33,7 @@
 		 *   Prefix for tables
 		 */
 		function database($host, $user, $pass, $db) {
-			$this->_resource = mysql_connect($host, $user, $pass) or die(mysql_error());
+			$this->_resource = mysql_pconnect($host, $user, $pass) or die("Bad connection.<br />\nPlease check your host, username or password.");
 			mysql_select_db($db, $this->_resource) or die("Database not found.");
 			
 			$this->query("SET NAMES utf8");

@@ -1,14 +1,9 @@
 <% if (!_.isEmpty(timeSeries)) { %>
-  <h3>List of available data</h3>
   <div class="time-series-selection-container">
     <% _.forEach(timeSeries, function(timeSerie) { %>
-    <input type="checkbox" value="<%= timeSerie.get('sr_id') %>"/>
-    	<%= timeSerie.get("data_type")  
-          + ( timeSerie.has('component') ? '-' + timeSerie.get('component') : ""  )
-          + ( timeSerie.has('station_code') ?  " (" + timeSerie.get('station_code') + ")" : ""  )   %>
-    	<br/>
+    <input type="checkbox" value="<%= timeSerie.get('sr_id') %>"/><%= timeSerie.get('category') %> - <%= timeSerie.get('data_type') %> - <%= timeSerie.get('station_code') %><br/>
     <% }); %>
   </div>
 <% } else { %>
-  <h3>No time serie found.</h3>
+  <div>No time serie found.</div>
 <% } %>

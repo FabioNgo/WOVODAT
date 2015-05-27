@@ -4,10 +4,8 @@ define(function(require) {
       Backbone = require('backbone'),
       _ = require('underscore'),
       Serie = require('models/serie'),
-      TimeSerieGraphContainer = require('views/time_serie_graph_container'),
+      TimeSerieGraph = require('views/time_serie_graph'),
       OverviewGraph = require('views/overview_graph'),
-      FilterSelect = require('views/filter_select'),
-      SelectingFilter = require('collections/selecting_filter'),      
       TimeRange = require('models/time_range');
 
   return Backbone.View.extend({
@@ -19,9 +17,7 @@ define(function(require) {
       this.timeRange = options.timeRange;
       this.overviewSelectingTimeRange = new TimeRange();
 
-      this.filter_select = {};
       this.graphs = {};
-      this.observer = options.observer;
 
       this.listenTo(this.collection, 'reset', this.clear);
 
@@ -32,13 +28,11 @@ define(function(require) {
     },
 
     clear: function() {
-      //console.log("clear");
       if (this.collection.length === 0) {
         this.overviewGraph.destroy();
         for (var g in this.graphs) {
           if (this.graphs.hasOwnProperty(g)) {
             this.graphs[g].destroy();
-            this.filter_select[g].destroy();
           }
         }
         this.graphs = {};
@@ -46,34 +40,16 @@ define(function(require) {
       }
     },
 
-    addSerie: function(model) {
-
-      var sr_id = model.get("sr_id");
-
-      model.set("selectingFilter" ,  new SelectingFilter() );      
-      
-      this.filter_select[sr_id] = new FilterSelect({
+    addSerie: function(sr_id) {
+      this.graphs[sr_id] = new TimeSerieGraph({
         model: this.collection.get(sr_id),
-        selectingFilter : model.get("selectingFilter"),
-        filterObserver : this.observer
+        timeRange: this.overviewSelectingTimeRange
       });
 
-      this.graphs[sr_id] = new TimeSerieGraphContainer({
-        model: this.collection.get(sr_id),
-        selectingFilter : model.get("selectingFilter"),
-        timeRange: this.overviewSelectingTimeRange,
-        filterObserver : this.observer
-      });  
-
-      this.collection.get(sr_id).fetch();
-      
-      this.$el.append(this.filter_select[sr_id].$el);
       this.$el.append(this.graphs[sr_id].$el);
     },
 
-    removeSerie: function(model) {
-      var sr_id = model.get("sr_id");
-      this.filter_select[sr_id].destroy();    
+    removeSerie: function(sr_id) {
       this.graphs[sr_id].destroy();
     },
 
@@ -81,8 +57,7 @@ define(function(require) {
       this.overviewGraph = new OverviewGraph({
         collection: this.collection,
         timeRange: this.timeRange,
-        selectingTimeRange: this.overviewSelectingTimeRange,
-        filterObserver : this.observer
+        selectingTimeRange: this.overviewSelectingTimeRange
       });
       this.overviewGraph.$el.appendTo(this.$el);
     }

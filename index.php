@@ -1,6 +1,11 @@
 <?php
   session_start();
-?>
+/*  if (!isset($_SESSION['login'])) {
+    header('Location: /populate/index.php');
+    exit();
+  }
+*/
+?> 
 <html>
   <head>
     <link href="css/style.css" rel="stylesheet"/>

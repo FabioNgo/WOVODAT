@@ -3,32 +3,22 @@ define(function(require) {
   var $ = require('jquery'),
       Backbone = require('backbone'),
       _ = require('underscore'),
-      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection' , 'jquery.flot.axislabels']),
+      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection']),
       serieTooltipTemplate = require('text!templates/tooltip_serie.html'),
       Tooltip = require('views/tooltip'),
-      Filter = require('views/filter'),
       DateHelper = require('helper/date');
 
-  var template = require("text!templates/time_serie_graph.html");
-
   return Backbone.View.extend({    
-    template : _.template(template),
     initialize: function(options) {
       _(this).bindAll('prepareDataAndRender', 'onTimeRangeChange', 'onHover', 'onPan');
 
       this.timeRange = options.timeRange;
-      this.filter = options.filter;
-
-      //console.log(this.filter);
-      
       this.tooltip = new Tooltip({
-        template: serieTooltipTemplate,
-        model : this.model
+        template: serieTooltipTemplate
       });
-
+      this.model.fetch();
       this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
-      this.listenTo(this.filter, "change" , this.prepareDataAndRender);
-
+      this.listenTo(this.model, 'change', this.prepareDataAndRender);
     },
 
     onTimeRangeChange: function() {
@@ -57,11 +47,7 @@ define(function(require) {
             label: 'Data Series',
             data: this.data,
             bars: {
-              show: this.bars,
-              wovodat: true
-            },
-            lines: {
-              show: this.lines,
+              show: true,
               wovodat: true
             },
             dataType: 'ds'
@@ -77,11 +63,8 @@ define(function(require) {
               autoscale: true
             },
             yaxis: {
-              //axisLabel: "\u03BC Radians",
-              //axisLabelUseCanvas: true,
-              //axisLabelFontSizePixels : 10,
-              min: this.minValue,
-              max: this.maxValue,
+              min: 0,
+              max: 200,
               autoscale: true,
               panRange: false,
               zoomRange: false
@@ -94,58 +77,31 @@ define(function(require) {
             }
           };
 
-      this.$el.html( this.template( {
-        name : this.filter.get("filter")
-      }) );
+      this.$el.html('<div></div>');
+      this.$el.width(800);
+      this.$el.height(200);
 
-      this.graphHolder = this.$el.find("div").first();
-
-      this.graphHolder.width(800);
-      this.graphHolder.height(200);
-
-      this.graph = $.plot(this.graphHolder, [param_ds], option);
-      this.graphHolder.bind('plothover', this.onHover);
-      this.graphHolder.bind('plotpan', this.onPan);
-      this.graphHolder.bind('plotzoom', this.onPan);
-
-      return this;
+      this.graph = $.plot(this.$el, [param_ds], option);
+      this.$el.bind('plothover', this.onHover);
+      this.$el.bind('plotpan', this.onPan);
+      this.$el.bind('plotzoom', this.onPan);
     },
 
     prepareDataAndRender: function() {
       var i,
           data = this.model.get('data'),
-          a = [],
-          category = this.model.get('category'),
-          selectedFilter = this.filter.get('filter'),
-          that = this;
-      //console.log(selectedFilter);
-      if (data[0] && data[0].stime)
-        this.bars = true;
-      if (data[0] && data[0].time)
-        this.lines = true;
-      this.maxValue = 0;
-      this.minValue = 0;
+          a = [];
       this.model.get('data').forEach(function(ds) {
-        if ( (!selectedFilter)  || _.isEqual(ds.filter, selectedFilter)) {
-          ds.formattedStartTime = DateHelper.formatDate(ds.stime);
-          ds.formattedEndTime = DateHelper.formatDate(ds.etime);
-          if (ds.stime)
-            a.push([ds.stime, ds.value, 0, ds.etime - ds.stime, ds]);
-          else 
-            a.push([ds.time, ds.value, 0, ds]);
-          that.maxValue = Math.max(that.maxValue, ds.value);
-          that.minValue = Math.min(that.minValue, ds.value);
-        }
+        ds.formattedStartTime = DateHelper.formatDate(ds.start_time);
+        ds.formattedEndTime = DateHelper.formatDate(ds.end_time);
+        a.push([ds.start_time, ds.value, 0, ds.end_time - ds.start_time, ds]);
       });
       this.data = a;
-      //console.log(a.length);
-      //console.log(a);
-      this.render(); 
+      this.render();
     },
 
     destroy: function() {
       // From StackOverflow with love.
-      //console.log("destroy");
       this.undelegateEvents();
       this.$el.removeData().unbind(); 
       this.remove();  

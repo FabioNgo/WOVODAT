@@ -7,6 +7,12 @@ define(function(require) {
   return Backbone.Collection.extend({
     model: Serie,
     initialize: function() {
+      _(this).bindAll('onAdd');
+      this.listenTo(this, 'add', this.onAdd);
+    },
+
+    onAdd: function(e) {
+      e.fetch();
     }
   });
 });

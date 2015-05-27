@@ -2,8 +2,7 @@ define(function(require) {
   'use strict';
   var $ = require('jquery'),
       Backbone = require('backbone'),
-      _ = require('underscore'),
-      DateHelper = require("helper/date");
+      _ = require('underscore');
       
 
   return Backbone.View.extend({
@@ -44,20 +43,12 @@ define(function(require) {
     },
 
     update: function(pos, item) {
-      //console.log(item);
       if (item) {
         if (this.previous.dataIndex === item.dataIndex) {
           this.move(pos.pageX, pos.pageY);
         } else {
           this.previous.dataIndex = item.dataIndex;
-
-          var name = ( this.model ) ? this.model.getDisplayName() : "";
-
-          this.render(pos.pageX, pos.pageY, this.template(
-            _.extend(item.series.data[item.dataIndex].slice(-1)[0], 
-                    { name : name,
-                      time : DateHelper.formatSerieTime(item.datapoint[0])  } )
-          ));
+          this.render(pos.pageX, pos.pageY, this.template(item.series.data[item.dataIndex][4]));
         }
       } else {
         this.hide();

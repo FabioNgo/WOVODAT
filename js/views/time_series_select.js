@@ -5,20 +5,9 @@ define(function(require) {
       _ = require('underscore'),
       template = require('text!templates/time_series_select.html');
 
-  var Serie = require("models/serie");
-
-  function sleep(milliseconds) {
-    var start = new Date().getTime();
-    for (var i = 0; i < 1e7; i++) {
-      if ((new Date().getTime() - start) > milliseconds){
-        break;
-      }
-    }
-  }
-
   return Backbone.View.extend({
     el: '',
-    className : 'mgt20',
+
     events: {
       'change input': 'onChange'
     },
@@ -48,14 +37,10 @@ define(function(require) {
     onChange: function(event) {
       var input = event.target,
           id = $(input).val();
-      if ($(input).is(':checked')) {
-        this.selectings.add( { sr_id : id });
-
-      }
-      else {
+      if ($(input).is(':checked'))
+        this.selectings.add(id);
+      else 
         this.selectings.remove(this.selectings.get(id));
-
-      }
     },
 
     destroy: function() {
