@@ -105,19 +105,46 @@ define(function(require) {
       this.collection.models.forEach(function(serie) {
         serie.get("selectingFilter").models.forEach(function(filter) {
           var list = [];
+          var lines = false;
+          var bars = false;
+          var points = false;
+
           serie.get('data').forEach(function(d) {
             if ( !filter.get("filter") || _.isEqual(d.filter, filter.get("filter") ) ) {
-              var x = d.start_time || d.time;
+              var x = d.stime || d.time;
+              if (d.time) lines = true;
+              if (d.stime) bars = true;
               if (minX === undefined || x < minX)
                 minX = x;
               if (maxX === undefined || x > maxX)
                 maxX = x;
 
-              list.push([x, d.value]);
+              list.push([x, d.value, 0, ( d.stime || d.time ) - ( d.etime || d.time ) ]);
             }
           });
+
+          if ( serie.get("data_type") == "Evn" ) {
+            lines = false;
+            bars = false;
+            points = true;
+          }
+
           data.push({
-            data: list
+            data: list,
+            bars: {
+              show: bars,
+              wovodat: true
+            },
+            lines: {
+              show: lines,
+              wovodat: true
+            },
+            points : {
+              show: points,
+              symbol: "circle",
+              wovodat: true,
+              radius: 1
+            }
           });
         });
       

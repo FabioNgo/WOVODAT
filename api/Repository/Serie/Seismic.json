@@ -164,5 +164,16 @@
 				"name" : "Count"
 			}
 		]
+	}, 
+	"sd_evn" : {
+		"data_type" : "Evn" ,
+		"time" : "sd_evn_time" , 
+		"params" : [
+			{
+				"cols" : "sd_evn_edep",
+				"name" : "Edep",
+				"filter" : "sd_evn_eqtype"
+			}
+		]
 	}
 }

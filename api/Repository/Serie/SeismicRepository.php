@@ -104,6 +104,35 @@ class SeismicRepository {
 		return $result;
 	}
 
+	private static function getTimeSeriesList_sd_evn( $vd_id, $stations ) {
+		$result = array();
+		global $db;
+		$query = "SELECT a.sn_code FROM sn a WHERE a.vd_id = %d";
+		$db->query( $query , $vd_id );
+		$networks = $db->getList();
+
+		//var_dump($networks);
+
+		foreach ($networks as $network) {
+			$code = $network["sn_code"];
+
+			foreach (self::$infor["sd_evn"]["params"] as $type) {
+				$cols = $type["cols"];
+				$query = "SELECT b.sd_evn_id FROM sn a, sd_evn b where a.sn_code = %s and a.sn_id = b.sn_id and b.$cols is not null limit 0 , 1";
+				$db->query( $query, $code );
+				if ( !$db->noRow() ) {
+					$x = array('category' => "Seismic" ,
+							   'data_type' => self::$infor["sd_evn"]["data_type"],
+							   'station_code' => $code,
+							   'component' => $type["name"] );
+					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+		 			array_push($result,  $x );
+				}
+			}
+		}
+		return $result;
+	}
+
 	public static function getStationData( $table, $code, $component ) {
 		foreach (self::$infor as $key => $type) if ( $type["data_type"] == $table ) 
 			return call_user_func_array("self::getStationData_".$key, array( $code, $component) );
@@ -223,6 +252,36 @@ class SeismicRepository {
 		}
 		return $result;
 	}
+
+	public static function getStationData_sd_evn( $code, $component ) {
+		global $db;
+		$cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
+		$result = array();
+		$res = array();
+		$attribute = "";
+		$filterQuery = "";
+		$filter = "";
+		foreach (self::$infor["sd_evn"]["params"] as $type) if ( $type["name"] == $component ) {
+			$attribute = $type["cols"];
+			if ( array_key_exists("filter", $type) ) {
+				$filter = $type["filter"];
+				$filterQuery = ", b.".$filter;
+			}
+			$query = "SELECT b.sd_evn_time, b.$attribute $filterQuery $cc from sn a,sd_evn b where a.sn_code = %s and b.sn_id = a.sn_id and a.sn_pubdate <= now() and b.sd_evn_pubdate <= now() and b.$attribute is not null order by b.sd_evn_time desc";
+			$db->query($query, $code);
+			$res = $db->getList();
+
+		}
+		foreach ($res as $row) {
+			$temp = array( "time" => 1000*strtotime($row["sd_evn_time"]) , 
+										 "value" => floatval($row[$attribute]) );
+			if ($filter != "") 
+				$temp["filter"] = $row[$filter];
+			array_push($result, $temp );			
+		}
+		return $result;
+	}
+
 }
 
 SeismicRepository::$infor = json_decode( file_get_contents("Seismic.json", true) , true);

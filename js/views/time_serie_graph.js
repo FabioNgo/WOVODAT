@@ -64,6 +64,11 @@ define(function(require) {
               show: this.lines,
               wovodat: true
             },
+            points : {
+              show: this.points,
+              symbol: "circle",
+              wovodat: true
+            },
             dataType: 'ds'
           },
           option = {
@@ -123,6 +128,14 @@ define(function(require) {
         this.bars = true;
       if (data[0] && data[0].time)
         this.lines = true;
+
+      // special for sd_evn
+      if ( this.model.get("data_type") == "Evn" ) {
+        this.lines = false;
+        this.bars = false;
+        this.points = true;
+      }
+
       this.maxValue = 0;
       this.minValue = 0;
       this.model.get('data').forEach(function(ds) {
@@ -132,7 +145,7 @@ define(function(require) {
           if (ds.stime)
             a.push([ds.stime, ds.value, 0, ds.etime - ds.stime, ds]);
           else 
-            a.push([ds.time, ds.value, 0, ds]);
+            a.push([ds.time, ds.value, 0, 0 , ds ]);
           that.maxValue = Math.max(that.maxValue, ds.value);
           that.minValue = Math.min(that.minValue, ds.value);
         }
