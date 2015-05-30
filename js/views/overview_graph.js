@@ -97,55 +97,75 @@ define(function(require) {
     },
 
     prepareData: function() {
-      var minX = undefined,
-          maxX = undefined,
+      var minX = 0,
+          maxX = 0,
           data = [],
           i;
       //console.log(this.collection);
       this.collection.models.forEach(function(serie) {
         serie.get("selectingFilter").models.forEach(function(filter) {
-          var list = [];
-          var lines = false;
-          var bars = false;
-          var points = false;
+          // var list = [];
+          // var lines = false;
+          // var bars = false;
+          // var points = false;
 
-          serie.get('data').forEach(function(d) {
-            if ( !filter.get("filter") || _.isEqual(d.filter, filter.get("filter") ) ) {
-              var x = d.stime || d.time;
-              if (d.time) lines = true;
-              if (d.stime) bars = true;
-              if (minX === undefined || x < minX)
-                minX = x;
-              if (maxX === undefined || x > maxX)
-                maxX = x;
+          // serie.get('data').forEach(function(d) {
+          //   if ( !filter.get("filter") || _.isEqual(d.filter, filter.get("filter") ) ) {
+          //     var x = d.stime || d.time;
+          //     if (d.time) lines = true;
+          //     if (d.stime) bars = true;
+          //     if (minX === undefined || x < minX)
+          //       minX = x;
+          //     if (maxX === undefined || x > maxX)
+          //       maxX = x;
 
-              list.push([x, d.value, 0, ( d.stime || d.time ) - ( d.etime || d.time ) ]);
-            }
-          });
+          //     list.push([x, d.value, 0, ( d.stime || d.time ) - ( d.etime || d.time ) ]);
+          //   }
+          // });
 
-          if ( serie.get("data_type") == "Evn" ) {
-            lines = false;
-            bars = false;
-            points = true;
-          }
+          // if ( serie.get("data_type") == "Evn" ) {
+          //   lines = false;
+          //   bars = false;
+          //   points = true;
+          // }
 
-          data.push({
-            data: list,
+          // data.push({
+          //   data: list,
+          //   bars: {
+          //     show: bars,
+          //     wovodat: true
+          //   },
+          //   lines: {
+          //     show: lines,
+          //     wovodat: true
+          //   },
+          //   points : {
+          //     show: points,
+          //     symbol: "circle",
+          //     wovodat: true,
+          //     radius: 1
+          //   }
+          // });
+
+          var list = serie.prepareDataForGraph(filter);
+          data.push( {
+            data : list.data,
             bars: {
-              show: bars,
-              wovodat: true
+              show : list.bars
             },
-            lines: {
-              show: lines,
-              wovodat: true
+            lines : {
+              show : list.lines
             },
             points : {
-              show: points,
+              show : list.points,
               symbol: "circle",
-              wovodat: true,
               radius: 1
             }
           });
+
+          minX = Math.min(minX, list.minValue);
+          maxX = Math.max(maxX, list.maxValue);
+
         });
       
       });

@@ -10,6 +10,9 @@ define(['moment'], function(moment) {
       var result = m.format('YYYY-MM-DD HH:mm:ss');
       if ( m.millisecond() != 0 ) result += "." +  ( Math.floor(m.millisecond() / 10) ).toString();
       return result;  
+    },
+    dateToMillisecond : function(date) {
+      return moment.utc(date, "YYYY-MM-DD").valueOf();
     }
   };
 });

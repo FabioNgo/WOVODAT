@@ -117,43 +117,93 @@ define(function(require) {
     },
 
     prepareDataAndRender: function() {
-      var i,
-          data = this.model.get('data'),
-          a = [],
-          category = this.model.get('category'),
-          selectedFilter = this.filter.get('filter'),
-          that = this;
-      //console.log(selectedFilter);
-      if (data[0] && data[0].stime)
-        this.bars = true;
-      if (data[0] && data[0].time)
-        this.lines = true;
+      // var i,
+      //     data = this.model.get('data'),
+      //     a = [],
+      //     category = this.model.get('category'),
+      //     selectedFilter = this.filter.get('filter'),
+      //     that = this;
+      // //console.log(selectedFilter);
+      // if (data[0] && data[0].stime)
+      //   this.bars = true;
+      // if (data[0] && data[0].time)
+      //   this.lines = true;
 
-      // special for sd_evn
-      if ( this.model.get("data_type") == "Evn" ) {
-        this.lines = false;
-        this.bars = false;
-        this.points = true;
-      }
+      // // special for sd_evn
+      // if ( this.model.get("data_type") == "Evn" ) {
+      //   this.lines = false;
+      //   this.bars = false;
+      //   this.points = true;
+      // }
 
-      this.maxValue = 0;
-      this.minValue = 0;
+      // this.maxValue = 0;
+      // this.minValue = 0;
+      // this.model.get('data').forEach(function(ds) {
+      //   if ( (!selectedFilter)  || _.isEqual(ds.filter, selectedFilter)) {
+      //     ds.formattedStartTime = DateHelper.formatDate(ds.stime);
+      //     ds.formattedEndTime = DateHelper.formatDate(ds.etime);
+      //     if (ds.stime)
+      //       a.push([ds.stime, ds.value, 0, ds.etime - ds.stime, ds]);
+      //     else 
+      //       a.push([ds.time, ds.value, 0, 0 , ds ]);
+      //     that.maxValue = Math.max(that.maxValue, ds.value);
+      //     that.minValue = Math.min(that.minValue, ds.value);
+      //   }
+      // });
+      // this.data = a;
+
+      // if ( this.model.get("data_type") == "Evn" && this.model.get("component") == "Earthquake" ) {
+      //   this.prepareDataForEarthquake();
+      // }
+
+      var list = this.model.prepareDataForGraph(this.filter);
+
+      _.extend(this, list);
+
+      // this.bars = list.bars;
+      // this.lines = list.lines;
+      // this.points = list.points;
+      // this.data = list.data;
+      // this.maxValue = list.maxValue;
+      // this.minValue = list.minValue;
+      
+      this.render(); 
+    },
+
+    prepareDataForEarthquake : function() {
+      this.lines = false;
+      this.points = false;
+      this.bars = true;
+      var a = {}, 
+          that = this,
+          selectedFilter = this.filter.get('filter');
+
       this.model.get('data').forEach(function(ds) {
         if ( (!selectedFilter)  || _.isEqual(ds.filter, selectedFilter)) {
-          ds.formattedStartTime = DateHelper.formatDate(ds.stime);
-          ds.formattedEndTime = DateHelper.formatDate(ds.etime);
-          if (ds.stime)
-            a.push([ds.stime, ds.value, 0, ds.etime - ds.stime, ds]);
-          else 
-            a.push([ds.time, ds.value, 0, 0 , ds ]);
-          that.maxValue = Math.max(that.maxValue, ds.value);
-          that.minValue = Math.min(that.minValue, ds.value);
+          var date = DateHelper.formatDate(ds.time);
+          if ( a[date] ) a[date]++;
+          else a[date] = 1;
         }
       });
-      this.data = a;
-      //console.log(a.length);
-      //console.log(a);
-      this.render(); 
+      
+      var b = [];
+      this.maxValue = 0;
+      this.minValue = 0;
+      for(var property in a ) {
+        var val = a[property];
+        this.maxValue = Math.max( this.maxValue, val );
+        this.minValue = Math.min( this.minValue, val );
+       
+        var milliseconds = DateHelper.dateToMillisecond(property);
+
+        b.push([ milliseconds, val, 0, 1000 * 60 * 60 * 24, 
+          {   time : milliseconds,
+              value : val
+               } ]);
+      }
+
+      this.data = b;
+
     },
 
     destroy: function() {

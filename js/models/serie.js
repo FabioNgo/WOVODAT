@@ -16,6 +16,64 @@ define(['jquery', 'backbone'], function($, Backbone) {
       //console.log( this.has('station_code') );
 
       return x;
+    },
+    prepareDataForGraph : function(filter) {
+      return this.prepareDataForNormalCase(filter);
+    },
+    prepareDataForNormalCase : function(filter) {
+      var minValue = 0;
+      var maxValue = 0;
+      var bars = false;
+      var lines = false;
+      var points = false;
+      var data = this.get("data");
+      var a = [];
+      var selectedFilter = filter.get("filter");
+
+      if (data[0] && data[0].stime)
+        bars = true;
+      if (data[0] && data[0].time)
+        lines = true;
+
+      // special for sd_evn
+      if ( this.get("data_type") == "Evn" ) {
+        lines = false;
+        bars = false;
+        points = true;
+      }
+
+      data.forEach(function(ds) {
+        if ( (!selectedFilter)  || _.isEqual(ds.filter, selectedFilter)) {
+          if (ds.stime)
+            a.push([ds.stime, ds.value, 0, ds.etime - ds.stime, ds]);
+          else 
+            a.push([ds.time, ds.value, 0, 0 , ds ]);
+          maxValue = Math.max(maxValue, ds.value);
+          minValue = Math.min(minValue, ds.value);
+        }
+      });
+
+      return {
+        data : a,
+        bars : bars,
+        lines : lines,
+        points : points, 
+        maxValue : maxValue,
+        minValue : minValue
+      };
+    },
+
+    prepareDataForEarthquake : function(filter) {
+      var minValue = 0;
+      var maxValue = 0;
+      var bars = false;
+      var lines = false;
+      var points = false;
+      var data = this.get("data");
+      var a = {};
+      var selectedFilter = filter.get("filter");
     }
+
+
   });
 });

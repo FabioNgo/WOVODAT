@@ -179,7 +179,12 @@
 				"cols" : "sd_evn_pmag",
 				"name" : "Pmag",
 				"filter" : "sd_evn_eqtype"
+			},
+			{
+				"cols" : "sd_evn_id",
+				"name" : "Earthquake",
+				"filter" : "sd_evn_eqtype"
 			}
 		]
-	}
+	}	
 }
