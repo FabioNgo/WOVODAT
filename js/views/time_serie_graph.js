@@ -163,48 +163,13 @@ define(function(require) {
       // this.bars = list.bars;
       // this.lines = list.lines;
       // this.points = list.points;
-      // this.data = list.data;
-      // this.maxValue = list.maxValue;
+      // this.data = list.data; 
+      // this.maxValue = list.maxValue; 
       // this.minValue = list.minValue;
       
       this.render(); 
     },
 
-    prepareDataForEarthquake : function() {
-      this.lines = false;
-      this.points = false;
-      this.bars = true;
-      var a = {}, 
-          that = this,
-          selectedFilter = this.filter.get('filter');
-
-      this.model.get('data').forEach(function(ds) {
-        if ( (!selectedFilter)  || _.isEqual(ds.filter, selectedFilter)) {
-          var date = DateHelper.formatDate(ds.time);
-          if ( a[date] ) a[date]++;
-          else a[date] = 1;
-        }
-      });
-      
-      var b = [];
-      this.maxValue = 0;
-      this.minValue = 0;
-      for(var property in a ) {
-        var val = a[property];
-        this.maxValue = Math.max( this.maxValue, val );
-        this.minValue = Math.min( this.minValue, val );
-       
-        var milliseconds = DateHelper.dateToMillisecond(property);
-
-        b.push([ milliseconds, val, 0, 1000 * 60 * 60 * 24, 
-          {   time : milliseconds,
-              value : val
-               } ]);
-      }
-
-      this.data = b;
-
-    },
 
     destroy: function() {
       // From StackOverflow with love.

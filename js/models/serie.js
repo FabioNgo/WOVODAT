@@ -1,6 +1,8 @@
 define(['jquery', 'backbone'], function($, Backbone) {
   'use strict';
 
+  var DateHelper = require('helper/date');
+
   return Backbone.Model.extend({
     idAttribute: 'sr_id',
 
@@ -18,6 +20,8 @@ define(['jquery', 'backbone'], function($, Backbone) {
       return x;
     },
     prepareDataForGraph : function(filter) {
+      if ( this.get("data_type") == "Evn" && this.get("component") == "Earthquake" ) 
+        return this.prepareDataForEarthquake(filter);
       return this.prepareDataForNormalCase(filter);
     },
     prepareDataForNormalCase : function(filter) {
@@ -66,12 +70,45 @@ define(['jquery', 'backbone'], function($, Backbone) {
     prepareDataForEarthquake : function(filter) {
       var minValue = 0;
       var maxValue = 0;
-      var bars = false;
+      var bars = true;
       var lines = false;
       var points = false;
       var data = this.get("data");
       var a = {};
       var selectedFilter = filter.get("filter");
+
+      data.forEach(function(ds) {
+        if ( (!selectedFilter)  || _.isEqual(ds.filter, selectedFilter)) {
+          var date = DateHelper.formatDate(ds.time);
+          if ( a[date] ) a[date]++;
+          else a[date] = 1;
+        }
+      });
+
+
+      var b = [];
+      for(var property in a ) {
+        var val = a[property];
+        maxValue = Math.max( maxValue, val );
+        minValue = Math.min( minValue, val );
+       
+        var milliseconds = DateHelper.dateToMillisecond(property);
+
+        b.push([ milliseconds, val, 0, 1000 * 60 * 60 * 24, 
+          {   time : milliseconds,
+              value : val
+               } ]);
+      }
+
+      return {
+        data : b,
+        bars : bars,
+        lines : lines,
+        points : points, 
+        maxValue : maxValue,
+        minValue : minValue
+      };
+
     }
 
 
