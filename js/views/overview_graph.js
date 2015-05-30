@@ -148,18 +148,22 @@ define(function(require) {
           // });
 
           var list = serie.prepareDataForGraph(filter);
+          //console.log(list.data);
           data.push( {
             data : list.data,
             bars: {
-              show : list.bars
+              show : list.bars,
+              wovodat : true
             },
             lines : {
-              show : list.lines
+              show : list.lines,
+              wovodat : true
             },
             points : {
               show : list.points,
               symbol: "circle",
-              radius: 1
+              radius: 1,
+              wovodat : true
             }
           });
 

@@ -77,35 +77,42 @@
 			{
 				"cols" : "sd_ivl_hdist",
 				"name" : "Hdist",
+				"filter" : "sd_ivl_eqtype",
 				"unit" : "km"
 			}, 
 			{
 				"cols" : "sd_ivl_avgdepth",
 				"name" : "Avgdepth",
+				"filter" : "sd_ivl_eqtype",
 				"unit" : "m"
 			}, 
 			{
 				"cols" : "sd_ivl_vdispers",
 				"name" : "Vdispers",
+				"filter" : "sd_ivl_eqtype",
 				"unit" : "km"
 			}, 
 			{
 				"cols" : "sd_ivl_hmigr_hyp",
 				"name" : "Hmigr_hyp",
+				"filter" : "sd_ivl_eqtype",
 				"unit" : "km"
 			}, 
 			{
 				"cols" : "sd_ivl_vmigr_hyp",
 				"name" : "Vmigr_hyp",
+				"filter" : "sd_ivl_eqtype",
 				"unit" : "km"
 			},
 			{
 				"cols" : "sd_ivl_nrec",
-				"name" : "Nrec"
+				"name" : "Nrec",
+				"filter" : "sd_ivl_eqtype"
 			}, 
 			{
 				"cols" : "sd_ivl_nfelt",
-				"name" : "Nfelt"
+				"name" : "Nfelt",
+				"filter" : "sd_ivl_eqtype"
 			}, 
 			{
 				"cols" : "sd_ivl_etot",
@@ -115,20 +122,24 @@
 			{
 				"cols" : "sd_ivl_fmin",
 				"name" : "Fmin",
+				"filter" : "sd_ivl_eqtype",
 				"unit" : "Hz"
 			},
 			{
 				"cols" : "sd_ivl_fmax",
 				"name" : "Fmax",
+				"filter" : "sd_ivl_eqtype",
 				"unit" : "Hz"
 			}, 
 			{
 				"cols" : "sd_ivl_amin",
-				"name" : "Amin"
+				"name" : "Amin",
+				"filter" : "sd_ivl_eqtype"
 			},
 			{
 				"cols" : "sd_ivl_amax",
-				"name" : "Amax"
+				"name" : "Amax",
+				"filter" : "sd_ivl_eqtype"
 			}
 			
 		]
@@ -186,5 +197,5 @@
 				"filter" : "sd_evn_eqtype"
 			}
 		]
-	}	
+	}
 }

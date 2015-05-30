@@ -1,7 +1,5 @@
-define(['jquery', 'backbone'], function($, Backbone) {
+define(['jquery', 'backbone', 'helper/date'], function($, Backbone, DateHelper) {
   'use strict';
-
-  var DateHelper = require('helper/date');
 
   return Backbone.Model.extend({
     idAttribute: 'sr_id',
