@@ -48,23 +48,33 @@
 		"params" : [
 			{
 				"cols" : "sd_trm_dur_day",
-				"name" : "Dur_day"
+				"name" : "Dur_day",
+				"filter" : "sd_trm_type",
+				"filter2" : "sd_trm_qdepth"
 			}, 
 			{
 				"cols" : "sd_trm_domfreq1",
-				"name" : "Domfreq1"
+				"name" : "Domfreq1",
+				"filter" : "sd_trm_type",
+				"filter2" : "sd_trm_qdepth"
 			}, 
 			{
 				"cols" : "sd_trm_domfreq2",
-				"name" : "Domfreq2"
+				"name" : "Domfreq2",
+				"filter" : "sd_trm_type",
+				"filter2" : "sd_trm_qdepth"
 			}, 
 			{
 				"cols" : "sd_trm_maxamp",
-				"name" : "Maxamp"
+				"name" : "Maxamp",
+				"filter" : "sd_trm_type",
+				"filter2" : "sd_trm_qdepth"
 			}, 
 			{
 				"cols" : "sd_trm_reddis",
-				"name" : "Reddis"
+				"name" : "Reddis",
+				"filter" : "sd_trm_type",
+				"filter2" : "sd_trm_qdepth"
 			}
 		]
 	},

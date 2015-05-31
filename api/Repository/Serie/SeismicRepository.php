@@ -59,6 +59,30 @@ class SeismicRepository {
 		return $result;
 	}
 
+	private static function getTimeSeriesList_sd_trm( $vd_id, $stations ) {
+		$result = array();
+		global $db;
+
+		foreach ($stations as $station) {
+			$code = $station["ss_code"];
+			foreach (self::$infor["sd_trm"]["params"] as $type) {
+				$cols = $type["cols"];
+				$query = "SELECT b.sd_trm_id FROM ss a, sd_trm b where a.ss_code = %s and (a.ss_id = b.ss_id || ( b.ss_id is null and b.sn_id = a.sn_id ) ) and a.ss_pubdate <= now() and b.sd_trm_pubdate <= now() and b.$cols is not null limit 0 , 1";
+				$db->query( $query, $code );
+				if ( !$db->noRow() ) {
+					$x = array('category' => "Seismic" ,
+							   'data_type' => self::$infor["sd_trm"]["data_type"],
+							   'station_code' => $code,
+							   'component' => $type["name"] );
+					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+		 			array_push($result,  $x );
+				}
+			}
+		}
+		
+		return $result;
+	}
+
 	private static function getTimeSeriesList_sd_ivl( $vd_id, $stations ) {
 		$result = array();
 		global $db;
@@ -332,6 +356,46 @@ class SeismicRepository {
 										 "value" => floatval($row[$attribute]) );
 			if ($filter != "") 
 				$temp["filter"] = $row[$filter];
+			array_push($result, $temp );			
+		}
+		return $result;
+	}
+
+	public static function getStationData_sd_trm( $code, $component ) {
+		global $db;
+		$cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
+		$result = array();
+		$res = array();
+		$attribute = "";
+		$filterQuery = "";
+		$filter = "";
+		$filterQuery1 = "";
+		$filter1 = "";
+		foreach (self::$infor["sd_trm"]["params"] as $type) if ( $type["name"] == $component ) {
+			$attribute = $type["cols"];
+			if ( array_key_exists("filter", $type) ) {
+				$filter = $type["filter"];
+				$filterQuery = ", b.".$filter;
+			}
+			if ( array_key_exists("filter1", $type) ) {
+				$filter1 = $type["filter1"];
+				$filterQuery1 = ", b.".$filter1;
+			}
+			$query = "SELECT b.sd_trm_stime, b.sd_trm_etime, b.$attribute $filterQuery $filterQuery1 $cc from ss a, sd_trm b where a.ss_code = %s and (a.ss_id = b.ss_id || ( b.ss_id is null and b.sn_id = a.sn_id ) ) and a.ss_pubdate <= now() and b.sd_trm_pubdate <= now() and b.$attribute is not null order by b.sd_trm_stime desc";	
+			$db->query($query, $code);
+			$res = $db->getList();
+			//var_dump($res);
+		}
+		foreach ($res as $row) {
+			$stime = strtotime($row["sd_trm_stime"]);
+			$etime = strtotime($row["sd_trm_etime"]);
+			$temp = array( "stime" => intval(1000 * $stime) ,
+						   "etime" => intval(1000 * $etime) ,
+										 "value" => floatval($row[$attribute]) );
+			if ($filter != "") 
+				$temp["filter"] = $row[$filter];
+			if ($filter1 != "")
+				$temp["filter1"] = $row[$filter1];
 			array_push($result, $temp );			
 		}
 		return $result;
