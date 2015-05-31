@@ -392,10 +392,16 @@ class SeismicRepository {
 			$temp = array( "stime" => intval(1000 * $stime) ,
 						   "etime" => intval(1000 * $etime) ,
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != "") {
 				$temp["filter"] = $row[$filter];
-			if ($filter1 != "")
+				if ( is_null($temp["filter"]) ) 
+					$temp["filter"] = "Not defined";
+			}
+			if ($filter1 != "") {
 				$temp["filter1"] = $row[$filter1];
+				if ( is_null($temp["filter1"]) ) 
+					$temp["filter1"] = "Not defined";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;
