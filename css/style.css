@@ -1,7 +1,5 @@
 #main {
   background-color: #FFF;
-  margin-top: -10px;
-  margin-bottom: -50px;
   padding: 10px;
   min-height: 50px;
 }
@@ -15,10 +13,25 @@
 }
 
 .time-series-selection-container {
-  width: 770px;
-  height: 100px;
+  
+  height: 50%;
   padding: 6px;
   margin: 10px;
   overflow: auto;
   border: 1px solid #575757;
+  display: block;
+  
+
+}
+.category {
+    padding-left: 0px;
+    
+}
+.list-station {
+    padding-left: 10px;
+}
+.group-cat {
+    display: -webkit-box;
+    display: -moz-box;
+    padding-bottom: 10px;
 }

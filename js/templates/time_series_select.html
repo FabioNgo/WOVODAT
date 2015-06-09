@@ -1,8 +1,51 @@
-<% if (!_.isEmpty(timeSeries)) { %>
+<%
+var seriesCategories = []; 
+var flag;
+var curCategory = "";
+var maxNumCol = 3;
+var colWidth = 100.0/3;
+var count = 0;
+
+if (!_.isEmpty(timeSeries)) { 
+	
+	
+	
+	%>Available Data: 
   <div class="time-series-selection-container">
-    <% _.forEach(timeSeries, function(timeSerie) { %>
-    <input type="checkbox" value="<%= timeSerie.get('sr_id') %>"/><%= timeSerie.get('category') %> - <%= timeSerie.get('data_type') %> - <%= timeSerie.get('station_code') %><br/>
+
+	
+    <% _.forEach(timeSeries, function(timeSerie) { 
+
+    	if(curCategory != timeSerie.get('category')){
+    		
+    		if(curCategory != ""){ %>
+    			</div>
+    			
+    			</ul>
+    			
+    			<% 
+	    		count = (count+1)%maxNumCol;
+	    		if(count == 0){ %>
+	    			</div></p>
+
+	    		<%}
+    		}
+    		curCategory = timeSerie.get('category'); 
+    		if(count==0) { %>
+    			<div class="group-cat">
+    		<% }
+    		%>
+    		<ul class="category" style="width:<%= colWidth%>%">
+    			<input type="checkbox" name ="category" value="<%= timeSerie.get('category') %>"/> <%= timeSerie.get('category') %>
+    				<div style="padding-top:5px">
+    		<%
+
+		}
+    	%>
+    					<ul class="list-station"><input  type="checkbox" name = "<%= timeSerie.get('category') %>" value="<%= timeSerie.get('sr_id') %>"/>
+    					<%= timeSerie.get('data_type') %> -  <%= timeSerie.get('station_code') %></ul>
     <% }); %>
+    
   </div>
 <% } else { %>
   <div>No time serie found.</div>

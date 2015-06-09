@@ -18,7 +18,7 @@ define(function(require) {
       _(this).bindAll('render', 'changeSelection');
       this.observer = options.observer;
       this.selectingVolcano = options.selectingVolcano;
-
+		this.render();
       this.collection.fetch();
       this.listenTo(this.collection, 'sync', this.render);
       this.listenTo(this.selectingVolcano, 'change', this.changeSelection);
