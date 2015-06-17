@@ -46,6 +46,7 @@ define(function(require) {
     },
 
     render: function() {
+      this.$el.html("Overview Graph <br></br>")
       var options = {
             series: {
               lines: { 
@@ -72,10 +73,10 @@ define(function(require) {
         this.$el.html('');
         return;
       }
-
+      
       this.$el.width(800);
       this.$el.height(60);
-
+      
       this.graph = $.plot(this.$el, this.data, options);
       this.$el.bind('plotselected', this.onSelect);
     },
@@ -114,7 +115,15 @@ define(function(require) {
       this.maxX = maxX;
       this.data = data;
     },
+    //hide overview graph from page
+    hide: function(){
+      this.$el.html("");
+    },
 
+    //show overview graph on page
+    show: function(){
+      this.render();
+    },
     destroy: function() {
       // From StackOverflow with love.
       this.undelegateEvents();

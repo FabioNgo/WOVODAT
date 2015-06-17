@@ -5,7 +5,7 @@ define(function(require) {
       _ = require('underscore'),
       
       template = require('text!templates/time_series_select.html');
-  //check/uncheck all function
+  //check/uncheck all checkboxes
   function toggle(source,selectings) {
     var checkboxes = document.getElementsByName(source.value);
     for (var i =0;i<checkboxes.length; i++){
@@ -41,6 +41,7 @@ define(function(require) {
       categoryCheckbox.checked = isCheckedAll;
     
   }
+  // add selected time serie to shown respective graph
   function addSelection(source,selectings) {
     var id = $(source).val();
     if ($(source).is(':checked'))
@@ -62,14 +63,19 @@ define(function(require) {
       this.volcano = options.volcano;
       this.selectings = options.selectingTimeSeries;
       this.observer = options.observer;
-      
       this.listenTo(this.volcano, 'change', this.changeVolcano);
       this.listenTo(this.collection, 'sync', this.render);
     },
     
     changeVolcano: function() {
-      this.collection.changeVolcano(this.volcano.get('vd_id'));
-      this.selectings.reset();
+      var vd_id = this.volcano.get('vd_id');
+      if(vd_id == -1){ // when user select "Please select vocalno"
+        this.$el.html(""); // no time serie appears
+      }else{
+        this.collection.changeVolcano(this.volcano.get('vd_id'));
+        this.selectings.reset();  
+      }
+      
 
     },
 
@@ -83,7 +89,7 @@ define(function(require) {
 
     onChange: function(event) {
       var input = event.target;
-
+      
           
       if($(input).attr('name') == "category"){
         toggle(input,this.selectings);

@@ -18,7 +18,7 @@ define(function(require) {
       _(this).bindAll('render', 'changeSelection');
       this.observer = options.observer;
       this.selectingVolcano = options.selectingVolcano;
-		this.render();
+		// this.render();
       this.collection.fetch();
       this.listenTo(this.collection, 'sync', this.render);
       this.listenTo(this.selectingVolcano, 'change', this.changeSelection);
@@ -36,8 +36,9 @@ define(function(require) {
 
     onSelectChange: function() {
       var vd_id = this.$el.find('select').val();
-      if (vd_id) 
+      if (vd_id) {
         this.selectingVolcano.set('vd_id', vd_id);
+      }
     }
   });
 });

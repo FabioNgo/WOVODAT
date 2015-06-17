@@ -29,7 +29,7 @@ define(function(require) {
 
     clear: function() {
       if (this.collection.length === 0) {
-        this.overviewGraph.destroy();
+        // this.overviewGraph.destroy();
         for (var g in this.graphs) {
           if (this.graphs.hasOwnProperty(g)) {
             this.graphs[g].destroy();
