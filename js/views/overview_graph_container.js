@@ -27,15 +27,22 @@ define(function(require) {
         selectingTimeRange: this.overviewSelectingTimeRange
       });
     },
+     //hide overview graph from page
+    hide: function(){
+      this.$el.html("");
+    },
 
+    //show overview graph on page
+    show: function(){
+      this.render();
+    },
     timeSeriesChanged: function(selectingTimeSeries) {
       this.selectingTimeSeries = selectingTimeSeries;
       if (this.selectingTimeSeries.length == 0) {
-        this.overviewGraph.hide();
+        this.hide();
       }else{
-        this.overviewGraph.show();
+        this.show();
       }
-      this.render();
     },
 
     render: function() {

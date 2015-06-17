@@ -115,15 +115,7 @@ define(function(require) {
       this.maxX = maxX;
       this.data = data;
     },
-    //hide overview graph from page
-    hide: function(){
-      this.$el.html("");
-    },
-
-    //show overview graph on page
-    show: function(){
-      this.render();
-    },
+   
     destroy: function() {
       // From StackOverflow with love.
       this.undelegateEvents();

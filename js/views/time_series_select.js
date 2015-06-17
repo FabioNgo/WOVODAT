@@ -86,10 +86,10 @@ define(function(require) {
       var input = event.target;
       
           
-      if($(input).attr('name') == "category"){
+      if($(input).attr('name') == "category"){ // cehck category(parent) checkbox
         toggle(input,this.selectings);
         
-      }else{
+      }else{ //check/uncheck child checkbox
         addSelection(input,this.selectings);
         categoryCheckBoxChange(input);
       }
