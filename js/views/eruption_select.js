@@ -5,7 +5,7 @@ define(function(require) {
       _ = require('underscore'),
      
       template = require('text!templates/eruption_select.html');
-
+          
   return Backbone.View.extend({
     el: '',
 
@@ -19,21 +19,16 @@ define(function(require) {
       _(this).bindAll('render', 'changeEruption');
       
       this.observer = options.observer;
-      this.volcano = options.volcano; //just id
-      this.selectingEruption = options.selectingEruption;
-
      
-      //this.listenTo(this.collection, 'sync', this.render);
-      this.listenTo(this.selectingEruption, 'change', this.changeEruption);
     },
-
+    
     fetchEruptions: function(vd_id) {
-      this.volcano = vd_id;
-      this.collection.changeVolcano(this.volcano);
+      this.collection.changeVolcano(vd_id);
+      
     },
 
-    changeEruption: function(e) {
-      this.$el.find('select').val(this.selectingEruption.get('ed_id'));
+    changeEruption: function(selectingEruption) {
+      this.$el.find('select').val(selectingEruption.get('ed_id'));
       this.$el.find('select').change();
     },
 
@@ -59,7 +54,20 @@ define(function(require) {
     // show eruption_select on page
     show: function(){
       // this.fetchEruptions(this.volcano);
+      
+      // this.fetchEruptions();
+      
       this.render();
+    },
+
+    //when no series select, eruption not appear
+    timeSeriesChanged: function(selectingTimeSeries) {
+      if (selectingTimeSeries.length == 0) {
+        this.hide();
+      }else{
+        this.show();
+      }
+      
     },
 
     destroy: function() {

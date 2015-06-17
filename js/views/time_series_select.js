@@ -59,31 +59,26 @@ define(function(require) {
     template: _.template(template),
     
     initialize: function(options) {
-      _(this).bindAll('render', 'changeVolcano');
       this.volcano = options.volcano;
-      this.selectings = options.selectingTimeSeries;
+      this.selectings = options.selectings;
       this.observer = options.observer;
-      this.listenTo(this.volcano, 'change', this.changeVolcano);
-      this.listenTo(this.collection, 'sync', this.render);
+
     },
     
-    changeVolcano: function() {
-      var vd_id = this.volcano.get('vd_id');
+    changeVolcano: function(vd_id,timeSeries) {
       if(vd_id == -1){ // when user select "Please select vocalno"
         this.$el.html(""); // no time serie appears
       }else{
-        this.collection.changeVolcano(this.volcano.get('vd_id'));
-        this.selectings.reset();  
+        timeSeries.changeVolcano(vd_id);  
       }
       
 
     },
 
-    render: function() {
+    render: function(timeSeries) {
       
       this.$el.html(this.template({
-        timeSeries: this.collection.models,
-        
+        timeSeries: timeSeries.models,
       }));
     },
 
