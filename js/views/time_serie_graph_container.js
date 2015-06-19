@@ -26,7 +26,6 @@ define(function(require) {
   			model : this.model,
   			filter : filter
   		});
-
   		this.$el.append(this.graphs[val].$el);
 
   		this.graphs[val].filter.trigger("change");

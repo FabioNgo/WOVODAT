@@ -15,13 +15,11 @@ define(function(require) {
     },
     
     initialize: function(options) {
-      _(this).bindAll('render', 'changeSelection');
+      _(this).bindAll('render');
       this.observer = options.observer;
       this.selectingVolcano = options.selectingVolcano;
-
       this.collection.fetch();
       this.listenTo(this.collection, 'sync', this.render);
-      this.listenTo(this.selectingVolcano, 'change', this.changeSelection);
     },
 
     render: function() {
@@ -30,14 +28,15 @@ define(function(require) {
       }));
     },
 
-    changeSelection: function(e) {
-      this.$el.find('select').val(this.selectingVolcano.get('vd_id'));
+    changeSelection: function(vd_id) {
+      this.$el.find('select').val(vd_id);
     },
 
     onSelectChange: function() {
       var vd_id = this.$el.find('select').val();
-      if (vd_id) 
+      if (vd_id) {
         this.selectingVolcano.set('vd_id', vd_id);
+      }
     }
   });
 });
