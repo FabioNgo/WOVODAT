@@ -68,6 +68,7 @@ define(function(require) {
     changeVolcano: function(vd_id,timeSeries) {
       if(vd_id == -1){ // when user select "Please select vocalno"
         this.$el.html(""); // no time serie appears
+        this.trigger('hide');
       }else{
         timeSeries.changeVolcano(vd_id);  
       }

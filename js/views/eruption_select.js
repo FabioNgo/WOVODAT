@@ -59,6 +59,7 @@ define(function(require) {
     //hide eruption_select from page
     hide: function(){
       this.$el.html("");
+      this.trigger('hide');
     },
 
     // show eruption_select on page

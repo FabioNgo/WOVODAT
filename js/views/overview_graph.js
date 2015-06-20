@@ -53,7 +53,11 @@ define(function(require) {
         endTime: this.timeRange.get('endTime')
       });
     },
-
+    hide: function(){
+      this.$el.html("");
+      this.$el.width(0);
+      this.$el.height(0);
+    },
     render: function() {
       this.$el.html("Overview Graph <br></br>")
       // for (var i = 0; i < this.selectingTimeSeries.length; i++) {

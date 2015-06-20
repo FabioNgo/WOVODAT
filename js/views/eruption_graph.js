@@ -118,7 +118,7 @@ define(function(require) {
               tickFormatter: function(val, axis) { return val < axis.max ? val.toFixed(0) : 'VEI'; }
             },
             pan: {
-              interactive: true
+              interactive: false
             },
             zoom: {
               interactive: true
