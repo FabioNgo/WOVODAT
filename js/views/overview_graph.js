@@ -3,18 +3,27 @@ define(function(require) {
   var $ = require('jquery'),
       Backbone = require('backbone'),
       _ = require('underscore'),
-      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection']);
+      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection']),
+      TimeRange = require('models/time_range');
 
   return Backbone.View.extend({
     initialize: function(options) {
       _(this).bindAll('update', 'onSelect', 'onTimeRangeChange', 'onSelectingTimeRangeChange');
-      this.timeRange = options.timeRange;
+      this.selectingTimeSeries = options.selectingTimeSeries;
+      
+      this.timeRange = new TimeRange();
+      // this.computeTimeRange();
       this.selectingTimeRange = options.selectingTimeRange;
-      this.listenTo(this.collection, 'change remove', this.update);
-      this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
-      this.listenTo(this.selectingTimeRange, 'change', this.onSelectingTimeRangeChange);
+      // this.listenTo(this.selectingTimeSeries, 'change remove', this.update);
+      // this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
+      // this.listenTo(this.selectingTimeRange, 'change', this.onSelectingTimeRangeChange);
     },
-
+    
+    selectingTimeSeriesChanged: function(selectingTimeSeries) {
+      this.selectingTimeSeries = selectingTimeSeries;
+      // this.computeTimeRange();
+      this.update();
+    },
     onSelect: function(event, ranges) {
       var startTime = ranges.xaxis.from,
           endTime = ranges.xaxis.to;
@@ -47,6 +56,9 @@ define(function(require) {
 
     render: function() {
       this.$el.html("Overview Graph <br></br>")
+      // for (var i = 0; i < this.selectingTimeSeries.length; i++) {
+      //   this.selectingTimeSeries[i].fetch();
+      // };
       var options = {
             series: {
               lines: { 
@@ -92,7 +104,7 @@ define(function(require) {
           data = [],
           i;
 
-      this.collection.models.forEach(function(serie) {
+      this.selectingTimeSeries.models.forEach(function(serie) {
         var list = [];
         if (serie.get('data')) {
           serie.get('data').forEach(function(d) {

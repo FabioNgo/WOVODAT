@@ -18,6 +18,7 @@ define(function(require) {
       _(this).bindAll('render');
       this.observer = options.observer;
       this.selectingVolcano = options.selectingVolcano;
+      this.collection = options.collection;
       this.collection.fetch();
       this.listenTo(this.collection, 'sync', this.render);
     },

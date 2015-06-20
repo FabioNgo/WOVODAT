@@ -5,7 +5,7 @@ define(function(require) {
       _ = require('underscore'),
       // Serie = require('models/serie'),
       // TimeSerieGraph = require('views/time_serie_graph'),
-      OverviewGraph = require('views/overview_graph'),
+      
       TimeRange = require('models/time_range'),
       Eruption = require('models/eruption'),
       Eruptions = require('collections/eruptions'),
@@ -17,15 +17,10 @@ define(function(require) {
     
     initialize: function(options) {
       /** Variable declaration **/
-      this.timeRange = options.timeRange;
       this.overviewSelectingTimeRange = new TimeRange();
       this.observer = options.observer;
-      
-      this.overviewGraph = new OverviewGraph({
-        collection: this.collection,
-        timeRange: this.timeRange,
-        selectingTimeRange: this.overviewSelectingTimeRange
-      });
+      this.overviewSelectingTimeSeries = options.selectingTimeSeries;
+      this.overviewGraph = options.graph;
     },
      //hide overview graph from page
     hide: function(){
@@ -36,7 +31,7 @@ define(function(require) {
     show: function(){
       this.render();
     },
-    timeSeriesChanged: function(selectingTimeSeries) {
+    selectingTimeSeriesChanged: function(selectingTimeSeries) {
       this.selectingTimeSeries = selectingTimeSeries;
       if (this.selectingTimeSeries.length == 0) {
         this.hide();

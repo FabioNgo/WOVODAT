@@ -11,7 +11,7 @@ define(['jquery', 'backbone', 'helper/date'], function($, Backbone, DateHelper) 
       this.set('ed_stime', ed_stime);
       this.set('formatted_ed_stime', DateHelper.formatDate(ed_stime));
       this.set('ed_etime', ed_etime);
-      this.set('formatted_ed_etime', DateHelper.formatDate(ed_stime));
+      this.set('formatted_ed_etime', DateHelper.formatDate(ed_etime));
       ed_phs.forEach(function(e, i) {
         ed_phs[i].ed_phs_stime = parseInt(e.ed_phs_stime, 10);
         ed_phs[i].formatted_ed_phs_stime = DateHelper.formatDate(e.ed_phs_stime);

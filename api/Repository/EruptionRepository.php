@@ -86,8 +86,9 @@
 					ed_phs_dre_lav, ed_phs_dre_tep, ed_phs_col from ed_phs where ed_phs.ed_phs_id = %d";
 			$db->query($query, $ed_phs_id);
 			$result = $db->getRow();
-			//$result['ed_phs_stime'] = TimeFormatter::getJavascriptTimestamp($result['ed_phs_stime']);
-			//$result['ed_phs_etime'] = TimeFormatter::getJavascriptTimestamp($result['ed_phs_etime']);
+			// echo($result['ed_phs_stime']);
+			// $result['ed_phs_stime'] = TimeFormatter::getJavascriptTimestamp($result['ed_phs_stime']);
+			// $result['ed_phs_etime'] = TimeFormatter::getJavascriptTimestamp($result['ed_phs_etime']);
 			return $result;
 		}
 

@@ -3,7 +3,7 @@ define(function(require) {
   var $ = require('jquery'),
       Backbone = require('backbone'),
       _ = require('underscore'),
-      
+      TimeSerie = require('models/serie'),
       template = require('text!templates/time_series_select.html');
   //check/uncheck all checkboxes
   function toggle(source,selectings) {

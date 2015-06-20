@@ -18,7 +18,8 @@ define(function(require) {
         'onRemoveSelectingTimeSeries',
         'onResetSelectingTimeSeries',
         'timeSeriesChanged',
-        'changeEruption'
+        'selectingTimeSeriesChange',
+        'changeSelectingEruptions'
       );
       //Variable declaration
       this.volcanoSelect = options.volcanoSelect;
@@ -26,9 +27,11 @@ define(function(require) {
       this.overviewGraphContainer = options.overviewGraphContainer;
       this.eruptionSelect = options.eruptionSelect;
       this.selectingVolcano = options.selectingVolcano;
-      this.selectingEruption = options.selectingEruption;
+      this.selectingEruptions = options.selectingEruptions;
       this.selectingTimeSeries = options.selectingTimeSeries;
       this.timeSeries = options.timeSeries;
+      this.overviewGraph = options.overviewGraph;
+      this.eruptionGraph = options.eruptionGraph;
       //event listeners
       // this.listenTo(this.volcanoSelect,'change',this.onSelectVolcanoChanged)
       this.listenTo(this.selectingVolcano, 'change', this.changeVolcano);
@@ -36,7 +39,9 @@ define(function(require) {
       this.listenTo(this.selectingTimeSeries,'remove', this.onRemoveSelectingTimeSeries);
       this.listenTo(this.selectingTimeSeries,'reset', this.onResetSelectingTimeSeries);
       this.listenTo(this.timeSeries, 'sync', this.timeSeriesChanged);
-      this.listenTo(this.selectingEruption, 'change', this.changeEruption);
+      this.listenTo(this.selectingTimeSeries, 'sync', this.selectingTimeSeriesChange);
+      this.listenTo(this.selectingEruptions, 'add', this.changeSelectingEruptions);
+      // this.listenTo(this.selectingEruptions, 'reset', this.changeSelectingEruptions);
 
     },
     // onSelectVolcanoChanged: function(e){
@@ -66,7 +71,8 @@ define(function(require) {
     },
 
     selectingTimeSeriesChange: function(e){
-      this.overviewGraphContainer.timeSeriesChanged(this.selectingTimeSeries);
+      this.overviewGraphContainer.selectingTimeSeriesChanged(this.selectingTimeSeries);
+      this.overviewGraph.selectingTimeSeriesChanged(this.selectingTimeSeries);
       this.eruptionSelect.timeSeriesChanged(this.selectingTimeSeries);
     },
 
@@ -75,8 +81,9 @@ define(function(require) {
       this.selectingTimeSeries.reset();
     },
 
-    changeEruption: function(e){
-      this.eruptionSelect.changeEruption(this.selectingEruption);
+    changeSelectingEruptions: function(e){
+      // this.eruptionSelect.changeEruption(this.selectingEruption);
+      this.eruptionGraph.changeEruption(e);
     },
 
     destroy: function() {

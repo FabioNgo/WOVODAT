@@ -9,8 +9,16 @@ define(function(require) {
     initialize: function() {      
     },
 
+    // add: function(sr_id){
+      
+    // }
     onAdd: function(e) {
-      e.fetch();
+      e.fetch({
+        success: function(collection, response) {
+          // console.log(e);
+          // console.log(response);
+        }
+      });
     },
     onRemove: function(e){
       e.fetch();

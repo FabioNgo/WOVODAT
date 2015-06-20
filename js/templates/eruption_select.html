@@ -1,9 +1,6 @@
-<% if (!_.isEmpty(eruptions)) { %>
-  <select>
-    <% _.each(eruptions, function(eruption) { %>
-      <option value="<%= eruption.get('ed_id') %>"><%= eruption.getDate() %></option>
-    <% }); %>
-  </select>
-<% } else { %>
-  No eruption.
-<% } %>
+<select>
+	<option value="-1">------</option>
+	<% _.each(eruptions, function(eruption) { %>
+	  <option value="<%= eruption.get('ed_id') %>"><%= eruption.getDate() %></option>
+	<% }); %>
+</select>

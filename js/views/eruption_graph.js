@@ -8,23 +8,32 @@ define(function(require) {
       Const = require('helper/const'),
       edTemplate = require('text!templates/tooltip_ed.html'),
       edphsTemplate = require('text!templates/tooltip_ed_phs.html'),
+      TimeRange = require('models/time_range'),
       Tooltip = require('views/tooltip');
 
   return Backbone.View.extend({
     el: '',
     
     initialize: function(options) {
-      _(this).bindAll('render', 'onHover', 'updateStartTime', 'changeTimeRange');
+      _(this).bindAll(
+        // 'render',
+        'onHover',
+        // 'updateStartTime',
+        'changeTimeRange'
+      );
       this.observer = options.observer;
-      this.timeRange = options.timeRange;
+      //this.eruptions = options.eruptions;
+      this.timeRange = new TimeRange();
+      // this.eruptions = new Array();
+      this.selectingEruption = options.selectingEruption;
       this.edTooltip = new Tooltip({
         template: edTemplate
       });
       this.edphsTooltip = new Tooltip({
         template: edphsTemplate
       });
-      this.listenTo(this.collection, 'sync', this.render);
-      this.listenTo(this.observer, 'change-start-time', this.updateStartTime);
+      // this.listenTo(this.eruptions, 'sync', this.render);
+      // this.listenTo(this.observer, 'change-start-time', this.updateStartTime);
     },
 
     onHover: function(event, pos, item) {
@@ -44,7 +53,25 @@ define(function(require) {
       this.startTime = startTime;
       this.render();
     },
+    changeEruption: function(selectingEruption){
+      if(selectingEruption.get('ed_id') == -1){
+        this.hide();
+      }else{
+        this.selectingEruption = selectingEruption;
+        this.show();
+      }
 
+    },
+    //show eruption graph
+    show: function(){
+      this.render();
+    },
+    //hide eruption graph
+    hide: function(){
+      this.$el.html("");
+      this.$el.height(0);
+      this.$el.width(0);
+    },
     render: function() {
       var self = this,
           el = this.$el,
@@ -124,7 +151,8 @@ define(function(require) {
           ed_phsData = [],
           endOfTime = 0;
 
-      this.collection.models.forEach(function(ed) {
+      // this.eruptions.forEach(function(ed) {
+        var ed = this.selectingEruption;
         var ed_stime = ed.get('ed_stime'),
             ed_etime = ed.get('ed_etime'),
             ed_vei = ed.get('ed_vei');
@@ -140,7 +168,7 @@ define(function(require) {
 
           ed_phsData.push([ed_phs_stime, ed_phs_vei, ed_phs_vei - 0.2, ed_phs_etime - ed_phs_stime, ed_phs]);
         });
-      });
+      // });
 
       return {
         edData: edData,

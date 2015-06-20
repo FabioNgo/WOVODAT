@@ -3,7 +3,7 @@ define(function(require) {
   var $ = require('jquery'),
       Backbone = require('backbone'),
       _ = require('underscore'),
-     
+      Eruption = require('models/eruption'),
       template = require('text!templates/eruption_select.html');
           
   return Backbone.View.extend({
@@ -19,7 +19,8 @@ define(function(require) {
       _(this).bindAll('render', 'changeEruption');
       
       this.observer = options.observer;
-     
+      this.selectingEruptions = options.selectingEruptions;
+      this.collection = options.collection;
     },
     
     fetchEruptions: function(vd_id) {
@@ -32,6 +33,7 @@ define(function(require) {
       this.$el.find('select').change();
     },
 
+   
     render: function() {
       this.$el.html(this.template({
         eruptions: this.collection.models
@@ -39,11 +41,19 @@ define(function(require) {
     },
 
     onChangeEruption: function() {
-      var ed_id = this.$el.find('select').val(),
-          startTime = this.collection.get(ed_id).get('ed_stime');
-
-      this.selectingEruption.set('ed_id', ed_id);
-      this.observer.trigger('change-start-time', startTime);
+      var ed_id = this.$el.find('select').val();
+      // if(ed_id)
+      // var startTime = this.collection.get(ed_id).get('ed_stime');
+      this.selectingEruptions.reset();
+      if(ed_id == -1){
+        this.selectingEruptions.add(new Eruption({'ed_id':-1})); // select ----
+      }else{
+        this.selectingEruptions.add(this.collection.get(ed_id));  
+      }
+      
+      // this.selectingEruption.set('ed_id', ed_id);
+      // this.selectingEruption.trigger('change');
+      // this.observer.trigger('change', this.selectingEruption);
     },
 
     //hide eruption_select from page

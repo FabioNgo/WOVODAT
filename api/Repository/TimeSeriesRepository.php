@@ -91,14 +91,7 @@ class TimeSeriesRepository {
 			
 			self::saveSerie($serie);	
 			
-			// if(array_key_exists($serie['category'],$series)){
-			// 	$series[$serie['category']][] = $serie;
-			// 	//echo "\t";
-			// } else{
-			// 	$series[$serie['category']] = $serie;
-			// 	//echo "\n";
-			// }
-			//echo $serie['category'];
+			
 			$series[] = $serie;
 		}
 

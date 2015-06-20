@@ -1,6 +1,6 @@
 <select>
   <option value="-1" style="display:block">Please select a volcano</option>
   <% _.each(volcanoes, function(volcano) { %>
-    <option value="<%= volcano.get('vd_id') %>"><%= volcano.get('vd_name') %> - (<%= volcano.get('vd_id') %>)</option>
+    <option value="<%= volcano.get('vd_id') %>"><%= volcano.get('vd_name') %> - (<%= volcano.get('vd_id') %> - (<%= volcano.get('vd_cavw') %>))</option>
   <% }); %>
 </select>
