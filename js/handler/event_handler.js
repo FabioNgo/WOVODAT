@@ -36,6 +36,7 @@ define(function(require) {
       this.timeSeries = options.timeSeries;
       this.overviewGraph = options.overviewGraph;
       this.eruptionGraph = options.eruptionGraph;
+      this.timeSeriesGraphContainer = options.timeSeriesGraphContainer;
       //event listeners
       // this.listenTo(this.volcanoSelect,'change',this.onSelectVolcanoChanged)
       this.listenTo(this.selectingVolcano, 'change', this.changeVolcano);
@@ -68,12 +69,15 @@ define(function(require) {
     
     onAddSelectingTimeSeries: function(e) {
       this.selectingTimeSeries.onAdd(e);
-      this.selectingTimeSeriesChange(); 
+      this.timeSeriesGraphContainer.addSelectingTimeSerie(e);
+      this.selectingTimeSeriesChange();
     },
 
     onRemoveSelectingTimeSeries: function(e) {
       this.selectingTimeSeries.onRemove(e);
+      this.timeSeriesGraphContainer.removeSelectingTimeSerie(e);
       this.selectingTimeSeriesChange();
+
     },
 
     onResetSelectingTimeSeries: function(e) {
@@ -83,12 +87,16 @@ define(function(require) {
     selectingTimeSeriesChange: function(e){
       this.overviewGraphContainer.selectingTimeSeriesChanged(this.selectingTimeSeries);
       this.overviewGraph.selectingTimeSeriesChanged(this.selectingTimeSeries);
+      
       this.eruptionSelect.timeSeriesChanged(this.selectingTimeSeries);
     },
 
     timeSeriesChanged: function(e){
       this.timeSeriesSelect.render(this.timeSeries);
+
       this.selectingTimeSeries.reset();
+
+      
     },
 
     changeSelectingEruptions: function(e){
@@ -98,9 +106,10 @@ define(function(require) {
     timeSeriesSelectHidden: function(e){
       this.overviewGraph.hide();
       this.eruptionSelect.hide();
+      this.timeSeriesGraphContainer.hide();
     },
     overviewGraphHidden: function(e){
-      //
+      // this.timeSeri
     },
     eruptionSelectHidden: function(e){
       this.eruptionGraph.hide();

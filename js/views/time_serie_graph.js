@@ -6,19 +6,22 @@ define(function(require) {
       flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection']),
       serieTooltipTemplate = require('text!templates/tooltip_serie.html'),
       Tooltip = require('views/tooltip'),
+      TimeRange = require('models/time_range'),
       DateHelper = require('helper/date');
 
   return Backbone.View.extend({    
     initialize: function(options) {
       _(this).bindAll('prepareDataAndRender', 'onTimeRangeChange', 'onHover', 'onPan');
-
-      this.timeRange = options.timeRange;
-      this.tooltip = new Tooltip({
-        template: serieTooltipTemplate
-      });
-      this.model.fetch();
+      this.timeSerie = options.timeSerie;
+      this.timeRange = new TimeRange();
+      // this.timeRange = options.timeRange;
+      // this.tooltip = new Tooltip({
+      //   template: serieTooltipTemplate
+      // });
+      // this.model.fetch();
+      this.render();
       this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
-      this.listenTo(this.model, 'change', this.prepareDataAndRender);
+      // this.listenTo(this.model, 'change', this.prepareDataAndRender);
     },
 
     onTimeRangeChange: function() {
@@ -26,7 +29,7 @@ define(function(require) {
     },
 
     onHover: function(event, pos, item) {
-      this.tooltip.update(pos, item);
+      // this.tooltip.update(pos, item);
     },
 
     onPan: function() {
@@ -42,9 +45,11 @@ define(function(require) {
     },
 
     render: function() {
+      // console.log(this.timeSerie);
+      this.$el.html(this.timeSerie.get('sr_id')+"<br></br>")
       var param_ds = {
             color: '#5EB7FF',
-            label: 'Data Series',
+            label: this.timeSerie.get('name'),
             data: this.data,
             bars: {
               show: true,
@@ -77,7 +82,7 @@ define(function(require) {
             }
           };
 
-      this.$el.html('<div></div>');
+      
       this.$el.width(800);
       this.$el.height(200);
 

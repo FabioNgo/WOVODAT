@@ -13,7 +13,7 @@ define(function(require) {
       
       this.timeRange = new TimeRange();
       // this.computeTimeRange();
-      this.selectingTimeRange = options.selectingTimeRange;
+      this.selectingTimeRange = new TimeRange();
       // this.listenTo(this.selectingTimeSeries, 'change remove', this.update);
       // this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
       // this.listenTo(this.selectingTimeRange, 'change', this.onSelectingTimeRangeChange);
@@ -59,6 +59,7 @@ define(function(require) {
       this.$el.height(0);
     },
     render: function() {
+      console.log(this);
       this.$el.html("Overview Graph <br></br>")
       // for (var i = 0; i < this.selectingTimeSeries.length; i++) {
       //   this.selectingTimeSeries[i].fetch();
@@ -73,8 +74,8 @@ define(function(require) {
             xaxis: { 
               mode:'time',
               autoscale: true,
-              min: this.timeRange.get('startTime'),
-              max: this.timeRange.get('endTime')
+              min: this.minX,
+              max: this.maxX
             },
             yaxis: {
               show: false

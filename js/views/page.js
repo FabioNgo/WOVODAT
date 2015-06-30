@@ -26,6 +26,7 @@ define(function(require) {
       TimeRange = require('models/time_range'),
       SelectingTimeSeries = require('collections/selecting_time_series'),
       TimeSeriesContainer = require('views/time_series_container'),
+      TimeSeriesGraphContainer = require('views/time_serie_graph_container'),
       EventHandler = require('handler/event_handler'),
       UrlLoader = require('models/url_loader');
 
@@ -77,16 +78,19 @@ define(function(require) {
             selectingEruptions: selectingEruptions
           }),
 
-          // timeSeriesContainer = new TimeSeriesContainer({
-          //   observer: observer,
-          //   timeRange: timeRange
-          // }),
+          
 
           eruptionGraph = new EruptionGraph({
             //eruptions: eruptions,
             observer: observer,
             // timeRange: timeRange
             
+          }),
+          timeSeriesGraphContainer = new TimeSeriesGraphContainer({
+            observer: observer,
+            selectingTimeSeries: selectingTimeSeries
+            // timeRange: timeRange
+
           }),
 
           urlLoader = new UrlLoader({
@@ -106,7 +110,9 @@ define(function(require) {
             selectingTimeSeries: selectingTimeSeries,
             timeSeries :timeSeries,
             overviewGraph: overviewGraph,
-            eruptionGraph: eruptionGraph
+            eruptionGraph: eruptionGraph,
+            timeSeriesGraphContainer: timeSeriesGraphContainer
+
           });
       /** Body **/
       // var test = new TimeSerie('58166f4b40cca4e8ed2522b5f00bc756');
@@ -120,6 +126,7 @@ define(function(require) {
       overviewGraphContainer.$el.appendTo(this.$el);
       eruptionSelect.$el.appendTo(this.$el);
       eruptionGraph.$el.appendTo(this.$el);
+      timeSeriesGraphContainer.$el.appendTo(this.$el);
       urlLoader.$el.appendTo(this.$el);
       // new EruptionForecastGraph({
       //   collection: new EruptionForecasts(),

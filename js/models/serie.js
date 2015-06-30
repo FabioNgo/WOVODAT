@@ -9,6 +9,8 @@ define(['jquery', 'backbone'], function($, Backbone) {
         sr_id: sr_id
       });
       this.url = 'api/?data=time_serie&sr_id=' + sr_id;
-    }
+    },
+    
+
   });
 });

@@ -12,54 +12,54 @@ define(function(require) {
     el: '',
     
     initialize: function(options) {
-      _(this).bindAll('addSerie', 'removeSerie', 'clear');
+      // _(this).bindAll('addSerie', 'removeSerie', 'clear');
 
       this.timeRange = options.timeRange;
       this.overviewSelectingTimeRange = new TimeRange();
 
-      this.graphs = {};
+      // this.graphs = {};
 
-      this.listenTo(this.collection, 'reset', this.clear);
+      // this.listenTo(this.collection, 'reset', this.clear);
 
-      this.listenTo(this.collection, 'add', this.addSerie);
-      this.listenTo(this.collection, 'remove', this.removeSerie);
+      // this.listenTo(this.collection, 'add', this.addSerie);
+      // this.listenTo(this.collection, 'remove', this.removeSerie);
 
       this.render();
     },
 
-    clear: function() {
-      if (this.collection.length === 0) {
-        // this.overviewGraph.destroy();
-        for (var g in this.graphs) {
-          if (this.graphs.hasOwnProperty(g)) {
-            this.graphs[g].destroy();
-          }
-        }
-        this.graphs = {};
-        this.render();
-      }
-    },
+    // clear: function() {
+    //   if (this.collection.length === 0) {
+    //     // this.overviewGraph.destroy();
+    //     for (var g in this.graphs) {
+    //       if (this.graphs.hasOwnProperty(g)) {
+    //         this.graphs[g].destroy();
+    //       }
+    //     }
+    //     this.graphs = {};
+    //     this.render();
+    //   }
+    // },
 
-    addSerie: function(sr_id) {
-      this.graphs[sr_id] = new TimeSerieGraph({
-        model: this.collection.get(sr_id),
-        timeRange: this.overviewSelectingTimeRange
-      });
+    // addSerie: function(sr_id) {
+    //   this.graphs[sr_id] = new TimeSerieGraph({
+    //     model: this.collection.get(sr_id),
+    //     timeRange: this.overviewSelectingTimeRange
+    //   });
 
-      this.$el.append(this.graphs[sr_id].$el);
-    },
+    //   this.$el.append(this.graphs[sr_id].$el);
+    // },
 
-    removeSerie: function(sr_id) {
-      this.graphs[sr_id].destroy();
-    },
+    // removeSerie: function(sr_id) {
+    //   this.graphs[sr_id].destroy();
+    // },
 
     render: function() {
-      this.overviewGraph = new OverviewGraph({
-        collection: this.collection,
-        timeRange: this.timeRange,
-        selectingTimeRange: this.overviewSelectingTimeRange
-      });
-      this.overviewGraph.$el.appendTo(this.$el);
+      // this.overviewGraph = new OverviewGraph({
+      //   collection: this.collection,
+      //   timeRange: this.timeRange,
+      //   selectingTimeRange: this.overviewSelectingTimeRange
+      // });
+      // this.overviewGraph.$el.appendTo(this.$el);
     }
   });
 });
