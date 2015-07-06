@@ -13,7 +13,7 @@ define(function(require) {
     },
 
     loadPage: function() {
-       var a = new Page();
+      new Page();
     }
   });
 });

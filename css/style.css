@@ -1,37 +1,57 @@
 #main {
   background-color: #FFF;
+  margin-top: -10px;
+  margin-bottom: -50px;
   padding: 10px;
   min-height: 50px;
+}
+
+.serie-graph {
+  position: relative;
+  width: 800px;
+  height: 200px;
 }
 
 .tooltip {
   position: absolute;
   border: 1px solid #fdd;
   padding: 2px;
-  background-color: #fee;;
+  background-color: #fee;
   opacity: 0.8;
 }
 
 .time-series-selection-container {
-  
-  height: 30%;
+  width: 770px;
+  height: 100px;
   padding: 6px;
   margin: 10px;
   overflow: auto;
   border: 1px solid #575757;
-  display: block;
-  
+}
 
+.filter-selection-container {
+  width: 200px;
+  height: 40;
+  padding: 6px;
+  margin: 5px;
+  overflow: auto;
+  border: 1px solid #575757;
+  margin-left: 20px;
 }
-.category {
-    padding-left: 0px;
-    
+
+.mgt20 {
+  margin-top: 20px;
 }
-.list-station {
-    padding-left: 10px;
+
+.volcano-select {
+  display: inline-block;
+  margin-right: 10px;
 }
-.group-cat {
-    display: -webkit-box;
-    display: -moz-box;
-    padding-bottom: 10px;
+
+.eruption-select {
+  display: inline-block;
+}
+
+.mgt15 {
+  margin-top: 15px;
 }

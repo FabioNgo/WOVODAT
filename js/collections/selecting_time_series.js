@@ -6,14 +6,7 @@ define(function(require) {
 
   return Backbone.Collection.extend({
     model: Serie,
-    initialize: function() {      
-    },
-
-    onAdd: function(e) {
-      e.fetch();
-    },
-    onRemove: function(e){
-      e.fetch();
+    initialize: function() {
     }
   });
 });

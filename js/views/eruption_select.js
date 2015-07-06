@@ -3,9 +3,8 @@ define(function(require) {
   var $ = require('jquery'),
       Backbone = require('backbone'),
       _ = require('underscore'),
-     
       template = require('text!templates/eruption_select.html');
-          
+
   return Backbone.View.extend({
     el: '',
     className : 'eruption-select',  
@@ -16,19 +15,23 @@ define(function(require) {
     },
     
     initialize: function(options) {
-      _(this).bindAll('render', 'changeEruption');
+      _(this).bindAll('render', 'fetchEruptions', 'changeEruption');
       
       this.observer = options.observer;
-     
-    },
-    
-    fetchEruptions: function(vd_id) {
-      this.collection.changeVolcano(vd_id);
-      
+      this.volcano = options.volcano;
+      this.selectingEruption = options.selectingEruption;
+
+      this.listenTo(this.volcano, 'change', this.fetchEruptions);
+      this.listenTo(this.collection, 'sync', this.render);
+      this.listenTo(this.selectingEruption, 'change', this.changeEruption);
     },
 
-    changeEruption: function(selectingEruption) {
-      this.$el.find('select').val(selectingEruption.get('ed_id'));
+    fetchEruptions: function() {
+      this.collection.changeVolcano(this.volcano.get('vd_id'));
+    },
+
+    changeEruption: function(e) {
+      this.$el.find('select').val(this.selectingEruption.get('ed_id'));
       this.$el.find('select').change();
     },
 
@@ -44,38 +47,6 @@ define(function(require) {
 
       this.selectingEruption.set('ed_id', ed_id);
       this.observer.trigger('change-start-time', startTime);
-    },
-
-    //hide eruption_select from page
-    hide: function(){
-      this.$el.html("");
-    },
-
-    // show eruption_select on page
-    show: function(){
-      // this.fetchEruptions(this.volcano);
-      
-      // this.fetchEruptions();
-      
-      this.render();
-    },
-
-    //when no series select, eruption not appear
-    timeSeriesChanged: function(selectingTimeSeries) {
-      if (selectingTimeSeries.length == 0) {
-        this.hide();
-      }else{
-        this.show();
-      }
-      
-    },
-
-    destroy: function() {
-      // From StackOverflow with love.
-      this.undelegateEvents();
-      this.$el.removeData().unbind(); 
-      this.remove();  
-      Backbone.View.prototype.remove.call(this);
     }
   });
 });

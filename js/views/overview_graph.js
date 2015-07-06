@@ -4,16 +4,21 @@ define(function(require) {
       Backbone = require('backbone'),
       _ = require('underscore'),
       flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection']);
-
+  var template = require("text!templates/overview_graph.html");
+      
   return Backbone.View.extend({
     initialize: function(options) {
       _(this).bindAll('update', 'onSelect', 'onTimeRangeChange', 'onSelectingTimeRangeChange');
       this.timeRange = options.timeRange;
       this.selectingTimeRange = options.selectingTimeRange;
-      this.listenTo(this.collection, 'change remove', this.update);
+      this.filterObserver = options.filterObserver;
+      this.listenTo(this.collection, 'remove', this.update);
       this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
       this.listenTo(this.selectingTimeRange, 'change', this.onSelectingTimeRangeChange);
+      this.listenTo(this.filterObserver, 'filter-change', this.update);
     },
+
+    template : _.template(template),
 
     onSelect: function(event, ranges) {
       var startTime = ranges.xaxis.from,
@@ -46,7 +51,6 @@ define(function(require) {
     },
 
     render: function() {
-      this.$el.html("Overview Graph <br></br>")
       var options = {
             series: {
               lines: { 
@@ -73,12 +77,18 @@ define(function(require) {
         this.$el.html('');
         return;
       }
-      
-      this.$el.width(800);
-      this.$el.height(60);
-      
-      this.graph = $.plot(this.$el, this.data, options);
-      this.$el.bind('plotselected', this.onSelect);
+
+      this.$el.html(this.template());
+
+      this.graphContainer = this.$el.find("div").first();
+
+      this.graphContainer.width(800);
+      this.graphContainer.height(60);
+
+      this.graph = $.plot(this.graphContainer, this.data, options);
+      this.graphContainer.bind('plotselected', this.onSelect);
+
+      return this;
     },
 
     update: function() {
@@ -168,7 +178,7 @@ define(function(require) {
       this.maxX = maxX;
       this.data = data;
     },
-   
+
     destroy: function() {
       // From StackOverflow with love.
       this.undelegateEvents();
