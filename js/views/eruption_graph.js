@@ -17,9 +17,9 @@ define(function(require) {
     initialize: function(options) {
       _(this).bindAll(
         // 'render',
-        'onHover',
+        'onHover'
         // 'updateStartTime',
-        'changeTimeRange'
+        // 'changeTimeRange'
       );
       this.observer = options.observer;
       //this.eruptions = options.eruptions;
@@ -49,10 +49,10 @@ define(function(require) {
       }
     },
 
-    updateStartTime: function(startTime) {
-      this.startTime = startTime;
-      this.render();
-    },
+    // updateStartTime: function(startTime) {
+    //   this.startTime = startTime;
+    //   this.render();
+    // },
     changeEruption: function(selectingEruption){
       if(selectingEruption.get('ed_id') == -1){
         this.hide();
@@ -68,15 +68,19 @@ define(function(require) {
     },
     //hide eruption graph
     hide: function(){
+      this.selectingEruption = undefined;
       this.$el.html("");
       this.$el.height(0);
       this.$el.width(0);
     },
     render: function() {
+      if(this.selectingEruption == undefined){
+        return;
+      }
       var self = this,
           el = this.$el,
           data = this.prepareData(),
-          endOfTime = this.startTime ? this.startTime + Const.ONE_YEAR : data.endOfTime,
+          // endOfTime = this.startTime ? this.startTime + Const.ONE_YEAR : data.endOfTime,
           param_ed = {
             data: data.edData,
             color: 'Gray',
@@ -103,11 +107,11 @@ define(function(require) {
               hoverable: true,
             },
             xaxis: {
-              min: endOfTime - Const.ONE_YEAR,
-              max: endOfTime,
+              min: this.startTime,
+              max: this.endTime,
               autoscale: true,
               mode: 'time',
-              timeformat: '%Y-%m'
+              timeformat: "%d-%b-%Y</br>%H:%M",
             },
             yaxis: {
               min: 0,
@@ -121,7 +125,7 @@ define(function(require) {
               interactive: false
             },
             zoom: {
-              interactive: true
+              interactive: false
             }
           };
           
@@ -131,20 +135,27 @@ define(function(require) {
       this.graph = $.plot(el, [param_ed, param_ed_phs], option);
 
       el.bind('plothover', this.onHover);
-      el.bind('plotpan', this.changeTimeRange);
+      // el.bind('plotpan', this.changeTimeRange);
       el.bind('plotzoom', this.changeTimeRange);
-      this.changeTimeRange();
+      // this.changeTimeRange();
     },
 
-    changeTimeRange: function() {
-      var startTime = this.graph.getAxes().xaxis.options.min,
-          endTime = this.graph.getAxes().xaxis.options.max;
-      this.timeRange.set({
-        startTime: startTime,
-        endTime: endTime
-      });
+    // changeTimeRange: function() {
+    //   var startTime = this.graph.getAxes().xaxis.options.min,
+    //       endTime = this.graph.getAxes().xaxis.options.max;
+    //   // this.timeRange.set({
+    //   //   'startTime': startTime,
+    //   //   'endTime': endTime
+    //   // });
+    // },
+    timeRangeChanged: function(TimeRange){
+      if(TimeRange == undefined){
+        return;
+      }
+      this.startTime = TimeRange.get('startTime');
+      this.endTime = TimeRange.get('endTime');
+      this.render();
     },
-
     prepareData: function() {
       var self = this,
           edData = [],
@@ -152,7 +163,12 @@ define(function(require) {
           endOfTime = 0;
 
       // this.eruptions.forEach(function(ed) {
+
+        if(this.selectingEruption == undefined){ // no eruption is selected
+          return;
+        }
         var ed = this.selectingEruption;
+
         var ed_stime = ed.get('ed_stime'),
             ed_etime = ed.get('ed_etime'),
             ed_vei = ed.get('ed_vei');

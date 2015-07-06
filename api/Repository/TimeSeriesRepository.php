@@ -34,19 +34,23 @@ class TimeSeriesRepository {
 
 	private static function preprocessSerieData($data) {
 		$results = array();
-		foreach ($data as $a) {
-			$b = array();
-			if (array_key_exists('etime', $a)) {
-				$b['start_time'] = $a['0'];
-				$b['end_time'] = $a['etime'];
-			} else {
-				$b['time'] = $a['0'];
+		foreach ($data as $temp) {
+			foreach($temp as $a){
+				// var_dump($a);
+				$b = array();
+				if (array_key_exists('etime', $a)) {
+
+					$b['start_time'] = $a['0'];
+					$b['end_time'] = $a['etime'];
+				} else {
+					$b['time'] = $a['0'];
+				}
+				$b['value'] = $a;
+
+				$results[] = $b;
 			}
-			$b['value'] = $a['1'];
-
-			$results[] = $b;
 		}
-
+		// var_dump($results);
 	return $results;
 	}
 
@@ -109,12 +113,13 @@ class TimeSeriesRepository {
 		$url .= '&table=' . $serie['data_type'];
 		$url .= '&code=' . $serie['station_code'];
 		$url .= '&component=' . $serie['component'];
-
+		// echo $url;
 		// Fetch the url.
 		//    $content = self::preprocessSerieData(json_decode(file_get_contents($url), true)[0]);
 		$content = self::preprocessSerieData(json_decode(file_get_contents($url), true));
+		// echo(file_get_contents(($url)));
 		$serie['data'] = $content;
-
+		$serie['wovodat_url'] = $url;
 	return $serie;
 	}
 } 

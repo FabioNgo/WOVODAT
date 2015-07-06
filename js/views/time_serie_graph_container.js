@@ -10,7 +10,7 @@ define(function(require) {
   	el: '',
   	initialize : function(options) {
   		this.selectingTimeSeries = options.selectingTimeSeries;
-  		this.timeRange = options.timeRange;
+  		
 
   		this.filterObserver = options.filterObserver;
   		// this.listenTo( this.selectingFilter, "add", this.addGraph );
@@ -36,7 +36,13 @@ define(function(require) {
     addGraph : function( timeSerie ) {
       // var val = filter.get("filter");
       // selectingTimeSeries.
+      // timeSerie.fetch({
+      //   success: function(collection, response) {
+      //     // console.log(e);
+      //     console.log(response);
 
+      //   }
+      // });
       var timeSerieGraph = new TimeSerieGraph( {
         // timeRange : this.timeRange,
         timeSerie: timeSerie
@@ -49,28 +55,35 @@ define(function(require) {
       // this.filterObserver.trigger("filter-change");
     },
 
-  	removeGraph : function( timeSerie ) {
-  		// var val = filter.get("filter");
-  		// this.graphs[val].destroy();
+  	// removeGraph : function( timeSerie ) {
+  	// 	// var val = filter.get("filter");
+  	// 	// this.graphs[val].destroy();
+   //    for (var i = 0; i < this.graphs.length; i++) {
+   //      if(this.graphs[i].timeSerie.id == timeSerie.id){
+   //        this.graphs[i].destroy();
+   //        this.graphs.splice(i,i+1); //remove graph
+   //        break;
+   //      }
+   //    };
+  	// 	// this.filterObserver.trigger("filter-change");
+  	// },
+    timeRangeChanged: function(timeRange){
       for (var i = 0; i < this.graphs.length; i++) {
-        if(this.graphs[i].timeSerie.id == timeSerie.id){
-          this.graphs[i].destroy();
-          this.graphs.splice(i,i+1); //remove graph
-          break;
-        }
+        this.graphs[i].timeRangeChanged(timeRange);
       };
-  		// this.filterObserver.trigger("filter-change");
-  	},
-    addSelectingTimeSerie: function(timeSerie){
-      this.selectingTimeSeries.add(timeSerie);
-      this.addGraph(timeSerie);
     },
-    removeSelectingTimeSerie: function(timeSerie){
-      this.selectingTimeSeries.remove(timeSerie);
-      this.removeGraph(timeSerie);
+    selectingTimeSerieChanged: function(selectingTimeSeries){
+      this.graphs.alength =0;
+      this.$el.html("");
+      for (var i = 0; i < selectingTimeSeries.models.length; i++) {
+        this.addGraph(selectingTimeSeries.models[i]);
+      };
     },
     render: function(selectingTimeSeries) {
       this.overviewGraph.$el.appendTo(this.$el);
+    },
+    hide: function(){
+      this.$el.html("");
     },
     destroy: function() {
       // From StackOverflow with love.

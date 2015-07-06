@@ -49,6 +49,8 @@ define(function(require) {
           eruptions = new Eruptions(),
           selectingVolcano = new Volcano(),
           timeSeries = new TimeSeries(),
+          timeRange = new TimeRange(),
+          selectingTimeRange = new TimeRange(),
           volcanoSelect = new VolcanoSelect({
             collection: volcanoes,
             observer: observer,
@@ -63,7 +65,8 @@ define(function(require) {
 
           overviewGraph = new OverviewGraph({
             selectingTimeSeries: this.overviewSelectingTimeSeries,
-            // selectingTimeRange: this.overviewSelectingTimeRange
+            selectingTimeRange: selectingTimeRange,
+            timeRange: timeRange
           }),
 
           overviewGraphContainer = new OverviewGraphContainer({
@@ -82,10 +85,11 @@ define(function(require) {
 
           eruptionGraph = new EruptionGraph({
             //eruptions: eruptions,
-            observer: observer,
+            observer: observer
             // timeRange: timeRange
             
           }),
+
           timeSeriesGraphContainer = new TimeSeriesGraphContainer({
             observer: observer,
             selectingTimeSeries: selectingTimeSeries
@@ -111,7 +115,9 @@ define(function(require) {
             timeSeries :timeSeries,
             overviewGraph: overviewGraph,
             eruptionGraph: eruptionGraph,
-            timeSeriesGraphContainer: timeSeriesGraphContainer
+            timeSeriesGraphContainer: timeSeriesGraphContainer,
+            timeRange: timeRange,
+            selectingTimeRange: selectingTimeRange
 
           });
       /** Body **/

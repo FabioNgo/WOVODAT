@@ -35,8 +35,10 @@ define(function(require) {
 
    
     render: function() {
+      var selectingEruption = this.selectingEruptions.models[0];
       this.$el.html(this.template({
-        eruptions: this.collection.models
+        eruptions: this.collection.models,
+        selectingEruption: selectingEruption
       }));
     },
 

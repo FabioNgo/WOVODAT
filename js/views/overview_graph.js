@@ -8,12 +8,17 @@ define(function(require) {
 
   return Backbone.View.extend({
     initialize: function(options) {
-      _(this).bindAll('update', 'onSelect', 'onTimeRangeChange', 'onSelectingTimeRangeChange');
+      // _(this).bindAll(
+      //   'update',
+      //   'onSelect',
+      //   'onTimeRangeChange',
+      //   'onSelectingTimeRangeChange'
+      //   );
       this.selectingTimeSeries = options.selectingTimeSeries;
       
-      this.timeRange = new TimeRange();
+      this.timeRange = options.timeRange;
       // this.computeTimeRange();
-      this.selectingTimeRange = new TimeRange();
+      this.selectingTimeRange = options.selectingTimeRange;
       // this.listenTo(this.selectingTimeSeries, 'change remove', this.update);
       // this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
       // this.listenTo(this.selectingTimeRange, 'change', this.onSelectingTimeRangeChange);
@@ -25,14 +30,16 @@ define(function(require) {
       this.update();
     },
     onSelect: function(event, ranges) {
+
       var startTime = ranges.xaxis.from,
           endTime = ranges.xaxis.to;
-      this.stopListening(this.selectingTimeRange);
-      this.selectingTimeRange.set({
-        startTime: startTime,
-        endTime: endTime
+      // this.stopListening(this.selectingTimeRange);
+      event.data.set({
+        'startTime': ranges.xaxis.from,
+        'endTime': ranges.xaxis.to,
       });
-      this.listenTo(this.selectingTimeRange, 'change', this.onSelectingTimeRangeChange);
+      // this.listenTo(this.selectingTimeRange, 'change', this.onSelectingTimeRangeChange);
+      event.data.trigger('change');
     },
 
     onSelectingTimeRangeChange: function() {
@@ -46,20 +53,21 @@ define(function(require) {
       });
     },
 
-    onTimeRangeChange: function() {
-      this.render();
-      this.selectingTimeRange.set({
-        startTime: this.timeRange.get('startTime'),
-        endTime: this.timeRange.get('endTime')
-      });
-    },
+    // onTimeRangeChange: function() {
+    //   this.render();
+    //   this.selectingTimeRange.set({
+    //     startTime: this.timeRange.get('startTime'),
+    //     endTime: this.timeRange.get('endTime')
+    //   });
+    // },
     hide: function(){
       this.$el.html("");
       this.$el.width(0);
       this.$el.height(0);
+      this.trigger('hide');
     },
     render: function() {
-      console.log(this);
+      // console.log(this.selectingTimeSeries);
       this.$el.html("Overview Graph <br></br>")
       // for (var i = 0; i < this.selectingTimeSeries.length; i++) {
       //   this.selectingTimeSeries[i].fetch();
@@ -73,6 +81,7 @@ define(function(require) {
             },
             xaxis: { 
               mode:'time',
+              timeformat: "%d-%b-%Y</br>%H:%M",
               autoscale: true,
               min: this.minX,
               max: this.maxX
@@ -90,12 +99,12 @@ define(function(require) {
         this.$el.html('');
         return;
       }
-      
+      // console.log(this.data);
       this.$el.width(800);
       this.$el.height(60);
       
       this.graph = $.plot(this.$el, this.data, options);
-      this.$el.bind('plotselected', this.onSelect);
+      this.$el.bind('plotselected', this.selectingTimeRange,this.onSelect);
     },
 
     update: function() {
@@ -113,13 +122,16 @@ define(function(require) {
         var list = [];
         if (serie.get('data')) {
           serie.get('data').forEach(function(d) {
-            var x = d.start_time || d.time;
-            if (minX === undefined || x < minX)
-              minX = x;
-            if (maxX === undefined || x > maxX)
-              maxX = x;
+            // console.log(d);
+            var start_time = d.start_time;
+            var end_time = d.end_time;
+            // var x = d.start_time || d.time;
+            if (minX === undefined || start_time < minX)
+              minX = start_time;
+            if (maxX === undefined || end_time > maxX)
+              maxX = end_time;
 
-            list.push([x, d.value]);
+            list.push(d['value']);
           });
         }
 
@@ -130,6 +142,11 @@ define(function(require) {
 
       this.minX = minX;
       this.maxX = maxX;
+      this.timeRange.set({
+        'startTime': this.minX,
+        'endTime': this.maxX,
+      });
+      // this.timeRange.trigger('change');
       this.data = data;
     },
    

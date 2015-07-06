@@ -11,97 +11,148 @@ define(function(require) {
 
   return Backbone.View.extend({    
     initialize: function(options) {
-      _(this).bindAll('prepareDataAndRender', 'onTimeRangeChange', 'onHover', 'onPan');
+      // _(this).bindAll(
+      //   // 'prepareDataAndRender',
+      //   'onTimeRangeChange'
+      //   // 'onHover',
+      //   // 'onPan'
+      // );
       this.timeSerie = options.timeSerie;
+
+      // console.log(this.timeSerie);
       this.timeRange = new TimeRange();
       // this.timeRange = options.timeRange;
       // this.tooltip = new Tooltip({
       //   template: serieTooltipTemplate
       // });
       // this.model.fetch();
-      this.render();
-      this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
+      this.prepareDataAndRender();
+      
       // this.listenTo(this.model, 'change', this.prepareDataAndRender);
     },
 
-    onTimeRangeChange: function() {
-      this.render();
+    timeRangeChanged: function(timeRange) {
+      // this.timeRange = timeRange;
+      // this.render();
     },
 
     onHover: function(event, pos, item) {
       // this.tooltip.update(pos, item);
     },
 
-    onPan: function() {
-      var startTime = this.graph.getAxes().xaxis.options.min,
-          endTime = this.graph.getAxes().xaxis.options.max;
+    // onPan: function() {
+    //   var startTime = this.graph.getAxes().xaxis.options.min,
+    //       endTime = this.graph.getAxes().xaxis.options.max;
       
-      this.stopListening(this.timeRange, 'change');
-      this.timeRange.set({
-        startTime: startTime,
-        endTime: endTime
-      });
-      this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
-    },
+    //   this.stopListening(this.timeRange, 'change');
+    //   this.timeRange.set({
+    //     startTime: startTime,
+    //     endTime: endTime
+    //   });
+    //   this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
+    // },
 
     render: function() {
       // console.log(this.timeSerie);
-      this.$el.html(this.timeSerie.get('sr_id')+"<br></br>")
-      var param_ds = {
-            color: '#5EB7FF',
-            label: this.timeSerie.get('name'),
-            data: this.data,
-            bars: {
-              show: true,
-              wovodat: true
+      this.$el.html(this.timeSerie.get('sr_id')+"<br></br>");
+
+      var data = this.timeSerie.get('data');
+      
+
+      if(data==undefined){
+        return;
+      }
+      console.log(this.timeSerie);
+      var options = {
+            series: {
+              lines: { 
+                show: true
+              },
+              shadowSize: 0
             },
-            dataType: 'ds'
-          },
-          option = {
-            grid: {
-              hoverable: true,
-            },
-            xaxis: {
-              min: this.timeRange.get('startTime'),
-              max: this.timeRange.get('endTime'),
-              mode: 'time',
-              autoscale: true
+            xaxis: { 
+              mode:'time',
+              timeformat: "%d-%b-%Y</br>%H:%M",
+              autoscale: true,
+              min: this.minX,
+              max: this.maxX
             },
             yaxis: {
-              min: 0,
-              max: 200,
-              autoscale: true,
-              panRange: false,
-              zoomRange: false
+              show: false
             },
-            pan: {
-              interactive: true
-            },
-            zoom: {
-              interactive: true
-            }
+            
           };
 
-      
+      if (!this.data || !this.data.length) {
+        this.$el.html('');
+        return;
+      }
+      // console.log(this.data);
       this.$el.width(800);
       this.$el.height(200);
-
-      this.graph = $.plot(this.$el, [param_ds], option);
+      
+      this.graph = $.plot(this.$el, this.data, options);
       this.$el.bind('plothover', this.onHover);
-      this.$el.bind('plotpan', this.onPan);
-      this.$el.bind('plotzoom', this.onPan);
+      var eventData = {
+        startTime: this.startTime,
+        endTime: this.endTime,
+        param_ds: this.param_ds,
+        graph: this.graph,
+        el: this.$el
+      }
+      this.$el.bind('plotzoom',eventData, this.onZoom);
     },
-
+    onZoom: function(event,plot){
+      var option = plot.getOptions();
+      var xaxis = plot.getXAxes()[0];
+      var data = event.data;
+      /* The zooming range cannot wider than the original range */
+      if(xaxis.min<data.startTime || xaxis.max > data.endTime){
+        option.xaxis.min = data.startTime;
+        option.xaxis.max = data.endTime; 
+        event.data.graph = $.plot(event.data.el,[data.param_ds],option);
+      }
+      
+      
+      
+      
+    },
     prepareDataAndRender: function() {
-      var i,
-          data = this.model.get('data'),
-          a = [];
-      this.model.get('data').forEach(function(ds) {
-        ds.formattedStartTime = DateHelper.formatDate(ds.start_time);
-        ds.formattedEndTime = DateHelper.formatDate(ds.end_time);
-        a.push([ds.start_time, ds.value, 0, ds.end_time - ds.start_time, ds]);
+      var minX = undefined,
+          maxX = undefined,
+          data = [],
+          i;
+
+      
+      var list = [];
+      if (this.timeSerie.get('data')) {
+        this.timeSerie.get('data').forEach(function(d) {
+          // console.log(d);
+          var start_time = d.start_time;
+          var end_time = d.end_time;
+          // var x = d.start_time || d.time;
+          if (minX === undefined || start_time < minX)
+            minX = start_time;
+          if (maxX === undefined || end_time > maxX)
+            maxX = end_time;
+
+          list.push(d['value']);
+        });
+      }
+
+      data.push({
+        data: list
       });
-      this.data = a;
+      
+
+      this.minX = minX;
+      this.maxX = maxX;
+      this.timeRange.set({
+        'startTime': this.minX,
+        'endTime': this.maxX,
+      });
+      // this.timeRange.trigger('change');
+      this.data = data;
       this.render();
     },
 
