@@ -65,6 +65,7 @@ define(function(require) {
     //show eruption graph
     show: function(){
       this.render();
+      this.trigger('show');
     },
     //hide eruption graph
     hide: function(){
@@ -72,6 +73,7 @@ define(function(require) {
       this.$el.html("");
       this.$el.height(0);
       this.$el.width(0);
+      this.trigger('hide');
     },
     render: function() {
       if(this.selectingEruption == undefined){
@@ -111,7 +113,7 @@ define(function(require) {
               max: this.endTime,
               autoscale: true,
               mode: 'time',
-              timeformat: "%d-%b-%Y</br>%H:%M",
+              timeformat: "%d-%b-%Y",
             },
             yaxis: {
               min: 0,

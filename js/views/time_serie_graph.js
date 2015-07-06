@@ -31,9 +31,13 @@ define(function(require) {
       // this.listenTo(this.model, 'change', this.prepareDataAndRender);
     },
 
-    timeRangeChanged: function(timeRange) {
-      // this.timeRange = timeRange;
-      // this.render();
+    timeRangeChanged: function(TimeRange){
+      if(TimeRange == undefined){
+        return;
+      }
+      this.minX = TimeRange.get('startTime');
+      this.maxX = TimeRange.get('endTime');
+      this.render();
     },
 
     onHover: function(event, pos, item) {
@@ -72,13 +76,13 @@ define(function(require) {
             },
             xaxis: { 
               mode:'time',
-              timeformat: "%d-%b-%Y</br>%H:%M",
+              timeformat: "%d-%b-%Y",
               autoscale: true,
               min: this.minX,
               max: this.maxX
             },
             yaxis: {
-              show: false
+              show: true,
             },
             
           };

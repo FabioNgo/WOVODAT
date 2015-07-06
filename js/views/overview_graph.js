@@ -81,7 +81,7 @@ define(function(require) {
             },
             xaxis: { 
               mode:'time',
-              timeformat: "%d-%b-%Y</br>%H:%M",
+              timeformat: "%d-%b-%Y",
               autoscale: true,
               min: this.minX,
               max: this.maxX

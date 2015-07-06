@@ -48,7 +48,7 @@ define(function(require) {
         timeSerie: timeSerie
       });
       this.graphs.push(timeSerieGraph);
-      this.$el.append(timeSerieGraph.$el);
+      
 
       // this.graphs[val].filter.trigger("change");
 
@@ -79,11 +79,16 @@ define(function(require) {
         this.addGraph(selectingTimeSeries.models[i]);
       };
     },
-    render: function(selectingTimeSeries) {
-      this.overviewGraph.$el.appendTo(this.$el);
-    },
+    // render: function(selectingTimeSeries) {
+    //   this.overviewGraph.$el.appendTo(this.$el);
+    // },
     hide: function(){
       this.$el.html("");
+    },
+    show: function(){
+      for (var i = 0; i < this.graphs.length; i++) {
+        this.$el.append(this.graphs[i].$el);
+      };
     },
     destroy: function() {
       // From StackOverflow with love.

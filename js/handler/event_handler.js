@@ -25,7 +25,9 @@ define(function(require) {
         'eruptionSelectHidden',
         // 'resetSelectingEruptions'
         'timeRangeChanged',
-        'selectingTimeRangeChanged'
+        'selectingTimeRangeChanged',
+        'eruptionGraphHidden',
+        'eruptionGraphShown'
 
       );
       //Variable declaration
@@ -59,6 +61,8 @@ define(function(require) {
       this.listenTo(this.timeSeriesSelect,'hide',this.timeSeriesSelectHidden);
       this.listenTo(this.overviewGraph,'hide',this.overviewGraphHidden);
       this.listenTo(this.eruptionSelect,'hide',this.eruptionSelectHidden);
+      this.listenTo(this.eruptionGraph,'hide',this.eruptionGraphHidden);
+      this.listenTo(this.eruptionGraph,'show',this.eruptionGraphShown);
       // this.listenTo(this.selectingEruptions, 'reset', this.resetSelectingEruptions);
 
     },
@@ -117,11 +121,21 @@ define(function(require) {
       
     },
     overviewGraphHidden: function(e){
+      
+
+    },
+    eruptionGraphHidden: function(e){
       this.timeSeriesGraphContainer.hide();
+
+    },
+    eruptionGraphShown: function(e){
+      this.timeSeriesGraphContainer.show();
+
     },
     eruptionSelectHidden: function(e){
 
       this.eruptionGraph.hide();
+      
     },
     timeRangeChanged: function(e){
       if(e==undefined){
