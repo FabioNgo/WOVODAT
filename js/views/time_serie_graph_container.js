@@ -73,7 +73,7 @@ define(function(require) {
       };
     },
     selectingTimeSerieChanged: function(selectingTimeSeries){
-      this.graphs.alength =0;
+      this.graphs.length =0;
       this.$el.html("");
       for (var i = 0; i < selectingTimeSeries.models.length; i++) {
         this.addGraph(selectingTimeSeries.models[i]);

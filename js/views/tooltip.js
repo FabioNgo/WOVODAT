@@ -2,7 +2,8 @@ define(function(require) {
   'use strict';
   var $ = require('jquery'),
       Backbone = require('backbone'),
-      _ = require('underscore');
+      _ = require('underscore'),
+      DateHelper = require('helper/date');
       
 
   return Backbone.View.extend({
@@ -48,7 +49,11 @@ define(function(require) {
           this.move(pos.pageX, pos.pageY);
         } else {
           this.previous.dataIndex = item.dataIndex;
-          this.render(pos.pageX, pos.pageY, this.template(item.series.data[item.dataIndex][4]));
+          this.html = this.template({
+            time: DateHelper.formatDate(item.series.data[item.dataIndex][0]),
+            value: item.series.data[item.dataIndex][1]
+          })
+          this.render(pos.pageX, pos.pageY, this.html);
         }
       } else {
         this.hide();

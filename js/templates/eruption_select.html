@@ -2,15 +2,8 @@
 <select>
 	<option value="-1">------</option>
 	<% _.each(eruptions, function(eruption) {
-		if(selectingEruption != undefined){
-			
-			if(eruption.get('ed_id') == selectingEruption.get('ed_id')){
-				selected = "selected";
-			}else{
-				selected = "asasa";
-			}
-		}
+		
 		%>
-	  <option value="<%= eruption.get('ed_id') %>" <%= selected %>><%= eruption.getDate() %></option>
+	  <option value="<%= eruption.get('ed_id') %>" ><%= eruption.getDate() %></option>
 	<% }); %>
 </select>

@@ -43,7 +43,7 @@ if (!_.isEmpty(timeSeries)) {
 		}
     	%>
     					<ul class="list-station"><input  type="checkbox" name = "<%= timeSerie.get('category') %>" value="<%= timeSerie.get('sr_id') %>"/>
-    					 <%= timeSerie.get('station_code') %></ul>
+    					 <%= timeSerie.get('station_code') %> (<%= timeSerie.get('component') %>)</ul>
     <% }); %>
     
   </div>

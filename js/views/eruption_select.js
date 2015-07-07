@@ -61,6 +61,7 @@ define(function(require) {
     //hide eruption_select from page
     hide: function(){
       this.$el.html("");
+      this.selectingEruptions.length = 0;
       this.trigger('hide');
     },
 
@@ -69,7 +70,8 @@ define(function(require) {
       // this.fetchEruptions(this.volcano);
       
       // this.fetchEruptions();
-      
+      this.selectingEruptions.length = 0;
+      this.selectingEruptions.add(new Eruption({'ed_id':-1})); // select ----
       this.render();
     },
 

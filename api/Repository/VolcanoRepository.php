@@ -12,6 +12,7 @@
 		public static function getVolcanoList() {
 			$result = array();
 			global $db;
+			
 			$sql = "select vd_id, vd_name, vd_cavw from vd";
 			$db->query($sql);
 			return $db->getList();

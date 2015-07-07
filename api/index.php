@@ -6,6 +6,7 @@
 
 	define("_SECURITY", true);
 	set_time_limit(0);
+	date_default_timezone_set("UTC");
 	
 	require_once 'Config/Configuration.php';
 	require_once 'Include/Database.php';
@@ -16,7 +17,7 @@
 	error_reporting(E_ALL);
 	ini_set('display_errors', '1');	
 
-	Loader::loadRepository();
+	Loader::loadRepository();  
 	Loader::loadUtility();
 	Loader::loadController();
 	Loader::loadRouting();

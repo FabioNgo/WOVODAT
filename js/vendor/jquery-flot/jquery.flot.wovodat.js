@@ -884,7 +884,7 @@ var jQuery = $;//Assign local jQuery variable with imported $
                     s.data = d[i];
                 res.push(s);
             }
-
+            // console.log(res);
             return res;
         }
 

@@ -101,7 +101,7 @@ define(function(require) {
       }
       // console.log(this.data);
       this.$el.width(800);
-      this.$el.height(60);
+      this.$el.height(100);
       
       this.graph = $.plot(this.$el, this.data, options);
       this.$el.bind('plotselected', this.selectingTimeRange,this.onSelect);
@@ -123,15 +123,17 @@ define(function(require) {
         if (serie.get('data')) {
           serie.get('data').forEach(function(d) {
             // console.log(d);
-            var start_time = d.start_time;
-            var end_time = d.end_time;
-            // var x = d.start_time || d.time;
-            if (minX === undefined || start_time < minX)
-              minX = start_time;
-            if (maxX === undefined || end_time > maxX)
-              maxX = end_time;
+            var time = d.time;
+          // d.stime_formated = DateHelper.formatDate(d.stime);
+          // d.etime_formated = DateHelper.formatDate(d.etime);
+          // d.time_formated = DateHelper.formatDate(d.time);
+          // var x = d.start_time || d.time;
+          if (minX === undefined || time < minX)
+            minX = time;
+          if (maxX === undefined || time > maxX)
+            maxX = time;
 
-            list.push(d['value']);
+            list.push([d['time'],d['value']]);
           });
         }
 

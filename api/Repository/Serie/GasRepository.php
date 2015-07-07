@@ -159,6 +159,7 @@ class GasRepository {
 		$filter = "";
 		foreach (self::$infor["gd"]["params"] as $type) if ( $type["name"] == $component ) {
 			$attribute = $type["cols"];
+			// echo($attribute);
 			if ( array_key_exists("filter", $type) ) {
 				$filter = $type["filter"];
 				$filterQuery = ", b.".$filter;
