@@ -99,7 +99,7 @@ define(function(require) {
             bars: {
               show:true,
               wovodat: true,
-              lineWidth: 1,
+              lineWidth: 0.5,
               drawBottom: true
             },
             dataType: 'ed_phs'

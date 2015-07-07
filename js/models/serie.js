@@ -10,7 +10,9 @@ define(['jquery', 'backbone'], function($, Backbone) {
       });
       this.url = 'api/?data=time_serie&sr_id=' + sr_id;
     },
-    
+    getName: function(){
+      return ""+this.get('category')+" - " + this.get('station_code')+" (" + this.get('component') +")";
+    }
 
   });
 });

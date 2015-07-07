@@ -64,7 +64,6 @@ define(function(require) {
       }
       // console.log(this.timeSerie);
       this.$el.html("");
-      this.$el.html(this.timeSerie.get('sr_id')+"<br>");
       // var date = new DateHelper();
       
       // console.log(data);
@@ -74,12 +73,7 @@ define(function(require) {
       
       // console.log(this.timeSerie);
       var options = {
-            series: {
-              lines: { 
-                show: true
-              },
-              shadowSize: 0
-            },
+            
             xaxis: { 
               mode:'time',
               timeformat: "%d-%b-%Y",
@@ -99,7 +93,7 @@ define(function(require) {
             },
             
           };
-
+          
       if (!this.data || !this.data.length) {
         this.$el.html('');
         return;
@@ -135,6 +129,23 @@ define(function(require) {
       
       
     },
+    formatGraphAppearance: function(data){
+      return {
+        data: data,
+        label: this.timeSerie.getName(),
+        lines: { 
+          show: true
+        },
+        shadowSize: 5,
+        points: {
+          show: true,
+          size: 1,
+          symbol: "circle",
+          fillColor: "#EDC240"
+        },
+        color: "#EDC240"
+      }
+    },
     prepareDataAndRender: function() {
       var minX = undefined,
           maxX = undefined,
@@ -162,9 +173,7 @@ define(function(require) {
         });
       }
 
-      data.push({
-        data: list
-      });
+      data.push(this.formatGraphAppearance(list));
       
 
       this.minX = minX;
