@@ -44,3 +44,8 @@
     /*rotation-point:50% 50%;*/ /* CSS3 */
     /*rotation:270deg;*/ /* CSS3 */
 }
+.filter-selection-container{
+  border-style: solid;
+  border-width: 1px;
+  padding: 5px;
+}

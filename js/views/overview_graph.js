@@ -68,7 +68,7 @@ define(function(require) {
     },
     render: function() {
       // console.log(this.selectingTimeSeries);
-      this.$el.html("Overview Graph <br></br>")
+      this.$el.html("<div>Overview Graph <br></br></div>")
       // for (var i = 0; i < this.selectingTimeSeries.length; i++) {
       //   this.selectingTimeSeries[i].fetch();
       // };
@@ -77,17 +77,16 @@ define(function(require) {
               lines: { 
                 show: true
               },
-              shadowSize: 0
             },
             xaxis: { 
               mode:'time',
               timeformat: "%d-%b-%Y",
               autoscale: true,
               min: this.minX,
-              max: this.maxX
+              max: this.maxX,
             },
             yaxis: {
-              show: false
+              show: true
             },
             selection: { 
               mode: 'x', 
@@ -111,17 +110,34 @@ define(function(require) {
       this.prepareData();
       this.render();
     },
-
+    // setup effect for the graph
+    formatGraphAppearance: function(data,model){
+      return {
+        data: data,
+        label: model.getName(),
+        lines: { 
+          show: true
+        },
+        shadowSize: 3,
+        points: {
+          show: true,
+          radius: 1,
+          symbol: "circle",
+          // fillColor: "#EDC240"
+        },
+        // color: "#EDC240"
+      }
+    },
     prepareData: function() {
       var minX = undefined,
           maxX = undefined,
           data = [],
           i;
-
-      this.selectingTimeSeries.models.forEach(function(serie) {
+      var models = this.selectingTimeSeries.models;
+      for(i=0;i<models.length;i++){
         var list = [];
-        if (serie.get('data')) {
-          serie.get('data').forEach(function(d) {
+        if (models[i].get('data')) {
+          models[i].get('data').forEach(function(d) {
             // console.log(d);
             var time = d.time;
           // d.stime_formated = DateHelper.formatDate(d.stime);
@@ -135,13 +151,12 @@ define(function(require) {
 
             list.push([d['time'],d['value']]);
           });
+          data.push(this.formatGraphAppearance(list,models[i]));
         }
 
-        data.push({
-          data: list
-        });
-      });
-
+          
+      };
+      
       this.minX = minX;
       this.maxX = maxX;
       this.timeRange.set({

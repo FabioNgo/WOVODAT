@@ -86,7 +86,9 @@ define(function(require) {
       this.$el.html("");
     },
     show: function(){
+      this.$el.html("");
       for (var i = 0; i < this.graphs.length; i++) {
+        this.graphs[i].show();
         this.$el.append(this.graphs[i].$el);
       };
     },

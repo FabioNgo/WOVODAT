@@ -26,7 +26,7 @@ define(function(require) {
         template: serieTooltipTemplate
       });
       // this.model.fetch();
-      this.prepareDataAndRender();
+      // this.prepareData();
       
       // this.listenTo(this.model, 'change', this.prepareDataAndRender);
     },
@@ -56,7 +56,11 @@ define(function(require) {
     //   });
     //   this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
     // },
-
+    show: function(){
+      this.prepareData();
+      // this.timeRangeChanged(this.timeRange);
+      this.render();
+    },
     render: function() {
       // this.data = this.timeSerie.get('data');
       if(this.data==undefined){
@@ -73,7 +77,11 @@ define(function(require) {
       
       // console.log(this.timeSerie);
       var options = {
-            
+            series: {
+              lines: { 
+                show: true
+              },
+            },
             xaxis: { 
               mode:'time',
               timeformat: "%d-%b-%Y",
@@ -83,13 +91,13 @@ define(function(require) {
             },
             yaxis: {
               show: true,
+              autoscale: true,
             },
             grid: {
               hoverable: true,
             },
             tooltip:{
               show: true,
-              content: "a",
             },
             
           };
@@ -101,9 +109,11 @@ define(function(require) {
       // console.log(this.data);
       this.$el.width(800);
       this.$el.height(100);
-      
+      // this.$el.bind('pageshow',function(){    
+      //   $.plot(this.$el, this.data, options);
+      // });
       this.graph = $.plot(this.$el, this.data, options);
-      console.log(this.graph);
+      // console.log(this.graph);
       this.$el.bind('plothover', this.tooltip,this.onHover);
       var eventData = {
         startTime: this.startTime,
@@ -129,29 +139,32 @@ define(function(require) {
       
       
     },
-    formatGraphAppearance: function(data){
+    formatGraphAppearance: function(data,model){
       return {
         data: data,
-        label: this.timeSerie.getName(),
+        label: model.getName(),
         lines: { 
           show: true
         },
-        shadowSize: 5,
+        shadowSize: 3,
         points: {
           show: true,
-          size: 1,
+          radius: 1,
           symbol: "circle",
           fillColor: "#EDC240"
         },
         color: "#EDC240"
       }
     },
-    prepareDataAndRender: function() {
+    prepareData: function() {
+      if(this.timeSerie == undefined){
+        this.data = undefined;
+        return;
+      }
       var minX = undefined,
           maxX = undefined,
           data = [],
           i;
-
       
       var list = [];
       if (this.timeSerie.get('data')) {
@@ -171,9 +184,10 @@ define(function(require) {
 
           list.push([d['time'],d['value']]);
         });
+        data.push(this.formatGraphAppearance(list,this.timeSerie));
       }
 
-      data.push(this.formatGraphAppearance(list));
+      
       
 
       this.minX = minX;
@@ -184,7 +198,6 @@ define(function(require) {
       });
       // this.timeRange.trigger('change');
       this.data = data;
-      this.render();
     },
 
     destroy: function() {

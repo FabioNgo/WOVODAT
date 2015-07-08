@@ -15,14 +15,10 @@ define(function(require) {
     },
     
     initialize: function(options) {
-      alert('init 1');
-      _(this).bindAll('render', 'changeSelection');
       this.observer = options.observer;
-      this.selectingVolcano = options.selectingVolcano;
+      this.selectingTimeSeries = options.selectingTimeSeries;
       //this.collection.fetch();
       console.log(this.collection.models);
-      this.listenTo(this.collection, 'sync', this.render);
-      this.listenTo(this.selectingVolcano, 'change', this.changeSelection);
     },
 
     render: function() {

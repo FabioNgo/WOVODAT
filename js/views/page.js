@@ -44,6 +44,7 @@ define(function(require) {
           observer = new (Backbone.Model.extend())(),
           
           selectingTimeSeries = new SelectingTimeSeries(),
+          selectingFilters = new Filters(),
           volcanoes = new Volcanoes(),
           selectingEruptions = new Eruptions(),
           eruptions = new Eruptions(),
@@ -62,7 +63,11 @@ define(function(require) {
             volcano: selectingVolcano,
             selectings: selectingTimeSeries
           }),
-
+          filterSelect = new FilterSelect({
+            observer: observer,
+            selectings: selectingTimeSeries,
+            selectingFilters: selectingFilters
+          }),
           overviewGraph = new OverviewGraph({
             selectingTimeSeries: this.overviewSelectingTimeSeries,
             selectingTimeRange: selectingTimeRange,
@@ -107,6 +112,7 @@ define(function(require) {
           eventHandler = new EventHandler({
             volcanoSelect: volcanoSelect,
             timeSeriesSelect: timeSeriesSelect,
+            filterSelect: filterSelect,
             overviewGraphContainer: overviewGraphContainer,
             eruptionSelect: eruptionSelect,
             selectingVolcano: selectingVolcano,
@@ -117,7 +123,8 @@ define(function(require) {
             eruptionGraph: eruptionGraph,
             timeSeriesGraphContainer: timeSeriesGraphContainer,
             timeRange: timeRange,
-            selectingTimeRange: selectingTimeRange
+            selectingTimeRange: selectingTimeRange,
+            selectingFilters: selectingFilters
 
           });
       /** Body **/
@@ -129,6 +136,7 @@ define(function(require) {
       // });
       volcanoSelect.$el.appendTo(this.$el);
       timeSeriesSelect.$el.appendTo(this.$el);
+      filterSelect.$el.appendTo(this.$el);
       overviewGraphContainer.$el.appendTo(this.$el);
       eruptionSelect.$el.appendTo(this.$el);
       eruptionGraph.$el.appendTo(this.$el);
