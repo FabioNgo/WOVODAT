@@ -103,7 +103,7 @@ define(function(require) {
 
       this.overviewGraphContainer.selectingFiltersChanged(this.selectingFilters);
       this.overviewGraph.selectingFiltersChanged(this.selectingFilters);
-      // this.timeSeriesGraphContainer.selectingFiltersChanged(this.selectingFilters);
+      this.timeSeriesGraphContainer.selectingFiltersChanged(this.selectingFilters);
       
       
     },

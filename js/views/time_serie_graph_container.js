@@ -33,7 +33,7 @@ define(function(require) {
 
   	// 	this.filterObserver.trigger("filter-change");
   	// },
-    addGraph : function( timeSerie ) {
+    addGraph : function( filters ) {
       // var val = filter.get("filter");
       // selectingTimeSeries.
       // timeSerie.fetch({
@@ -45,7 +45,7 @@ define(function(require) {
       // });
       var timeSerieGraph = new TimeSerieGraph( {
         // timeRange : this.timeRange,
-        timeSerie: timeSerie
+        filters: filters
       });
       this.graphs.push(timeSerieGraph);
       
@@ -72,11 +72,11 @@ define(function(require) {
         this.graphs[i].timeRangeChanged(timeRange);
       };
     },
-    selectingTimeSerieChanged: function(selectingTimeSeries){
+    selectingFiltersChanged: function(selectingFilters){
       this.graphs.length =0;
       this.$el.html("");
-      for (var i = 0; i < selectingTimeSeries.models.length; i++) {
-        this.addGraph(selectingTimeSeries.models[i]);
+      for (var i = 0; i < selectingFilters.models.length; i++) {
+        this.addGraph(selectingFilters.models[i]);
       };
     },
     // render: function(selectingTimeSeries) {

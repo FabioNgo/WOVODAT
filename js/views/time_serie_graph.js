@@ -17,7 +17,7 @@ define(function(require) {
       //   // 'onHover',
       //   // 'onPan'
       // );
-      this.timeSerie = options.timeSerie;
+      this.filters = options.filters;
 
       // console.log(this.timeSerie);
       this.timeRange = new TimeRange();
@@ -139,10 +139,12 @@ define(function(require) {
       
       
     },
-    formatGraphAppearance: function(data,model){
+    // setup effect for the graph
+    formatGraphAppearance: function(data,timeSerieName, filterName){
+      
       return {
         data: data,
-        label: model.getName(),
+        label: filterName + ":"+timeSerieName,
         lines: { 
           show: true
         },
@@ -151,13 +153,13 @@ define(function(require) {
           show: true,
           radius: 1,
           symbol: "circle",
-          fillColor: "#EDC240"
+          // fillColor: "#EDC240"
         },
-        color: "#EDC240"
+        // color: "#EDC240"
       }
     },
     prepareData: function() {
-      if(this.timeSerie == undefined){
+      if(this.filters == undefined){
         this.data = undefined;
         return;
       }
@@ -166,9 +168,12 @@ define(function(require) {
           data = [],
           i;
       
-      var list = [];
-      if (this.timeSerie.get('data')) {
-        this.timeSerie.get('data').forEach(function(d) {
+      
+
+      for(var j = 0; j<this.filters.name.length;j++){ 
+        var list = [];
+        var filterData = this.filters.timeSerie.getDataFromFilter(this.filters.name[j])
+        filterData.forEach(function(d) {
           // console.log(d);
           // var start_time = d.time;
           // var end_time = d.time;
@@ -184,7 +189,7 @@ define(function(require) {
 
           list.push([d['time'],d['value']]);
         });
-        data.push(this.formatGraphAppearance(list,this.timeSerie));
+        data.push(this.formatGraphAppearance(list,this.filters.timeSerie.getName(),this.filters.name[j]));
       }
 
       
