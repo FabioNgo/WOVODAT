@@ -4,13 +4,14 @@ define(function(require) {
       Backbone = require('backbone'),
       _ = require('underscore'),
       TimeSerie = require('models/serie'),
+
       template = require('text!templates/time_series_select.html');
   //check/uncheck all checkboxes
-  function toggle(source,selectings) {
+  function toggle(source,selectings,timeSeries) {
     var checkboxes = document.getElementsByName(source.value);
     for (var i =0;i<checkboxes.length; i++){
      checkboxes[i].checked = source.checked;
-     addSelection(checkboxes[i],selectings);
+     addSelection(checkboxes[i],selectings,timeSeries);
     }
   }
   //get category checkbox 
@@ -42,12 +43,16 @@ define(function(require) {
     
   }
   // add selected time serie to shown respective graph
-  function addSelection(source,selectings) {
+  function addSelection(source,selectings,timeSeries) {
+
     var id = $(source).val();
-    if ($(source).is(':checked'))
-        selectings.add(id);
-      else 
-        selectings.remove(selectings.get(id));
+    if ($(source).is(':checked')){
+        selectings.add(timeSeries.getTimeSerie(id));
+        var x = 0;
+    }
+      else {
+        selectings.remove(timeSeries.getTimeSerie(id));
+      }
   }
   return Backbone.View.extend({
     el: '',
@@ -62,6 +67,7 @@ define(function(require) {
       this.volcano = options.volcano;
       this.selectings = options.selectings;
       this.observer = options.observer;
+      this.timeSeries = options.timeSeries;
 
     },
     
@@ -88,12 +94,13 @@ define(function(require) {
       
           
       if($(input).attr('name') == "category"){ // cehck category(parent) checkbox
-        toggle(input,this.selectings);
+        toggle(input,this.selectings,this.timeSeries);
         
       }else{ //check/uncheck child checkbox
-        addSelection(input,this.selectings);
+        addSelection(input,this.selectings,this.timeSeries);
         categoryCheckBoxChange(input);
       }
+      this.selectings.trigger('update');
       
     },
 

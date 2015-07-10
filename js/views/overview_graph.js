@@ -14,7 +14,7 @@ define(function(require) {
       //   'onTimeRangeChange',
       //   'onSelectingTimeRangeChange'
       //   );
-      this.selectingTimeSeries = options.selectingTimeSeries;
+      
       
       this.timeRange = options.timeRange;
       // this.computeTimeRange();
@@ -24,8 +24,8 @@ define(function(require) {
       // this.listenTo(this.selectingTimeRange, 'change', this.onSelectingTimeRangeChange);
     },
     
-    selectingTimeSeriesChanged: function(selectingTimeSeries) {
-      this.selectingTimeSeries = selectingTimeSeries;
+    selectingFiltersChanged: function(selectingFilters) {
+      this.selectingFilters = selectingFilters;
       // this.computeTimeRange();
       this.update();
     },
@@ -111,10 +111,11 @@ define(function(require) {
       this.render();
     },
     // setup effect for the graph
-    formatGraphAppearance: function(data,model){
+    formatGraphAppearance: function(data,timeSerieName, filterName){
+      
       return {
         data: data,
-        label: model.getName(),
+        label: filterName + ":"+timeSerieName,
         lines: { 
           show: true
         },
@@ -133,11 +134,12 @@ define(function(require) {
           maxX = undefined,
           data = [],
           i;
-      var models = this.selectingTimeSeries.models;
-      for(i=0;i<models.length;i++){
-        var list = [];
-        if (models[i].get('data')) {
-          models[i].get('data').forEach(function(d) {
+      var filters = this.selectingFilters.models;
+      for(i=0;i<filters.length;i++){
+        for(var j = 0; j<filters[i].name.length;j++){
+          var list = [];
+          var filterData = filters[i].timeSerie.getDataFromFilter(filters[i].name[j])
+          filterData.forEach(function(d) {
             // console.log(d);
             var time = d.time;
           // d.stime_formated = DateHelper.formatDate(d.stime);
@@ -151,11 +153,12 @@ define(function(require) {
 
             list.push([d['time'],d['value']]);
           });
-          data.push(this.formatGraphAppearance(list,models[i]));
+          data.push(this.formatGraphAppearance(list,filters[i].timeSerie.getName(),filters[i].name[j]));
+          
         }
 
           
-      };
+      }
       
       this.minX = minX;
       this.maxX = maxX;

@@ -366,8 +366,11 @@ class SeismicRepository {
 						   "etime" => floatval(1000 * $etime) ,
 						   "time" => floatval(1000*($stime+$etime)/2),
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			// var_dump($temp);
 			array_push($result, $temp );			
 		}

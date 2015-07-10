@@ -31,9 +31,9 @@ define(function(require) {
     show: function(){
       this.render();
     },
-    selectingTimeSeriesChanged: function(selectingTimeSeries) {
-      this.selectingTimeSeries = selectingTimeSeries;
-      if (this.selectingTimeSeries.length == 0) {
+    selectingFiltersChanged: function(selectingFilters) {
+      this.selectingFilters = selectingFilters;
+      if (this.selectingFilters.length == 0) {
         this.hide();
       }else{
         this.show();

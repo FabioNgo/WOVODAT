@@ -1,9 +1,20 @@
-<% console.log(filters);
+<% 
+var count = 0;
 if ( filters.length > 0 ) { %>
 	<div class="filter-selection-container">
-	    <% _.each(filters, function(t) { %>
-	    <input type="checkbox" value="<%= t.timeSerie %>"><%= t.filter %></input>
-	    <br/>
-	    <% }); %>
+	    <% _.each(filters, function(t) { 
+	    	var checked = "";
+	    	if(t.isChecked){
+	    		checked = "checked";
+	    	}
+	    	if(t.filter != " "){%>
+		    	<input type="checkbox" name="<%= t.filter %>" value="<%= t.timeSerie %>" <%= checked %>><%= t.filter %></input>
+		    	<br/>
+		    <% 
+		    	count++;
+	    	}});
+	    if(count == 0){%>
+	    	No Filter
+	    <%} %>
 	</div>
 <% } %>

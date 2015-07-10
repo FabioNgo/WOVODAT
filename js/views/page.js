@@ -14,7 +14,6 @@ define(function(require) {
       EruptionGraph = require('views/eruption_graph'),
       EruptionForecasts = require('collections/eruption_forecasts'),
       EruptionForecastGraph = require('views/eruption_forecast_graph'),
-      TimeSeries = require('collections/time_series'),
       TimeSerie = require('models/serie'),
       TimeSeriesSelect = require('views/time_series_select'),   
       OverviewGraphContainer = require('views/overview_graph_container'),
@@ -24,7 +23,7 @@ define(function(require) {
       Filters = require('collections/filters'),
       
       TimeRange = require('models/time_range'),
-      SelectingTimeSeries = require('collections/selecting_time_series'),
+      TimeSeries = require('collections/series'),
       TimeSeriesContainer = require('views/time_series_container'),
       TimeSeriesGraphContainer = require('views/time_serie_graph_container'),
       EventHandler = require('handler/event_handler'),
@@ -43,7 +42,7 @@ define(function(require) {
       var 
           observer = new (Backbone.Model.extend())(),
           
-          selectingTimeSeries = new SelectingTimeSeries(),
+          selectingTimeSeries = new TimeSeries(),
           selectingFilters = new Filters(),
           volcanoes = new Volcanoes(),
           selectingEruptions = new Eruptions(),
@@ -61,9 +60,10 @@ define(function(require) {
           timeSeriesSelect = new TimeSeriesSelect({
             observer: observer,
             volcano: selectingVolcano,
-            selectings: selectingTimeSeries
+            selectings: selectingTimeSeries,
+            timeSeries: timeSeries
           }),
-          filterSelect = new FilterSelect({
+          filtersSelect = new FilterSelect({
             observer: observer,
             selectings: selectingTimeSeries,
             selectingFilters: selectingFilters
@@ -112,7 +112,7 @@ define(function(require) {
           eventHandler = new EventHandler({
             volcanoSelect: volcanoSelect,
             timeSeriesSelect: timeSeriesSelect,
-            filterSelect: filterSelect,
+            filtersSelect: filtersSelect,
             overviewGraphContainer: overviewGraphContainer,
             eruptionSelect: eruptionSelect,
             selectingVolcano: selectingVolcano,
@@ -136,7 +136,7 @@ define(function(require) {
       // });
       volcanoSelect.$el.appendTo(this.$el);
       timeSeriesSelect.$el.appendTo(this.$el);
-      filterSelect.$el.appendTo(this.$el);
+      filtersSelect.$el.appendTo(this.$el);
       overviewGraphContainer.$el.appendTo(this.$el);
       eruptionSelect.$el.appendTo(this.$el);
       eruptionGraph.$el.appendTo(this.$el);

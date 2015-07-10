@@ -29,19 +29,32 @@ define(function(require) {
       }else{
         this.models[index].addFilter(filter);
       }
+      
+    },
+    pop: function(timeSerie,filter){
+      var index = this.indexOfTimeSerie(timeSerie);
+      if(index == -1){
+        return;
+      }else{
+        this.models[index].removeFilter(filter);
+      }
+      if(this.models[index].name.length == 0){
+        this.remove(this.models[index]);
+      }
     },
     getAllFilters: function(){
       var filters = [];
       for(var i = 0;i<this.models.length;i++){
-        for(var j = 0;j<this.models.length;j++){
+        for(var j = 0;j<this.models[i].name.length;j++){
           filters.push({
             timeSerie:this.models[i].timeSerie.get('sr_id'),
             filter: this.models[i].name[j]
           });
         }
       }
-
       return filters;
-    }
+    },
+    
+    
   });
 });
