@@ -15,7 +15,7 @@ define(function(require) {
   		this.filterObserver = options.filterObserver;
   		// this.listenTo( this.selectingFilter, "add", this.addGraph );
   		// this.listenTo( this.selectingFilter, "remove", this.removeGraph );
-
+      this.beingShown = false;
   		this.graphs = [];
   	},
 
@@ -48,7 +48,7 @@ define(function(require) {
         filters: filters
       });
       this.graphs.push(timeSerieGraph);
-      
+      // this.show();
 
       // this.graphs[val].filter.trigger("change");
 

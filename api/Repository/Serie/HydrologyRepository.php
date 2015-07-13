@@ -74,8 +74,11 @@ class HydrologyRepository {
 		foreach ($res as $row) {
 			$temp = array( "time" => 1000*strtotime($row["hd_time"]) , 
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;

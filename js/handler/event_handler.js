@@ -66,7 +66,7 @@ define(function(require) {
       */
       this.listenTo(this.timeSeriesSelect,'hide',this.timeSeriesSelectHidden);
       this.listenTo(this.filtersSelect,'hide',this.filtersSelectHidden);
-      this.listenTo(this.overviewGraph,'hide',this.overviewGraphHidden);
+      this.listenTo(this.overviewGraphContainer,'hide',this.overviewGraphHidden);
 
       this.listenTo(this.eruptionSelect,'hide',this.eruptionSelectHidden);
       this.listenTo(this.eruptionGraph,'hide',this.eruptionGraphHidden);
@@ -97,14 +97,13 @@ define(function(require) {
     selectingTimeSeriesChanged: function(e){
       
       this.filtersSelect.selectingTimeSeriesChanged(this.selectingTimeSeries);
-      this.eruptionSelect.timeSeriesChanged(this.selectingTimeSeries);
     },
     selectingFiltersChanged: function(e){
 
       this.overviewGraphContainer.selectingFiltersChanged(this.selectingFilters);
       this.overviewGraph.selectingFiltersChanged(this.selectingFilters);
       this.timeSeriesGraphContainer.selectingFiltersChanged(this.selectingFilters);
-      
+      this.eruptionSelect.selectingFiltersChanged(this.selectingFilters);
       
     },
     timeSeriesChanged: function(e){
@@ -125,10 +124,9 @@ define(function(require) {
     },
     filtersSelectHidden: function(e){
       this.overviewGraph.hide();
-      this.eruptionSelect.hide();
     },
     overviewGraphHidden: function(e){
-      
+      this.eruptionSelect.hide();
 
     },
     eruptionGraphHidden: function(e){

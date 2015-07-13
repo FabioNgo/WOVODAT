@@ -213,8 +213,11 @@ class SeismicRepository {
 			if ( !is_null( $row["sd_evs_time_ms"] ) ) $time += floatval( $row["sd_evs_time_ms"] );
 			$temp = array( "time" => intval(1000 * $time) , 
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;
@@ -242,8 +245,11 @@ class SeismicRepository {
 			$time = strtotime($row["sd_int_time"]);
 			$temp = array( "time" => intval(1000 * $time) , 
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;
@@ -271,8 +277,11 @@ class SeismicRepository {
 		foreach ($res as $row) {
 			$temp = array( "time" => 1000*strtotime($row["sd_rsm_stime"]) , 
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;
@@ -299,8 +308,11 @@ class SeismicRepository {
 		foreach ($res as $row) {
 			$temp = array( "time" => 1000*strtotime($row["sd_ssm_stime"]) , 
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;
@@ -328,8 +340,11 @@ class SeismicRepository {
 		foreach ($res as $row) {
 			$temp = array( "time" => 1000*strtotime($row["sd_evn_time"]) , 
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;

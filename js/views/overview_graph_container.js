@@ -25,6 +25,7 @@ define(function(require) {
      //hide overview graph from page
     hide: function(){
       this.$el.html("");
+      this.trigger('hide');
     },
 
     //show overview graph on page

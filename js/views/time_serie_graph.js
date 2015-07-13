@@ -25,8 +25,9 @@ define(function(require) {
       this.tooltip = new Tooltip({
         template: serieTooltipTemplate
       });
+
       // this.model.fetch();
-      // this.prepareData();
+      this.show();
       
       // this.listenTo(this.model, 'change', this.prepareDataAndRender);
     },

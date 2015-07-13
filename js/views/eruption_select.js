@@ -21,6 +21,7 @@ define(function(require) {
       this.observer = options.observer;
       this.selectingEruptions = options.selectingEruptions;
       this.collection = options.collection;
+      this.beingShown = false;
     },
     
     fetchEruptions: function(vd_id) {
@@ -75,9 +76,9 @@ define(function(require) {
       this.render();
     },
 
-    //when no series select, eruption not appear
-    timeSeriesChanged: function(selectingTimeSeries) {
-      if (selectingTimeSeries.length == 0) {
+    //when no filter select, eruption not appear
+    selectingFiltersChanged: function(selectingFilters) {
+      if (selectingFilters.length == 0) {
         this.hide();
       }else{
         this.show();

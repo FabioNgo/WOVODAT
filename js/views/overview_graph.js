@@ -27,6 +27,9 @@ define(function(require) {
     selectingFiltersChanged: function(selectingFilters) {
       this.selectingFilters = selectingFilters;
       // this.computeTimeRange();
+      if(selectingFilters.length == 0){
+        this.hide();
+      }
       this.update();
     },
     onSelect: function(event, ranges) {
