@@ -124,6 +124,7 @@ define(function(require) {
     },
     filtersSelectHidden: function(e){
       this.overviewGraph.hide();
+      this.eruptionSelect.hide();
     },
     overviewGraphHidden: function(e){
       this.eruptionSelect.hide();
