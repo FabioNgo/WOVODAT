@@ -2,7 +2,7 @@
 var seriesCategories = []; 
 var flag;
 var curCategory = "";
-var maxNumCol = 3;
+var maxNumCol = 4;
 var colWidth = 100.0/3;
 var count = 0;
 
@@ -10,43 +10,50 @@ if (!_.isEmpty(timeSeries)) {
 	
 	
 	
-	%>Available Data: 
-  <div class="time-series-selection-container">
+	%>
+    <div class="time-serie-select">
+    <div class="title">Available Data:</div>
+    <div class="time-serie-select-container" id="time-serie-select">
 
-	
+	<table  class="time-serie-select-table">
     <% _.forEach(timeSeries, function(timeSerie) { 
 
     	if(curCategory != timeSerie.get('category')){
     		
     		if(curCategory != ""){ %>
+            <!-- end 1 category -->
     			</div>
     			
-    			</ul>
+    			</td>
     			
     			<% 
-	    		count = (count+1)%maxNumCol;
+	    		count = (count+1)%maxNumCol; 
 	    		if(count == 0){ %>
-	    			</div></p>
+                <!-- end last group cat , go to the new row -->
+	    			</tr>
 
 	    		<%}
     		}
     		curCategory = timeSerie.get('category'); 
     		if(count==0) { %>
-    			<div class="group-cat">
+                <!-- start new group cat -->
+    			<tr class="group-cat">
     		<% }
     		%>
-    		<ul class="category" style="width:<%= colWidth%>%">
+            <!-- list categories -->
+    		<td class="category">
     			<input type="checkbox" name ="category" value="<%= timeSerie.get('category') %>"/> <%= timeSerie.get('category') %>
     				<div style="padding-top:5px">
     		<%
 
 		}
-    	%>
+    	%>             <!-- list stations -->
     					<ul class="list-station"><input  type="checkbox" name = "<%= timeSerie.get('category') %>" value="<%= timeSerie.get('sr_id') %>"/>
     					 <%= timeSerie.get('station_code') %> (<%= timeSerie.get('component') %>)</ul>
     <% }); %>
-    
-  </div>
+    </table>
+  </div><!--end time serie select container -->
 <% } else { %>
-  <div>No time serie found.</div>
+  <div class="message">No time serie found.</div>
 <% } %>
+    </div>

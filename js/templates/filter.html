@@ -1,7 +1,9 @@
+<div class="filter-select">
+<div class="title">Filters</div>
 <% 
 var count = 0;
 if ( filters.length > 0 ) { %>
-	<div class="filter-selection-container">
+	<div class="filter-select-container">
 	    <% _.each(filters, function(t) { 
 	    	var checked = "";
 	    	if(t.isChecked){
@@ -18,3 +20,4 @@ if ( filters.length > 0 ) { %>
 	    <%} %>
 	</div>
 <% } %>
+</div>

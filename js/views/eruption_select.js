@@ -21,7 +21,6 @@ define(function(require) {
       this.observer = options.observer;
       this.selectingEruptions = options.selectingEruptions;
       this.collection = options.collection;
-      this.beingShown = false;
     },
     
     fetchEruptions: function(vd_id) {

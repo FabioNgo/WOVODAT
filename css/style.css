@@ -12,40 +12,96 @@
   opacity: 0.8;
 }
 
-.time-series-selection-container {
+.time-serie-select-container {
   
   height: 30%;
-  padding: 6px;
-  margin: 10px;
+  margin: 5px;
   overflow: auto;
   border: 1px solid #575757;
   display: block;
   
 
 }
+table.time-serie-select-table{
+    table-layout : fixed;
+    width: 100%
+}
+.title {
+   margin: 6px 6px 6px 6px;
+   display: block;
+   font-weight: bold;
+}
+.message {
+   margin: 6px 6px 6px 6px;
+   display: block;
+   font-style: italic;
+}
+.time-serie-select{
+  overflow: auto;
+  display: block;
+}
+.time-serie-select-table tbody{
+  table-layout: fixed;
+  border-width: 1px;
+  border-color: red;
+  white-space: normal;
+  line-height: normal;
+  font-weight: normal;
+  font-size: 12px;
+  font-variant: normal;
+  font-style: normal;
+  color: -webkit-text;
+  vertical-align:top;
+  text-align: start;
+}
+.filter-select{
+  overflow: auto;
+  display: block;
+}
+.filter-select-container {
+  
+ 
+  margin: 5px;
+  padding: 6px;
+  overflow: auto;
+  border: 1px solid #575757;
+  display: block;
+  
+
+}
+.volcano-select {
+  
+ 
+  margin: 6px;
+  overflow: auto;
+  display: block;
+  
+
+}
 .category {
-    padding-left: 0px;
+    padding: 6px;
     
 }
 .list-station {
     padding-left: 10px;
 }
 .group-cat {
-    display: -webkit-box;
-    display: -moz-box;
-    padding-bottom: 10px;
+    /*display: -webkit-box;*/
+    /*display: -moz-box;*/
 }
-.flot-tick-label .tickLabel{
-  transform: rotate(-90deg);
-    -ms-transform:rotate(-90deg); /* IE 9 */
-    -moz-transform:rotate(-90deg); /* Firefox */
-    -webkit-transform:rotate(-90deg); /* Safari and Chrome */
-    -o-transform:rotate(-90deg); /* Opera */
-    /*rotation-point:50% 50%;*/ /* CSS3 */
-    /*rotation:270deg;*/ /* CSS3 */
+
+
+div.xAxis div.tickLabel 
+{    
+    /*transform-origin: right;*/
+    transform:  rotate(-90deg) translate(-20px);
+    /*transform: rotate(-90deg);*/
+    -ms-transform:rotate(-90deg) translate(-20px); /* IE 9 */
+    -moz-transform:rotate(-90deg) translate(-20px); /* Firefox */
+    -webkit-transform:rotate(-90deg) translate(-20px); /* Safari and Chrome */
+    -o-transform:rotate(-90deg) translate(-20px); /* Opera */
+    
 }
-.filter-selection-container{
-  border-style: solid;
-  border-width: 1px;
-  padding: 5px;
+.eruption-select{
+  margin-top: 50px;
 }

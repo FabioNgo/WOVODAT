@@ -1,5 +1,5 @@
-<% var selected ="as"; %>
-<select>
+<div class = "eruption-select">
+<select >
 	<option value="-1">------</option>
 	<% _.each(eruptions, function(eruption) {
 		
@@ -7,3 +7,4 @@
 	  <option value="<%= eruption.get('ed_id') %>" ><%= eruption.getDate() %></option>
 	<% }); %>
 </select>
+</div>

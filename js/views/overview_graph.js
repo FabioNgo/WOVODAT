@@ -3,7 +3,7 @@ define(function(require) {
   var $ = require('jquery'),
       Backbone = require('backbone'),
       _ = require('underscore'),
-      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection']),
+      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection','excanvas']),
       TimeRange = require('models/time_range');
 
   return Backbone.View.extend({
@@ -85,6 +85,8 @@ define(function(require) {
               mode:'time',
               timeformat: "%d-%b-%Y",
               autoscale: true,
+              axisLabelUseCanvas: true,
+              rotateTicks: 90,
               min: this.minX,
               max: this.maxX,
             },
@@ -103,7 +105,7 @@ define(function(require) {
       }
       // console.log(this.data);
       this.$el.width(800);
-      this.$el.height(100);
+      this.$el.height(150);
       
       this.graph = $.plot(this.$el, this.data, options);
       this.$el.bind('plotselected', this.selectingTimeRange,this.onSelect);
