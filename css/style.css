@@ -2,6 +2,7 @@
   background-color: #FFF;
   padding: 10px;
   min-height: 50px;
+  margin-bottom: 50px;
 }
 
 .tooltip {
@@ -103,5 +104,17 @@ div.xAxis div.tickLabel
     
 }
 .eruption-select{
+  margin: 6px;
+  margin-top: 50px;
+}
+.eruption-graph{
+  margin: 6px;
+}
+.overview-graph{
+
+  margin: 6px;
+}
+.time-serie-graph{
+  margin: 6px;
   margin-top: 50px;
 }

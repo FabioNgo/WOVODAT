@@ -108,8 +108,9 @@ define(function(require) {
         return;
       }
       // console.log(this.data);
-      this.$el.width(800);
-      this.$el.height(100);
+      this.$el.width('100%');
+      this.$el.height(150);
+      this.$el.addClass('time-serie-graph');
       // this.$el.bind('pageshow',function(){    
       //   $.plot(this.$el, this.data, options);
       // });

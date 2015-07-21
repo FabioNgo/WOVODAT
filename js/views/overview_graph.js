@@ -104,9 +104,9 @@ define(function(require) {
         return;
       }
       // console.log(this.data);
-      this.$el.width(800);
+      this.$el.width('auto');
       this.$el.height(150);
-      
+      this.$el.addClass("overview-graph");
       this.graph = $.plot(this.$el, this.data, options);
       this.$el.bind('plotselected', this.selectingTimeRange,this.onSelect);
     },

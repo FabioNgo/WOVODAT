@@ -131,9 +131,9 @@ define(function(require) {
             }
           };
           
-      el.width(800);
-      el.height(200);
-
+      el.width('auto');
+      el.height(150);
+      el.addClass("eruption-graph");
       this.graph = $.plot(el, [param_ed, param_ed_phs], option);
 
       el.bind('plothover', this.onHover);
