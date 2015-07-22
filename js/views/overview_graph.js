@@ -89,9 +89,19 @@ define(function(require) {
               rotateTicks: 90,
               min: this.minX,
               max: this.maxX,
+              autoscaleMargin: 10,
             },
             yaxis: {
-              show: true
+              show: true,
+              tickFormatter: function(val, axis) { 
+                // console.log(val);
+                if(val > 9999 || val <-9999){
+                  return val.toPrecision(1);
+                }else{
+                  return val;
+                }
+              },
+              labelWidth: 30
             },
             selection: { 
               mode: 'x', 

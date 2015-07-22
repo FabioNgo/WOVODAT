@@ -27,7 +27,7 @@ define(function(require) {
       });
 
       // this.model.fetch();
-      this.show();
+      // this.show();
       
       // this.listenTo(this.model, 'change', this.prepareDataAndRender);
     },
@@ -93,6 +93,15 @@ define(function(require) {
             yaxis: {
               show: true,
               autoscale: true,
+              tickFormatter: function(val, axis) { 
+                // console.log(val);
+                if(val > 9999 || val <-9999){
+                  return val.toPrecision(1);
+                }else{
+                  return val;
+                }
+              },
+              labelWidth: 30
             },
             grid: {
               hoverable: true,
@@ -108,7 +117,7 @@ define(function(require) {
         return;
       }
       // console.log(this.data);
-      this.$el.width('100%');
+      this.$el.width('auto');
       this.$el.height(150);
       this.$el.addClass('time-serie-graph');
       // this.$el.bind('pageshow',function(){    

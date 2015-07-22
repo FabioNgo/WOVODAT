@@ -96,6 +96,7 @@ define(function(require) {
           param_ed_phs = {
             data: data.ed_phsData,
             label: 'Eruption phase',
+            color: '#F44336',
             bars: {
               show:true,
               wovodat: true,
@@ -121,7 +122,8 @@ define(function(require) {
               tickSize: 1,
               panRange: false,
               zoomRange: false,
-              tickFormatter: function(val, axis) { return val < axis.max ? val.toFixed(0) : 'VEI'; }
+              tickFormatter: function(val, axis) { return val < axis.max ? val.toFixed(0) : 'VEI'; },
+              labelWidth: 30
             },
             pan: {
               interactive: false
