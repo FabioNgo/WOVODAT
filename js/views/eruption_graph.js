@@ -24,6 +24,7 @@ define(function(require) {
       this.observer = options.observer;
       //this.eruptions = options.eruptions;
       this.timeRange = new TimeRange();
+      this.serieGraphTimeRange = options.serieGraphTimeRange;
       // this.eruptions = new Array();
       this.selectingEruption = options.selectingEruption;
       this.edTooltip = new Tooltip({
@@ -152,13 +153,20 @@ define(function(require) {
     //   //   'endTime': endTime
     //   // });
     // },
-    timeRangeChanged: function(TimeRange){
-      if(TimeRange == undefined){
-        return;
-      }
-      this.startTime = TimeRange.get('startTime');
-      this.endTime = TimeRange.get('endTime');
-      this.render();
+    selectingTimeRangeChanged: function(TimeRange){
+      // if(TimeRange == undefined){
+      //   return;
+      // }
+      // this.startTime = TimeRange.get('startTime');
+      // this.endTime = TimeRange.get('endTime');
+      // this.render();
+    },
+    getStartingTime: function(ed_stime){
+      var date = new Date(ed_stime);
+      var year = date.getFullYear();
+      var starting_date =  new Date(year,0,0,0,0,0,0);
+      return starting_date.getTime();
+
     },
     prepareData: function() {
       var self = this,
@@ -176,10 +184,18 @@ define(function(require) {
         var ed_stime = ed.get('ed_stime'),
             ed_etime = ed.get('ed_etime'),
             ed_vei = ed.get('ed_vei');
-        
+        var start_date = new Date(ed_stime);
+        this.startTime = this.getStartingTime(ed_stime);
+        this.endTime = this.startTime+ Const.ONE_YEAR;
+        this.serieGraphTimeRange.set({
+          'startTime': this.startTime,
+          'endTime': this.endTime,
+        });
+        console.log(this.serieGraphTimeRange);
+        this.serieGraphTimeRange.trigger('update',this.serieGraphTimeRange);
         edData.push([ed_stime, ed_vei, 0, ed_etime - ed_stime, ed.attributes]);
 
-        endOfTime = Math.max(endOfTime, ed_stime + Const.ONE_YEAR);
+        // endOfTime = Math.max(endOfTime, ed_stime + Const.ONE_YEAR);
 
         ed.get('ed_phs').forEach(function(ed_phs) {
           var ed_phs_stime = ed_phs.ed_phs_stime,
@@ -192,8 +208,8 @@ define(function(require) {
 
       return {
         edData: edData,
-        ed_phsData: ed_phsData,
-        endOfTime: endOfTime
+        ed_phsData: ed_phsData
+        
       };
     }
   });

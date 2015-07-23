@@ -15,6 +15,21 @@ define(function(require) {
     changeVolcano: function(vd_id, handler) {
       this.url = 'api/?data=eruption_list&vd_id=' + vd_id;
       this.fetch().done(handler);
+    },
+    getAvailableEruptions: function(timeRange){
+      if(timeRange == undefined){
+        return this.models;
+      }else{
+        var result = [];
+        var startTime = timeRange.get('startTime');
+        var endTime = timeRange.get('endTime');
+        for(var i=0;i<this.models.length;i++){
+          if(this.models[i].get('ed_stime')<endTime && this.models[i].get('ed_stime')> startTime){
+            result.push(this.models[i]);
+          }
+        }
+        return result;
+      }
     }
   });
 });

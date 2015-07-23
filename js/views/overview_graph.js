@@ -16,8 +16,9 @@ define(function(require) {
       //   );
       
       
-      this.timeRange = options.timeRange;
+      this.serieGraphTimeRange = options.serieGraphTimeRange;
       // this.computeTimeRange();
+      this.timeRange = new TimeRange();
       this.selectingTimeRange = options.selectingTimeRange;
       // this.listenTo(this.selectingTimeSeries, 'change remove', this.update);
       // this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
@@ -36,33 +37,12 @@ define(function(require) {
 
       var startTime = ranges.xaxis.from,
           endTime = ranges.xaxis.to;
-      // this.stopListening(this.selectingTimeRange);
       event.data.set({
-        'startTime': ranges.xaxis.from,
-        'endTime': ranges.xaxis.to,
+        'startTime': startTime,
+        'endTime': endTime,
       });
-      // this.listenTo(this.selectingTimeRange, 'change', this.onSelectingTimeRangeChange);
-      event.data.trigger('change');
+      event.data.trigger('update');
     },
-
-    onSelectingTimeRangeChange: function() {
-      if (!this.graph)
-        return;
-      this.graph.setSelection({ 
-        xaxis: { 
-          from: Math.max(this.selectingTimeRange.get('startTime'), this.timeRange.get('startTime')), 
-          to: Math.min(this.selectingTimeRange.get('endTime'), this.timeRange.get('endTime'))
-        }
-      });
-    },
-
-    // onTimeRangeChange: function() {
-    //   this.render();
-    //   this.selectingTimeRange.set({
-    //     startTime: this.timeRange.get('startTime'),
-    //     endTime: this.timeRange.get('endTime')
-    //   });
-    // },
     hide: function(){
       this.$el.html("");
       this.$el.width(0);
@@ -72,9 +52,7 @@ define(function(require) {
     render: function() {
       // console.log(this.selectingTimeSeries);
       this.$el.html("<div>Overview Graph <br></br></div>")
-      // for (var i = 0; i < this.selectingTimeSeries.length; i++) {
-      //   this.selectingTimeSeries[i].fetch();
-      // };
+
       var options = {
             series: {
               lines: { 

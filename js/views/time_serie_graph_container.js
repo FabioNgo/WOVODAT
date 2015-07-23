@@ -67,10 +67,11 @@ define(function(require) {
    //    };
   	// 	// this.filterObserver.trigger("filter-change");
   	// },
-    timeRangeChanged: function(timeRange){
+    serieGraphTimeRangeChanged: function(timeRange){
       for (var i = 0; i < this.graphs.length; i++) {
         this.graphs[i].timeRangeChanged(timeRange);
       };
+      this.show();
     },
     selectingFiltersChanged: function(selectingFilters){
       this.graphs.length =0;

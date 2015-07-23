@@ -21,10 +21,12 @@ define(function(require) {
       this.observer = options.observer;
       this.selectingEruptions = options.selectingEruptions;
       this.collection = options.collection;
+      this.availableEruptions = [];
     },
     
     fetchEruptions: function(vd_id) {
       this.collection.changeVolcano(vd_id);
+      this.availableEruptions = this.collection.getAvailableEruptions();
       
     },
 
@@ -32,12 +34,15 @@ define(function(require) {
       this.$el.find('select').val(selectingEruption.get('ed_id'));
       this.$el.find('select').change();
     },
-
+    selectingTimeRangeChanged: function(timeRange){
+      this.availableEruptions = this.collection.getAvailableEruptions(timeRange);
+      this.show();
+    },
    
     render: function() {
       var selectingEruption = this.selectingEruptions.models[0];
       this.$el.html(this.template({
-        eruptions: this.collection.models,
+        eruptions: this.availableEruptions,
         selectingEruption: selectingEruption
       }));
     },

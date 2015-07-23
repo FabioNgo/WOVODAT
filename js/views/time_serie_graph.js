@@ -25,7 +25,7 @@ define(function(require) {
       this.tooltip = new Tooltip({
         template: serieTooltipTemplate
       });
-
+      this.prepareData();
       // this.model.fetch();
       // this.show();
       
@@ -38,7 +38,7 @@ define(function(require) {
       }
       this.minX = TimeRange.get('startTime');
       this.maxX = TimeRange.get('endTime');
-      this.render();
+      // this.render();
     },
 
     onHover: function(event, pos, item) {
@@ -58,7 +58,7 @@ define(function(require) {
     //   this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
     // },
     show: function(){
-      this.prepareData();
+      
       // this.timeRangeChanged(this.timeRange);
       this.render();
     },
@@ -133,7 +133,7 @@ define(function(require) {
         graph: this.graph,
         el: this.$el
       }
-      this.$el.bind('plotzoom',eventData, this.onZoom);
+      // this.$el.bind('plotzoom',eventData, this.onZoom);
     },
     onZoom: function(event,plot){
       var option = plot.getOptions();
