@@ -117,6 +117,7 @@ define(function(require) {
       this.$el.width('auto');
       this.$el.height(150);
       this.$el.addClass("overview-graph");
+      // console.log(this.data);
       this.graph = $.plot(this.$el, this.data, options);
       this.$el.bind('plotselected', this.selectingTimeRange,this.onSelect);
     },

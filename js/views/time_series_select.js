@@ -76,7 +76,9 @@ define(function(require) {
         this.$el.html(""); // no time serie appears
         this.trigger('hide');
       }else{
-        timeSeries.changeVolcano(vd_id);  
+        timeSeries.changeVolcano(vd_id);
+        this.selectings.reset();
+        this.selectings.trigger('update');
       }
       
 
