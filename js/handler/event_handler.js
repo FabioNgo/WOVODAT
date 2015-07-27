@@ -146,7 +146,7 @@ define(function(require) {
     serieGraphTimeRangeChanged: function(e){
       
       // this.eruptionGraph.timeRangeChanged(e);
-      console.log(this.serieGraphTimeRange);
+      // console.log(this.serieGraphTimeRange);
       this.timeSeriesGraphContainer.serieGraphTimeRangeChanged(this.serieGraphTimeRange);
     },
     selectingTimeRangeChanged: function(e){

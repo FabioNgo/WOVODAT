@@ -422,6 +422,7 @@ class SeismicRepository {
 			$etime = strtotime($row["sd_trm_etime"]);
 			$temp = array( "stime" => intval(1000 * $stime) ,
 						   "etime" => intval(1000 * $etime) ,
+						   "time" => floatval(1000*($stime+$etime)/2),
 										 "value" => floatval($row[$attribute]) );
 			if ($filter != "") {
 				$temp["filter"] = $row[$filter];

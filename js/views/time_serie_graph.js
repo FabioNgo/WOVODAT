@@ -92,15 +92,18 @@ define(function(require) {
             },
             yaxis: {
               show: true,
-              autoscale: true,
               tickFormatter: function(val, axis) { 
                 // console.log(val);
                 if(val > 9999 || val <-9999){
-                  return val.toPrecision(1);
+                  val = val.toPrecision(1);
                 }else{
-                  return val;
+                  
                 }
+                return val
               },
+              // max: this.maxY,
+              // min: this.minY,
+              ticks: this.ticks,
               labelWidth: 30
             },
             grid: {
@@ -118,7 +121,7 @@ define(function(require) {
       }
       // console.log(this.data);
       this.$el.width('auto');
-      this.$el.height(150);
+      this.$el.height(200);
       this.$el.addClass('time-serie-graph');
       // this.$el.bind('pageshow',function(){    
       //   $.plot(this.$el, this.data, options);
@@ -176,6 +179,8 @@ define(function(require) {
       }
       var minX = undefined,
           maxX = undefined,
+          minY = undefined,
+          maxY = undefined,
           data = [],
           i;
       
@@ -189,14 +194,23 @@ define(function(require) {
           // var start_time = d.time;
           // var end_time = d.time;
           var time = d.time;
+          var value = d.value;
           // d.stime_formated = DateHelper.formatDate(d.stime);
           // d.etime_formated = DateHelper.formatDate(d.etime);
           d.time_formated = DateHelper.formatDate(d.time);
           // var x = d.start_time || d.time;
-          if (minX === undefined || time < minX)
+          if (minX === undefined || time < minX){
             minX = time;
-          if (maxX === undefined || time > maxX)
+          }
+          if (maxX === undefined || time > maxX){
             maxX = time;
+          }
+          if (minY === undefined || value < minY){
+            minY = value;
+          }
+          if (maxY === undefined || value > maxY){
+            maxY = value;
+          }
 
           list.push([d['time'],d['value']]);
         });
@@ -206,8 +220,29 @@ define(function(require) {
       
       
 
-      this.minX = minX;
-      this.maxX = maxX;
+      this.minX = minX*0.9;
+      this.maxX = maxX*1.1;
+       if(minY!= undefined){
+        this.minY = minY.toFixed();
+      }else{
+        this.minY = minY;
+      }
+      if(maxY != undefined && minY != undefined){
+        this.ticks = function(){
+          var ticks = [];
+          
+          var step = (maxY - minY) /8.0;
+          var preTick = (minY -step*2).toPrecision(1); // previous tick
+          for(var i = -1;i<=8;i++){
+            var curTick = (minY + step*i).toPrecision(1); // current tick
+            if(curTick != preTick){
+              ticks.push(curTick);
+              preTick = curTick;
+            }
+          }
+          return ticks;
+        };
+      }
       this.timeRange.set({
         'startTime': this.minX,
         'endTime': this.maxX,

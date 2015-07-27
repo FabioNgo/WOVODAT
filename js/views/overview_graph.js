@@ -52,7 +52,7 @@ define(function(require) {
     render: function() {
       // console.log(this.selectingTimeSeries);
       this.$el.html("<div>Overview Graph <br></br></div>")
-
+      
       var options = {
             series: {
               lines: { 
@@ -74,11 +74,16 @@ define(function(require) {
               tickFormatter: function(val, axis) { 
                 // console.log(val);
                 if(val > 9999 || val <-9999){
-                  return val.toPrecision(1);
+                  val = val.toPrecision(1);
                 }else{
-                  return val;
+                  
                 }
+                
+                return val;
               },
+              // max: this.maxY,
+              // min: this.minY,
+              ticks: this.ticks,
               labelWidth: 30
             },
             selection: { 
@@ -93,7 +98,7 @@ define(function(require) {
       }
       // console.log(this.data);
       this.$el.width('auto');
-      this.$el.height(150);
+      this.$el.height(200);
       this.$el.addClass("overview-graph");
       // console.log(this.data);
       this.graph = $.plot(this.$el, this.data, options);
@@ -126,6 +131,8 @@ define(function(require) {
     prepareData: function() {
       var minX = undefined,
           maxX = undefined,
+          minY = undefined,
+          maxY = undefined,
           data = [],
           i;
       var filters = this.selectingFilters.models;
@@ -136,15 +143,23 @@ define(function(require) {
           filterData.forEach(function(d) {
             // console.log(d);
             var time = d.time;
+            var value = d.value;
           // d.stime_formated = DateHelper.formatDate(d.stime);
           // d.etime_formated = DateHelper.formatDate(d.etime);
           // d.time_formated = DateHelper.formatDate(d.time);
           // var x = d.start_time || d.time;
-          if (minX === undefined || time < minX)
-            minX = time;
-          if (maxX === undefined || time > maxX)
-            maxX = time;
-
+            if (minX === undefined || time < minX){
+              minX = time;
+            }
+            if (maxX === undefined || time > maxX){
+              maxX = time;
+            }
+            if (minY === undefined || value < minY){
+              minY = value;
+            }
+            if (maxY === undefined || value > maxY){
+              maxY = value;
+            }
             list.push([d['time'],d['value']]);
           });
           data.push(this.formatGraphAppearance(list,filters[i].timeSerie.getName(),filters[i].name[j]));
@@ -156,6 +171,31 @@ define(function(require) {
       
       this.minX = minX;
       this.maxX = maxX;
+      if(this.minX == this.maxX){
+        this.minX = this.minX - 86400000;
+        this.maxX = this.minX + 86400000;
+      }
+      if(minY!= undefined){
+        this.minY = minY.toFixed();
+      }else{
+        this.minY = minY;
+      }
+      if(maxY != undefined && minY != undefined){
+        this.ticks = function(){
+          var ticks = [];
+          
+          var step = (maxY - minY) /8.0;
+          var preTick = (minY -step*2).toPrecision(1); // previous tick
+          for(var i = -1;i<=8;i++){
+            var curTick = (minY + step*i).toPrecision(1); // current tick
+            if(curTick != preTick){
+              ticks.push(curTick);
+              preTick = curTick;
+            }
+          }
+          return ticks;
+        };
+      }
       this.timeRange.set({
         'startTime': this.minX,
         'endTime': this.maxX,
