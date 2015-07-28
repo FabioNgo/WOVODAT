@@ -18,7 +18,7 @@ class TimeSeriesRepository {
     }
     if (!$found)
       $series[] = $newSerie;
-    file_put_contents('Serie/Series.json', json_encode($series), FILE_USE_INCLUDE_PATH);
+    // file_put_contents('Serie/Series.json', json_encode($series), FILE_USE_INCLUDE_PATH);
   }
 
   private static function getSerieInfo($sr_id) {
