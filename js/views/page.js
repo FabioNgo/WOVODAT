@@ -14,16 +14,19 @@ define(function(require) {
       EruptionGraph = require('views/eruption_graph'),
       EruptionForecasts = require('collections/eruption_forecasts'),
       EruptionForecastGraph = require('views/eruption_forecast_graph'),
-      TimeSeries = require('collections/time_series'),
+      TimeSerie = require('models/serie'),
       TimeSeriesSelect = require('views/time_series_select'),   
-      
+      OverviewGraphContainer = require('views/overview_graph_container'),
+      OverviewGraph = require('views/overview_graph'),
       Filter = require('models/filter'),
       FilterSelect = require('views/filter_select'),
       Filters = require('collections/filters'),
       
       TimeRange = require('models/time_range'),
-      SelectingTimeSeries = require('collections/selecting_time_series'),
+      TimeSeries = require('collections/series'),
       TimeSeriesContainer = require('views/time_series_container'),
+      TimeSeriesGraphContainer = require('views/time_serie_graph_container'),
+      EventHandler = require('handler/event_handler'),
       UrlLoader = require('models/url_loader');
 
   return Backbone.View.extend({
@@ -33,60 +36,120 @@ define(function(require) {
       this.render();
     },
     render: function() {
-      var eruptions = new Eruptions(),
+      /**
+      * Variables declaration
+      **/
+      var 
           observer = new (Backbone.Model.extend())(),
-          timeRange = new TimeRange(),
-          selectingTimeSeries = new SelectingTimeSeries(),
+          
+          selectingTimeSeries = new TimeSeries(),
+          selectingFilters = new Filters(),
           volcanoes = new Volcanoes(),
+          selectingEruptions = new Eruptions(),
+          eruptions = new Eruptions(),
           selectingVolcano = new Volcano(),
-          selectingEruption = new Eruption();
-      
-      new VolcanoSelect({
-        collection: volcanoes,
-        observer: observer,
-        selectingVolcano: selectingVolcano
-      }).$el.appendTo(this.$el);
+          timeSeries = new TimeSeries(),
+          serieGraphTimeRange = new TimeRange(),
+          selectingTimeRange = new TimeRange(),
+          volcanoSelect = new VolcanoSelect({
+            collection: volcanoes,
+            observer: observer,
+            selectingVolcano: selectingVolcano
+          }),
 
-      new EruptionSelect({
-        collection: eruptions,
-        observer: observer,
-        volcano: selectingVolcano,
-        selectingEruption: selectingEruption
-      }).$el.appendTo(this.$el);
+          timeSeriesSelect = new TimeSeriesSelect({
+            observer: observer,
+            volcano: selectingVolcano,
+            selectings: selectingTimeSeries,
+            timeSeries: timeSeries
+          }),
+          filtersSelect = new FilterSelect({
+            observer: observer,
+            selectings: selectingTimeSeries,
+            selectingFilters: selectingFilters
+          }),
+          overviewGraph = new OverviewGraph({
+            selectingTimeSeries: this.overviewSelectingTimeSeries,
+            serieGraphTimeRange: serieGraphTimeRange,
+            selectingTimeRange: selectingTimeRange
+          }),
 
-      new EruptionGraph({
-        collection: eruptions,
-        observer: observer,
-        timeRange: timeRange
-      }).$el.appendTo(this.$el);
+          overviewGraphContainer = new OverviewGraphContainer({
+            selectingTimeSeries: selectingTimeSeries,
+            observer: observer,
+            graph: overviewGraph
+          }),
 
-      new EruptionForecastGraph({
-        collection: new EruptionForecasts(),
-        observer: observer,
-        timeRange: timeRange,
-        volcano: selectingVolcano
-      }).$el.appendTo(this.$el);
+          eruptionSelect = new EruptionSelect({
+            collection: eruptions,
+            observer: observer,
+            selectingEruptions: selectingEruptions
+          }),
 
-      new TimeSeriesSelect({
-        collection: new TimeSeries(),
-        observer: observer,
-        selectingTimeSeries: selectingTimeSeries,
-        volcano: selectingVolcano
-      }).$el.appendTo(this.$el);
+          
 
-      new TimeSeriesContainer({
-        observer: observer,
-        timeRange: timeRange,
-        collection: selectingTimeSeries
-      }).$el.appendTo(this.$el);
+          eruptionGraph = new EruptionGraph({
+            //eruptions: eruptions,
+            observer: observer,
+            serieGraphTimeRange: serieGraphTimeRange
+            
+          }),
 
-      new UrlLoader({
-        observer: observer,
-        volcanoes: volcanoes,
-        selectingVolcano: selectingVolcano,
-        eruptions: eruptions,
-        selectingEruption: selectingEruption
-      }).$el.appendTo(this.$el);
+          timeSeriesGraphContainer = new TimeSeriesGraphContainer({
+            observer: observer,
+            selectingTimeSeries: selectingTimeSeries
+            // timeRange: timeRange
+
+          }),
+
+          urlLoader = new UrlLoader({
+            observer: observer,
+            volcanoes: volcanoes,
+            eruptions: eruptions,
+            selectingEruptions: selectingEruptions
+          }),
+
+          eventHandler = new EventHandler({
+            volcanoSelect: volcanoSelect,
+            timeSeriesSelect: timeSeriesSelect,
+            filtersSelect: filtersSelect,
+            overviewGraphContainer: overviewGraphContainer,
+            eruptionSelect: eruptionSelect,
+            selectingVolcano: selectingVolcano,
+            selectingEruptions: selectingEruptions,
+            selectingTimeSeries: selectingTimeSeries,
+            timeSeries :timeSeries,
+            overviewGraph: overviewGraph,
+            eruptionGraph: eruptionGraph,
+            timeSeriesGraphContainer: timeSeriesGraphContainer,
+            serieGraphTimeRange: serieGraphTimeRange,
+            selectingTimeRange: selectingTimeRange,
+            selectingFilters: selectingFilters
+
+          });
+      /** Body **/
+      // var test = new TimeSerie('58166f4b40cca4e8ed2522b5f00bc756');
+      // test.fetch({
+      //   success: function(collection, response) {
+      //     console.log(response);
+      //   }
+      // });
+      volcanoSelect.$el.appendTo(this.$el);
+      timeSeriesSelect.$el.appendTo(this.$el);
+      filtersSelect.$el.appendTo(this.$el);
+      overviewGraphContainer.$el.appendTo(this.$el);
+      eruptionSelect.$el.appendTo(this.$el);
+      eruptionGraph.$el.appendTo(this.$el);
+      timeSeriesGraphContainer.$el.appendTo(this.$el);
+      urlLoader.$el.appendTo(this.$el);
+      // new EruptionForecastGraph({
+      //   collection: new EruptionForecasts(),
+      //   observer: observer,
+      //   timeRange: timeRange,
+      //   volcano: selectingVolcano
+      // }).$el.appendTo(this.$el);
+
+
     }
   });
 });

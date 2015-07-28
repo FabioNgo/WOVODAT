@@ -12,7 +12,8 @@ require.config({
     'jquery.flot.navigate': 'vendor/jquery-flot/jquery.flot.navigate',
     'jquery.flot.selection': 'vendor/jquery-flot/jquery.flot.selection',
     'jquery.flot.time': 'vendor/jquery-flot/jquery.flot.time',
-    'jquery.flot.axislabels' : 'vendor/jquery-flot/jquery.flot.axislabels'
+    'excanvas' : 'vendor/jquery-flot/excanvas',
+    'jquery.flot.tickrotor': 'vendor/jquery-flot/jquery.flot.tickrotor'
   },
   config: {
       moment: {

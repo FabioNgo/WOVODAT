@@ -9,25 +9,52 @@ define(function(require) {
   return Backbone.Collection.extend({
     model: Filter,
     initialize: function() {
-      _(this).bindAll('OptionForFilterEQType');
-      console.log(this.data);
-      if (this.data.get('category').indexOf('Seismic') == -1) {
-        if(this.data.get('data_type').indexOf("Interval")!=-1 || this.data.get('data_type').indexOf("EVS")!=-1) {
-          console.log(OptionForFilterEQType());
+      
+    },
+    indexOfTimeSerie: function(timeSerie){
+      for(var i=0;i<this.models.length;i++){
+        if(timeSerie == this.models[i].timeSerie){
+          return i;
         }
       }
+      return -1;
     },
-    OptionForFilterEQType: function() {
-      var data = this.data.get('data');
-      var list=[];
-      var must=["V","VT","LF","VLP","H","RF","R"];
-      for (var i in must) {
-        var ok=false;
-        for (var j in data) {
-          console.log(data[j]);
-        }
+    push: function(timeSerie,filter){
+      if(timeSerie == undefined){
+        return;
+      }
+      var index = this.indexOfTimeSerie(timeSerie);
+      if(index == -1){
+        this.add(new Filter(timeSerie,filter));
+      }else{
+        this.models[index].addFilter(filter);
       }
       
-    }
+    },
+    pop: function(timeSerie,filter){
+      var index = this.indexOfTimeSerie(timeSerie);
+      if(index == -1){
+        return;
+      }else{
+        this.models[index].removeFilter(filter);
+      }
+      if(this.models[index].name.length == 0){
+        this.remove(this.models[index]);
+      }
+    },
+    getAllFilters: function(){
+      var filters = [];
+      for(var i = 0;i<this.models.length;i++){
+        for(var j = 0;j<this.models[i].name.length;j++){
+          filters.push({
+            timeSerie:this.models[i].timeSerie.get('sr_id'),
+            filter: this.models[i].name[j]
+          });
+        }
+      }
+      return filters;
+    },
+    
+    
   });
 });

@@ -3,7 +3,7 @@ define(function(require) {
   var $ = require('jquery'),
       Backbone = require('backbone'),
       _ = require('underscore'),
-      DateHelper = require("helper/date");
+      DateHelper = require('helper/date');
       
 
   return Backbone.View.extend({
@@ -50,14 +50,11 @@ define(function(require) {
           this.move(pos.pageX, pos.pageY);
         } else {
           this.previous.dataIndex = item.dataIndex;
-
-          var name = ( this.model ) ? this.model.getDisplayName() : "";
-
-          this.render(pos.pageX, pos.pageY, this.template(
-            _.extend(item.series.data[item.dataIndex].slice(-1)[0], 
-                    { name : name,
-                      time : DateHelper.formatSerieTime(item.datapoint[0])  } )
-          ));
+          this.html = this.template({
+            time: DateHelper.formatDate(item.series.data[item.dataIndex][0]),
+            value: item.series.data[item.dataIndex][1]
+          })
+          this.render(pos.pageX, pos.pageY, this.html);
         }
       } else {
         this.hide();

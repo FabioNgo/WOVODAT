@@ -3,69 +3,88 @@ define(function(require) {
   var $ = require('jquery'),
       Backbone = require('backbone'),
       _ = require('underscore'),
-      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection']);
-  var template = require("text!templates/overview_graph.html");
-      
+      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection','excanvas']),
+      TimeRange = require('models/time_range');
+
   return Backbone.View.extend({
     initialize: function(options) {
-      _(this).bindAll('update', 'onSelect', 'onTimeRangeChange', 'onSelectingTimeRangeChange');
-      this.timeRange = options.timeRange;
+      // _(this).bindAll(
+      //   'update',
+      //   'onSelect',
+      //   'onTimeRangeChange',
+      //   'onSelectingTimeRangeChange'
+      //   );
+      
+      
+      this.serieGraphTimeRange = options.serieGraphTimeRange;
+      // this.computeTimeRange();
+      this.timeRange = new TimeRange();
       this.selectingTimeRange = options.selectingTimeRange;
-      this.filterObserver = options.filterObserver;
-      this.listenTo(this.collection, 'remove', this.update);
-      this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
-      this.listenTo(this.selectingTimeRange, 'change', this.onSelectingTimeRangeChange);
-      this.listenTo(this.filterObserver, 'filter-change', this.update);
+      // this.listenTo(this.selectingTimeSeries, 'change remove', this.update);
+      // this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
+      // this.listenTo(this.selectingTimeRange, 'change', this.onSelectingTimeRangeChange);
     },
-
-    template : _.template(template),
-
+    
+    selectingFiltersChanged: function(selectingFilters) {
+      this.selectingFilters = selectingFilters;
+      // this.computeTimeRange();
+      if(selectingFilters.length == 0){
+        this.hide();
+      }
+      this.update();
+    },
     onSelect: function(event, ranges) {
+
       var startTime = ranges.xaxis.from,
           endTime = ranges.xaxis.to;
-      this.stopListening(this.selectingTimeRange);
-      this.selectingTimeRange.set({
-        startTime: startTime,
-        endTime: endTime
+      event.data.set({
+        'startTime': startTime,
+        'endTime': endTime,
       });
-      this.listenTo(this.selectingTimeRange, 'change', this.onSelectingTimeRangeChange);
+      event.data.trigger('update');
     },
-
-    onSelectingTimeRangeChange: function() {
-      if (!this.graph)
-        return;
-      this.graph.setSelection({ 
-        xaxis: { 
-          from: Math.max(this.selectingTimeRange.get('startTime'), this.timeRange.get('startTime')), 
-          to: Math.min(this.selectingTimeRange.get('endTime'), this.timeRange.get('endTime'))
-        }
-      });
+    hide: function(){
+      this.$el.html("");
+      this.$el.width(0);
+      this.$el.height(0);
+      this.trigger('hide');
     },
-
-    onTimeRangeChange: function() {
-      this.render();
-      this.selectingTimeRange.set({
-        startTime: this.timeRange.get('startTime'),
-        endTime: this.timeRange.get('endTime')
-      });
-    },
-
     render: function() {
+      // console.log(this.selectingTimeSeries);
+      this.$el.html("<div>Overview Graph <br></br></div>")
+      
       var options = {
             series: {
               lines: { 
                 show: true
               },
-              shadowSize: 0
             },
             xaxis: { 
               mode:'time',
+              timeformat: "%d-%b-%Y",
               autoscale: true,
-              min: this.timeRange.get('startTime'),
-              max: this.timeRange.get('endTime')
+              axisLabelUseCanvas: true,
+              rotateTicks: 90,
+              min: this.minX,
+              max: this.maxX,
+              autoscaleMargin: 10,
             },
             yaxis: {
-              show: false
+              show: true,
+              tickFormatter: function(val, axis) { 
+                // console.log(val);
+                if(val > 9999 || val <-9999){
+                  val = val.toPrecision(1);
+                }else{
+                  
+                }
+                
+                return val;
+              },
+              // max: this.maxY,
+              // min: this.minY,
+              ticks: this.ticks,
+              labelWidth: 30
             },
             selection: { 
               mode: 'x', 
@@ -77,108 +96,114 @@ define(function(require) {
         this.$el.html('');
         return;
       }
-
-      this.$el.html(this.template());
-
-      this.graphContainer = this.$el.find("div").first();
-
-      this.graphContainer.width(800);
-      this.graphContainer.height(60);
-
-      this.graph = $.plot(this.graphContainer, this.data, options);
-      this.graphContainer.bind('plotselected', this.onSelect);
-
-      return this;
+      // console.log(this.data);
+      this.$el.width('auto');
+      this.$el.height(200);
+      this.$el.addClass("overview-graph");
+      // console.log(this.data);
+      this.graph = $.plot(this.$el, this.data, options);
+      this.$el.bind('plotselected', this.selectingTimeRange,this.onSelect);
     },
 
     update: function() {
       this.prepareData();
       this.render();
     },
-
+    // setup effect for the graph
+    formatGraphAppearance: function(data,timeSerieName, filterName){
+      
+      return {
+        data: data,
+        label: filterName + ":"+timeSerieName,
+        lines: { 
+          show: true
+        },
+        shadowSize: 3,
+        points: {
+          show: true,
+          radius: 1,
+          symbol: "circle",
+          // fillColor: "#EDC240"
+        },
+        // color: "#EDC240"
+      }
+    },
     prepareData: function() {
-      var minX = 0,
-          maxX = 0,
+      var minX = undefined,
+          maxX = undefined,
+          minY = undefined,
+          maxY = undefined,
           data = [],
           i;
-      //console.log(this.collection);
-      this.collection.models.forEach(function(serie) {
-        serie.get("selectingFilter").models.forEach(function(filter) {
-          // var list = [];
-          // var lines = false;
-          // var bars = false;
-          // var points = false;
-
-          // serie.get('data').forEach(function(d) {
-          //   if ( !filter.get("filter") || _.isEqual(d.filter, filter.get("filter") ) ) {
-          //     var x = d.stime || d.time;
-          //     if (d.time) lines = true;
-          //     if (d.stime) bars = true;
-          //     if (minX === undefined || x < minX)
-          //       minX = x;
-          //     if (maxX === undefined || x > maxX)
-          //       maxX = x;
-
-          //     list.push([x, d.value, 0, ( d.stime || d.time ) - ( d.etime || d.time ) ]);
-          //   }
-          // });
-
-          // if ( serie.get("data_type") == "Evn" ) {
-          //   lines = false;
-          //   bars = false;
-          //   points = true;
-          // }
-
-          // data.push({
-          //   data: list,
-          //   bars: {
-          //     show: bars,
-          //     wovodat: true
-          //   },
-          //   lines: {
-          //     show: lines,
-          //     wovodat: true
-          //   },
-          //   points : {
-          //     show: points,
-          //     symbol: "circle",
-          //     wovodat: true,
-          //     radius: 1
-          //   }
-          // });
-
-          var list = serie.prepareDataForGraph(filter);
-          //console.log(list.data);
-          data.push( {
-            data : list.data,
-            bars: {
-              show : list.bars,
-              wovodat : true
-            },
-            lines : {
-              show : list.lines,
-              wovodat : true
-            },
-            points : {
-              show : list.points,
-              symbol: "circle",
-              radius: 1,
-              wovodat : true
+      var filters = this.selectingFilters.models;
+      for(i=0;i<filters.length;i++){
+        for(var j = 0; j<filters[i].name.length;j++){
+          var list = [];
+          var filterData = filters[i].timeSerie.getDataFromFilter(filters[i].name[j])
+          filterData.forEach(function(d) {
+            // console.log(d);
+            var time = d.time;
+            var value = d.value;
+          // d.stime_formated = DateHelper.formatDate(d.stime);
+          // d.etime_formated = DateHelper.formatDate(d.etime);
+          // d.time_formated = DateHelper.formatDate(d.time);
+          // var x = d.start_time || d.time;
+            if (minX === undefined || time < minX){
+              minX = time;
             }
+            if (maxX === undefined || time > maxX){
+              maxX = time;
+            }
+            if (minY === undefined || value < minY){
+              minY = value;
+            }
+            if (maxY === undefined || value > maxY){
+              maxY = value;
+            }
+            list.push([d['time'],d['value']]);
           });
+          data.push(this.formatGraphAppearance(list,filters[i].timeSerie.getName(),filters[i].name[j]));
+          
+        }
 
-          minX = Math.min(minX, list.minValue);
-          maxX = Math.max(maxX, list.maxValue);
-
-        });
+          
+      }
       
-      });
-
       this.minX = minX;
       this.maxX = maxX;
+      if(this.minX == this.maxX){
+        this.minX = this.minX - 86400000;
+        this.maxX = this.minX + 86400000;
+      }
+      if(minY!= undefined){
+        this.minY = minY.toFixed();
+      }else{
+        this.minY = minY;
+      }
+      if(maxY != undefined && minY != undefined){
+        this.ticks = function(){
+          var ticks = [];
+          
+          var step = (maxY - minY) /8.0;
+          var preTick = (minY -step*2).toPrecision(1); // previous tick
+          for(var i = -1;i<=8;i++){
+            var curTick = (minY + step*i).toPrecision(1); // current tick
+            if(curTick != preTick){
+              ticks.push(curTick);
+              preTick = curTick;
+            }
+          }
+          return ticks;
+        };
+      }
+      this.timeRange.set({
+        'startTime': this.minX,
+        'endTime': this.maxX,
+      });
+      // this.timeRange.trigger('change');
       this.data = data;
     },
-
+   
     destroy: function() {
       // From StackOverflow with love.
       this.undelegateEvents();

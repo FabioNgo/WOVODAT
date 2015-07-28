@@ -181,8 +181,13 @@ class SeismicRepository {
 	}
 
 	public static function getStationData( $table, $code, $component ) {
-		foreach (self::$infor as $key => $type) if ( $type["data_type"] == $table ) 
-			return call_user_func_array("self::getStationData_".$key, array( $code, $component) );
+		foreach (self::$infor as $key => $type) {
+			if ( $type["data_type"] == $table ) {
+				// var_dump(self::$infor);
+				return call_user_func_array("self::getStationData_".$key, array( $code, $component) );
+				
+			}
+		}
 	} 
 
 	public static function getStationData_sd_evs( $code, $component ) {
@@ -208,8 +213,11 @@ class SeismicRepository {
 			if ( !is_null( $row["sd_evs_time_ms"] ) ) $time += floatval( $row["sd_evs_time_ms"] );
 			$temp = array( "time" => intval(1000 * $time) , 
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;
@@ -237,8 +245,11 @@ class SeismicRepository {
 			$time = strtotime($row["sd_int_time"]);
 			$temp = array( "time" => intval(1000 * $time) , 
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;
@@ -254,6 +265,7 @@ class SeismicRepository {
 		$filter = "";
 		foreach (self::$infor["sd_rsm"]["params"] as $type) if ( $type["name"] == $component ) {
 			$attribute = $type["cols"];
+			// echo($attribute);
 			if ( array_key_exists("filter", $type) ) {
 				$filter = $type["filter"];
 				$filterQuery = ", b.".$filter;
@@ -265,8 +277,11 @@ class SeismicRepository {
 		foreach ($res as $row) {
 			$temp = array( "time" => 1000*strtotime($row["sd_rsm_stime"]) , 
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;
@@ -293,8 +308,11 @@ class SeismicRepository {
 		foreach ($res as $row) {
 			$temp = array( "time" => 1000*strtotime($row["sd_ssm_stime"]) , 
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;
@@ -322,8 +340,11 @@ class SeismicRepository {
 		foreach ($res as $row) {
 			$temp = array( "time" => 1000*strtotime($row["sd_evn_time"]) , 
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;
@@ -337,8 +358,10 @@ class SeismicRepository {
 		$attribute = "";
 		$filterQuery = "";
 		$filter = "";
+
 		foreach (self::$infor["sd_ivl"]["params"] as $type) if ( $type["name"] == $component ) {
 			$attribute = $type["cols"];
+			// var_dump($attribute);
 			if ( array_key_exists("filter", $type) ) {
 				$filter = $type["filter"];
 				$filterQuery = ", b.".$filter;
@@ -349,13 +372,21 @@ class SeismicRepository {
 			//var_dump($res);
 		}
 		foreach ($res as $row) {
+			
 			$stime = strtotime($row["sd_ivl_stime"]);
+// var_dump(1000*$stime);
 			$etime = strtotime($row["sd_ivl_etime"]);
-			$temp = array( "stime" => intval(1000 * $stime) ,
-						   "etime" => intval(1000 * $etime) ,
+
+			$temp = array( "stime" => floatval(1000 * $stime) ,
+						   "etime" => floatval(1000 * $etime) ,
+						   "time" => floatval(1000*($stime+$etime)/2),
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
+			// var_dump($temp);
 			array_push($result, $temp );			
 		}
 		return $result;
@@ -391,6 +422,7 @@ class SeismicRepository {
 			$etime = strtotime($row["sd_trm_etime"]);
 			$temp = array( "stime" => intval(1000 * $stime) ,
 						   "etime" => intval(1000 * $etime) ,
+						   "time" => floatval(1000*($stime+$etime)/2),
 										 "value" => floatval($row[$attribute]) );
 			if ($filter != "") {
 				$temp["filter"] = $row[$filter];

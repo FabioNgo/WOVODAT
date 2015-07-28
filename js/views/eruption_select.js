@@ -3,8 +3,9 @@ define(function(require) {
   var $ = require('jquery'),
       Backbone = require('backbone'),
       _ = require('underscore'),
+      Eruption = require('models/eruption'),
       template = require('text!templates/eruption_select.html');
-
+          
   return Backbone.View.extend({
     el: '',
     className : 'eruption-select',  
@@ -15,38 +16,86 @@ define(function(require) {
     },
     
     initialize: function(options) {
-      _(this).bindAll('render', 'fetchEruptions', 'changeEruption');
+      _(this).bindAll('render', 'changeEruption');
       
       this.observer = options.observer;
-      this.volcano = options.volcano;
-      this.selectingEruption = options.selectingEruption;
-
-      this.listenTo(this.volcano, 'change', this.fetchEruptions);
-      this.listenTo(this.collection, 'sync', this.render);
-      this.listenTo(this.selectingEruption, 'change', this.changeEruption);
+      this.selectingEruptions = options.selectingEruptions;
+      this.collection = options.collection;
+      this.availableEruptions = [];
+    },
+    
+    fetchEruptions: function(vd_id) {
+      this.collection.changeVolcano(vd_id);
+      this.availableEruptions = this.collection.getAvailableEruptions();
+      
     },
 
-    fetchEruptions: function() {
-      this.collection.changeVolcano(this.volcano.get('vd_id'));
-    },
-
-    changeEruption: function(e) {
-      this.$el.find('select').val(this.selectingEruption.get('ed_id'));
+    changeEruption: function(selectingEruption) {
+      this.$el.find('select').val(selectingEruption.get('ed_id'));
       this.$el.find('select').change();
     },
-
+    selectingTimeRangeChanged: function(timeRange){
+      this.availableEruptions = this.collection.getAvailableEruptions(timeRange);
+      this.show();
+    },
+   
     render: function() {
+      var selectingEruption = this.selectingEruptions.models[0];
       this.$el.html(this.template({
-        eruptions: this.collection.models
+        eruptions: this.availableEruptions,
+        selectingEruption: selectingEruption
       }));
     },
 
     onChangeEruption: function() {
-      var ed_id = this.$el.find('select').val(),
-          startTime = this.collection.get(ed_id).get('ed_stime');
+      var ed_id = this.$el.find('select').val();
+      // if(ed_id)
+      // var startTime = this.collection.get(ed_id).get('ed_stime');
+      this.selectingEruptions.reset();
+      if(ed_id == -1){
+        this.selectingEruptions.add(new Eruption({'ed_id':-1})); // select ----
+      }else{
+        this.selectingEruptions.add(this.collection.get(ed_id));  
+      }
+      
+      // this.selectingEruption.set('ed_id', ed_id);
+      // this.selectingEruption.trigger('change');
+      // this.observer.trigger('change', this.selectingEruption);
+    },
 
-      this.selectingEruption.set('ed_id', ed_id);
-      this.observer.trigger('change-start-time', startTime);
+    //hide eruption_select from page
+    hide: function(){
+      this.$el.html("");
+      this.selectingEruptions.length = 0;
+      this.trigger('hide');
+    },
+
+    // show eruption_select on page
+    show: function(){
+      // this.fetchEruptions(this.volcano);
+      
+      // this.fetchEruptions();
+      this.selectingEruptions.length = 0;
+      this.selectingEruptions.add(new Eruption({'ed_id':-1})); // select ----
+      this.render();
+    },
+
+    //when no filter select, eruption not appear
+    selectingFiltersChanged: function(selectingFilters) {
+      if (selectingFilters.length == 0) {
+        this.hide();
+      }else{
+        this.show();
+      }
+      
+    },
+
+    destroy: function() {
+      // From StackOverflow with love.
+      this.undelegateEvents();
+      this.$el.removeData().unbind(); 
+      this.remove();  
+      Backbone.View.prototype.remove.call(this);
     }
   });
 });

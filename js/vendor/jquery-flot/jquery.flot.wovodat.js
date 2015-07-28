@@ -884,7 +884,7 @@ var jQuery = $;//Assign local jQuery variable with imported $
                     s.data = d[i];
                 res.push(s);
             }
-
+            // console.log(res);
             return res;
         }
 
@@ -1303,7 +1303,7 @@ var jQuery = $;//Assign local jQuery variable with imported $
                     return !$(this).hasClass("flot-overlay") && !$(this).hasClass('flot-base');
                 }).remove();
 
-            if (placeholder.css("position") == 'static')
+            // if (placeholder.css("position") == 'static')
                 placeholder.css("position", "relative"); // for positioning labels and overlay
 
             surface = new Canvas("flot-base", placeholder);

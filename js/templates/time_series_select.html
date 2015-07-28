@@ -1,14 +1,59 @@
-<% if (!_.isEmpty(timeSeries)) { %>
-  <h3>List of available data</h3>
-  <div class="time-series-selection-container">
-    <% _.forEach(timeSeries, function(timeSerie) { %>
-    <input type="checkbox" value="<%= timeSerie.get('sr_id') %>"/>
-    	<%= timeSerie.get("data_type")  
-          + ( timeSerie.has('component') ? '-' + timeSerie.get('component') : ""  )
-          + ( timeSerie.has('station_code') ?  " (" + timeSerie.get('station_code') + ")" : ""  )   %>
-    	<br/>
+<%
+var seriesCategories = []; 
+var flag;
+var curCategory = "";
+var maxNumCol = 4;
+var colWidth = 100.0/3;
+var count = 0;
+
+if (!_.isEmpty(timeSeries)) { 
+	
+	
+	
+	%>
+    <div class="time-serie-select">
+    <div class="title">Available Data:</div>
+    <div class="time-serie-select-container" id="time-serie-select">
+
+	<table  class="time-serie-select-table">
+    <% _.forEach(timeSeries, function(timeSerie) { 
+
+    	if(curCategory != timeSerie.get('category')){
+    		
+    		if(curCategory != ""){ %>
+            <!-- end 1 category -->
+    			</div>
+    			
+    			</td>
+    			
+    			<% 
+	    		count = (count+1)%maxNumCol; 
+	    		if(count == 0){ %>
+                <!-- end last group cat , go to the new row -->
+	    			</tr>
+
+	    		<%}
+    		}
+    		curCategory = timeSerie.get('category'); 
+    		if(count==0) { %>
+                <!-- start new group cat -->
+    			<tr class="group-cat">
+    		<% }
+    		%>
+            <!-- list categories -->
+    		<td class="category">
+    			<input type="checkbox" name ="category" value="<%= timeSerie.get('category') %>"/> <%= timeSerie.get('category') %>
+    				<div style="padding-top:5px">
+    		<%
+
+		}
+    	%>             <!-- list stations -->
+    					<ul class="list-station"><input  type="checkbox" name = "<%= timeSerie.get('category') %>" value="<%= timeSerie.get('sr_id') %>"/>
+    					 <%= timeSerie.get('station_code') %> (<%= timeSerie.get('component') %>)</ul>
     <% }); %>
-  </div>
+    </table>
+  </div><!--end time serie select container -->
 <% } else { %>
-  <h3>No time serie found.</h3>
+  <div class="message">No time serie found.</div>
 <% } %>
+    </div>

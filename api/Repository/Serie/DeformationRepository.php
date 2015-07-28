@@ -221,8 +221,11 @@ class DeformationRepository {
 			if ( !is_null( $row["dd_tlt_timecsec"] ) ) $time += floatval( $row["dd_tlt_timecsec"] );
 			$temp = array( "time" => intval(1000 * $time) , 
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;
@@ -249,8 +252,11 @@ class DeformationRepository {
 		foreach ($res as $row) {
 			$temp = array( "time" => 1000*strtotime($row["dd_edm_time"]) , 
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;
@@ -270,7 +276,7 @@ class DeformationRepository {
 				$filter = $type["filter"];
 				$filterQuery = ", b.".$filter;
 			}
-			$query = "SELECT b.dd_tlv_stime, b.dd_tlv_etime, b.$attribute $filterQuery $cc from ds a, dd_tlv b where a.ds_code = %s and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_tlv_pubdate <= now() and b.$attribute is not null order by dd_tlv_stime desc";
+			$query = "SELECT b.dd_tlv_stime, b.dd_tlv_etime, b.$attribute $filterQuery $cc from ds a, dd_tlv b where a.ds_code = %s and a.ds_id = b.ds_id and a.ds_pubdate <= now() and b.dd_tlv_pubdate <= now() and b.$attribute is not null order by $ desc";
 			$db->query($query, $code);
 			$res = $db->getList();
 		}
@@ -278,8 +284,11 @@ class DeformationRepository {
 			$temp = array(  "stime" => 1000*strtotime($row["dd_tlv_stime"]) ,
 							"etime" => 1000*strtotime($row["dd_tlv_etime"]) ,
 							"value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = "";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;
@@ -307,8 +316,11 @@ class DeformationRepository {
 			$time = strtotime($row["dd_str_time"]);
 			$temp = array( "time" => intval(1000 * $time) , 
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;
@@ -336,8 +348,11 @@ class DeformationRepository {
 			$time = strtotime($row["dd_ang_time"]);
 			$temp = array( "time" => intval(1000 * $time) , 
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;
@@ -365,8 +380,11 @@ class DeformationRepository {
 			$time = strtotime($row["dd_gps_time"]);
 			$temp = array( "time" => intval(1000 * $time) , 
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;
@@ -394,8 +412,11 @@ class DeformationRepository {
 			$temp = array(  "stime" => 1000*strtotime($row["dd_gpv_stime"]) ,
 							"etime" => 1000*strtotime($row["dd_gpv_etime"]) ,
 							"value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;
@@ -423,8 +444,11 @@ class DeformationRepository {
 			$time = strtotime($row["dd_lev_time"]);
 			$temp = array( "time" => intval(1000 * $time) , 
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;

@@ -1,9 +1,8 @@
 #main {
   background-color: #FFF;
-  margin-top: -10px;
-  margin-bottom: -50px;
   padding: 10px;
   min-height: 50px;
+  margin-bottom: 50px;
 }
 
 .serie-graph {
@@ -20,38 +19,108 @@
   opacity: 0.8;
 }
 
-.time-series-selection-container {
-  width: 770px;
-  height: 100px;
-  padding: 6px;
-  margin: 10px;
-  overflow: auto;
-  border: 1px solid #575757;
-}
-
-.filter-selection-container {
-  width: 200px;
-  height: 40;
-  padding: 6px;
+.time-serie-select-container {
+  
+  height: 30%;
   margin: 5px;
   overflow: auto;
   border: 1px solid #575757;
-  margin-left: 20px;
-}
+  display: block;
+  
 
-.mgt20 {
-  margin-top: 20px;
 }
+table.time-serie-select-table{
+    table-layout : fixed;
+    width: 100%
+}
+.title {
+   margin: 6px 6px 6px 6px;
+   display: block;
+   font-weight: bold;
+}
+.message {
+   margin: 6px 6px 6px 6px;
+   display: block;
+   font-style: italic;
+}
+.time-serie-select{
+  overflow: auto;
+  display: block;
+}
+.time-serie-select-table tbody{
+  table-layout: fixed;
+  border-width: 1px;
+  border-color: red;
+  white-space: normal;
+  line-height: normal;
+  font-weight: normal;
+  font-size: 12px;
+  font-variant: normal;
+  font-style: normal;
+  color: -webkit-text;
+  vertical-align:top;
+  text-align: start;
+}
+.filter-select{
+  overflow: auto;
+  display: block;
+}
+.filter-select-container {
+  
+ 
+  margin: 5px;
+  padding: 6px;
+  overflow: auto;
+  border: 1px solid #575757;
+  display: block;
+  
 
+}
 .volcano-select {
-  display: inline-block;
-  margin-right: 10px;
+  
+ 
+  margin: 6px;
+  overflow: auto;
+  display: block;
+  
+
+}
+.category {
+    padding: 6px;
+    
+}
+.list-station {
+    padding-left: 10px;
+}
+.group-cat {
+    /*display: -webkit-box;*/
+    /*display: -moz-box;*/
 }
 
-.eruption-select {
-  display: inline-block;
-}
 
-.mgt15 {
-  margin-top: 15px;
+div.xAxis div.tickLabel 
+{    
+    /*transform-origin: right;*/
+    transform:  rotate(-90deg) translate(-20px);
+    /*transform: rotate(-90deg);*/
+    -ms-transform:rotate(-90deg) translate(-20px); /* IE 9 */
+    -moz-transform:rotate(-90deg) translate(-20px); /* Firefox */
+    -webkit-transform:rotate(-90deg) translate(-20px); /* Safari and Chrome */
+    -o-transform:rotate(-90deg) translate(-20px); /* Opera */
+    
+}
+.eruption-select{
+  margin: 6px;
+  margin-top: 50px;
+}
+.eruption-graph{
+  margin: 6px;
+}
+.overview-graph{
+
+  margin: 6px;
+}
+.time-serie-graph{
+  margin: 6px;
+  margin-top: 50px;
 }

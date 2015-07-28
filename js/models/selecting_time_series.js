@@ -5,12 +5,13 @@ define(['jquery', 'backbone'], function($, Backbone) {
     initialize: function() {
       this.set({
         selectings: [],
-        MAX_N_SERIES: 3
+        //MAX_N_SERIES: 
       });
     },
-
+    // @params: sr_id: id of time serie
     select: function(sr_id) {
-      if (this.get('selectings').indexOf(sr_id) === -1 && this.get('selectings').length < this.get('MAX_N_SERIES')) {
+      
+      if (this.get('selectings').indexOf(sr_id) === -1 ) {
         this.get('selectings').push(sr_id);
         this.trigger('select', sr_id);
       }

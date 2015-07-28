@@ -3,6 +3,8 @@ define(function(require) {
   var $ = require('jquery'),
       Backbone = require('backbone'),
       _ = require('underscore'),
+      Filter = require('models/filter'),
+      Filters = require('collections/filters'),
       template = require('text!templates/filter.html');
       
   return Backbone.View.extend({
@@ -17,53 +19,108 @@ define(function(require) {
     },
     
     initialize: function(options) {
-      _(this).bindAll('render', 'OptionForFilter','prepareDataAndRender', 'onChange' );
-      this.filter = options.selectingFilter;
-      this.filterObserver = options.filterObserver;
-
-      this.listenTo(this.model, 'sync', this.prepareDataAndRender); 
-         
+      
+      this.observer = options.observer;
+      this.selectingTimeSeries = options.selectingTimeSeries;
+      this.selectingFilters = options.selectingFilters;
+      this.filters = new Filters;
     },
-
-    render: function(options) {
-      var displayName = this.model.getDisplayName();
-      this.$el.html(this.template({
-        options: options,
-        name : displayName
-      }));
+    selectingTimeSeriesChanged: function(selectingTimeSeries){
+      this.selectingTimeSeries = selectingTimeSeries;
+      // this.filters.reset();
+      if(this.selectingTimeSeries.length == 0){
+        this.hide();
+      }else{
+        this.render(this.filters);  
+      }
+      
     },
-    
-    prepareDataAndRender: function() {
-      var options = {}, data = this.model.get('data');
-      options = this.OptionForFilter();
-      this.render(options);
-      if ( options.length == 0 ) {
-        this.filter.add({filter : undefined});
+    getFilter: function(timeSerie){
+      var data = timeSerie.get('data');
+      if(data == undefined){
+        return;
+      }
+      
+      for (var i = 0; i < data.length; i++) {
+        this.filters.push(timeSerie,data[i].filter);
       }
 
     },
-    
-    OptionForFilter: function() {
-      var data = this.model.get('data'),      
-        list=[],
-        a = [];
-      data.forEach( function(ds) {
-        if ( ds.filter && _.indexOf( list, ds.filter) == -1 ) 
-          list.push(ds.filter); 
-      });
-
-      return list;
+    updateSelectingFilters: function(){
+      /* remove timeseries which are no longer selected*/
+      for(var i = 0;i<this.selectingFilters.length;i++){
+        var pos = -1;
+        for(var j = 0;j<this.selectingTimeSeries.length;j++){
+          
+          if(this.selectingTimeSeries.models[j].get('sr_id') == this.selectingFilters.models[i].timeSerie.get('sr_id')){
+            pos = j;
+            break;
+          }
+          
+        }
+        if(pos == -1){
+            this.selectingFilters.remove(this.selectingFilters.models[i]);
+            i--;
+          }
+      }
     },
+    render: function(options) {
+      this.filters.reset();
+      /* get filter from selecting Time Series */
+      var models = this.selectingTimeSeries.models;
+      for (var i = 0; i < models.length; i++) {
+        this.getFilter(models[i]);
+
+      };
+      /*and update selecting Filters*/
+      this.updateSelectingFilters();
+
+      var filters = this.filters.getAllFilters();
+      /* if timeSerie has no filter ( filter = " "), select by default */
+      for(var i = 0; i< filters.length;i++){
+        if(filters[i].filter == " "){
+          var timeSerie = this.selectingTimeSeries.getTimeSerie(filters[i].timeSerie);
+          this.selectingFilters.push(timeSerie,filters[i].filter);
+        }
+      }
+      this.selectingFilters.trigger('update');
+      var selectingFilters = this.selectingFilters.getAllFilters();
+      /* check selected filters */
+      for(var i =0;i<filters.length;i++){
+        for(var j=0;j<selectingFilters.length;j++){
+          if(filters[i].name == selectingFilters[j].name && filters[i].timeSerie == selectingFilters[j].timeSerie){
+            filters[i].isChecked = true;
+            break;
+          }else{
+            filters[i].isChecked = false;
+          }
+        }
+      }
+      this.$el.html(this.template({
+        filters : filters
+      }));
+    },
+    hide: function(){
+      this.$el.html("");
+      this.selectingFilters.reset();
+      this.trigger('hide');
+
+    },
+    
     
     onChange: function(event) {
       var input = event.target,
           value = $(input).val();
+      var timeSerie = this.selectingTimeSeries.getTimeSerie(value);
+      var filter = $(input).attr('name');
       if ($(input).is(':checked')) {
-        this.filter.add( { filter : value } );
+        
+        this.selectingFilters.push(timeSerie,filter);
       }
       else {
-        this.filter.remove(this.filter.get(value));
+        this.selectingFilters.pop(timeSerie,filter);
       }
+      this.selectingFilters.trigger('update');
     },
     
     destroy: function() {

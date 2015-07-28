@@ -3,10 +3,10 @@ define(function(require) {
   var $ = require('jquery'),
       Backbone = require('backbone'),
       _ = require('underscore'),
-      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection' , 'jquery.flot.axislabels']),
+      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection']),
       serieTooltipTemplate = require('text!templates/tooltip_serie.html'),
       Tooltip = require('views/tooltip'),
-      Filter = require('views/filter'),
+      TimeRange = require('models/time_range'),
       DateHelper = require('helper/date');
 
   var template = require("text!templates/time_serie_graph.html");
@@ -14,160 +14,245 @@ define(function(require) {
   return Backbone.View.extend({    
     template : _.template(template),
     initialize: function(options) {
-      _(this).bindAll('prepareDataAndRender', 'onTimeRangeChange', 'onHover', 'onPan');
+      // _(this).bindAll(
+      //   // 'prepareDataAndRender',
+      //   'onTimeRangeChange'
+      //   // 'onHover',
+      //   // 'onPan'
+      // );
+      this.filters = options.filters;
 
-      this.timeRange = options.timeRange;
-      this.filter = options.filter;
-
-      //console.log(this.filter);
-      
+      // console.log(this.timeSerie);
+      this.timeRange = new TimeRange();
+      // this.timeRange = options.timeRange;
       this.tooltip = new Tooltip({
         template: serieTooltipTemplate,
         model : this.model
       });
-
-      this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
-      this.listenTo(this.filter, "change" , this.prepareDataAndRender);
-
+      this.prepareData();
+      // this.model.fetch();
+      // this.show();
+      
+      // this.listenTo(this.model, 'change', this.prepareDataAndRender);
     },
 
-    onTimeRangeChange: function() {
-      this.render();
+    timeRangeChanged: function(TimeRange){
+      if(TimeRange == undefined){
+        return;
+      }
+      this.minX = TimeRange.get('startTime');
+      this.maxX = TimeRange.get('endTime');
+      // this.render();
     },
 
     onHover: function(event, pos, item) {
-      this.tooltip.update(pos, item);
+      var tooltip = event.data;
+      tooltip.update(pos, item);
     },
 
-    onPan: function() {
-      var startTime = this.graph.getAxes().xaxis.options.min,
-          endTime = this.graph.getAxes().xaxis.options.max;
+    // onPan: function() {
+    //   var startTime = this.graph.getAxes().xaxis.options.min,
+    //       endTime = this.graph.getAxes().xaxis.options.max;
       
-      this.stopListening(this.timeRange, 'change');
-      this.timeRange.set({
-        startTime: startTime,
-        endTime: endTime
-      });
-      this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
+    //   this.stopListening(this.timeRange, 'change');
+    //   this.timeRange.set({
+    //     startTime: startTime,
+    //     endTime: endTime
+    //   });
+    //   this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
+    // },
+    show: function(){
+      
+      // this.timeRangeChanged(this.timeRange);
+      this.render();
     },
-
     render: function() {
-      var param_ds = {
-            color: '#5EB7FF',
-            label: 'Data Series',
-            data: this.data,
-            bars: {
-              show: this.bars,
-              wovodat: true
+      // this.data = this.timeSerie.get('data');
+      if(this.data==undefined){
+        return;
+      }
+      // console.log(this.timeSerie);
+      this.$el.html("");
+      // var date = new DateHelper();
+      
+      // console.log(data);
+      
+      
+
+      
+      // console.log(this.timeSerie);
+      var options = {
+            series: {
+              lines: { 
+                show: true
+              },
             },
-            lines: {
-              show: this.lines,
-              wovodat: true
+            xaxis: { 
+              mode:'time',
+              timeformat: "%d-%b-%Y",
+              autoscale: true,
+              min: this.minX,
+              max: this.maxX
             },
-            points : {
-              show: this.points,
-              symbol: "circle",
-              wovodat: true
+            yaxis: {
+              show: true,
+              tickFormatter: function(val, axis) { 
+                // console.log(val);
+                if(val > 9999 || val <-9999){
+                  val = val.toPrecision(1);
+                }else{
+                  
+                }
+                return val
+              },
+              // max: this.maxY,
+              // min: this.minY,
+              ticks: this.ticks,
+              labelWidth: 30
             },
-            dataType: 'ds'
-          },
-          option = {
             grid: {
               hoverable: true,
             },
-            xaxis: {
-              min: this.timeRange.get('startTime'),
-              max: this.timeRange.get('endTime'),
-              mode: 'time',
-              autoscale: true
+            tooltip:{
+              show: true,
             },
-            yaxis: {
-              //axisLabel: "\u03BC Radians",
-              //axisLabelUseCanvas: true,
-              //axisLabelFontSizePixels : 10,
-              min: this.minValue,
-              max: this.maxValue,
-              autoscale: true,
-              panRange: false,
-              zoomRange: false
-            },
-            pan: {
-              interactive: true
-            },
-            zoom: {
-              interactive: true
-            }
+            
           };
-
-      this.$el.html( this.template( {
-        name : this.filter.get("filter")
-      }) );
-
-      this.graphHolder = this.$el.find("div").first();
-
-      this.graphHolder.width(800);
-      this.graphHolder.height(200);
-
-      this.graph = $.plot(this.graphHolder, [param_ds], option);
-      this.graphHolder.bind('plothover', this.onHover);
-      this.graphHolder.bind('plotpan', this.onPan);
-      this.graphHolder.bind('plotzoom', this.onPan);
-
-      return this;
-    },
-
-    prepareDataAndRender: function() {
-      // var i,
-      //     data = this.model.get('data'),
-      //     a = [],
-      //     category = this.model.get('category'),
-      //     selectedFilter = this.filter.get('filter'),
-      //     that = this;
-      // //console.log(selectedFilter);
-      // if (data[0] && data[0].stime)
-      //   this.bars = true;
-      // if (data[0] && data[0].time)
-      //   this.lines = true;
-
-      // // special for sd_evn
-      // if ( this.model.get("data_type") == "Evn" ) {
-      //   this.lines = false;
-      //   this.bars = false;
-      //   this.points = true;
-      // }
-
-      // this.maxValue = 0;
-      // this.minValue = 0;
-      // this.model.get('data').forEach(function(ds) {
-      //   if ( (!selectedFilter)  || _.isEqual(ds.filter, selectedFilter)) {
-      //     ds.formattedStartTime = DateHelper.formatDate(ds.stime);
-      //     ds.formattedEndTime = DateHelper.formatDate(ds.etime);
-      //     if (ds.stime)
-      //       a.push([ds.stime, ds.value, 0, ds.etime - ds.stime, ds]);
-      //     else 
-      //       a.push([ds.time, ds.value, 0, 0 , ds ]);
-      //     that.maxValue = Math.max(that.maxValue, ds.value);
-      //     that.minValue = Math.min(that.minValue, ds.value);
-      //   }
+          
+      if (!this.data || !this.data.length) {
+        this.$el.html('');
+        return;
+      }
+      // console.log(this.data);
+      this.$el.width('auto');
+      this.$el.height(200);
+      this.$el.addClass('time-serie-graph');
+      // this.$el.bind('pageshow',function(){    
+      //   $.plot(this.$el, this.data, options);
       // });
-      // this.data = a;
-
-      // if ( this.model.get("data_type") == "Evn" && this.model.get("component") == "Earthquake" ) {
-      //   this.prepareDataForEarthquake();
-      // }
-
-      var list = this.model.prepareDataForGraph(this.filter);
-
-      _.extend(this, list);
-
-      // this.bars = list.bars;
-      // this.lines = list.lines;
-      // this.points = list.points;
-      // this.data = list.data; 
-      // this.maxValue = list.maxValue; 
-      // this.minValue = list.minValue;
+      this.graph = $.plot(this.$el, this.data, options);
+      // console.log(this.graph);
+      this.$el.bind('plothover', this.tooltip,this.onHover);
+      var eventData = {
+        startTime: this.startTime,
+        endTime: this.endTime,
+        param_ds: this.param_ds,
+        graph: this.graph,
+        el: this.$el
+      }
+      // this.$el.bind('plotzoom',eventData, this.onZoom);
+    },
+    onZoom: function(event,plot){
+      var option = plot.getOptions();
+      var xaxis = plot.getXAxes()[0];
+      var data = event.data;
+      /* The zooming range cannot wider than the original range */
+      if(xaxis.min<data.startTime || xaxis.max > data.endTime){
+        option.xaxis.min = data.startTime;
+        option.xaxis.max = data.endTime; 
+        event.data.graph = $.plot(event.data.el,[data.param_ds],option);
+      }
       
-      this.render(); 
+      
+      
+      
+    },
+    // setup effect for the graph
+    formatGraphAppearance: function(data,timeSerieName, filterName){
+      
+      return {
+        data: data,
+        label: filterName + ":"+timeSerieName,
+        lines: { 
+          show: true
+        },
+        shadowSize: 3,
+        points: {
+          show: true,
+          radius: 1,
+          symbol: "circle",
+          // fillColor: "#EDC240"
+        },
+        // color: "#EDC240"
+      }
+    },
+    prepareData: function() {
+      if(this.filters == undefined){
+        this.data = undefined;
+        return;
+      }
+      var minX = undefined,
+          maxX = undefined,
+          minY = undefined,
+          maxY = undefined,
+          data = [],
+          i;
+      
+      
+
+      for(var j = 0; j<this.filters.name.length;j++){ 
+        var list = [];
+        var filterData = this.filters.timeSerie.getDataFromFilter(this.filters.name[j])
+        filterData.forEach(function(d) {
+          // console.log(d);
+          // var start_time = d.time;
+          // var end_time = d.time;
+          var time = d.time;
+          var value = d.value;
+          // d.stime_formated = DateHelper.formatDate(d.stime);
+          // d.etime_formated = DateHelper.formatDate(d.etime);
+          d.time_formated = DateHelper.formatDate(d.time);
+          // var x = d.start_time || d.time;
+          if (minX === undefined || time < minX){
+            minX = time;
+          }
+          if (maxX === undefined || time > maxX){
+            maxX = time;
+          }
+          if (minY === undefined || value < minY){
+            minY = value;
+          }
+          if (maxY === undefined || value > maxY){
+            maxY = value;
+          }
+
+          list.push([d['time'],d['value']]);
+        });
+        data.push(this.formatGraphAppearance(list,this.filters.timeSerie.getName(),this.filters.name[j]));
+      }
+
+      
+      
+
+      this.minX = minX*0.9;
+      this.maxX = maxX*1.1;
+       if(minY!= undefined){
+        this.minY = minY.toFixed();
+      }else{
+        this.minY = minY;
+      }
+      if(maxY != undefined && minY != undefined){
+        this.ticks = function(){
+          var ticks = [];
+          
+          var step = (maxY - minY) /8.0;
+          var preTick = (minY -step*2).toPrecision(1); // previous tick
+          for(var i = -1;i<=8;i++){
+            var curTick = (minY + step*i).toPrecision(1); // current tick
+            if(curTick != preTick){
+              ticks.push(curTick);
+              preTick = curTick;
+            }
+          }
+          return ticks;
+        };
+      }
+      this.timeRange.set({
+        'startTime': this.minX,
+        'endTime': this.maxX,
+      });
+      // this.timeRange.trigger('change');
+      this.data = data;
     },
 
 
