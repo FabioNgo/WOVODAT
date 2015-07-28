@@ -7,6 +7,7 @@ define(function(require) {
       serieTooltipTemplate = require('text!templates/tooltip_serie.html'),
       Tooltip = require('views/tooltip'),
       TimeRange = require('models/time_range'),
+      MathHelper = require('helper/math'),
       DateHelper = require('helper/date');
 
   return Backbone.View.extend({    
@@ -92,15 +93,7 @@ define(function(require) {
             },
             yaxis: {
               show: true,
-              tickFormatter: function(val, axis) { 
-                // console.log(val);
-                if(val > 9999 || val <-9999){
-                  val = val.toPrecision(1);
-                }else{
-                  
-                }
-                return val
-              },
+              
               // max: this.maxY,
               // min: this.minY,
               ticks: this.ticks,
@@ -230,16 +223,24 @@ define(function(require) {
       if(maxY != undefined && minY != undefined){
         this.ticks = function(){
           var ticks = [];
-          
-          var step = (maxY - minY) /8.0;
-          var preTick = (minY -step*2).toPrecision(1); // previous tick
-          for(var i = -1;i<=8;i++){
-            var curTick = (minY + step*i).toPrecision(1); // current tick
-            if(curTick != preTick){
-              ticks.push(curTick);
-              preTick = curTick;
-            }
+          /** compute exponential Degree **/
+          var expDeg = undefined
+          if(MathHelper.exponentialDegree(minY) < MathHelper.exponentialDegree(maxY)){
+            expDeg = MathHelper.exponentialDegree(maxY);
+          }else{
+            expDeg = MathHelper.exponentialDegree(minY)
           }
+          var step = MathHelper.makeNumber((maxY-minY)/8,expDeg); // step of ticks
+          /**** compute ticks ****/
+          var startTick = MathHelper.makeNumber(minY -step,expDeg); // start tick
+          var endTick = MathHelper.makeNumber(maxY+step,expDeg); // end tick
+          var curTick = startTick;
+          for(var i=0; curTick<endTick;i++){
+            curTick = MathHelper.makeNumber(startTick + i *step,expDeg);
+            ticks.push(curTick);
+            
+          }
+          
           return ticks;
         };
       }
@@ -250,7 +251,7 @@ define(function(require) {
       // this.timeRange.trigger('change');
       this.data = data;
     },
-
+    
     destroy: function() {
       // From StackOverflow with love.
       this.undelegateEvents();

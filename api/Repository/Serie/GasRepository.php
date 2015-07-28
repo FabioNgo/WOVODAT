@@ -173,8 +173,11 @@ class GasRepository {
 		foreach ($res as $row) {
 			$temp = array( "time" => 1000*strtotime($row["gd_time"]) , 
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;
@@ -206,8 +209,11 @@ class GasRepository {
 		foreach ($res as $row) {
 			$temp = array( "time" => 1000*strtotime($row["gd_plu_time"]) , 
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;
@@ -236,8 +242,11 @@ class GasRepository {
 		foreach ($res as $row) {
 			$temp = array( "time" => 1000*strtotime($row["gd_sol_time"]) , 
 										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
+			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
+			}else{
+				$temp["filter"] = " ";
+			}
 			array_push($result, $temp );			
 		}
 		return $result;

@@ -91,7 +91,9 @@ table.time-serie-select-table{
     /*display: -moz-box;*/
 }
 
-
+div.flot-text {
+  margin-right: -10px;
+}
 div.xAxis div.tickLabel 
 {    
     /*transform-origin: right;*/
@@ -113,6 +115,7 @@ div.xAxis div.tickLabel
 .overview-graph{
 
   margin: 6px;
+
 }
 .time-serie-graph{
   margin: 6px;
