@@ -136,15 +136,10 @@ define(function(require) {
       el.width('auto');
       el.height(150);
       el.addClass("eruption-graph");
-      // console.log(param_ed);
-      console.log(option);
-      // console.log(param_ed_phs_phe_erup);
       this.graph = $.plot(el, graph_pram_data, option);
 
       el.bind('plothover', this.onHover);
-      // el.bind('plotpan', this.changeTimeRange);
       el.bind('plotzoom', this.changeTimeRange);
-      // this.changeTimeRange();
     },
 
     getStartingTime: function(ed_stime){
@@ -164,7 +159,7 @@ define(function(require) {
         }
 
         var ed = this.selectingEruption;
-
+        // console.log(ed);
         var ed_stime = ed.get('ed_stime'),
             ed_etime = ed.get('ed_etime'),
             ed_vei = ed.get('ed_vei');

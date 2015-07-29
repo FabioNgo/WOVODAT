@@ -105,6 +105,11 @@ div.xAxis div.tickLabel
     -o-transform:rotate(-90deg) translate(-20px); /* Opera */
     
 }
+div.overview-graph div.flot-text div.yAxis div.tickLabel
+{    
+    color: transparent;
+    
+}
 .eruption-select{
   margin: 6px;
   margin-top: 50px;

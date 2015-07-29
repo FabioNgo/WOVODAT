@@ -70,7 +70,8 @@ define(function(require) {
               autoscaleMargin: 10,
             },
             yaxis: {
-              show: true,
+              // show: true,
+              color: '#00000000',
               tickFormatter: function(val, axis) { 
                 // console.log(val);
                 if(val > 9999 || val <-9999){
@@ -100,6 +101,7 @@ define(function(require) {
       this.$el.width('auto');
       this.$el.height(200);
       this.$el.addClass("overview-graph");
+
       // console.log(this.data);
       this.graph = $.plot(this.$el, this.data, options);
       this.$el.bind('plotselected', this.selectingTimeRange,this.onSelect);

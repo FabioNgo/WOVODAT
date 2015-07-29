@@ -93,9 +93,6 @@ define(function(require) {
             },
             yaxis: {
               show: true,
-              
-              // max: this.maxY,
-              // min: this.minY,
               ticks: this.ticks,
               labelWidth: 30
             },
@@ -116,11 +113,7 @@ define(function(require) {
       this.$el.width('auto');
       this.$el.height(200);
       this.$el.addClass('time-serie-graph');
-      // this.$el.bind('pageshow',function(){    
-      //   $.plot(this.$el, this.data, options);
-      // });
       this.graph = $.plot(this.$el, this.data, options);
-      // console.log(this.graph);
       this.$el.bind('plothover', this.tooltip,this.onHover);
       var eventData = {
         startTime: this.startTime,
@@ -183,15 +176,9 @@ define(function(require) {
         var list = [];
         var filterData = this.filters.timeSerie.getDataFromFilter(this.filters.name[j])
         filterData.forEach(function(d) {
-          // console.log(d);
-          // var start_time = d.time;
-          // var end_time = d.time;
           var time = d.time;
           var value = d.value;
-          // d.stime_formated = DateHelper.formatDate(d.stime);
-          // d.etime_formated = DateHelper.formatDate(d.etime);
           d.time_formated = DateHelper.formatDate(d.time);
-          // var x = d.start_time || d.time;
           if (minX === undefined || time < minX){
             minX = time;
           }
@@ -209,12 +196,12 @@ define(function(require) {
         });
         data.push(this.formatGraphAppearance(list,this.filters.timeSerie.getName(),this.filters.name[j]));
       }
-
-      
-      
-
-      this.minX = minX*0.9;
-      this.maxX = maxX*1.1;
+      this.minX = minX;
+      this.maxX = maxX;
+      if(this.minX == this.maxX){
+        this.minX = this.minX - 86400000;
+        this.maxX = this.minX + 86400000;
+      }
        if(minY!= undefined){
         this.minY = minY.toFixed();
       }else{
