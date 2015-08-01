@@ -33,8 +33,6 @@ define(function(require) {
       this.edphsTooltip = new Tooltip({
         template: edphsTemplate
       });
-      // this.listenTo(this.eruptions, 'sync', this.render);
-      // this.listenTo(this.observer, 'change-start-time', this.updateStartTime);
     },
 
     onHover: function(event, pos, item) {
@@ -50,10 +48,6 @@ define(function(require) {
       }
     },
 
-    // updateStartTime: function(startTime) {
-    //   this.startTime = startTime;
-    //   this.render();
-    // },
     changeEruption: function(selectingEruption){
       if(selectingEruption.get('ed_id') == -1){
         this.hide();
@@ -83,7 +77,9 @@ define(function(require) {
         label: label,
         bars:{
           show: true,
-          barWidth: barWidth
+          barWidth: barWidth,
+          
+
         },
         dataType: dataType
       }
@@ -123,7 +119,7 @@ define(function(require) {
               interactive: false
             },
             zoom: {
-              interactive: false
+              interactive: true
             }
           };
       /** Eruption part **/
@@ -137,11 +133,28 @@ define(function(require) {
       el.height(150);
       el.addClass("eruption-graph");
       this.graph = $.plot(el, graph_pram_data, option);
-
+      var eventData = {
+        startTime: this.minX,
+        endTime: this.maxX,
+        data: this.data,
+        graph: this.graph,
+        el: this.$el,
+        original_option: option
+      };
       el.bind('plothover', this.onHover);
-      el.bind('plotzoom', this.changeTimeRange);
+      el.bind('plotzoom', eventData,this.onZoom);
     },
-
+    onZoom: function(event,plot){
+      var option = event.data.original_option;
+      var xaxis = plot.getXAxes()[0];
+      var data = event.data.data;
+      /* The zooming range cannot wider than the original range */
+      if(xaxis.min<event.data.startTime || xaxis.max > event.data.endTime){
+        option.xaxis.min = event.data.startTime;
+        option.xaxis.max = event.data.endTime;
+        event.data.graph = $.plot(event.data.el,data,option);
+      }
+    },
     getStartingTime: function(ed_stime){
       var date = new Date(ed_stime);
       var year = date.getFullYear();
@@ -171,6 +184,7 @@ define(function(require) {
           'endTime': this.endTime,
         });
         // console.log(this.serieGraphTimeRange);
+        
         this.serieGraphTimeRange.trigger('update',this.serieGraphTimeRange);
         edData = {
             data: [ed_stime, ed_vei],

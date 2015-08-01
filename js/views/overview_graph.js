@@ -5,29 +5,17 @@ define(function(require) {
       _ = require('underscore'),
       flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection','excanvas']),
       TimeRange = require('models/time_range'),
-      MathHelper = require('helper/math');
+      GraphHelper = require('helper/graph');
   return Backbone.View.extend({
     initialize: function(options) {
-      // _(this).bindAll(
-      //   'update',
-      //   'onSelect',
-      //   'onTimeRangeChange',
-      //   'onSelectingTimeRangeChange'
-      //   );
-      
       
       this.serieGraphTimeRange = options.serieGraphTimeRange;
-      // this.computeTimeRange();
       this.timeRange = new TimeRange();
       this.selectingTimeRange = options.selectingTimeRange;
-      // this.listenTo(this.selectingTimeSeries, 'change remove', this.update);
-      // this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
-      // this.listenTo(this.selectingTimeRange, 'change', this.onSelectingTimeRangeChange);
     },
     
     selectingFiltersChanged: function(selectingFilters) {
       this.selectingFilters = selectingFilters;
-      // this.computeTimeRange();
       if(selectingFilters.length == 0){
         this.hide();
       }
@@ -50,8 +38,6 @@ define(function(require) {
       this.trigger('hide');
     },
     render: function() {
-      // console.log(this.selectingTimeSeries);
-      this.$el.html("<div>Overview Graph <br></br></div>")
       
       var options = {
             series: {
@@ -79,7 +65,6 @@ define(function(require) {
                 }else{
                   
                 }
-                
                 return val;
               },
               // max: this.maxY,
@@ -111,25 +96,8 @@ define(function(require) {
       this.prepareData();
       this.render();
     },
-    // setup effect for the graph
-    formatGraphAppearance: function(data,timeSerieName, filterName){
-      
-      return {
-        data: data,
-        label: filterName + ":"+timeSerieName,
-        lines: { 
-          show: true
-        },
-        shadowSize: 3,
-        points: {
-          show: true,
-          radius: 1,
-          symbol: "circle",
-          // fillColor: "#EDC240"
-        },
-        // color: "#EDC240"
-      }
-    },
+    
+    
     prepareData: function() {
       var minX = undefined,
           maxX = undefined,
@@ -143,13 +111,8 @@ define(function(require) {
           var list = [];
           var filterData = filters[i].timeSerie.getDataFromFilter(filters[i].name[j])
           filterData.forEach(function(d) {
-            // console.log(d);
             var time = d.time;
             var value = d.value;
-          // d.stime_formated = DateHelper.formatDate(d.stime);
-          // d.etime_formated = DateHelper.formatDate(d.etime);
-          // d.time_formated = DateHelper.formatDate(d.time);
-          // var x = d.start_time || d.time;
             if (minX === undefined || time < minX){
               minX = time;
             }
@@ -164,7 +127,7 @@ define(function(require) {
             }
             list.push([d['time'],d['value']]);
           });
-          data.push(this.formatGraphAppearance(list,filters[i].timeSerie.getName(),filters[i].name[j]));
+          data.push(GraphHelper.formatGraphAppearance(list,filters[i].timeSerie.getName(),filters[i].name[j]));
           
         }
 
@@ -181,28 +144,7 @@ define(function(require) {
       /** setup y-axis tick **/
       if(maxY != undefined && minY != undefined){
         
-        this.ticks = function(){
-          var ticks = [];
-          /** compute exponential Degree **/
-          var expDeg = undefined
-          if(MathHelper.exponentialDegree(minY) < MathHelper.exponentialDegree(maxY)){
-            expDeg = MathHelper.exponentialDegree(maxY);
-          }else{
-            expDeg = MathHelper.exponentialDegree(minY)
-          }
-          var step = MathHelper.makeNumber((maxY-minY)/8,expDeg); // step of ticks
-          /**** compute ticks ****/
-          var startTick = MathHelper.makeNumber(minY -step,expDeg); // start tick
-          var endTick = MathHelper.makeNumber(maxY+step,expDeg); // end tick
-          var curTick = startTick;
-          for(var i=0; curTick<endTick;i++){
-            curTick = MathHelper.makeNumber(startTick + i *step,expDeg);
-            ticks.push(curTick);
-            
-          }
-          
-          return ticks;
-        };
+        this.ticks = GraphHelper.generateTick(minY,maxY);
       }
       this.timeRange.set({
         'startTime': this.minX,
