@@ -134,9 +134,9 @@ define(function(require) {
       el.addClass("eruption-graph");
       this.graph = $.plot(el, graph_pram_data, option);
       var eventData = {
-        startTime: this.minX,
-        endTime: this.maxX,
-        data: this.data,
+        startTime: this.startTime,
+        endTime: this.endTime,
+        data: graph_pram_data,
         graph: this.graph,
         el: this.$el,
         original_option: option
