@@ -22,7 +22,7 @@ define(function(require) {
       if(timeRange == undefined){
         return this.models;
       }else{
-        
+        var result = [];
         var startTime = timeRange.get('startTime');
         var endTime = timeRange.get('endTime');
         for(var i=0;i<this.models.length;i++){

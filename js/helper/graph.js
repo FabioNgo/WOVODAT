@@ -16,11 +16,16 @@ define(function(require) {
       var startTick = MathHelper.makeNumber(min -step,expDeg); // start tick
       var endTick = MathHelper.makeNumber(max+step,expDeg); // end tick
       var curTick = startTick;
-      for(var i=0; curTick<endTick;i++){
-        curTick = MathHelper.makeNumber(startTick + i *step,expDeg);
+      if(curTick == endTick){
         ticks.push(curTick);
-        
+      }else{
+        for(var i=0; curTick<endTick;i++){
+          curTick = MathHelper.makeNumber(startTick + i *step,expDeg);
+          ticks.push(curTick);
+          
+        }  
       }
+      
       
       return ticks;
     },
