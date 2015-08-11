@@ -13,7 +13,7 @@ define(function(require) {
       EruptionSelect = require('views/eruption_select'),
       EruptionGraph = require('views/eruption_graph'),
       EruptionForecasts = require('collections/eruption_forecasts'),
-      EruptionForecastGraph = require('views/eruption_forecast_graph'),
+      EruptionForecastsGraph = require('views/eruption_forecast_graph'),
       TimeSerie = require('models/serie'),
       TimeSeriesSelect = require('views/time_series_select'),   
       OverviewGraphContainer = require('views/overview_graph_container'),
@@ -47,9 +47,11 @@ define(function(require) {
           volcanoes = new Volcanoes(),
           selectingEruptions = new Eruptions(),
           eruptions = new Eruptions(),
+          eruptionForecasts = new EruptionForecasts,
           selectingVolcano = new Volcano(),
           timeSeries = new TimeSeries(),
           serieGraphTimeRange = new TimeRange(),
+          forecastsGraphTimeRange = new TimeRange(),
           selectingTimeRange = new TimeRange(),
           volcanoSelect = new VolcanoSelect({
             collection: volcanoes,
@@ -81,7 +83,8 @@ define(function(require) {
           }),
 
           eruptionSelect = new EruptionSelect({
-            collection: eruptions,
+            eruptions: eruptions,
+            eruptionForecasts: eruptionForecasts,
             observer: observer,
             selectingEruptions: selectingEruptions
           }),
@@ -91,10 +94,14 @@ define(function(require) {
           eruptionGraph = new EruptionGraph({
             //eruptions: eruptions,
             observer: observer,
-            serieGraphTimeRange: serieGraphTimeRange
-            
+            serieGraphTimeRange: serieGraphTimeRange,
+            forecastsGraphTimeRange: forecastsGraphTimeRange
           }),
+          eruptionForecastsGraph = new EruptionForecastsGraph({
+            observer: observer,
+            eruptionForecasts: eruptionForecasts
 
+          }),
           timeSeriesGraphContainer = new TimeSeriesGraphContainer({
             observer: observer,
             selectingTimeSeries: selectingTimeSeries
@@ -123,9 +130,10 @@ define(function(require) {
             eruptionGraph: eruptionGraph,
             timeSeriesGraphContainer: timeSeriesGraphContainer,
             serieGraphTimeRange: serieGraphTimeRange,
+            forecastsGraphTimeRange: forecastsGraphTimeRange,
             selectingTimeRange: selectingTimeRange,
-            selectingFilters: selectingFilters
-
+            selectingFilters: selectingFilters,
+            eruptionForecastsGraph: eruptionForecastsGraph
           });
       /** Body **/
       // var test = new TimeSerie('58166f4b40cca4e8ed2522b5f00bc756');
@@ -140,6 +148,7 @@ define(function(require) {
       overviewGraphContainer.$el.appendTo(this.$el);
       eruptionSelect.$el.appendTo(this.$el);
       eruptionGraph.$el.appendTo(this.$el);
+      eruptionForecastsGraph.$el.appendTo(this.$el);
       timeSeriesGraphContainer.$el.appendTo(this.$el);
       urlLoader.$el.appendTo(this.$el);
       // new EruptionForecastGraph({

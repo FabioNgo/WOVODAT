@@ -9,7 +9,7 @@ define(function(require) {
       edTemplate = require('text!templates/tooltip_ed.html'),
       edphsTemplate = require('text!templates/tooltip_ed_phs.html'),
       TimeRange = require('models/time_range'),
-      Tooltip = require('views/tooltip');
+      Tooltip = require('views/eruption_tooltip');
 
   return Backbone.View.extend({
     el: '',
@@ -25,6 +25,7 @@ define(function(require) {
       //this.eruptions = options.eruptions;
       this.timeRange = new TimeRange();
       this.serieGraphTimeRange = options.serieGraphTimeRange;
+      this.forecastsGraphTimeRange = options.forecastsGraphTimeRange;
       // this.eruptions = new Array();
       this.selectingEruption = options.selectingEruption;
       this.edTooltip = new Tooltip({
@@ -70,7 +71,7 @@ define(function(require) {
       this.$el.width(0);
       this.trigger('hide');
     },
-    gernerateBarChartFlotData: function(data,color,label,barWidth,dataType){
+    gernerateBarChartFlotData: function(data,color,label,barWidth,dataType,name){
       return {
         data: [data],
         color: color,
@@ -81,7 +82,10 @@ define(function(require) {
           
 
         },
-        dataType: dataType
+        dataType: dataType,
+        name: name,
+        startTime: data[0],
+        endTime: data[0]+barWidth,
       }
     },
     render: function() {
@@ -115,6 +119,7 @@ define(function(require) {
               tickFormatter: function(val, axis) { return val < axis.max ? val.toFixed(0) : 'VEI'; },
               labelWidth: 30
             },
+            
             pan: {
               interactive: false
             },
@@ -122,13 +127,18 @@ define(function(require) {
               interactive: true
             }
           };
-      /** Eruption part **/
-      graph_pram_data.push(this.gernerateBarChartFlotData (data.edData.data, 'Gray','Eruption', data.edData.duration,'ed'));
+      
       /** Phreatic Eruption **/
       var temp = data.ed_phs_data;
       for(var i =0;i<temp.length;i++){
-        graph_pram_data.push(this.gernerateBarChartFlotData(temp[i].data,'#F44336',undefined,temp[i].duration,'ed_phs'));
+        if(i==0){
+          graph_pram_data.push(this.gernerateBarChartFlotData(temp[i].data,'#F44336','Eruption Phase',temp[i].duration,'ed_phs',temp[i].type));
+        }else{
+          graph_pram_data.push(this.gernerateBarChartFlotData(temp[i].data,'#F44336',undefined,temp[i].duration,'ed_phs',temp[i].type));
+        }
       }
+      /** Eruption part **/
+      graph_pram_data.push(this.gernerateBarChartFlotData (data.edData.data, 'Gray','Eruption', data.edData.duration,'ed',""));
       el.width('auto');
       el.height(150);
       el.addClass("eruption-graph");
@@ -186,12 +196,19 @@ define(function(require) {
         // console.log(this.serieGraphTimeRange);
         
         this.serieGraphTimeRange.trigger('update',this.serieGraphTimeRange);
+        this.forecastsGraphTimeRange.set({
+          'startTime': this.startTime,
+          'endTime': this.endTime,
+        });
+        // console.log(this.serieGraphTimeRange);
+        
+        this.forecastsGraphTimeRange.trigger('update',this.forecastsGraphTimeRange);
         edData = {
-            data: [ed_stime, ed_vei],
-            0: 0,
-            duration: ed_etime - ed_stime,
-            attributes: ed.attributes
-          };
+          data: [ed_stime, 0,ed_vei],
+          0: 0,
+          duration: ed_etime - ed_stime,
+          attributes: ed.attributes
+        };
         // endOfTime = Math.max(endOfTime, ed_stime + Const.ONE_YEAR);
 
         ed.get('ed_phs').forEach(function(ed_phs) {

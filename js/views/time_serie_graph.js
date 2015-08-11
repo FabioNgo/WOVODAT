@@ -5,7 +5,7 @@ define(function(require) {
       _ = require('underscore'),
       flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection']),
       serieTooltipTemplate = require('text!templates/tooltip_serie.html'),
-      Tooltip = require('views/tooltip'),
+      Tooltip = require('views/series_tooltip'),
       TimeRange = require('models/time_range'),
       GraphHelper = require('helper/graph'),
       DateHelper = require('helper/date');

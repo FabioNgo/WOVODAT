@@ -45,9 +45,11 @@ define(function(require) {
       this.eruptionGraph = options.eruptionGraph;
       this.timeSeriesGraphContainer = options.timeSeriesGraphContainer;
       this.serieGraphTimeRange = options.serieGraphTimeRange;
+      this.forecastsGraphTimeRange = options.forecastsGraphTimeRange;
       this.selectingTimeRange = options.selectingTimeRange;
       this.filtersSelect = options.filtersSelect;
       this.selectingFilters = options.selectingFilters;
+      this.eruptionForecastsGraph = options.eruptionForecastsGraph;
       //event listeners
       // this.listenTo(this.volcanoSelect,'change',this.onSelectVolcanoChanged)
       this.listenTo(this.selectingVolcano, 'change', this.changeVolcano);
@@ -59,6 +61,7 @@ define(function(require) {
       this.listenTo(this.selectingTimeSeries, 'update', this.selectingTimeSeriesChanged);
       this.listenTo(this.selectingEruptions, 'add', this.changeSelectingEruptions);
       this.listenTo(this.serieGraphTimeRange,'update',this.serieGraphTimeRangeChanged);
+      this.listenTo(this.forecastsGraphTimeRange,'update',this.forecastsGraphTimeRangeChanged);
       this.listenTo(this.selectingTimeRange,'update',this.selectingTimeRangeChanged);
       this.listenTo(this.selectingFilters,'update',this.selectingFiltersChanged);
       /**
@@ -117,6 +120,7 @@ define(function(require) {
     changeSelectingEruptions: function(e){
       // this.eruptionSelect.changeEruption(this.selectingEruption);
       this.eruptionGraph.changeEruption(e);
+      this.eruptionForecastsGraph.changeEruption(e);
     },
     timeSeriesSelectHidden: function(e){
       this.filtersSelect.hide();
@@ -132,10 +136,12 @@ define(function(require) {
     },
     eruptionGraphHidden: function(e){
       this.timeSeriesGraphContainer.hide();
+      this.eruptionForecastsGraph.hide();
 
     },
     eruptionGraphShown: function(e){
       this.timeSeriesGraphContainer.show();
+      this.eruptionForecastsGraph.show();
 
     },
     eruptionSelectHidden: function(e){
@@ -144,10 +150,12 @@ define(function(require) {
       
     },
     serieGraphTimeRangeChanged: function(e){
-      
-      // this.eruptionGraph.timeRangeChanged(e);
-      // console.log(this.serieGraphTimeRange);
+
       this.timeSeriesGraphContainer.serieGraphTimeRangeChanged(this.serieGraphTimeRange);
+    },
+    forecastsGraphTimeRangeChanged: function(e){
+
+      this.eruptionForecastsGraph.forecastsGraphTimeRangeChanged(this.forecastsGraphTimeRange);
     },
     selectingTimeRangeChanged: function(e){
       
