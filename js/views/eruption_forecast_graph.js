@@ -65,7 +65,7 @@ define(function(require) {
     forecastsGraphTimeRangeChanged: function(timeRange){
       this.startTime = timeRange.get('startTime');
       this.endTime = timeRange.get('endTime');
-      
+      this.render();
     },
     
     //show eruption forecast graph

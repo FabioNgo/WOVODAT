@@ -24,6 +24,7 @@ define(function(require) {
         'serieGraphTimeRangeChanged',
         'selectingTimeRangeChanged',
         'selectingFiltersChanged',
+        'eruptionTimeRangeChanged',
         'timeSeriesSelectHidden',
         'filtersSelectHidden',
         'overviewGraphHidden',
@@ -45,6 +46,7 @@ define(function(require) {
       this.eruptionGraph = options.eruptionGraph;
       this.timeSeriesGraphContainer = options.timeSeriesGraphContainer;
       this.serieGraphTimeRange = options.serieGraphTimeRange;
+      this.eruptionTimeRange = options.eruptionTimeRange;
       this.forecastsGraphTimeRange = options.forecastsGraphTimeRange;
       this.selectingTimeRange = options.selectingTimeRange;
       this.filtersSelect = options.filtersSelect;
@@ -64,6 +66,7 @@ define(function(require) {
       this.listenTo(this.forecastsGraphTimeRange,'update',this.forecastsGraphTimeRangeChanged);
       this.listenTo(this.selectingTimeRange,'update',this.selectingTimeRangeChanged);
       this.listenTo(this.selectingFilters,'update',this.selectingFiltersChanged);
+      this.listenTo(this.eruptionTimeRange,'update',this.eruptionTimeRangeChanged);
       /**
       * Events when some part is hidden
       */
@@ -107,6 +110,7 @@ define(function(require) {
       this.overviewGraph.selectingFiltersChanged(this.selectingFilters);
       this.timeSeriesGraphContainer.selectingFiltersChanged(this.selectingFilters);
       this.eruptionSelect.selectingFiltersChanged(this.selectingFilters);
+      
       
     },
     timeSeriesChanged: function(e){
@@ -156,6 +160,9 @@ define(function(require) {
     forecastsGraphTimeRangeChanged: function(e){
 
       this.eruptionForecastsGraph.forecastsGraphTimeRangeChanged(this.forecastsGraphTimeRange);
+    },
+    eruptionTimeRangeChanged: function(e){
+      this.eruptionGraph.eruptionTimeRangeChanged(this.eruptionTimeRange);
     },
     selectingTimeRangeChanged: function(e){
       

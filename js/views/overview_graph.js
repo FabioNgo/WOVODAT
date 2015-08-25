@@ -138,7 +138,7 @@ define(function(require) {
       this.maxX = maxX;
       if(this.minX == this.maxX){
         this.minX = this.minX - 86400000;
-        this.maxX = this.minX + 86400000;
+        this.maxX = this.maxX + 86400000;
       }
       
       /** setup y-axis tick **/

@@ -35,7 +35,11 @@ define(function(require) {
         template: edphsTemplate
       });
     },
-
+    eruptionTimeRangeChanged: function(timeRange){
+      this.startTime = timeRange.get('startTime');
+      this.endTime = timeRange.get('endTime');
+      this.render();
+    },
     onHover: function(event, pos, item) {
       if (!item) {
         this.edTooltip.hide();
@@ -149,6 +153,7 @@ define(function(require) {
         data: graph_pram_data,
         graph: this.graph,
         el: this.$el,
+        self: this,
         original_option: option
       };
       el.bind('plothover', this.onHover);
@@ -158,11 +163,15 @@ define(function(require) {
       var option = event.data.original_option;
       var xaxis = plot.getXAxes()[0];
       var data = event.data.data;
+      var self = event.data.self;
       /* The zooming range cannot wider than the original range */
       if(xaxis.min<event.data.startTime || xaxis.max > event.data.endTime){
         option.xaxis.min = event.data.startTime;
         option.xaxis.max = event.data.endTime;
+        self.setUpTimeranges(option.xaxis.min,option.xaxis.max);
         event.data.graph = $.plot(event.data.el,data,option);
+      }else{
+        self.setUpTimeranges(xaxis.min,xaxis.max);
       }
     },
     getStartingTime: function(ed_stime){
@@ -170,6 +179,22 @@ define(function(require) {
       var year = date.getFullYear();
       var starting_date =  new Date(year,0,0,0,0,0,0);
       return starting_date.getTime();
+
+    },
+
+    setUpTimeranges: function(startTime, endTime){
+      this.serieGraphTimeRange.set({
+        'startTime': startTime,
+        'endTime': endTime,
+      });
+      // console.log(this.serieGraphTimeRange);
+      
+      this.serieGraphTimeRange.trigger('update',this.serieGraphTimeRange);
+      this.forecastsGraphTimeRange.set({
+        'startTime': startTime,
+        'endTime': endTime,
+      });
+      this.forecastsGraphTimeRange.trigger('update',this.forecastsGraphTimeRange);
 
     },
     prepareData: function() {
@@ -189,20 +214,10 @@ define(function(require) {
         var start_date = new Date(ed_stime);
         this.startTime = this.getStartingTime(ed_stime);
         this.endTime = this.startTime+ Const.ONE_YEAR;
-        this.serieGraphTimeRange.set({
-          'startTime': this.startTime,
-          'endTime': this.endTime,
-        });
+        this.setUpTimeranges(this.startTime,this.endTime);
         // console.log(this.serieGraphTimeRange);
         
-        this.serieGraphTimeRange.trigger('update',this.serieGraphTimeRange);
-        this.forecastsGraphTimeRange.set({
-          'startTime': this.startTime,
-          'endTime': this.endTime,
-        });
-        // console.log(this.serieGraphTimeRange);
         
-        this.forecastsGraphTimeRange.trigger('update',this.forecastsGraphTimeRange);
         edData = {
           data: [ed_stime, 0,ed_vei],
           0: 0,

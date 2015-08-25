@@ -13,6 +13,9 @@ define(function(require) {
   return Backbone.View.extend({    
     initialize: function(options) {
       this.filters = options.filters;
+      this.eruptionTimeRange = options.eruptionTimeRange;
+      this.serieGraphTimeRange = options.serieGraphTimeRange;
+      this.forecastsGraphTimeRange = options.forecastsGraphTimeRange;
       this.timeRange = new TimeRange();
       this.tooltip = new Tooltip({
         template: serieTooltipTemplate
@@ -92,6 +95,7 @@ define(function(require) {
         data: this.data,
         graph: this.graph,
         el: this.$el,
+        self: this,
         original_option: options
       }
       this.$el.bind('plotzoom',eventData, this.onZoom);
@@ -100,14 +104,40 @@ define(function(require) {
       var option = event.data.original_option;
       var xaxis = plot.getXAxes()[0];
       var data = event.data.data;
+      var self = event.data.self;
       /* The zooming range cannot wider than the original range */
       if(xaxis.min<event.data.startTime || xaxis.max > event.data.endTime){
         option.xaxis.min = event.data.startTime;
         option.xaxis.max = event.data.endTime;
+
         event.data.graph = $.plot(event.data.el,data,option);
+        self.setUpTimeranges(option.xaxis.min,option.xaxis.max);
+      }else{
+        self.setUpTimeranges(xaxis.min,xaxis.max);
       }
+
     },
-    
+    setUpTimeranges: function(startTime, endTime){
+      // this.serieGraphTimeRange.set({
+      //   'startTime': startTime,
+      //   'endTime': endTime,
+      // });
+      // // console.log(this.serieGraphTimeRange);
+      
+      // this.serieGraphTimeRange.trigger('update',this.serieGraphTimeRange);
+      // this.forecastsGraphTimeRange.set({
+      //   'startTime': startTime,
+      //   'endTime': endTime,
+      // });
+      // this.forecastsGraphTimeRange.trigger('update',this.forecastsGraphTimeRange);
+      // this.eruptionTimeRange.set({
+      //   'startTime': startTime,
+      //   'endTime': endTime,
+      // });
+      // this.eruptionTimeRange.trigger('update',this.eruptionTimeRange);
+
+
+    },
     prepareData: function() {
       if(this.filters == undefined){
         this.data = undefined;

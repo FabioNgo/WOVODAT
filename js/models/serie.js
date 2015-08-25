@@ -5,8 +5,13 @@ define(['jquery', 'backbone'], function($, Backbone) {
     
 
     initialize: function(options) {
-      this.sr_id = options.sr_id;
-      this.url = 'api/?data=time_serie&sr_id=' + options.sr_id;
+     
+        // Your server goes below
+        //options.url = 'http://localhost:8000' + options.url;
+        this.sr_id = options.sr_id;
+        this.url = 'api/?data=time_serie&sr_id=' + options.sr_id;
+    
+      
     },
     getName: function(){
       return ""+this.get('category')+" - " + this.get('station_code')+" (" + this.get('component') +")";

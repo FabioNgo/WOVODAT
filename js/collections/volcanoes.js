@@ -6,6 +6,7 @@ define(function(require) {
 
   return Backbone.Collection.extend({
     model: Volcano,
-    url: 'api/?data=volcano_list'
+    url: 'api/?data=volcano_list',
+    
   });
 });

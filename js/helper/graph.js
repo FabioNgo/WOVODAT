@@ -12,6 +12,9 @@ define(function(require) {
         expDeg = MathHelper.exponentialDegree(min)
       }
       var step = MathHelper.makeNumber((max-min)/8,expDeg); // step of ticks
+      if(step == 0){
+        step = 1;
+      }
       /**** compute ticks ****/
       var startTick = MathHelper.makeNumber(min -step,expDeg); // start tick
       var endTick = MathHelper.makeNumber(max+step,expDeg); // end tick

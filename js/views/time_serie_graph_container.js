@@ -10,8 +10,9 @@ define(function(require) {
   	el: '',
   	initialize : function(options) {
   		this.selectingTimeSeries = options.selectingTimeSeries;
-  		
-
+  		this.serieGraphTimeRange = options.serieGraphTimeRange;
+      this.eruptionTimeRange = options.eruptionTimeRange;
+      this.forecastsGraphTimeRange = options.forecastsGraphTimeRange;
   		this.filterObserver = options.filterObserver;
   		// this.listenTo( this.selectingFilter, "add", this.addGraph );
   		// this.listenTo( this.selectingFilter, "remove", this.removeGraph );
@@ -45,7 +46,10 @@ define(function(require) {
       // });
       var timeSerieGraph = new TimeSerieGraph( {
         // timeRange : this.timeRange,
-        filters: filters
+        filters: filters,
+        eruptionTimeRange: this.eruptionTimeRange,
+        serieGraphTimeRange: this.serieGraphTimeRange,
+        forecastsGraphTimeRange: this.forecastsGraphTimeRange,
       });
       this.graphs.push(timeSerieGraph);
       // this.show();

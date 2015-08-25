@@ -87,6 +87,7 @@ define(function(require) {
 
     //when no filter select, eruption not appear
     selectingFiltersChanged: function(selectingFilters) {
+      this.availableEruptions = this.eruptions.getAvailableEruptions();
       if (selectingFilters.length == 0) {
         this.hide();
       }else{
