@@ -10,7 +10,7 @@ define(function(require) {
     initialize: function(options) {
       
       this.serieGraphTimeRange = options.serieGraphTimeRange;
-      this.timeRange = new TimeRange();
+      this.timeRange = options.overviewGraphTimeRange;
       this.selectingTimeRange = options.selectingTimeRange;
     },
     

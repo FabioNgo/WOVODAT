@@ -54,6 +54,7 @@ define(function(require) {
           forecastsGraphTimeRange = new TimeRange(),
           selectingTimeRange = new TimeRange(),
           eruptionTimeRange = new TimeRange(),
+          overviewGraphTimeRange = new TimeRange(),
           volcanoSelect = new VolcanoSelect({
             collection: volcanoes,
             observer: observer,
@@ -74,7 +75,8 @@ define(function(require) {
           overviewGraph = new OverviewGraph({
             selectingTimeSeries: this.overviewSelectingTimeSeries,
             serieGraphTimeRange: serieGraphTimeRange,
-            selectingTimeRange: selectingTimeRange
+            selectingTimeRange: selectingTimeRange,
+            overviewGraphTimeRange: overviewGraphTimeRange
           }),
 
           overviewGraphContainer = new OverviewGraphContainer({
@@ -98,7 +100,8 @@ define(function(require) {
             observer: observer,
             serieGraphTimeRange: serieGraphTimeRange,
             forecastsGraphTimeRange: forecastsGraphTimeRange,
-            eruptionTimeRange: eruptionTimeRange
+            eruptionTimeRange: eruptionTimeRange,
+            overviewGraphTimeRange: overviewGraphTimeRange
           }),
           eruptionForecastsGraph = new EruptionForecastsGraph({
             observer: observer,

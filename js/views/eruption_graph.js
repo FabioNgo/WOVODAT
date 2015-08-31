@@ -23,7 +23,8 @@ define(function(require) {
       );
       this.observer = options.observer;
       //this.eruptions = options.eruptions;
-      this.timeRange = new TimeRange();
+      this.timeRange = options.eruptionTimeRange;
+      this.overviewGraphTimeRange = options.overviewGraphTimeRange;
       this.serieGraphTimeRange = options.serieGraphTimeRange;
       this.forecastsGraphTimeRange = options.forecastsGraphTimeRange;
       // this.eruptions = new Array();
@@ -121,11 +122,12 @@ define(function(require) {
               panRange: false,
               zoomRange: false,
               tickFormatter: function(val, axis) { return val < axis.max ? val.toFixed(0) : 'VEI'; },
-              labelWidth: 30
+              labelWidth: 30,
+              panRange: false
             },
             
             pan: {
-              interactive: false
+              interactive: true
             },
             zoom: {
               interactive: true
@@ -147,7 +149,7 @@ define(function(require) {
       el.height(150);
       el.addClass("eruption-graph");
       this.graph = $.plot(el, graph_pram_data, option);
-      var eventData = {
+      var eventDataZoom = {
         startTime: this.startTime,
         endTime: this.endTime,
         data: graph_pram_data,
@@ -156,8 +158,40 @@ define(function(require) {
         self: this,
         original_option: option
       };
+      var eventDataPan = {
+        minX: Math.min(this.startTime,this.overviewGraphTimeRange.get('startTime')),
+        maxX: Math.max(this.endTime,this.overviewGraphTimeRange.get('endTime')),
+        data: graph_pram_data,
+        graph: this.graph,
+        el: this.$el,
+        self: this,
+        original_option: option
+      };
       el.bind('plothover', this.onHover);
-      el.bind('plotzoom', eventData,this.onZoom);
+      el.bind('plotzoom', eventDataZoom,this.onZoom);
+      el.bind('plotpan', eventDataPan,this.onPan);
+    },
+    onPan: function(event,plot){
+      var option = event.data.original_option;
+      var xaxis = plot.getXAxes()[0];
+      var data = event.data.data;
+      var self = event.data.self;
+      var minX = Math.min(self.startTime,self.overviewGraphTimeRange.get('startTime'));
+      var maxX = Math.max(self.endTime,self.overviewGraphTimeRange.get('endTime'));
+      if(xaxis.min<minX){
+        option.xaxis.min = minX;
+        option.xaxis.max = minX+Const.ONE_YEAR;
+        self.setUpTimeranges(option.xaxis.min,option.xaxis.max);
+        event.data.graph = $.plot(event.data.el,data,option);
+      }else{
+        if(xaxis.max>maxX){
+          option.xaxis.min = maxX-Const.ONE_YEAR;
+          option.xaxis.max = maxX;
+          self.setUpTimeranges(option.xaxis.min,option.xaxis.max);
+          event.data.graph = $.plot(event.data.el,data,option);
+        }
+        self.setUpTimeranges(xaxis.min,xaxis.max);
+      }
     },
     onZoom: function(event,plot){
       var option = event.data.original_option;
