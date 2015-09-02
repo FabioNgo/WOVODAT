@@ -19,7 +19,7 @@ define(['jquery', 'backbone', 'helper/date'], function($, Backbone, DateHelper) 
         ed_phs[i].formatted_ed_phs_etime = DateHelper.formatDate(e.ed_phs_etime);
       });
     },
-
+    asdfsaldkfklsadlf
     getDate: function() {
       var stime = this.get('ed_stime');
       return DateHelper.formatDate(stime);
