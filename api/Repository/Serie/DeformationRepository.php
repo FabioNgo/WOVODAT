@@ -5,37 +5,67 @@ class DeformationRepository {
 	public static function getTimeSeriesList($vd_id) {
 		$result = array();
 		global $db;
-		$query = "(SELECT  c.ds_code,c.ds_nlat,c.ds_nlon FROM cn a, ds c  WHERE a.vd_id = %d AND a.cn_id = c.cn_id  ORDER BY c.ds_code) UNION (SELECT c.ds_code,c.ds_nlat,c.ds_nlon FROM jj_volnet a, ds c,vd_inf d WHERE a.vd_id = %d AND a.vd_id=d.vd_id AND a.jj_net_flag = 'C' AND a.jj_net_id = c.cn_id AND (sqrt(power(d.vd_inf_slat - c.ds_nlat, 2) + power(d.vd_inf_slon - c.ds_nlon, 2))*100)<20 ORDER BY c.ds_code)";
-		$db->query( $query, $vd_id, $vd_id );
+		// echo ("asdas");
+		$query = "select vd_id,sta_code as ds_code from jjcn_sta as a where a.vd_id = %d AND a.type='Deformation' ";
+		// var_dump($query);
+		$db->query( $query, $vd_id);
 		$stations = $db->getList();
-		//var_dump($stations);
-		foreach (self::$infor as $key => $value) 	
-			if ( method_exists( "DeformationRepository", "getTimeSeriesList_".$key) ){
-				$temp = call_user_func_array("self::getTimeSeriesList_".$key, array($vd_id, $stations));
-				$result = array_merge($result, $temp );
-			}
+		// var_dump($stations);
+
+
+
+
+
+		// foreach (self::$infor as $key => $value) 	
+		// 	// var_dump(self::$infor);
+		// 	if ( method_exists( "DeformationRepository", "getTimeSeriesList_".$key) ){
+		// 		$temp = call_user_func_array("self::getTimeSeriesList_".$key, array($vd_id, $stations));
+		// 		var_dump($temp);
+		// 		$result = array_merge($result, $temp );
+		// 	}
+		$result = self::getTimeSeriesList_dd_tlt($vd_id,$stations);
 		return $result;
 	}
 
 	private static function getTimeSeriesList_dd_tlt( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-		foreach ($stations as $station) {
-			$code = $station["ds_code"];
-			foreach (self::$infor["dd_tlt"]["params"] as $type) {
-				$cols = $type["cols"];
-				$query = "SELECT b.ds_id from ds a, dd_tlt b where a.ds_code = %s and a.ds_id = b.ds_id and b.$cols is not null limit 0 , 1";
-				$db->query( $query, $code );
-				if ( !$db->noRow() ) {
-					$x = array('category' => "Deformation" ,
-							   'data_type' => self::$infor["dd_tlt"]["data_type"],
-							   'station_code' => $code,
-							   'component' => $type["name"] );
+		// foreach ($stations as $station) {
+		// 	$code = $station["ds_code"];
+		// 	foreach (self::$infor["dd_tlt"]["params"] as $type) {
+		// 		$cols = $type["cols"];
+				
+
+			$query="select distinct a.sta_id,a.sta_code as ds_code,concat('Titlt1') as type from jjcn_sta as a, dd_tlt as b where a.type='Deformation' and a.vd_id=%d and a.sta_id=b.ds_id and b.dd_tlt1 IS NOT NULL 	
+				union 
+				select distinct a.sta_id,a.sta_code as ds_code,concat('Titlt2') as type from jjcn_sta as a, dd_tlt as b where a.type='Deformation' and a.vd_id=%d and a.sta_id=b.ds_id and b.dd_tlt2 IS NOT NULL 
+				union
+				select distinct a.sta_id,a.sta_code as ds_code,concat('Temp') as type from jjcn_sta as a, dd_tlt as b where a.type='Deformation' and a.vd_id=%d and a.sta_id=b.ds_id and b.dd_tlt_temp IS NOT NULL ";
+
+
+
+				// $query = "SELECT b.ds_id from ds a, dd_tlt b where a.ds_code = %s and a.ds_id = b.ds_id and b.$cols is not null limit 0 , 1";
+				
+
+				$db->query( $query, $vd_id,$vd_id,$vd_id );
+				
+				$serie_list = $db->getList();
+				// var_dump($serie_list);
+
+				for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+					$serie = $serie_list[$i];
+						$x = array('category' => "Deformation" ,
+							   'data_type' => "ElectronicTilt",
+							   'station_code' => $serie["ds_code"],
+							   'component' => $serie["type"],
+							   'id' => $serie["sta_id"] 
+							   );
 					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
 		 			array_push($result,  $x );
-				}
-			}
-		}
+				}	
+				
+			// }
+		// }
 		return $result;
 	}
 
@@ -193,34 +223,68 @@ class DeformationRepository {
 		return $result;
 	}
 
-	public static function getStationData( $table, $code, $component ) {
+	public static function getStationData( $table, $code, $component, $id ) {
+		// echo("sdasfd");
 		foreach (self::$infor as $key => $type) if ( $type["data_type"] == $table ) 
-			return call_user_func_array("self::getStationData_".$key, array( $code, $component) );
+			return call_user_func_array("self::getStationData_".$key, array( $code, $component,$id) );
 	} 
 
-	public static function getStationData_dd_tlt( $code, $component ) {
+	public static function getStationData_dd_tlt( $code, $component,$id ) {
 		global $db;
-		$cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
+		$cc = ', a.cc_id, a.cc_id2, a.cc_id3 ';
 		$result = array();
 		$res = array();
 		$attribute = "";
 		$filterQuery = "";
 		$filter = "";
-		foreach (self::$infor["dd_tlt"]["params"] as $type) if ( $type["name"] == $component ) {
-			$attribute = $type["cols"];
-			if ( array_key_exists("filter", $type) ) {
-				$filter = $type["filter"];
-				$filterQuery = ", b.".$filter;
-			}
-			$query = "SELECT b.dd_tlt_time, b.dd_tlt_timecsec, b.$attribute $filterQuery $cc from ds a, dd_tlt b,(select UNIX_TIMESTAMP(b.dd_tlt_time) as max from ds a , dd_tlt b where a.ds_code = %s and a.ds_id = b.ds_id limit 1) as c where a.ds_code = %s and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd_tlt_time)) mod 43200 < 600  and a.ds_pubdate <= now() and b.dd_tlt_pubdate <= now() and b.$attribute is not null order by b.dd_tlt_time desc";
-			$db->query($query, $code, $code);
-			$res = $db->getList();
-		}
+		$query = "";
+		// var_dump(self::$infor);
+		// foreach (self::$infor["dd_tlt"]["params"] as $type){ 
+		// 	var_dump(self::$infor);
+			// if ( $type["name"] == $component ) {
+				
+			// 	$attribute = $type["cols"];
+			// 	if ( array_key_exists("filter", $type) ) {
+			// 		$filter = $type["filter"];
+					
+			// 		$filterQuery = ", b.".$filter;
+
+			// 	}
+				// $query = "SELECT b.dd_tlt_time, b.dd_tlt_timecsec, b.$attribute $filterQuery $cc from ds a, dd_tlt b,(select UNIX_TIMESTAMP(b.dd_tlt_time) as max from ds a , dd_tlt b where a.ds_code = %s and a.ds_id = b.ds_id limit 1) as c where a.ds_code = %s and a.ds_id = b.ds_id and (c.max - UNIX_TIMESTAMP(b.dd_tlt_time)) mod 43200 < 600  and a.ds_pubdate <= now() and b.dd_tlt_pubdate <= now() and b.$attribute is not null order by b.dd_tlt_time desc";
+				if($component == 'Titlt1'){
+						$attribute = "dd_tlt1";
+						$query = "select a.dd_tlt_time,a.dd_tlt_timecsec, a.$attribute $cc from dd_tlt as a where a.ds_id=%s and a.dd_tlt1 IS NOT NULL";
+			
+				}
+				else if($component == 'Titlt2'){
+					$attribute = "dd_tlt2";
+					$query = "select a.dd_tlt_time,a.dd_tlt_timecsec , a.$attribute $cc from dd_tlt as a where a.ds_id=%s and a.dd_tlt2 IS NOT NULL ";
+
+				}else if($component == 'Temp'){
+					$attribute = "dd_tlt_temp";
+					$query = "select a.dd_tlt_time,a.dd_tlt_timecsec , a.$attribute $cc from dd_tlt as a where a.ds_id=%s and a.dd_tlt_temp IS NOT NULL";
+				}
+				
+
+			
+
+				$db->query($query, $id);
+
+				$res = $db->getList();
+			// }
+		// }
+		// var_dump($res);
 		foreach ($res as $row) {
+			// var_dump($row);
 			$time = strtotime($row["dd_tlt_time"]);
-			if ( !is_null( $row["dd_tlt_timecsec"] ) ) $time += floatval( $row["dd_tlt_timecsec"] );
-			$temp = array( "time" => intval(1000 * $time) , 
-										 "value" => floatval($row[$attribute]) );
+
+			if ( !is_null( $row["dd_tlt_timecsec"] ) ){ 
+				$time += floatval( $row["dd_tlt_timecsec"] );
+			}
+
+			$temp = array( "time" => intval(1000 * $time) ,
+							"value" => floatval($row[$attribute]) 
+						);
 			if ($filter != ""){
 				$temp["filter"] = $row[$filter];
 			}else{

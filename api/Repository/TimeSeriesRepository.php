@@ -9,101 +9,38 @@ class TimeSeriesRepository {
 
   private static function saveSerie($newSerie) {
     $series = json_decode(file_get_contents('Serie/Series.json', true), true);
+    // var_dump($series);
     $found = false;
-    foreach ($series as $key => $serie) {
-      if ($serie['sr_id'] == $newSerie['sr_id']) {
-        $series[$key] = $newSerie;
-        $found = true;
+    if($series != null){
+      foreach ($series as $key => $serie) {
+        if ($serie['sr_id'] == $newSerie['sr_id']) {
+          $series[$key] = $newSerie;
+          $found = true;
+        }
       }
     }
     if (!$found)
       $series[] = $newSerie;
-    // file_put_contents('Serie/Series.json', json_encode($series), FILE_USE_INCLUDE_PATH);
+    file_put_contents('Serie/Series.json', json_encode($series), FILE_USE_INCLUDE_PATH);
   }
 
   private static function getSerieInfo($sr_id) {
+    // var_dump($sr_id);
     $series = json_decode(file_get_contents('Serie/Series.json', true), true);
+    // var_dump($series);
     foreach ($series as $serie)
       if ($serie['sr_id'] == $sr_id)
         return $serie;
     return null;
   }
 
-  // private static function preprocessSerieData($data) {
-  //   $results = array();
-  //   foreach ($data as $a) {
-  //     $b = array();
-
-  //     if (array_key_exists('etime', $a)) {
-  //       $b['start_time'] = $a['0'];
-  //       $b['end_time'] = $a['etime'];
-  //     } else {
-  //       $b['time'] = $a['0'];
-  //     }
-  //     if (array_key_exists('eqtype',$a)) {
-  //       $b['filter'] = $a['eqtype'];
-  //     }
-  //     if (array_key_exists('gas_species',$a)) {
-  //       $b['filter'] = $a['gas_species'];
-  //     }
-      
-  //     if (array_key_exists('trm_type',$a)) {
-  //       $b['filter'] = $a['trm_type'];
-  //     }
-            
-  //     if (array_key_exists('compound',$a)) {
-  //       $b['filter'] = $a['compound'];
-  //     }
-            
-  //     if (array_key_exists('tprec',$a)) {
-  //       $b['filter'] = $a['tprec'];
-  //     }
-      
-  //     if (array_key_exists('author_info',$a)) {
-  //       $b['author_info'] = $a['author_info'];
-  //     }
-  //     $b['value'] = $a['1'];
-
-  //     $results[] = $b;
-  //   }
-
-  //   return $results;
-  // }
   
-  /**
-   *	Given a volcano Id, return all stations data belonged to it
-   *	@param: 
-   *		$vd_id
-   *	@return"
-   *		data list
-   */
-
-/*  const DATA_LIST = array( "Seismic", "Deformation", "Gas",  "Meteo" , "Hydrology"  );
-
-  public static function getTimeSeriesList($vd_id) {
-    $result = array();
-    foreach (self::DATA_LIST as $value) {
-      $series = call_user_func_array($value.'Repository::getTimeSeriesList', [$vd_id]);
-      foreach ($series as $serie) {
-        self::saveSerie($serie);
-        array_push($result, $serie);
-      }
-    }
-    return $result;
-
-    // $series = GasRepository::getTimeSeriesList($vd_id);
-    // foreach ($series as $serie) {
-    //   self::saveSerie($serie);
-    // }
-    // return $series;
-  }
-*/
 
 	public static function getTimeSeriesList($vd_id) {
 		$result = array();
 		
 		$DATA_LIST = array( "Seismic", "Deformation", "Gas",  "Meteo" , "Hydrology");
-		
+		// var_dump($DATA_LIST);
 		foreach ($DATA_LIST as $value) {
 			//$series = call_user_func_array($value.'Repository::getTimeSeriesList', [$vd_id]);
 		
@@ -119,13 +56,15 @@ class TimeSeriesRepository {
 
 
   public static function getTimeSerie($sr_id) {
+
     $serie = self::getSerieInfo($sr_id);
+    // var_dump($serie);
     if (!$serie)
       return null;
     $serie['data'] = call_user_func_array( $serie['category']."Repository::getStationData" , 
       array( $serie['data_type'] , 
         isset( $serie['station_code']) ? $serie['station_code'] : $serie['volcanoID'],
-        $serie['component'] )  );
+        $serie['component'], $serie["id"] )  );
     // var_dump($serie['data']);
     // var_dump($serie);
     return $serie;
