@@ -13,7 +13,7 @@
 			$result = array();
 			global $db;
 			
-			$sql = "select vd_id, vd_name, vd_cavw from vd";
+			$sql = "select vd_id, vd_name, vd_cavw from vd ORDER BY vd_name";
 			$db->query($sql);
 			return $db->getList();
 		}
