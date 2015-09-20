@@ -48,9 +48,18 @@ define(function(require) {
       this.$el.html("");
       var options = {
             series: {
-              lines: { 
-                show: true
+              points:{
+                show: true,
+                radius: 2,
+                lineWidth: 1.5, // in pixels
+                fill: true,
+                fillColor: "#000000",
+                symbol: "circle" 
               },
+              lines:{
+                show: false
+              },
+
             },
             xaxis: { 
               mode:'time',
@@ -87,6 +96,9 @@ define(function(require) {
       this.$el.width('auto');
       this.$el.height(200);
       this.$el.addClass('time-serie-graph');
+      // plot the time series graph after being selected (eg. onSelect in OverViewGraph).
+      // config graph theme colors
+      options.colors = ["#000000", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"];
       this.graph = $.plot(this.$el, this.data, options);
       this.$el.bind('plothover', this.tooltip,this.onHover);
       var eventData = {
@@ -174,6 +186,9 @@ define(function(require) {
 
           list.push([d['time'],d['value']]);
         });
+        // this.data contains the setting of options of the graph (ie. point,line,bar).
+        // this makes the options in the $.plot(this.$el, this.data, options) 
+        // cannot fully config the appearance of the graph.
         data.push(GraphHelper.formatGraphAppearance(list,this.filters.timeSerie.getName(),this.filters.name[j]));
       }
       this.minX = minX;
