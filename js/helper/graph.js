@@ -38,17 +38,19 @@ define(function(require) {
       return {
         data: data,
         label: filterName + ":"+timeSerieName,
+        // color: 0,
         lines: { 
-          show: true
+          show: false
         },
         shadowSize: 3,
         points: {
           show: true,
-          radius: 1,
-          symbol: "circle",
-          // fillColor: "#EDC240"
+          radius: 2,
+          lineWidth: 2, // in pixels
+          fill: true,
+          fillColor: "#000000",
+          symbol: "circle" 
         },
-        // color: "#EDC240"
       }
     },
   };
