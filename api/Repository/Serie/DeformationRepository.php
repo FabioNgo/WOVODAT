@@ -14,6 +14,8 @@ class DeformationRepository {
 		$result = self::getTimeSeriesList_dd_tlt($vd_id,$stations);
 		$result = array_merge($result,self::getTimeSeriesList_dd_tlv($vd_id,$stations));
 		$result = array_merge($result,self::getTimeSeriesList_dd_str($vd_id,$stations));
+		$result = array_merge($result,self::getTimeSeriesList_dd_edm($vd_id,$stations));
+		$result = array_merge($result,self::getTimeSeriesList_dd_ang($vd_id,$stations));
 		// array_push(array, var)
 		// var_dump($result);
 		return $result;
@@ -56,21 +58,21 @@ class DeformationRepository {
 	private static function getTimeSeriesList_dd_edm( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-		foreach ($stations as $station) {
-			$code = $station["ds_code"];
-			foreach (self::$infor["dd_edm"]["params"] as $type) {
-				$cols = $type["cols"];
-				$query = "SELECT b.dd_edm_id from ds a, dd_edm b where a.ds_code = %s and (a.ds_id = b.ds_id1 or a.ds_id = b.ds_id2) and b.$cols is not null limit 0 , 1";
-				$db->query( $query, $code );
-				if ( !$db->noRow() ) {
-					$x = array('category' => "Deformation" ,
-							   'data_type' => self::$infor["dd_edm"]["data_type"],
-							   'station_code' => $code,
-							   'component' => $type["name"] );
-					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
-		 			array_push($result,  $x );
-				}
-			}
+		$query="select distinct a.sta_id,a.sta_code as ds_code,concat('EDM line length') as type from jjcn_sta as a, dd_edm as b where a.type='Deformation' and a.vd_id=%d and a.sta_id=b.ds_id and b.dd_edm_line IS NOT NULL 	
+			";
+			$db->query( $query, $vd_id);
+			$serie_list = $db->getList();
+		// var_dump($serie_list);
+		for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+			$serie = $serie_list[$i];
+			$x = array('category' => "Deformation" ,
+					   'data_type' => "Strain",
+					   'station_code' => $serie["ds_code"],
+					   'component' => $serie["type"],
+					   'id' => $serie["sta_id"] 
+					   );
+			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+ 			array_push($result,  $x );
 		}
 		return $result;
 	}
@@ -176,7 +178,7 @@ class DeformationRepository {
 
 
 		$db->query( $query, $vd_id,$vd_id,$vd_id,$vd_id,$vd_id, $vd_id,$vd_id,$vd_id,$vd_id,$vd_id,
-			$vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id);
+				$vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id);
 			
 		$serie_list = $db->getList();
 		// var_dump($serie_list);
@@ -197,22 +199,34 @@ class DeformationRepository {
 	private static function getTimeSeriesList_dd_ang( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-		foreach ($stations as $station) {
-			$code = $station["ds_code"];
-			foreach (self::$infor["dd_ang"]["params"] as $type) {
-				$cols = $type["cols"];
-				$query = "SELECT b.ds_id from ds a, dd_ang b where a.ds_code = %s and (a.ds_id = b.ds_id or a.ds_id = b.ds_id1 or a.ds_id = b.ds_id2) and b.$cols is not null limit 0 , 1";
-				$db->query( $query, $code );
-				if ( !$db->noRow() ) {
-					$x = array('category' => "Deformation" ,
-							   'data_type' => self::$infor["dd_ang"]["data_type"],
-							   'station_code' => $code,
-							   'component' => $type["name"] );
-					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
-		 			array_push($result,  $x );
-				}
-			}
+		$query="select distinct a.sta_id,a.sta_code as ds_code,concat('Horizontal angle target-1') as type from jjcn_sta as a, dd_ang as b where a.type='Deformation' and a.vd_id=%d and a.sta_id=b.ds_id and b.dd_arg_hort1 IS NOT NULL 	
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Horizontal angle target-2') as type from jjcn_sta as a, dd_ang as b where a.type='Deformation' and a.vd_id=%d and a.sta_id=b.ds_id and b.dd_ang_hort2 IS NOT NULL
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Vertical angle target-1') as type from jjcn_sta as a, dd_ang as b where a.type='Deformation' and a.vd_id=%d and a.sta_id=b.ds_id and b.dd_ang_vert1 IS NOT NULL
+			
+			
+
+			";
+
+
+
+		$db->query( $query, $vd_id,$vd_id,$vd_id);
+			
+		$serie_list = $db->getList();
+		// var_dump($serie_list);
+		for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+			$serie = $serie_list[$i];
+			$x = array('category' => "Deformation" ,
+					   'data_type' => "Strain",
+					   'station_code' => $serie["ds_code"],
+					   'component' => $serie["type"],
+					   'id' => $serie["sta_id"] 
+					   );
+			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+ 			array_push($result,  $x );
 		}
+		
 		return $result;
 	}
 
@@ -297,41 +311,33 @@ class DeformationRepository {
 		$filterQuery = "";
 		$filter = "";
 		$query = "";
-				if($component == 'Titlt1'){
-						$attribute = "dd_tlt1";
-						$query = "select a.dd_tlt_time,a.dd_tlt_timecsec, a.$attribute $cc from dd_tlt as a where a.ds_id=%s and a.dd_tlt1 IS NOT NULL";
-			
-				}
-				else if($component == 'Titlt2'){
-					$attribute = "dd_tlt2";
-					$query = "select a.dd_tlt_time,a.dd_tlt_timecsec , a.$attribute $cc from dd_tlt as a where a.ds_id=%s and a.dd_tlt2 IS NOT NULL ";
+		if($component == 'Titlt1'){
+				$attribute = "dd_tlt1";
+				$query = "select a.dd_tlt_err1 as err ,a.dd_tlt_time as time, a.$attribute as value from dd_tlt as a where a.ds_id=%s and a.dd_tlt1 IS NOT NULL";
+				// echo $query;
+	
+		}
+		else if($component == 'Titlt2'){
+			$attribute = "dd_tlt2";
+			$query = "select a.dd_tlt_err2 as err ,a.dd_tlt_time as time, a.$attribute as value from dd_tlt as a where a.ds_id=%s and a.dd_tlt2 IS NOT NULL";
 
-				}else if($component == 'Temp'){
-					$attribute = "dd_tlt_temp";
-					$query = "select a.dd_tlt_time,a.dd_tlt_timecsec , a.$attribute $cc from dd_tlt as a where a.ds_id=%s and a.dd_tlt_temp IS NOT NULL";
-				}
-				$db->query($query, $id);
+		}else if($component == 'Temp'){
+			$attribute = "dd_tlt_temp";
+			$query = "select a.dd_tlt_time as time, a.$attribute as value from dd_tlt as a where a.ds_id=%s and a.dd_tlt_temp IS NOT NULL";
+		}
+		$db->query($query, $id);
 
-				$res = $db->getList();
-			// }
-		// }
-		// var_dump($res);
+		$res = $db->getList();
 		foreach ($res as $row) {
-			// var_dump($row);
-			$time = strtotime($row["dd_tlt_time"]);
-
-			if ( !is_null( $row["dd_tlt_timecsec"] ) ){ 
-				$time += floatval( $row["dd_tlt_timecsec"] );
-			}
-
-			$temp = array( "time" => intval(1000 * $time) ,
-							"value" => floatval($row[$attribute]) 
+			
+			$time = strtotime($row["time"]);
+			$temp = array( "time" => floatval(1000 * $time) ,
+							"value" => floatval($row["value"]),
+							"error" => $row["err"]
 						);
-			if ($filter != ""){
-				$temp["filter"] = $row[$filter];
-			}else{
-				$temp["filter"] = " ";
-			}
+			
+			$temp["filter"] = " ";
+			
 			array_push($result, $temp );			
 		}
 		return $result;
