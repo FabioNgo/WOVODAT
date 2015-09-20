@@ -44,7 +44,7 @@ class DeformationRepository {
 							   'data_type' => "ElectronicTilt",
 							   'station_code' => $serie["ds_code"],
 							   'component' => $serie["type"],
-							   'id' => $serie["sta_id"] 
+							   'sta_id' => $serie["sta_id"] 
 							   );
 					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
 		 			array_push($result,  $x );
@@ -69,7 +69,7 @@ class DeformationRepository {
 					   'data_type' => "Strain",
 					   'station_code' => $serie["ds_code"],
 					   'component' => $serie["type"],
-					   'id' => $serie["sta_id"] 
+					   'sta_id' => $serie["sta_id"] 
 					   );
 			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
  			array_push($result,  $x );
@@ -113,7 +113,7 @@ class DeformationRepository {
 							   'data_type' => "TitltVector",
 							   'station_code' => $serie["ds_code"],
 							   'component' => $serie["type"],
-							   'id' => $serie["sta_id"] 
+							   'sta_id' => $serie["sta_id"] 
 							   );
 					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
 		 			array_push($result,  $x );
@@ -188,7 +188,7 @@ class DeformationRepository {
 					   'data_type' => "Strain",
 					   'station_code' => $serie["ds_code"],
 					   'component' => $serie["type"],
-					   'id' => $serie["sta_id"] 
+					   'sta_id' => $serie["sta_id"] 
 					   );
 			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
  			array_push($result,  $x );
@@ -221,7 +221,7 @@ class DeformationRepository {
 					   'data_type' => "Strain",
 					   'station_code' => $serie["ds_code"],
 					   'component' => $serie["type"],
-					   'id' => $serie["sta_id"] 
+					   'sta_id' => $serie["sta_id"] 
 					   );
 			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
  			array_push($result,  $x );
