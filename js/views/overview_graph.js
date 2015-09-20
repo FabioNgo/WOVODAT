@@ -41,8 +41,16 @@ define(function(require) {
       
       var options = {
             series: {
-              lines: { 
-                show: true
+              points:{
+                show: true,
+                radius: 2,
+                lineWidth: 1.5, // in pixels
+                fill: true,
+                fillColor: "#000000",
+                symbol: "circle" 
+              },
+              lines:{
+                show: false
               },
             },
             xaxis: { 
@@ -67,29 +75,56 @@ define(function(require) {
                 }
                 return val;
               },
-              // max: this.maxY,
-              // min: this.minY,
+              //max: this.maxY,
+              //min: this.minY,
               ticks: this.ticks,
               labelWidth: 30
             },
             selection: { 
               mode: 'x', 
               color: '#451A2B' 
-            }
+            },
           };
+          //pass color into options
+          options.colors = ["#000000", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"];
 
       if (!this.data || !this.data.length) {
-        this.$el.html('');
+        this.$el.html(''); //$(this) = this.$el
         return;
-      }
-      // console.log(this.data);
+      };
+
       this.$el.width('auto');
       this.$el.height(200);
       this.$el.addClass("overview-graph");
 
-      // console.log(this.data);
-      this.graph = $.plot(this.$el, this.data, options);
-      this.$el.bind('plotselected', this.selectingTimeRange,this.onSelect);
+      // //Test
+      // this.data = [ {color: 0, label: "Foo", data: [ [10, 1], [17, -14], [30, 5] ] },
+      //             { color: 0, label: "Bar", data: [ [11, 13], [19, 11], [30, -7] ] }
+      //           ];
+      
+      // options = {
+      //             series: {
+      //               //lines: { show: true },
+      //               points: { show: true,
+      //                 radius: 3,
+      //                 lineWidth: 2, // in pixels
+      //                 fill: true,
+      //                 fillColor: "#ffffff",
+      //                 symbol: "circle", 
+      //               },
+
+      //             },
+      //             selection: {
+      //               mode: 'x',
+      //               color: '#451A2B'
+      //             },
+      //           };
+
+
+      console.log(this.data);
+      this.graph = $.plot(this.$el, this.data, options); 
+      //To edit the series object, go to GraphHelper used for data in the prepareData method below.
+      this.$el.bind('plotselected', this.selectingTimeRange, this.onSelect);
     },
 
     update: function() {
@@ -97,7 +132,7 @@ define(function(require) {
       this.render();
     },
     
-    
+  
     prepareData: function() {
       var minX = undefined,
           maxX = undefined,
@@ -128,7 +163,6 @@ define(function(require) {
             list.push([d['time'],d['value']]);
           });
           data.push(GraphHelper.formatGraphAppearance(list,filters[i].timeSerie.getName(),filters[i].name[j]));
-          
         }
 
           
