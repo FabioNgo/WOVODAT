@@ -9,174 +9,272 @@ class SeismicRepository {
 		$query = "(select c.ss_code,c.ss_lat,c.ss_lon FROM sn a, ss c  where a.vd_id = %d  and a.sn_id = c.sn_id) UNION (select c.ss_code,c.ss_lat,c.ss_lon FROM jj_volnet a, ss c , vd_inf d  WHERE a.vd_id = %d and a.vd_id=d.vd_id  and a.jj_net_flag = 'S' and a.jj_net_id = c.sn_id and (sqrt(power(d.vd_inf_slat - c.ss_lat, 2) + power(d.vd_inf_slon - c.ss_lon, 2))*100)<20)";
 		$db->query( $query, $vd_id, $vd_id );
 		$stations = $db->getList();
-		foreach (self::$infor as $key => $value) 	
-			if ( method_exists( "SeismicRepository", "getTimeSeriesList_".$key) ) {
-				$temp = call_user_func_array("self::getTimeSeriesList_".$key, array($vd_id, $stations));
-				$result = array_merge($result, $temp );
-			}
+		$result = self::getTimeSeriesList_sd_evs($vd_id,$stations);
+
+		$result = array_merge($result,self::getTimeSeriesList_sd_evn($vd_id,$stations));
+		$result = array_merge($result,self::getTimeSeriesList_sd_ivl($vd_id,$stations));
+		$result = array_merge($result,self::getTimeSeriesList_sd_int($vd_id,$stations));
+		$result = array_merge($result,self::getTimeSeriesList_sd_rsm($vd_id,$stations));
+		$result = array_merge($result,self::getTimeSeriesList_sd_ssm($vd_id,$stations));
+		$result = array_merge($result,self::getTimeSeriesList_sd_trm($vd_id,$stations));
+
 		return $result;
 	}
 
 	private static function getTimeSeriesList_sd_evs( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-		foreach ($stations as $station) {
-			$code = $station["ss_code"];
-			foreach (self::$infor["sd_evs"]["params"] as $type) {
-				$cols = $type["cols"];
-				$query = "SELECT b.sd_evs_id FROM ss a, sd_evs b where a.ss_code = %s and a.ss_id = b.ss_id and b.$cols is not null limit 0 , 1";
-				$db->query( $query, $code );
-				if ( !$db->noRow() ) {
-					$x = array('category' => "Seismic" ,
-							   'data_type' => self::$infor["sd_evs"]["data_type"],
-							   'station_code' => $code,
-							   'component' => $type["name"] );
-					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
-		 			array_push($result,  $x );
-				}
-			}
-		}
+				
+
+		$query="
+			select distinct a.sta_id,a.sta_code as ds_code,concat('S-P Arrival Time') as type from jjcn_sta as a, sd_evs as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_evs_spint IS NOT NULL 
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Epicenter From Event') as type from jjcn_sta as a, sd_evs as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_evs_dist_actven IS NOT NULL 
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Earthquake Max-amplitude') as type from jjcn_sta as a, sd_evs as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_evs_maxamptrac IS NOT NULL 
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Earthquake Dominant Frequency') as type from jjcn_sta as a, sd_evs as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_evs_domFre IS NOT NULL 
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Earthquake Magnitude') as type from jjcn_sta as a, sd_evs as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_evs_mag IS NOT NULL 
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Earthquake Energy') as type from jjcn_sta as a, sd_evs as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_evs_energy IS NOT NULL 
+
+
+			
+			";
+
+
+
+		$db->query( $query, $vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id );
+		
+		$serie_list = $db->getList();
+
+		for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+			$serie = $serie_list[$i];
+				$x = array('category' => "Seismic" ,
+					   'data_type' => "SeismicEventFromNetwork",
+					   'station_code' => $serie["ds_code"],
+					   'component' => $serie["type"],
+					   'sta_id' => $serie["sta_id"] 
+					   );
+			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+ 			array_push($result,  $x );
+		}	
 		return $result;
 	}
 
 	private static function getTimeSeriesList_sd_int( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-		foreach (self::$infor["sd_int"]["params"] as $type) {
-			$cols = $type["cols"];
-			$query = "SELECT a.sd_int_id FROM sd_int a where a.vd_id = %d and a.$cols is not null limit 0 , 1";
-			$db->query( $query, $vd_id );
-			if ( !$db->noRow() ) {
+				
+
+		$query="
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Max Distance Felt') as type from jjcn_sta as a, sd_int as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_int_maxdist IS NOT NULL 
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Max Intensity') as type from jjcn_sta as a, sd_int as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_int_maxrint IS NOT NULL 
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Distance at Max-intensity') as type from jjcn_sta as a, sd_int as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_int_maxrint_dist IS NOT NULL 
+			
+
+
+			
+			";
+
+
+
+		$db->query( $query, $vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id );
+		
+		$serie_list = $db->getList();
+
+		for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+			$serie = $serie_list[$i];
 				$x = array('category' => "Seismic" ,
-						   'data_type' => self::$infor["sd_int"]["data_type"],
-						   'volcanoID' => $vd_id,
-						   'component' => $type["name"] );
-				$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["volcanoID"].$x["component"] );
-	 			array_push($result,  $x );
-			}
-		}
-		//var_dump($vd_id);
+					   'data_type' => "SeismicIntensity",
+					   'station_code' => $serie["ds_code"],
+					   'component' => $serie["type"],
+					   'sta_id' => $serie["sta_id"] 
+					   );
+			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+ 			array_push($result,  $x );
+		}	
 		return $result;
 	}
 
 	private static function getTimeSeriesList_sd_trm( $vd_id, $stations ) {
 		$result = array();
 		global $db;
+				
 
-		foreach ($stations as $station) {
-			$code = $station["ss_code"];
-			foreach (self::$infor["sd_trm"]["params"] as $type) {
-				$cols = $type["cols"];
-				$query = "SELECT b.sd_trm_id FROM ss a, sd_trm b where a.ss_code = %s and (a.ss_id = b.ss_id || ( b.ss_id is null and b.sn_id = a.sn_id ) ) and a.ss_pubdate <= now() and b.sd_trm_pubdate <= now() and b.$cols is not null limit 0 , 1";
-				$db->query( $query, $code );
-				if ( !$db->noRow() ) {
-					$x = array('category' => "Seismic" ,
-							   'data_type' => self::$infor["sd_trm"]["data_type"],
-							   'station_code' => $code,
-							   'component' => $type["name"] );
-					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
-		 			array_push($result,  $x );
-				}
-			}
-		}
+		$query="
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Tremor Dominant Frequency-1') as type from jjcn_sta as a, sd_trm as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_trm_domfreq1 IS NOT NULL 
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Tremor Dominant Frequency-2') as type from jjcn_sta as a, sd_trm as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_trm_domfreq2 IS NOT NULL 
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Tremor Max-Amplitude') as type from jjcn_sta as a, sd_trm as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_trm_maxamp IS NOT NULL 
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Reduced Displacement') as type from jjcn_sta as a, sd_trm as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_trm_reddis IS NOT NULL	
+			";
+
+
+
+		$db->query( $query, $vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id );
 		
+		$serie_list = $db->getList();
+
+		for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+			$serie = $serie_list[$i];
+				$x = array('category' => "Seismic" ,
+					   'data_type' => "SeismicTremor",
+					   'station_code' => $serie["ds_code"],
+					   'component' => $serie["type"],
+					   'sta_id' => $serie["sta_id"] 
+					   );
+			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+ 			array_push($result,  $x );
+		}	
 		return $result;
 	}
 
 	private static function getTimeSeriesList_sd_ivl( $vd_id, $stations ) {
 		$result = array();
 		global $db;
+		$query="
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Earthquake Counts') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_nrec IS NOT NULL 
+			union
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Swarm Distance') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_hdist IS NOT NULL 
+			union
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Swarm Mean Depth') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_avgdepth IS NOT NULL
+			union
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Swarm Vertical Dispersion') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_vdispers IS NOT NULL
+			union
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Hypocenter Horiz-Migration') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_hmigr_hyp IS NOT NULL
+			union
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Hypocenter Vert-Migration') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_vmigr_hyp IS NOT NULL
+			union
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Total Seismic Energy') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_nfelt IS NOT NULL
+			union
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Felt Earthquake Counts') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_etot IS NOT NULL
+			union
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Earthquake Min Frequency') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_fmin IS NOT NULL
+			union
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Earthquake Max Frequency') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_fmax IS NOT NULL
+			union
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Earthquake Min Amplitude') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_amin IS NOT NULL
+			union
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Earthquake Max Amplitude') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_amax IS NOT NULL
 
-		foreach ($stations as $station) {
-			$code = $station["ss_code"];
-			foreach (self::$infor["sd_ivl"]["params"] as $type) {
-				$cols = $type["cols"];
-				$query = "SELECT b.sd_ivl_id FROM ss a, sd_ivl b where a.ss_code = %s and (a.ss_id = b.ss_id || ( b.ss_id is null and b.sn_id = a.sn_id ) ) and a.ss_pubdate <= now() and b.sd_ivl_pubdate <= now() and b.$cols is not null limit 0 , 1";
-				$db->query( $query, $code );
-				if ( !$db->noRow() ) {
-					$x = array('category' => "Seismic" ,
-							   'data_type' => self::$infor["sd_ivl"]["data_type"],
-							   'station_code' => $code,
-							   'component' => $type["name"] );
-					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
-		 			array_push($result,  $x );
-				}
-			}
-		}
+			";
+
+
+
+		$db->query( $query, $vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id );
 		
+		$serie_list = $db->getList();
+
+		for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+			$serie = $serie_list[$i];
+				$x = array('category' => "Seismic" ,
+					   'data_type' => "SeismicInterval",
+					   'station_code' => $serie["ds_code"],
+					   'component' => $serie["type"],
+					   'sta_id' => $serie["sta_id"] 
+					   );
+			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+ 			array_push($result,  $x );
+		}
 		return $result;
 	}
 
 	private static function getTimeSeriesList_sd_rsm( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-		foreach ($stations as $station) {
-			$code = $station["ss_code"];
-			foreach (self::$infor["sd_rsm"]["params"] as $type) {
-				$cols = $type["cols"];
-				$query = "SELECT c.sd_rsm_id FROM ss a, sd_sam b, sd_rsm c where a.ss_code = %s and a.ss_id = b.ss_id and b.sd_sam_id = c.sd_sam_id and c.$cols is not null limit 0 , 1";
-				$db->query( $query, $code );
-				if ( !$db->noRow() ) {
-					$x = array('category' => "Seismic" ,
-							   'data_type' => self::$infor["sd_rsm"]["data_type"],
-							   'station_code' => $code,
-							   'component' => $type["name"] );
-					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
-		 			array_push($result,  $x );
-				}
-			}
-		}
+				
+
+		$query="
+			select distinct a.sta_id,a.sta_code as ds_code,concat('RSAM Counts') as type from jjcn_sta as a, sd_rsm as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_rsm_count IS NOT NULL 
+			";
+
+
+
+		$db->query( $query, $vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id );
+		
+		$serie_list = $db->getList();
+
+		for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+			$serie = $serie_list[$i];
+				$x = array('category' => "Seismic" ,
+					   'data_type' => "RSAM",
+					   'station_code' => $serie["ds_code"],
+					   'component' => $serie["type"],
+					   'sta_id' => $serie["sta_id"] 
+					   );
+			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+ 			array_push($result,  $x );
+		}	
 		return $result;
 	}
 
 	private static function getTimeSeriesList_sd_ssm( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-		foreach ($stations as $station) {
-			$code = $station["ss_code"];
-			foreach (self::$infor["sd_ssm"]["params"] as $type) {
-				$cols = $type["cols"];
-				$query = "SELECT c.sd_ssm_id FROM ss a, sd_sam b, sd_ssm c where a.ss_code = %s and a.ss_id = b.ss_id and b.sd_sam_id = c.sd_sam_id and c.$cols is not null limit 0 , 1";
-				$db->query( $query, $code );
-				if ( !$db->noRow() ) {
-					$x = array('category' => "Seismic" ,
-							   'data_type' => self::$infor["sd_ssm"]["data_type"],
-							   'station_code' => $code,
-							   'component' => $type["name"] );
-					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
-		 			array_push($result,  $x );
-				}
-			}
-		}
+				
+
+		$query="
+			select distinct a.sta_id,a.sta_code as ds_code,concat('SSAM Low-freq Limit') as type from jjcn_sta as a, sd_ssm as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ssm_lowf IS NOT NULL 
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('SSAM Hight-freq Limit') as type from jjcn_sta as a, sd_ssm as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ssm_hightf IS NOT NULL 
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('SSAM Counts') as type from jjcn_sta as a, sd_ssm as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ssm_count IS NOT NULL 
+			";
+
+
+
+		$db->query( $query, $vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id );
+		
+		$serie_list = $db->getList();
+
+		for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+			$serie = $serie_list[$i];
+				$x = array('category' => "Seismic" ,
+					   'data_type' => "SSAM",
+					   'station_code' => $serie["ds_code"],
+					   'component' => $serie["type"],
+					   'sta_id' => $serie["sta_id"] 
+					   );
+			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+ 			array_push($result,  $x );
+		}	
 		return $result;
 	}
 
 	private static function getTimeSeriesList_sd_evn( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-		$query = "SELECT a.sn_code FROM sn a WHERE a.vd_id = %d";
-		$db->query( $query , $vd_id );
-		$networks = $db->getList();
+				
 
-		//var_dump($networks);
+		$query="select distinct a.sta_id,a.sta_code as ds_code,concat('Earthquake Depth') as type from jjcn_sta as a, sd_evn as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.cc_id and b.sd_evn_edep IS NOT NULL 	
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Earthquake Magnitude') as type from jjcn_sta as a, sd_evn as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.cc_id and b.sd_evn_pmag IS NOT NULL
+			
+			";
 
-		foreach ($networks as $network) {
-			$code = $network["sn_code"];
 
-			foreach (self::$infor["sd_evn"]["params"] as $type) {
-				$cols = $type["cols"];
-				$query = "SELECT b.sd_evn_id FROM sn a, sd_evn b where a.sn_code = %s and a.sn_id = b.sn_id and b.$cols is not null limit 0 , 1";
-				$db->query( $query, $code );
-				if ( !$db->noRow() ) {
-					$x = array('category' => "Seismic" ,
-							   'data_type' => self::$infor["sd_evn"]["data_type"],
-							   'station_code' => $code,
-							   'component' => $type["name"] );
-					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
-		 			array_push($result,  $x );
-				}
-			}
-		}
+
+		$db->query( $query, $vd_id,$vd_id);
+		
+		$serie_list = $db->getList();
+
+		for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+			$serie = $serie_list[$i];
+				$x = array('category' => "Seismic" ,
+					   'data_type' => "SeismicEventFromNetwork",
+					   'station_code' => $serie["ds_code"],
+					   'component' => $serie["type"],
+					   'sta_id' => $serie["sta_id"] 
+					   );
+			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+ 			array_push($result,  $x );
+		}	
 		return $result;
 	}
 
@@ -358,36 +456,61 @@ class SeismicRepository {
 		$attribute = "";
 		$filterQuery = "";
 		$filter = "";
+		if($component == 'Swarm Distance'){
+				$attribute = "sd_ivl_hdist";
+				$query = "select sd_ivl_eqtype  as filter ,a.dd_tlt_stime as stime,a.dd_tlt_etime as etime, a.$attribute as value from sd_ivl  as a where a.ss_id=%s and a.sd_ivl_hdist IS NOT NULL";
+	
+		}else if($component == 'Swarm Mean Depth'){
+			$attribute = "sd_ivl_avgdepth";
+			$query = "select sd_ivl_eqtype  as filter,a.dd_tlt_stime as stime,a.dd_tlt_etime as etime, a.$attribute as value from sd_ivl  as a where a.ss_id=%s and a.sd_ivl_avgdepth IS NOT NULL";
 
-		foreach (self::$infor["sd_ivl"]["params"] as $type) if ( $type["name"] == $component ) {
-			$attribute = $type["cols"];
-			// var_dump($attribute);
-			if ( array_key_exists("filter", $type) ) {
-				$filter = $type["filter"];
-				$filterQuery = ", b.".$filter;
-			}
-			$query = "SELECT b.sd_ivl_stime, b.sd_ivl_etime, b.$attribute $filterQuery $cc from ss a, sd_ivl b where a.ss_code = %s and (a.ss_id = b.ss_id || ( b.ss_id is null and b.sn_id = a.sn_id ) ) and a.ss_pubdate <= now() and b.sd_ivl_pubdate <= now() and b.$attribute is not null order by b.sd_ivl_stime desc";	
-			$db->query($query, $code);
-			$res = $db->getList();
-			//var_dump($res);
+		}else if($component == 'Swarm Vertical Dispersion'){
+			$attribute = "sd_ivl_vdispers";
+			$query = "select sd_ivl_eqtype  as filter,a.dd_tlt_stime as stime,a.dd_tlt_etime as etime, a.$attribute as value from sd_ivl  as a where a.ss_id=%s and a.sd_ivl_vdispers IS NOT NULL";
+		}else if($component == 'Hypocenter Horiz-Migration'){
+			$attribute = "sd_ivl_hmigr_hyp";
+			$query = "select sd_ivl_eqtype  as filter,a.dd_tlt_stime as stime,a.dd_tlt_etime as etime, a.$attribute as value from sd_ivl  as a where a.ss_id=%s and a.sd_ivl_hmigr_hyp IS NOT NULL";
+		}else if($component == 'Hypocenter Vert-Migration'){
+			$attribute = "sd_ivl_vmigr_hyp";
+			$query = "select sd_ivl_eqtype  as filter,a.dd_tlt_stime as stime,a.dd_tlt_etime as etime, a.$attribute as value from sd_ivl  as a where a.ss_id=%s and a.sd_ivl_vmigr_hyp IS NOT NULL";
+		}else if($component == 'Earthquake Counts'){
+			$attribute = "sd_ivl_nrec";
+			$query = "select sd_ivl_eqtype  as filter,a.dd_tlt_stime as stime,a.dd_tlt_etime as etime, a.$attribute as value from sd_ivl  as a where a.ss_id=%s and a.sd_ivl_nrec IS NOT NULL";
+		}else if($component == 'Total Seismic Energy'){
+			$attribute = "sd_ivl_nfelt";
+			$query = "select sd_ivl_eqtype  as filter,a.dd_tlt_stime as stime,a.dd_tlt_etime as etime, a.$attribute as value from sd_ivl  as a where a.ss_id=%s and a.sd_ivl_nfelt IS NOT NULL";
+		}else if($component == 'Felt Earthquake Counts'){
+			$attribute = "sd_ivl_etot";
+			$query = "select sd_ivl_eqtype  as filter,a.dd_tlt_stime as stime,a.dd_tlt_etime as etime, a.$attribute as value from sd_ivl  as a where a.ss_id=%s and a.sd_ivl_etot IS NOT NULL";
+		}else if($component == 'Earthquake Min Frequency'){
+			$attribute = "sd_ivl_fmin";
+			$query = "select sd_ivl_eqtype  as filter,a.dd_tlt_stime as stime,a.dd_tlt_etime as etime, a.$attribute as value from sd_ivl  as a where a.ss_id=%s and a.sd_ivl_fmin IS NOT NULL";
+		}else if($component == 'Earthquake Max Frequency'){
+			$attribute = "sd_ivl_fmax";
+			$query = "select sd_ivl_eqtype  as filter,a.dd_tlt_stime as stime,a.dd_tlt_etime as etime, a.$attribute as value from sd_ivl  as a where a.ss_id=%s and a.sd_ivl_fmax IS NOT NULL";
+		}else if($component == 'Earthquake Min Amplitude'){
+			$attribute = "sd_ivl_amin";
+			$query = "select sd_ivl_eqtype  as filter,a.dd_tlt_stime as stime,a.dd_tlt_etime as etime, a.$attribute as value from sd_ivl  as a where a.ss_id=%s and a.sd_ivl_amin IS NOT NULL";
+		}else if($component == 'Earthquake Max Amplitude'){
+			$attribute = "sd_ivl_amax";
+			$query = "select sd_ivl_eqtype  as filter,a.dd_tlt_stime as stime,a.dd_tlt_etime as etime, a.$attribute as value from sd_ivl  as a where a.ss_id=%s and a.sd_ivl_amax IS NOT NULL";
 		}
+
+		$db->query($query, $id);
+
+		$res = $db->getList();
 		foreach ($res as $row) {
 			
-			$stime = strtotime($row["sd_ivl_stime"]);
-// var_dump(1000*$stime);
-			$etime = strtotime($row["sd_ivl_etime"]);
-
-			$temp = array( "stime" => floatval(1000 * $stime) ,
-						   "etime" => floatval(1000 * $etime) ,
-						   "time" => floatval(1000*($stime+$etime)/2),
-										 "value" => floatval($row[$attribute]) );
-			if ($filter != ""){
-				$temp["filter"] = $row[$filter];
-			}else{
-				$temp["filter"] = " ";
-			}
-			// var_dump($temp);
-			array_push($result, $temp );			
+			$stime = strtotime($row["stime"]);
+			$etime = strtotime($row["etime"]);
+			$temp = array( 	"stime" => floatval(1000 * $stime) ,
+							"etime" => floatval(1000 * $etime) ,
+							"value" => floatval($row["value"]),
+							"filter" => $row["filter"]
+						);
+			
+			
+			array_push($result, $temp );
 		}
 		return $result;
 	}
