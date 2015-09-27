@@ -3,7 +3,7 @@ define(function(require) {
   var $ = require('jquery'),
       Backbone = require('backbone'),
       _ = require('underscore'),
-      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection','excanvas']),
+      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection','excanvas','jquery.flot.errorbars']),
       TimeRange = require('models/time_range'),
       GraphHelper = require('helper/graph');
   return Backbone.View.extend({
@@ -43,10 +43,10 @@ define(function(require) {
             series: {
               points:{
                 show: true,
-                radius: 2,
-                lineWidth: 1.5, // in pixels
+                radius: 5,
+                lineWidth: 2, // in pixels
                 fill: true,
-                fillColor: "#000000",
+                fillColor: null,
                 symbol: "circle" 
               },
               lines:{
@@ -84,6 +84,9 @@ define(function(require) {
               mode: 'x', 
               color: '#451A2B' 
             },
+            zoom: {
+              interactive: true,
+            },
           };
           //pass color into options
           options.colors = ["#000000", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"];
@@ -98,8 +101,16 @@ define(function(require) {
       this.$el.addClass("overview-graph");
 
       // //Test
-      // this.data = [ {color: 0, label: "Foo", data: [ [10, 1], [17, -14], [30, 5] ] },
-      //             { color: 0, label: "Bar", data: [ [11, 13], [19, 11], [30, -7] ] }
+      // var point = {
+      //   show: true,
+      //   radius: 5,
+      //   fillColor: null, 
+      //   errorbars: "y", 
+      //   //xerr: {show: true, asymmetric: true, upperCap: "-", lowerCap: "-"}, 
+      //   yerr: {show: true, color: "red", upperCap: "-"}
+      // };
+      // this.data = [ {color: "blue", label: "Foo", data: [ [2, 1,.2], [5, -4,.2], [10, 5,.2] ], points: point },
+      //             { color: "red", label: "Bar", data: [ [7, 5,.2], [9, 6,.2], [10, -7,.2] ], points: point }
       //           ];
       
       // options = {
@@ -109,7 +120,7 @@ define(function(require) {
       //                 radius: 3,
       //                 lineWidth: 2, // in pixels
       //                 fill: true,
-      //                 fillColor: "#ffffff",
+      //                 fillColor: 0,//"#ffffff",
       //                 symbol: "circle", 
       //               },
 
@@ -118,11 +129,17 @@ define(function(require) {
       //               mode: 'x',
       //               color: '#451A2B'
       //             },
+      //             zoom: {
+      //               interactive: true,
+      //             },
+      //             // pan: {
+      //             //   interactive: true,
+      //             // }
       //           };
 
 
       //console.log(this.data);
-      this.graph = $.plot(this.$el, this.data, options); 
+      this.graph = $.plot(this.$el, this.data, options);
       //To edit the series object, go to GraphHelper used for data in the prepareData method below.
       this.$el.bind('plotselected', this.selectingTimeRange, this.onSelect);
     },

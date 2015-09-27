@@ -3,7 +3,7 @@ define(function(require) {
   var $ = require('jquery'),
       Backbone = require('backbone'),
       _ = require('underscore'),
-      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection']),
+      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection', 'jquery.flot.errorbars']),
       serieTooltipTemplate = require('text!templates/tooltip_serie.html'),
       Tooltip = require('views/series_tooltip'),
       TimeRange = require('models/time_range'),
@@ -50,10 +50,10 @@ define(function(require) {
             series: {
               points:{
                 show: true,
-                radius: 2,
-                lineWidth: 1.5, // in pixels
+                radius: 5,
+                lineWidth: 2, // in pixels
                 fill: true,
-                fillColor: "#000000",
+                fillColor: null,
                 symbol: "circle" 
               },
               lines:{
@@ -185,11 +185,12 @@ define(function(require) {
           }
 
           list.push([d['time'],d['value']]);
+          console.log(list);
         });
         // this.data contains the setting of options of the graph (ie. point,line,bar).
         // this makes the options in the $.plot(this.$el, this.data, options) 
         // cannot fully config the appearance of the graph.
-        data.push(GraphHelper.formatGraphAppearance(list,this.filters.timeSerie.getName(),this.filters.name[j]));
+        data.push(GraphHelper.formatGraphAppearance(list,this.filters.timeSerie.getName(),this.filters.name[j],"y"));
       }
       this.minX = minX;
       this.maxX = maxX;

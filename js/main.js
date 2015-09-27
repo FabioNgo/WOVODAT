@@ -13,7 +13,8 @@ require.config({
     'jquery.flot.selection': 'vendor/jquery-flot/jquery.flot.selection',
     'jquery.flot.time': 'vendor/jquery-flot/jquery.flot.time',
     'excanvas' : 'vendor/jquery-flot/excanvas',
-    'jquery.flot.tickrotor': 'vendor/jquery-flot/jquery.flot.tickrotor'
+    'jquery.flot.tickrotor': 'vendor/jquery-flot/jquery.flot.tickrotor',
+    'jquery.flot.errorbars': 'vendor/jquery-flot/jquery.flot.errorbars',
   },
   config: {
       moment: {

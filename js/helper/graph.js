@@ -33,10 +33,10 @@ define(function(require) {
       return ticks;
     },
     // setup effect for the graph
-    formatGraphAppearance: function(data,timeSerieName, filterName){
+    formatGraphAppearance: function(data,timeSerieName, filterName, errorbars){
       
       return {
-        data: data,
+        data: data, //data is 3D array (y-error value is included in the data passed in)
         label: filterName + ":"+timeSerieName,
         // color: 0,
         lines: { 
@@ -45,13 +45,20 @@ define(function(require) {
         shadowSize: 3,
         points: {
           show: true,
-          radius: 2,
+          radius: 5,
           lineWidth: 2, // in pixels
           fill: true,
-          fillColor: "#000000",
-          symbol: "circle" 
+          fillColor: null,
+          symbol: "circle",
+          errorbars: errorbars, // parameter to enable error-bar presentation.
+          yerr: {
+            show: true,
+            color: "red",
+            upperCap: "-",
+            lowerCap: "-",
+          }
         },
-      }
+      };
     },
   };
 });
