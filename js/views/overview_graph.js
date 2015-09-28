@@ -40,19 +40,6 @@ define(function(require) {
     render: function() {
       
       var options = {
-            series: {
-              points:{
-                show: true,
-                radius: 5,
-                lineWidth: 2, // in pixels
-                fill: true,
-                fillColor: null,
-                symbol: "circle" 
-              },
-              lines:{
-                show: false
-              },
-            },
             xaxis: { 
               mode:'time',
               timeformat: "%d-%b-%Y",
@@ -75,8 +62,7 @@ define(function(require) {
                 }
                 return val;
               },
-              //max: this.maxY,
-              //min: this.minY,
+              min: this.minY,
               ticks: this.ticks,
               labelWidth: 30
             },
@@ -85,7 +71,7 @@ define(function(require) {
               color: '#451A2B' 
             },
             zoom: {
-              interactive: true,
+              interactive: false,
             },
           };
           //pass color into options
@@ -100,42 +86,6 @@ define(function(require) {
       this.$el.height(200);
       this.$el.addClass("overview-graph");
 
-      // //Test
-      // var point = {
-      //   show: true,
-      //   radius: 5,
-      //   fillColor: null, 
-      //   errorbars: "y", 
-      //   //xerr: {show: true, asymmetric: true, upperCap: "-", lowerCap: "-"}, 
-      //   yerr: {show: true, color: "red", upperCap: "-"}
-      // };
-      // this.data = [ {color: "blue", label: "Foo", data: [ [2, 1,.2], [5, -4,.2], [10, 5,.2] ], points: point },
-      //             { color: "red", label: "Bar", data: [ [7, 5,.2], [9, 6,.2], [10, -7,.2] ], points: point }
-      //           ];
-      
-      // options = {
-      //             series: {
-      //               //lines: { show: true },
-      //               points: { show: true,
-      //                 radius: 3,
-      //                 lineWidth: 2, // in pixels
-      //                 fill: true,
-      //                 fillColor: 0,//"#ffffff",
-      //                 symbol: "circle", 
-      //               },
-
-      //             },
-      //             selection: {
-      //               mode: 'x',
-      //               color: '#451A2B'
-      //             },
-      //             zoom: {
-      //               interactive: true,
-      //             },
-      //             // pan: {
-      //             //   interactive: true,
-      //             // }
-      //           };
 
 
       //console.log(this.data);
@@ -156,6 +106,7 @@ define(function(require) {
           minY = undefined,
           maxY = undefined,
           data = [],
+          errorbars = undefined,
           i;
       var filters = this.selectingFilters.models;
       for(i=0;i<filters.length;i++){
@@ -165,37 +116,52 @@ define(function(require) {
           filterData.forEach(function(d) {
             var time = d.time;
             var value = d.value;
+            var error = parseFloat(d.error);
+            if(error == undefined){
+              error == 0;
+            }
             if (minX === undefined || time < minX){
               minX = time;
             }
             if (maxX === undefined || time > maxX){
               maxX = time;
             }
-            if (minY === undefined || value < minY){
-              minY = value;
+            if (minY === undefined || value-error < minY){
+              minY = value-error;
             }
-            if (maxY === undefined || value > maxY){
-              maxY = value;
+            if (maxY === undefined || value+error > maxY){
+              maxY = value+error;
             }
-            list.push([d['time'],d['value']]);
+            /*
+            * Data for error bar: d[x,y,left,right,up,down]
+            **/
+            if(d['error']!=undefined){
+              list.push([d['time'],d['value'],d['error']]); 
+              errorbars = "y";
+            }else{
+              list.push([d['time'],d['value']]);  
+            }
+            
           });
-          data.push(GraphHelper.formatGraphAppearance(list,filters[i].timeSerie.getName(),filters[i].name[j]));
+          
+            data.push(GraphHelper.formatGraphAppearance(list,filters[i].timeSerie.getName(),filters[i].name[j],errorbars));
+          
+          
         }
 
           
       }
       
-      this.minX = minX;
-      this.maxX = maxX;
-      if(this.minX == this.maxX){
-        this.minX = this.minX - 86400000;
-        this.maxX = this.maxX + 86400000;
-      }
+      this.minX = minX-86400000;
+      this.maxX = maxX+86400000;
+      
       
       /** setup y-axis tick **/
       if(maxY != undefined && minY != undefined){
-        
+        maxY = maxY*1.1;
+        minY = minY*0.9;
         this.ticks = GraphHelper.generateTick(minY,maxY);
+        this.minY = this.ticks[0];
       }
       this.timeRange.set({
         'startTime': this.minX,

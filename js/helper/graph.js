@@ -11,19 +11,24 @@ define(function(require) {
       }else{
         expDeg = MathHelper.exponentialDegree(min)
       }
-      var step = MathHelper.makeNumber((max-min)/8,expDeg); // step of ticks
-      if(step == 0){
-        step = 1;
+      var step = MathHelper.roundNumber((max-min)/10,expDeg); // step of ticks
+      //if step is 0.xxx in computing exponential Degree, decrement expDeg
+      while(step == 0){
+        expDeg--;
+        step = MathHelper.roundNumber((max-min)/10,expDeg);
       }
+      min = MathHelper.roundNumber(min,expDeg);
+      max = MathHelper.roundNumber(max,expDeg);
+
       /**** compute ticks ****/
-      var startTick = MathHelper.makeNumber(min -step,expDeg); // start tick
-      var endTick = MathHelper.makeNumber(max+step,expDeg); // end tick
+      var startTick = MathHelper.roundNumber(min -step,expDeg); // start tick
+      var endTick = MathHelper.roundNumber(max+step,expDeg); // end tick
       var curTick = startTick;
       if(curTick == endTick){
         ticks.push(curTick);
       }else{
         for(var i=0; curTick<endTick;i++){
-          curTick = MathHelper.makeNumber(startTick + i *step,expDeg);
+          curTick = MathHelper.roundNumber(startTick + i *step,expDeg);
           ticks.push(curTick);
           
         }  

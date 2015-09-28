@@ -70,6 +70,7 @@ define(function(require) {
             },
             yaxis: {
               show: true,
+              min: this.minY,
               ticks: this.ticks,
               labelWidth: 30,
               zoomRange: false,
@@ -160,6 +161,7 @@ define(function(require) {
           minY = undefined,
           maxY = undefined,
           data = [],
+          errorbars = undefined,
           i;
       
       
@@ -171,40 +173,47 @@ define(function(require) {
           var time = d.time;
           var value = d.value;
           d.time_formated = DateHelper.formatDate(d.time);
+          var error = parseFloat(d.error);
+          if(error == undefined){
+            error == 0;
+          }
           if (minX === undefined || time < minX){
             minX = time;
           }
           if (maxX === undefined || time > maxX){
             maxX = time;
           }
-          if (minY === undefined || value < minY){
-            minY = value;
+          if (minY === undefined || value-error < minY){
+            minY = value-error;
           }
-          if (maxY === undefined || value > maxY){
-            maxY = value;
+          if (maxY === undefined || value+error > maxY){
+            maxY = value+error;
           }
 
-          list.push([d['time'],d['value']]);
-          console.log(list);
+          if(d['error']!=undefined){
+              list.push([d['time'],d['value'],d['error']]); 
+              errorbars = "y";
+            }else{
+              list.push([d['time'],d['value']]);  
+            }
         });
         // this.data contains the setting of options of the graph (ie. point,line,bar).
         // this makes the options in the $.plot(this.$el, this.data, options) 
         // cannot fully config the appearance of the graph.
-        data.push(GraphHelper.formatGraphAppearance(list,this.filters.timeSerie.getName(),this.filters.name[j],"y"));
+        data.push(GraphHelper.formatGraphAppearance(list,this.filters.timeSerie.getName(),this.filters.name[j],errorbars));
       }
-      this.minX = minX;
-      this.maxX = maxX;
-      if(this.minX == this.maxX){
-        this.minX = this.minX - 86400000;
-        this.maxX = this.minX + 86400000;
-      }
+      this.minX = minX-86400000;
+      this.maxX = maxX+86400000;
        if(minY!= undefined){
         this.minY = minY.toFixed();
       }else{
         this.minY = minY;
       }
       if(maxY != undefined && minY != undefined){
+        maxY = maxY*1.1;
+        minY = minY*0.9;
         this.ticks = GraphHelper.generateTick(minY,maxY);
+        this.minY = this.ticks[0];
       }
       this.timeRange.set({
         'startTime': this.minX,

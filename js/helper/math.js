@@ -4,18 +4,23 @@ define(function() {
       if (Math.floor(value) === value ) return 0;
       return value.toString().split(".")[1].length || 0;
     },
-    //expDegree always greater than one of numberStr
-    makeNumber: function(numberStr,expDegree){
+    //expDegree always greater than expDegree of numberStr
+    // Round the number to expDegree
+    roundNumber: function(numberStr,desExpDegree){
+      var desCoe; // destination Coefficient
     	var number = parseFloat(numberStr)
-      	var exp = this.exponentialDegree(number);
+      number = number/ Math.pow(10,desExpDegree);
+     //  	var sourceExpDegree = this.exponentialDegree(number); //expoential Degree of this number
 
-     	var coe = this.coefficient(number);
-     	if(exp < expDegree){
-     		var differDeg = exp-expDegree;
-      		coe = coe * Math.pow(10,differDeg);
-      	}
-      	coe = Math.round(coe);
-      	return coe*Math.pow(10,expDegree);
+     // 	var sourceCoe = this.coefficient(number);
+     // 	if(sourceExpDegree >=desExpDegree){
+     // 		var differExpDeg = sourceExpDegree-desExpDegree;
+     //  		desCoe = sourceCoe * Math.pow(10,differExpDeg);
+    	// }else{
+     //    desCoe = 0;
+     //  }
+      	number = Math.round(number);
+      	return number*Math.pow(10,desExpDegree);
     },
     exponentialDegree: function(value){
       	value = value.toExponential();
