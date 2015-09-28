@@ -49,7 +49,7 @@ class SeismicRepository {
 		
 		$serie_list = $db->getList();
 
-		for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+		for ($i=0; $i<sizeof($serie_list) ; $i++) { 
 			$serie = $serie_list[$i];
 				$x = array('category' => "Seismic" ,
 					   'data_type' => "SeismicEventFromNetwork",
@@ -86,7 +86,7 @@ class SeismicRepository {
 		
 		$serie_list = $db->getList();
 
-		for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+		for ($i=0; $i<sizeof($serie_list); $i++) { 
 			$serie = $serie_list[$i];
 				$x = array('category' => "Seismic" ,
 					   'data_type' => "SeismicIntensity",
@@ -121,7 +121,7 @@ class SeismicRepository {
 		
 		$serie_list = $db->getList();
 
-		for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+		for ($i=0; $i<sizeof($serie_list); $i++) { 
 			$serie = $serie_list[$i];
 				$x = array('category' => "Seismic" ,
 					   'data_type' => "SeismicTremor",
@@ -171,7 +171,7 @@ class SeismicRepository {
 		
 		$serie_list = $db->getList();
 
-		for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+		for ($i=0; $i<sizeof($serie_list) ; $i++) { 
 			$serie = $serie_list[$i];
 				$x = array('category' => "Seismic" ,
 					   'data_type' => "SeismicInterval",
@@ -200,7 +200,7 @@ class SeismicRepository {
 		
 		$serie_list = $db->getList();
 
-		for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+		for ($i=0; $i<sizeof($serie_list); $i++) { 
 			$serie = $serie_list[$i];
 				$x = array('category' => "Seismic" ,
 					   'data_type' => "RSAM",
@@ -233,7 +233,7 @@ class SeismicRepository {
 		
 		$serie_list = $db->getList();
 
-		for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+		for ($i=0; $i<sizeof($serie_list); $i++) { 
 			$serie = $serie_list[$i];
 				$x = array('category' => "Seismic" ,
 					   'data_type' => "SSAM",
@@ -264,7 +264,7 @@ class SeismicRepository {
 		
 		$serie_list = $db->getList();
 
-		for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+		for ($i=0; $i<sizeof($serie_list); $i++) { 
 			$serie = $serie_list[$i];
 				$x = array('category' => "Seismic" ,
 					   'data_type' => "SeismicEventFromNetwork",

@@ -38,7 +38,7 @@ class DeformationRepository {
 			
 			$serie_list = $db->getList();
 
-			for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+			for ($i=0; $i<sizeof($serie_list)  ; $i++) { 
 				$serie = $serie_list[$i];
 					$x = array('category' => "Deformation" ,
 						   'data_type' => "ElectronicTilt",
@@ -61,7 +61,7 @@ class DeformationRepository {
 			$db->query( $query, $vd_id);
 			$serie_list = $db->getList();
 		// var_dump($serie_list);
-		for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+		for ($i=0; $i<sizeof($serie_list)  ; $i++) { 
 			$serie = $serie_list[$i];
 			$x = array('category' => "Deformation" ,
 					   'data_type' => "Strain",
@@ -88,7 +88,7 @@ class DeformationRepository {
 				
 				$serie_list = $db->getList();
 				// var_dump($serie_list);
-				for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+				for ($i=0; $i<sizeof($serie_list) ; $i++) { 
 					$serie = $serie_list[$i];
 						$x = array('category' => "Deformation" ,
 							   'data_type' => "TitltVector",
@@ -106,22 +106,6 @@ class DeformationRepository {
 
 		$result = array();
 		global $db;
-		// foreach ($stations as $station) {
-		// 	$code = $station["ds_code"];
-		// 	foreach (self::$infor["dd_str"]["params"] as $type) {
-		// 		$cols = $type["cols"];
-		// 		$query = "SELECT b.ds_id from ds a, dd_str b where a.ds_code = %s and a.ds_id = b.ds_id and b.$cols is not null limit 0 , 1";
-		// 		$db->query( $query, $code );
-		// 		if ( !$db->noRow() ) {
-		// 			$x = array('category' => "Deformation" ,
-		// 					   'data_type' => self::$infor["dd_str"]["data_type"],
-		// 					   'station_code' => $code,
-		// 					   'component' => $type["name"] );
-		// 			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
-		//  			array_push($result,  $x );
-		// 		}
-		// 	}
-		// }
 		$query="select distinct a.sta_id,a.sta_code as ds_code,concat('Strain Comp-1') as type from jjcn_sta as a, dd_str as b where a.type='Deformation' and a.vd_id=%d and a.sta_id=b.ds_id and b.dd_str_comp1 IS NOT NULL 	
 			union 
 			select distinct a.sta_id,a.sta_code as ds_code,concat('Strain Comp-2') as type from jjcn_sta as a, dd_str as b where a.type='Deformation' and a.vd_id=%d and a.sta_id=b.ds_id and b.dd_str_comp2 IS NOT NULL
@@ -163,7 +147,7 @@ class DeformationRepository {
 			
 		$serie_list = $db->getList();
 		// var_dump($serie_list);
-		for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+		for ($i=0; $i<sizeof($serie_list) ; $i++) { 
 			$serie = $serie_list[$i];
 			$x = array('category' => "Deformation" ,
 					   'data_type' => "Strain",
@@ -196,7 +180,7 @@ class DeformationRepository {
 			
 		$serie_list = $db->getList();
 		// var_dump($serie_list);
-		for ($i=0; $i<sizeof($serie_list) - 1 ; $i++) { 
+		for ($i=0; $i<sizeof($serie_list); $i++) { 
 			$serie = $serie_list[$i];
 			$x = array('category' => "Deformation" ,
 					   'data_type' => "Strain",

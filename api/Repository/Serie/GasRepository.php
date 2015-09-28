@@ -18,10 +18,11 @@ class GasRepository {
 
 		
 
-		foreach (self::$infor as $key => $value) {
-			$temp = call_user_func_array("self::getTimeSeriesList_".$key, array($vd_id, $stations));
-			$result = array_merge($result, $temp );
-		}
+		$result = self::getTimeSeriesList_gd_sol($vd_id,$stations);
+
+		$result = array_merge($result,self::getTimeSeriesList_gd_plu($vd_id,$stations));
+		$result = array_merge($result,self::getTimeSeriesList_gd($vd_id,$stations));
+		// var_dump($result);
 		return $result;
 	}
 
@@ -32,26 +33,33 @@ class GasRepository {
 	private static function getTimeSeriesList_gd_sol( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-
-		foreach ($stations as $station) {
-			$code = $station["gs_code"]; 
-			foreach (self::$infor["gd_sol"]["params"] as $type) {
 				
-				$cols = $type["cols"];
-				$query = "select gd_sol_id from gs , gd_sol where gs.gs_code = %s and gs.gs_id = gd_sol.gs_id and gs.gs_pubdate <= now() and gd_sol.gd_sol_pubdate <= now() and gd_sol.$cols is not null limit 0 , 1";
-				$db->query( $query, $code );
 
-				if ( !$db->noRow() ) {
-					$x = array('category' => "Gas",
-										 'data_type' => self::$infor["gd_sol"]["data_type"],
-										 'station_code' => $code,
-										 'component' => $type["name"]	);
-					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
-					array_push($result,  $x );
-				} 
-			}
-		}
+		$query="
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Total Gas Flux') as type from jjcn_sta as a, gd_sol as b where a.type='Gas' and a.vd_id=%d and a.sta_id=b.gs_id and b.gd_sol_tflux IS NOT NULL 
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Highest Gas Flux') as type from jjcn_sta as a, gd_sol as b where a.type='Gas' and a.vd_id=%d and a.sta_id=b.gs_id and b.gd_sol_high IS NOT NULL 
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Highest Temperature') as type from jjcn_sta as a, gd_sol as b where a.type='Gas' and a.vd_id=%d and a.sta_id=b.gs_id and b.gd_sol_htemp IS NOT NULL 			
+			";
+
+
+
+		$db->query( $query, $vd_id,$vd_id,$vd_id);
 		
+		$serie_list = $db->getList();
+
+		for ($i=0; $i<sizeof($serie_list) ; $i++) { 
+			$serie = $serie_list[$i];
+				$x = array('category' => "Gas" ,
+					   'data_type' => "SoilEfflux",
+					   'station_code' => $serie["ds_code"],
+					   'component' => $serie["type"],
+					   'sta_id' => $serie["sta_id"] 
+					   );
+			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+ 			array_push($result,  $x );
+		}	
 		return $result;
 	}
 
@@ -62,47 +70,35 @@ class GasRepository {
 	private static function getTimeSeriesList_gd_plu( $vd_id , $stations ) {
 		$result = array();
 		global $db;
-
-		foreach ($stations as $station) {
-			$code = $station["gs_code"]; 
-			foreach (self::$infor["gd_plu"]["params"] as $type) {
 				
-				$cols = $type["cols"];
-				$query = "select gd_plu_id from gs , gd_plu where gs.gs_code = %s and gs.gs_id = gd_plu.gs_id and gs.gs_pubdate <= now() and gd_plu.gd_plu_pubdate <= now() and gd_plu.$cols is not null  limit 0 , 1";
-				$db->query( $query, $code );
 
-				if ( !$db->noRow() ) {
-					$x = array('category' => "Gas",
-										 'data_type' => self::$infor["gd_plu"]["data_type"],
-										 'station_code' => $code,
-										 'component' => $type["name"]	);
-					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
-					array_push($result,  $x );
-				} 
-			}
-		}
+		$query="
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Plume Height') as type from jjcn_sta as a, gd_plu as b where a.type='Gas' and a.vd_id=%d and a.sta_id=b.gs_id and b.gd_plu_height IS NOT NULL 
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Gas Emission Rate') as type from jjcn_sta as a, gd_plu as b where a.type='Gas' and a.vd_id=%d and a.sta_id=b.gs_id and b.gd_plu_emit IS NOT NULL 
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Gas Emission Mass') as type from jjcn_sta as a, gd_plu as b where a.type='Gas' and a.vd_id=%d and a.sta_id=b.cs_id and b.gd_plu_mass IS NOT NULL 			
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Total Gas Emission') as type from jjcn_sta as a, gd_plu as b where a.type='Gas' and a.vd_id=%d and a.sta_id=b.gs_id and b.gd_plu_etot IS NOT NULL 			
+			";
 
-		$query = "select distinct cs.cs_code from cs, gd_plu where cs.cs_id = gd_plu.cs_id and gd_plu.vd_id = %d and cs.cs_pubdate <= now() and gd_plu.gd_plu_pubdate <= now()";
-		$db->query( $query, $vd_id );
-		$networks = $db->getList(); 
 
-		foreach ($networks as $network) {
-			$code = $network["cs_code"];
-			foreach (self::$infor["gd_plu"]["params"] as $type) {
-				$cols = $type["cols"];
-				$query = "select gd_plu_id from cs, gd_plu where cs.cs_code = %s and cs.cs_id = gd_plu.cs_id and gd_plu.vd_id = %d and cs.cs_pubdate <= now() and gd_plu.gd_plu_pubdate <= now() and gd_plu.$cols is not null limit 0 , 1";
-				$db->query( $query, $code, $vd_id );
-				if ( !$db->noRow() ) {
-					$x = array('category' => "Gas",
-										 'data_type' => self::$infor["gd_plu"]["data_type"],
-										 'station_code' => $code,
-										 'component' => $type["name"]	);
-					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
-					array_push($result,  $x );
-				}
-			}
-		}
 
+		$db->query( $query, $vd_id,$vd_id,$vd_id,$vd_id);
+		
+		$serie_list = $db->getList();
+
+		for ($i=0; $i<sizeof($serie_list) ; $i++) { 
+			$serie = $serie_list[$i];
+				$x = array('category' => "Gas" ,
+					   'data_type' => "GasPlume",
+					   'station_code' => $serie["ds_code"],
+					   'component' => $serie["type"],
+					   'sta_id' => $serie["sta_id"] 
+					   );
+			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+ 			array_push($result,  $x );
+		}	
 		return $result;
 	}
 
@@ -113,26 +109,35 @@ class GasRepository {
 	private static function getTimeSeriesList_gd( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-
-		foreach ($stations as $station) {
-			$code = $station["gs_code"]; 
-			foreach (self::$infor["gd"]["params"] as $type) {
 				
-				$cols = $type["cols"];
-				$query = "select gd_id from gs , gd where gs.gs_code = %s and gs.gs_id = gd.gs_id and gs.gs_pubdate <= now() and gd.gd_pubdate <= now() and gd.$cols is not null limit 0 , 1";
-				$db->query( $query, $code );
 
-				if ( !$db->noRow() ) {
-					$x = array('category' => "Gas",
-										 'data_type' => self::$infor["gd"]["data_type"],
-										 'station_code' => $code,
-										 'component' => $type["name"]	);
-					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
-					array_push($result,  $x );
-				} 
-			}
-		}
+		$query="
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Gas Temperature') as type from jjcn_sta as a, gd as b where a.type='Gas' and a.vd_id=%d and a.sta_id=b.gs_id and b.gd_gtemp IS NOT NULL 
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Atmospheric Pressure') as type from jjcn_sta as a, gd as b where a.type='Gas' and a.vd_id=%d and a.sta_id=b.gs_id and b.gd_bp IS NOT NULL 
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Gas Emission') as type from jjcn_sta as a, gd as b where a.type='Gas' and a.vd_id=%d and a.sta_id=b.gs_id and b.gd_flow IS NOT NULL 			
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Gas Concentration') as type from jjcn_sta as a, gd as b where a.type='Gas' and a.vd_id=%d and a.sta_id=b.gs_id and b.gd_concentration IS NOT NULL 			
+			";
+
+
+
+		$db->query( $query, $vd_id,$vd_id,$vd_id,$vd_id);
 		
+		$serie_list = $db->getList();
+		for ($i=0; $i<sizeof($serie_list) ; $i++) { 
+			$serie = $serie_list[$i];
+				$x = array('category' => "Gas" ,
+					   'data_type' => "SampledGas",
+					   'station_code' => $serie["ds_code"],
+					   'component' => $serie["type"],
+					   'sta_id' => $serie["sta_id"] 
+					   );
+			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+ 			array_push($result,  $x );
+		}	
+		// var_dump($result);
 		return $result;
 	}
 
@@ -144,42 +149,59 @@ class GasRepository {
 	*		$component : column name
 	*	@return array of data
 	*/
-	public static function getStationData( $table, $code, $component ) {
+	public static function getStationData( $table, $code, $component,$id ) {
 		foreach (self::$infor as $key => $type) if ( $type["data_type"] == $table ) 
-			return call_user_func_array("self::getStationData_".$key, array( $code, $component) );
+			return call_user_func_array("self::getStationData_".$key, array( $code, $component,$id) );
 	}
 
-	public static function getStationData_gd( $code, $component ) {
+	public static function getStationData_gd( $code, $component,$id) {
 		global $db;
-		$cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
+		$cc = ', a.cc_id, a.cc_id2, a.cc_id3 ';
 		$result = array();
 		$res = array();
 		$attribute = "";
 		$filterQuery = "";
 		$filter = "";
-		foreach (self::$infor["gd"]["params"] as $type) if ( $type["name"] == $component ) {
-			$attribute = $type["cols"];
-			// echo($attribute);
-			if ( array_key_exists("filter", $type) ) {
-				$filter = $type["filter"];
-				$filterQuery = ", b.".$filter;
-			}
-			$query = "select b.gd_time, b.$attribute $filterQuery $cc from gs a, gd b where a.gs_code = %s and b.gs_id = a.gs_id and b.$attribute is not null and a.gs_pubdate <= now() and b.gd_pubdate <= now() order by b.gd_time desc";
-			
-			$db->query($query, $code);
-			$res = $db->getList();
+		$query = "";
+		if($component == 'Gas Temperature'){
+				$attribute = "gd_gtemp";
+				$query = "select a.gd_time as time, a.$attribute as value from gd as a where a.gs_id=%s and a.gd_gtemp IS NOT NULL";
+	
+		}else if($component == 'Atmospheric Pressure'){
+			$attribute = "gd_bp";
+			$query = "select a.gd_time as time, a.$attribute as value from gd as a where a.gs_id=%s and a.gd_bp IS NOT NULL";
+
+		}else if($component == 'Gas Emission'){
+			$attribute = "gd_flow";
+			$query = "select a.gd_time as time, a.$attribute as value from gd as a where a.gs_id=%s and a.gd_flow IS NOT NULL";
+		}else if($component == 'Gas Concentration'){
+			$attribute = "gd_concentration";
+			$query = "select a.gd_species as filter, a.gd_concentration_err as err, a.gd_time as time, a.$attribute as value from gd as a where a.gs_id=%s and a.gd_concentration IS NOT NULL";
 		}
 
+		$db->query($query, $id,$id,$id,$id);
+
+		$res = $db->getList();
 		foreach ($res as $row) {
-			$temp = array( "time" => 1000*strtotime($row["gd_time"]) , 
-										 "value" => floatval($row[$attribute]) );
-			if ($filter != ""){
-				$temp["filter"] = $row[$filter];
+			
+			$time = strtotime($row["time"]);
+			$temp = array( "time" => floatval(1000 * $time) ,
+							"value" => floatval($row["value"]),
+						);
+			
+			if(array_key_exists("filter", $row)){
+				$temp["filter"] = $row["filter"];
 			}else{
 				$temp["filter"] = " ";
 			}
+			if(array_key_exists("err", $row)){
+				$temp["error"] = $row["err"];
+			}else{
+				$temp["error"] = " ";
+			}
 			array_push($result, $temp );			
 		}
+		return $result;
 		return $result;
 	}
 
