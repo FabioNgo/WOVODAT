@@ -27,23 +27,23 @@ class SeismicRepository {
 		global $db;
 				
 		$query="
-			select distinct a.sta_id,a.sta_code as ss_code,concat('S-P Arrival Time') as type from jjcn_sta as a, sd_evs as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_evs_spint IS NOT NULL 
+			select distinct a.sta_id,a.sta_code as ss_code,concat('S-P Arrival Time') as type from jjcn_sta as a, sd_evs as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_evs_spint IS NOT NULL 
 			union 
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Epicenter From Event') as type from jjcn_sta as a, sd_evs as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_evs_dist_actven IS NOT NULL 
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Epicenter From Event') as type from jjcn_sta as a, sd_evs as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_evs_dist_actven IS NOT NULL 
 			union 
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Earthquake Max-amplitude') as type from jjcn_sta as a, sd_evs as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_evs_maxamptrac IS NOT NULL 
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Earthquake Max-amplitude') as type from jjcn_sta as a, sd_evs as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_evs_maxamptrac IS NOT NULL 
 			union 
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Earthquake Dominant Frequency') as type from jjcn_sta as a, sd_evs as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_evs_domFre IS NOT NULL 
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Earthquake Dominant Frequency') as type from jjcn_sta as a, sd_evs as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_evs_domFre IS NOT NULL 
 			union 
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Earthquake Magnitude') as type from jjcn_sta as a, sd_evs as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_evs_mag IS NOT NULL 
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Earthquake Magnitude') as type from jjcn_sta as a, sd_evs as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_evs_mag IS NOT NULL 
 			union 
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Earthquake Energy') as type from jjcn_sta as a, sd_evs as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_evs_energy IS NOT NULL 
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Earthquake Energy') as type from jjcn_sta as a, sd_evs as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_evs_energy IS NOT NULL 
 			";
 
-		$db->query( $query, $vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id );
+		$db->query( $query);
 		
 		$serie_list = $db->getList();
-
+		
 		for ($i=0; $i<sizeof($serie_list) ; $i++) { 
 			$serie = $serie_list[$i];
 				$x = array('category' => "Seismic" ,
@@ -51,8 +51,7 @@ class SeismicRepository {
 					   'station_code' => $serie["ss_code"],
 					   'component' => $serie["type"],
 					   'sta_id' => $serie["sta_id"],
-					   'style' =>'bar',
-					   'error' => false
+					   
 
 					   );
 			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
@@ -67,15 +66,15 @@ class SeismicRepository {
 				
 		$query="
 			select distinct a.sta_id,a.sta_code as ss_code,concat('Max Distance Felt') as type from jjcn_sta as a, sd_int as b 
-			where a.type='Seismic' and a.vd_id=%d and b.sd_int_maxdist IS NOT NULL 
+			where a.type='Seismic' and a.vd_id=$vd_id and b.sd_int_maxdist IS NOT NULL 
 			union 
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Max Intensity') as type from jjcn_sta as a, sd_int as b where a.type='Seismic' and a.vd_id=%d and b.sd_int_maxrint IS NOT NULL 
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Max Intensity') as type from jjcn_sta as a, sd_int as b where a.type='Seismic' and a.vd_id=$vd_id and b.sd_int_maxrint IS NOT NULL 
 			union 
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Distance at Max-intensity') as type from jjcn_sta as a, sd_int as b where a.type='Seismic' and a.vd_id=%d and b.sd_int_maxrint_dist IS NOT NULL 
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Distance at Max-intensity') as type from jjcn_sta as a, sd_int as b where a.type='Seismic' and a.vd_id=$vd_id and b.sd_int_maxrint_dist IS NOT NULL 
 			
 			";
 
-		$db->query( $query, $vd_id,$vd_id,$vd_id);
+		$db->query( $query);
 		
 		$serie_list = $db->getList();
 
@@ -86,8 +85,7 @@ class SeismicRepository {
 					   'station_code' => $serie["ss_code"],
 					   'component' => $serie["type"],
 					   'sta_id' => $serie["sta_id"],
-					   'style' =>'bar',
-					   'error' => false 
+					   
 					   );
 			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
  			array_push($result,  $x );
@@ -101,16 +99,16 @@ class SeismicRepository {
 				
 
 		$query="
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Tremor Dominant Frequency-1') as type from jjcn_sta as a, sd_trm as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_trm_domfreq1 IS NOT NULL 
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Tremor Dominant Frequency-1') as type from jjcn_sta as a, sd_trm as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_trm_domfreq1 IS NOT NULL 
 			union 
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Tremor Dominant Frequency-2') as type from jjcn_sta as a, sd_trm as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_trm_domfreq2 IS NOT NULL 
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Tremor Dominant Frequency-2') as type from jjcn_sta as a, sd_trm as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_trm_domfreq2 IS NOT NULL 
 			union 
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Tremor Max-Amplitude') as type from jjcn_sta as a, sd_trm as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_trm_maxamp IS NOT NULL 
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Tremor Max-Amplitude') as type from jjcn_sta as a, sd_trm as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_trm_maxamp IS NOT NULL 
 			union 
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Reduced Displacement') as type from jjcn_sta as a, sd_trm as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_trm_reddis IS NOT NULL	
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Reduced Displacement') as type from jjcn_sta as a, sd_trm as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_trm_reddis IS NOT NULL	
 			";
 			
-		$db->query( $query, $vd_id,$vd_id,$vd_id,$vd_id);
+		$db->query( $query);
 		
 		$serie_list = $db->getList();
 
@@ -121,8 +119,7 @@ class SeismicRepository {
 					   'station_code' => $serie["ss_code"],
 					   'component' => $serie["type"],
 					   'sta_id' => $serie["sta_id"],
-					   'style' =>'bar',
-					   'error' => false 
+					 
 					   );
 			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
  			array_push($result,  $x );
@@ -134,32 +131,32 @@ class SeismicRepository {
 		$result = array();
 		global $db;
 		$query="
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Swarm Distance') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_hdist IS NOT NULL 
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Swarm Distance') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_ivl_hdist IS NOT NULL 
 			union
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Swarm Mean Depth') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_avgdepth IS NOT NULL
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Swarm Mean Depth') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_ivl_avgdepth IS NOT NULL
 			union
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Swarm Vertical Dispersion') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_vdispers IS NOT NULL
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Swarm Vertical Dispersion') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_ivl_vdispers IS NOT NULL
 			union
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Hypocenter Horiz-Migration') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_hmigr_hyp IS NOT NULL
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Hypocenter Horiz-Migration') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_ivl_hmigr_hyp IS NOT NULL
 			union
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Hypocenter Vert-Migration') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_vmigr_hyp IS NOT NULL
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Hypocenter Vert-Migration') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_ivl_vmigr_hyp IS NOT NULL
 			union
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Earthquake Counts') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_nrec IS NOT NULL 
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Earthquake Counts') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_ivl_nrec IS NOT NULL 
 			union			
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Total Seismic Energy') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_nfelt IS NOT NULL
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Total Seismic Energy') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_ivl_nfelt IS NOT NULL
 			union
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Felt Earthquake Counts') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_etot IS NOT NULL
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Felt Earthquake Counts') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_ivl_etot IS NOT NULL
 			union
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Earthquake Min Frequency') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_fmin IS NOT NULL
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Earthquake Min Frequency') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_ivl_fmin IS NOT NULL
 			union
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Earthquake Max Frequency') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_fmax IS NOT NULL
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Earthquake Max Frequency') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_ivl_fmax IS NOT NULL
 			union
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Earthquake Min Amplitude') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_amin IS NOT NULL
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Earthquake Min Amplitude') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_ivl_amin IS NOT NULL
 			union
-			select distinct a.sta_id,a.sta_code as ss_code,concat('Earthquake Max Amplitude') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=%d and a.sta_id=b.ss_id and b.sd_ivl_amax IS NOT NULL
+			select distinct a.sta_id,a.sta_code as ss_code,concat('Earthquake Max Amplitude') as type from jjcn_sta as a, sd_ivl as b where a.type='Seismic' and a.vd_id=$vd_id and a.sta_id=b.ss_id and b.sd_ivl_amax IS NOT NULL
 			";
 
-		$db->query( $query, $vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id,$vd_id );
+		$db->query( $query);
 		
 		$serie_list = $db->getList();
 
@@ -170,8 +167,7 @@ class SeismicRepository {
 					   'station_code' => $serie["ss_code"],
 					   'component' => $serie["type"],
 					   'sta_id' => $serie["sta_id"],
-					   'style' =>'bar',
-					   'error' => false 
+					  
 					   );
 			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
  			array_push($result,  $x );
@@ -196,8 +192,7 @@ class SeismicRepository {
 					   'station_code' => $serie["ss_code"],
 					   'component' => $serie["type"],
 					   'sta_id' => $serie["sta_id"],
-					   'style' =>'bar',
-					   'error' => false 
+					 
 					   );
 			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
  			array_push($result,  $x );
@@ -218,7 +213,7 @@ class SeismicRepository {
 			select distinct a.sta_id,a.sta_code as ss_code,concat('SSAM Counts') as type from jjcn_sta as a, sd_ssm as b, sd_sam as c where a.type='Seismic' and a.vd_id=% and a.sta_id=c.ss_id and b.sd_sam_id=c.sd_sam_id and b.sd_ssm_count IS NOT NULL 
 			";
 
-		$db->query( $query,$vd_id,$vd_id,$vd_id);
+		$db->query( $query);
 		
 		$serie_list = $db->getList();
 
@@ -229,8 +224,7 @@ class SeismicRepository {
 					   'station_code' => $serie["ss_code"],
 					   'component' => $serie["type"],
 					   'sta_id' => $serie["sta_id"],
-					   'style' =>'bar',
-					   'error' => false 
+				
 					   );
 			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
  			array_push($result,  $x );
@@ -243,9 +237,9 @@ class SeismicRepository {
 		global $db;
 				
 
-		$query="select distinct c.sn_id as sta_id,c.sn_code as sn_code,concat('Earthquake Depth') as type from jjcn_sta as a, sd_evn as b, sn as c where a.type='Seismic' and a.vd_id=%d and b.sn_id=c.sn_id and b.sd_evn_edep IS NOT NULL  
+		$query="select distinct c.sn_id as sta_id,c.sn_code as sn_code,concat('Earthquake Depth') as type from jjcn_sta as a, sd_evn as b, sn as c where a.type='Seismic' and a.vd_id=$vd_id and b.sn_id=c.sn_id and b.sd_evn_edep IS NOT NULL  
 		union
-		select distinct c.sn_id as sta_id,c.sn_code as sn_code,concat('Earthquake Magnitude') as type from jjcn_sta as a, sd_evn as b, sn as c where a.type='Seismic' and a.vd_id=%d and b.sn_id=c.sn_id and b.sd_evn_pmag IS NOT NULL";
+		select distinct c.sn_id as sta_id,c.sn_code as sn_code,concat('Earthquake Magnitude') as type from jjcn_sta as a, sd_evn as b, sn as c where a.type='Seismic' and a.vd_id=$vd_id and b.sn_id=c.sn_id and b.sd_evn_pmag IS NOT NULL";
 
 		
 		$db->query( $query, $vd_id,$vd_id);
@@ -259,8 +253,7 @@ class SeismicRepository {
 					   'station_code' => $serie["sn_code"],
 					   'component' => $serie["type"],
 					   'sta_id' => $serie["sta_id"],
-					   'style' => 'circle',
-					   'error' => true 
+					 
 					   );
 			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
  			array_push($result,  $x );
