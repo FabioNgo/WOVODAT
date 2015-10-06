@@ -20,7 +20,7 @@ define(function(require) {
               // console.log(e);
                 var filters = [];
                 
-                var data = model.get('data');
+                var data = model.get('data').data;
                 // console.log(data);
                 if(data == undefined){
                   return;

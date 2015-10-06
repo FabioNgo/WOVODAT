@@ -109,15 +109,16 @@ define(function(require) {
           errorbars = undefined,
           i;
       var filters = this.selectingFilters.models;
+      // console.log(filters);
       for(i=0;i<filters.length;i++){
         console.log(filters);
         for(var j = 0; j<filters[i].name.length;j++){
           var list = [];
           var filterData = filters[i].timeSerie.getDataFromFilter(filters[i].name[j])
+          var style = filters[i].timeSerie.get('data').style; // plot style [bar,circle,dot,horizontalbar]
+          var errorbar = filters[i].timeSerie.get('data').errorbar; // has error bar or not [true,false]
           filterData.forEach(function(d) {
-            var time = d.time;
-            var value = d.value;
-            var error = parseFloat(d.error);
+            
             if(error == undefined){
               error == 0;
             }
@@ -133,19 +134,18 @@ define(function(require) {
             if (maxY === undefined || value+error > maxY){
               maxY = value+error;
             }
-            /*
-            * Data for error bar: d[x,y,left,right,up,down]
-            **/
-            if(d['error']!=undefined){
-              list.push([d['time'],d['value'],d['error']]); 
-              errorbars = "y";
-            }else{
-              list.push([d['time'],d['value']]);  
+            
+            var tempData [];
+            if(style == 'bar'){
+              tempData.push(d['stime'],d['etime'],d['value']);
+            }
+            if(errorbar){
+              tempData.push(d['error']);
             }
             
           });
           
-            data.push(GraphHelper.formatGraphAppearance(list,filters[i].timeSerie.getName(),filters[i].name[j],errorbars));
+            data.push(GraphHelper.formatGraphAppearance(list,filters[i].timeSerie.getName(),filters[i].name[j],style,errorbar));
           
           
         }

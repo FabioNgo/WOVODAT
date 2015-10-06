@@ -36,7 +36,7 @@ define(function(require) {
       
     },
     getFilter: function(timeSerie){
-      var data = timeSerie.get('data');
+      var data = timeSerie.get('data').data;
       if(data == undefined){
         return;
       }

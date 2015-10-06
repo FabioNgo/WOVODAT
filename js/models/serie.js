@@ -33,7 +33,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
       }
       // get data
       for(var i=0; i< filter.dataIndex.length;i++ ){
-        data.push(this.get('data')[filter.dataIndex[i]]);
+        data.push(this.get('data').data[filter.dataIndex[i]]);
       }
       return data;
     }

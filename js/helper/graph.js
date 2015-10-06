@@ -38,7 +38,7 @@ define(function(require) {
       return ticks;
     },
     // setup effect for the graph
-    formatGraphAppearance: function(data,timeSerieName, filterName, errorbars){
+    formatGraphAppearance: function(data,timeSerieName, filterName,style, errorbars){
       
       return {
         data: data, //data is 3D array (y-error value is included in the data passed in)
@@ -55,7 +55,13 @@ define(function(require) {
           fill: true,
           fillColor: null,
           symbol: "circle",
-          errorbars: errorbars, // parameter to enable error-bar presentation.
+          errorbars: function(errorbars){
+            if(errorbars){
+              return "y";
+            }else{
+              return "";
+            }
+          }, // parameter to enable error-bar presentation.
           yerr: {
             show: true,
             color: "red",
