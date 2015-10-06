@@ -44,7 +44,9 @@ class DeformationRepository {
 						   'data_type' => "ElectronicTilt",
 						   'station_code' => $serie["ds_code"],
 						   'component' => $serie["type"],
-						   'sta_id' => $serie["sta_id"] 
+						   'sta_id' => $serie["sta_id"],
+						   'style' => 'dot',
+						   'error' => true
 						   );
 				$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
 	 			array_push($result,  $x );
@@ -67,7 +69,9 @@ class DeformationRepository {
 					   'data_type' => "Strain",
 					   'station_code' => $serie["ds_code"],
 					   'component' => $serie["type"],
-					   'sta_id' => $serie["sta_id"] 
+					   'sta_id' => $serie["sta_id"],
+					   'style' => 'dot',
+					   'error' => true
 					   );
 			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
  			array_push($result,  $x );
@@ -94,7 +98,9 @@ class DeformationRepository {
 							   'data_type' => "TitltVector",
 							   'station_code' => $serie["ds_code"],
 							   'component' => $serie["type"],
-							   'sta_id' => $serie["sta_id"] 
+							   'sta_id' => $serie["sta_id"],
+							   'style' => 'horizontalbar',
+							   'error' => true
 							   );
 					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
 		 			array_push($result,  $x );
@@ -153,7 +159,9 @@ class DeformationRepository {
 					   'data_type' => "Strain",
 					   'station_code' => $serie["ds_code"],
 					   'component' => $serie["type"],
-					   'sta_id' => $serie["sta_id"] 
+					   'sta_id' => $serie["sta_id"],
+					   'style' => 'dot',
+					   'error' => true
 					   );
 			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
  			array_push($result,  $x );
@@ -186,7 +194,9 @@ class DeformationRepository {
 					   'data_type' => "Strain",
 					   'station_code' => $serie["ds_code"],
 					   'component' => $serie["type"],
-					   'sta_id' => $serie["sta_id"] 
+					   'sta_id' => $serie["sta_id"],
+					   'style' => 'dot',
+					   'error' => true
 					   );
 			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
  			array_push($result,  $x );
@@ -454,7 +464,7 @@ class DeformationRepository {
 			$temp = array( "time" => floatval(1000 * $time) ,
 							"value" => floatval($row["value"]),
 							"error" => $row["err"],
-							"filter"=> " "
+							"filter"=> " ",
 						);
 			
 			array_push($result, $temp );

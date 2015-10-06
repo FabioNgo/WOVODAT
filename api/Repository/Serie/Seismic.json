@@ -1,6 +1,6 @@
 {
 	"sd_evs" : {
-		"data_type" : "Evs",
+		"data_type" : "SeismicEventFromSingleStation",
 		"time" : "sd_evs_time",
 		"timems" : "sd_evs_time_ms",
 		"params" : [
@@ -23,7 +23,7 @@
 	},
 
 	"sd_int" : {
-		"data_type" : "Interval",
+		"data_type" : "SeismicIntensity",
 		"time" : "sd_int_time",
 		"params" : [
 			{
@@ -42,7 +42,7 @@
 	},
 
 	"sd_trm" : {
-		"data_type" : "Trm",
+		"data_type" : "SeismicTremor",
 		"stime" : "sd_trm_stime",
 		"etime" : "sd_trm_etime",
 		"params" : [
@@ -80,7 +80,7 @@
 	},
 
 	"sd_ivl" : {
-		"data_type" : "Ivl",
+		"data_type" : "SeismicInterval",
 		"stime" : "sd_ivl_stime",
 		"etime" : "sd_ivl_etime",
 		"params" : [
@@ -188,7 +188,7 @@
 	}, 
 
 	"sd_evn" : {
-		"data_type" : "Evn" ,
+		"data_type" : "SeismicEventFromNetwork" ,
 		"time" : "sd_evn_time" , 
 		"params" : [
 			{

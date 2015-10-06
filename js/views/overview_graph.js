@@ -110,6 +110,7 @@ define(function(require) {
           i;
       var filters = this.selectingFilters.models;
       for(i=0;i<filters.length;i++){
+        console.log(filters);
         for(var j = 0; j<filters[i].name.length;j++){
           var list = [];
           var filterData = filters[i].timeSerie.getDataFromFilter(filters[i].name[j])

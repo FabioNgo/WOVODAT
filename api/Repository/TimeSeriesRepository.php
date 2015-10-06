@@ -54,10 +54,13 @@ class TimeSeriesRepository {
     $serie = self::getSerieInfo($sr_id);
     if (!$serie)
       return null;
+    // var_dump($serie);
+
     $serie['data'] = call_user_func_array( $serie['category']."Repository::getStationData" , 
       array( $serie['data_type'] , 
         isset( $serie['station_code']) ? $serie['station_code'] : $serie['volcanoID'],
         $serie['component'], $serie["sta_id"] )  );
+    // $serie['data'] = 
     return $serie;
   }
 
