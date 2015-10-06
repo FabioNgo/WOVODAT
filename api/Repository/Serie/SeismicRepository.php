@@ -43,7 +43,7 @@ class SeismicRepository {
 		$db->query( $query);
 		
 		$serie_list = $db->getList();
-		
+
 		for ($i=0; $i<sizeof($serie_list) ; $i++) { 
 			$serie = $serie_list[$i];
 				$x = array('category' => "Seismic" ,
@@ -269,18 +269,65 @@ class SeismicRepository {
 			}
 		}
 	} 
+	private static function getStationData_sd_evn( $table, $component,$id ) {
+		global $db;
+		$cc = ', a.cc_id, a.cc_id2, a.cc_id3 ';
+		$result = array();
+		$res = array();
+		$attribute = "";
+		$style = "";
+		$errorbar = false;
+		$data = array();
+		$filter = "";
+		if($component == 'Earthquake Depth'){
+			$style = "circle";
+			$errorbar = true;
+			$attribute = "sd_evn_edep";
+			$query = "select a.sd_evn_eqtype  as filter, a.sd_evn_derr as err ,a.sd_evn_time as time, a.$attribute as value $cc from $table  as a where a.sn_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Earthquake Magnitude'){
+			$style = "circle";
+			$errorbar = false;
+			$attribute = "sd_evn_pmag";
+			$query = "select a.sd_evn_eqtype  as filter ,a.sd_evn_time as time, a.$attribute as value $cc from $table  as a where a.sn_id=$id and a.$attribute IS NOT NULL";
+		}
 
+		$db->query($query);
+
+		$res = $db->getList();
+		
+		foreach ($res as $row) {
+			
+			$time = strtotime($row["time"]);
+			$temp = array( 	"time" => floatval(1000 * $time) ,
+							"value" => floatval($row["value"]),
+							"filter" => $row["filter"],
+						);
+			if($errorbar){
+				$temp["error"] = $row["err"];
+			}
+			
+			array_push($data, $temp );
+		}
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
+		return $result;
+	}
 	public static function getStationData_sd_evs( $table, $component,$id ) {
 		global $db;
 		$cc = ', a.cc_id, a.cc_id2, a.cc_id3 ';
 		$result = array();
 		$res = array();
 		$attribute = "";
-		$filterQuery = "";
+		$style = "bar";
+		$errorbar = false;
+		$data = array();
 		$filter = "";
 		if($component == 'S-P Arrival Time'){
+
 				$attribute = "sd_evs_spint";
 				$query = "select a.sd_evs_eqtype  as filter ,a.sd_evs_time as time, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
+
 		}else if($component == 'Epicenter From Event'){
 				$attribute = "sd_evs_dist_actven";
 				$query = "select a.sd_evs_eqtype  as filter ,a.sd_evs_time as time, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
@@ -301,6 +348,7 @@ class SeismicRepository {
 		$db->query($query);
 
 		$res = $db->getList();
+		
 		foreach ($res as $row) {
 			
 			$time = strtotime($row["time"]);
@@ -309,8 +357,11 @@ class SeismicRepository {
 							"filter" => $row["filter"],
 						);
 			
-			array_push($result, $temp );
+			array_push($data, $temp );
 		}
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
 		return $result;
 	}
 
@@ -320,7 +371,9 @@ class SeismicRepository {
 		$result = array();
 		$res = array();
 		$attribute = "";
-		$filterQuery = "";
+		$style = "bar";
+		$errorbar = false;
+		$data = array();
 		$filter = "";
 		if($component == 'Max Distance Felt'){
 				$attribute = "sd_int_maxdist";
@@ -336,6 +389,7 @@ class SeismicRepository {
 		$db->query($query);
 
 		$res = $db->getList();
+		
 		foreach ($res as $row) {
 			
 			$time = strtotime($row["time"]);
@@ -344,8 +398,11 @@ class SeismicRepository {
 							"filter" => " ",
 						);
 			
-			array_push($result, $temp );
+			array_push($data, $temp );
 		}
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
 		return $result;
 	}
 
@@ -355,7 +412,9 @@ class SeismicRepository {
 		$result = array();
 		$res = array();
 		$attribute = "";
-		$filterQuery = "";
+		$style = "bar";
+		$errorbar = false;
+		$data = array();
 		$filter = "";
 		if($component == 'RSAM Counts'){
 				$attribute = "sd_rsm_count";
@@ -365,6 +424,7 @@ class SeismicRepository {
 		$db->query($query);
 
 		$res = $db->getList();
+		
 		foreach ($res as $row) {
 			
 			$stime = strtotime($row["stime"]);
@@ -375,8 +435,11 @@ class SeismicRepository {
 							"filter" => " ",
 						);
 			
-			array_push($result, $temp );
+			array_push($data, $temp );
 		}
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
 		return $result;
 	}
 
@@ -386,7 +449,9 @@ class SeismicRepository {
 		$result = array();
 		$res = array();
 		$attribute = "";
-		$filterQuery = "";
+		$style = "bar";
+		$errorbar = false;
+		$data = array();
 		$filter = "";
 		if($component == 'SSAM Low-freq Limit'){
 				$attribute = "sd_ssm_lowf";
@@ -402,6 +467,7 @@ class SeismicRepository {
 		$db->query($query);
 
 		$res = $db->getList();
+		
 		foreach ($res as $row) {
 			
 			$stime = strtotime($row["stime"]);
@@ -414,45 +480,14 @@ class SeismicRepository {
 			
 			array_push($result, $temp );
 		}
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
 		return $result;
 	}
 
-	public static function getStationData_sd_evn( $table, $component,$id ) {
-		global $db;
-		$cc = ', a.cc_id, a.cc_id2, a.cc_id3 ';
-		$result = array();
-		$res = array();
-		$attribute = "";
-		$filterQuery = "";
-		$filter = "";
-		if($component == 'Earthquake Depth'){
-				$attribute = "sd_evn_edep";
-				$query = "select a.sd_evn_eqtype  as filter, a.sd_evn_derr as err ,a.sd_evn_time as time, a.$attribute as value $cc from $table  as a where a.sn_id=$id and a.$attribute IS NOT NULL";
-		}else if($component == 'Earthquake Magnitude'){
-				$attribute = "sd_evn_pmag";
-				$query = "select a.sd_evn_eqtype  as filter, a.sd_evn_derr as err ,a.sd_evn_time as time, a.$attribute as value $cc from $table  as a where a.sn_id=$id and a.$attribute IS NOT NULL";
-		}
-
-		$db->query($query);
-
-		$res = $db->getList();
-		foreach ($res as $row) {
-			
-			$time = strtotime($row["time"]);
-			$temp = array( 	"time" => floatval(1000 * $time) ,
-							"value" => floatval($row["value"]),
-							"filter" => $row["filter"],
-						);
-			if(array_key_exists("err", $row)){
-				$temp["error"] = $row["err"];
-			}else{
-				$temp["error"] = null;
-			}
-			
-			array_push($result, $temp );
-		}
-		return $result;
-	}
+	
+	
 
 	public static function getStationData_sd_ivl( $table, $component,$id ) {
 		global $db;
@@ -460,7 +495,9 @@ class SeismicRepository {
 		$result = array();
 		$res = array();
 		$attribute = "";
-		$filterQuery = "";
+		$style = "bar";
+		$errorbar = false;
+		$data = array();
 		$filter = "";
 		if($component == 'Swarm Distance'){
 				$attribute = "sd_ivl_hdist";
@@ -504,6 +541,7 @@ class SeismicRepository {
 		$db->query($query, $id);
 
 		$res = $db->getList();
+		
 		foreach ($res as $row) {
 			
 			$stime = strtotime($row["stime"]);
@@ -515,8 +553,12 @@ class SeismicRepository {
 						);
 			
 			
-			array_push($result, $temp );
+			array_push($data, $temp );
+
 		}
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
 		return $result;
 	}
 
@@ -527,7 +569,9 @@ class SeismicRepository {
 		$result = array();
 		$res = array();
 		$attribute = "";
-		$filterQuery = "";
+		$style = "bar";
+		$errorbar = false;
+		$data = array();
 		$filter = "";
 		if($component == 'Tremor Dominant Frequency-1'){
 				$attribute = "sd_trm_domfreq1";
@@ -544,7 +588,9 @@ class SeismicRepository {
 		}
 
 		$db->query($query);
-
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
 		$res = $db->getList();
 		foreach ($res as $row) {
 			
@@ -556,7 +602,7 @@ class SeismicRepository {
 							"filter" => $row["filter"],
 						);
 			
-			array_push($result, $temp );
+			array_push($data, $temp );
 		}
 		return $result;			
 		

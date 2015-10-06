@@ -416,7 +416,7 @@ class DeformationRepository {
 		return $result;
 	}
 
-	public static function getStationData_$table( $table, $component,$id ) {
+	public static function getStationData_dd_str( $table, $component,$id ) {
 		global $db;
 		$cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
 		$result = array();
@@ -613,6 +613,7 @@ class DeformationRepository {
 						);
 			
 			array_push($result, $temp );
+		}
 	}
 
 	public static function getStationData_dd_lev( $table, $component ) {
