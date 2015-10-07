@@ -308,7 +308,9 @@ class DeformationRepository {
 		$result = array();
 		$res = array();
 		$attribute = "";
-		$filterQuery = "";
+		$style = "dot";
+		$errorbar = true;
+		$data = array();
 		$filter = "";
 		$query = "";
 		if($component == 'Titlt1'){
@@ -320,6 +322,7 @@ class DeformationRepository {
 			$query = "select a.dd_tlt_err2 as err ,a.dd_tlt_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Temp'){
 			$attribute = "dd_tlt_temp";
+			$errorbar = false;
 			$query = "select a.dd_tlt_time as time, a.$attribute as value from $table as a where $cc a.ds_id=$id and a.$attribute IS NOT NULL";
 		}
 		$db->query($query, $id);
@@ -333,13 +336,14 @@ class DeformationRepository {
 							"filter" => " "
 						);
 			
-			if(array_key_exists("err", $row)){
+			if($errorbar){
 				$temp["error"] = $row["err"];
-			}else{
-				$temp["error"] = null;
 			}
-			array_push($result, $temp );			
+			array_push($data, $temp );			
 		}
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
 		return $result;
 	}
 
@@ -387,7 +391,9 @@ class DeformationRepository {
 		$result = array();
 		$res = array();
 		$attribute = "";
-		$filterQuery = "";
+		$style = "horizontalbar";
+		$errorbar = true;
+		$data = array();
 		$filter = "";
 		if($component == 'Titlt Mag'){
 			$attribute = "dd_tlv_mag";
@@ -411,8 +417,11 @@ class DeformationRepository {
 							"filter" => " "
 						);
 			
-			array_push($result, $temp );
+			array_push($data, $temp );
 		}
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
 		return $result;
 	}
 
@@ -422,7 +431,9 @@ class DeformationRepository {
 		$result = array();
 		$res = array();
 		$attribute = "";
-		$filterQuery = "";
+		$style = "dot";
+		$errorbar = true;
+		$data = array();
 		$filter = "";
 		if($component == 'Strain Comp-1'){
 				$attribute = "$table_comp1";
@@ -450,12 +461,15 @@ class DeformationRepository {
 				$query = "select a.$table_stderr3 as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Strain azimuth axis-1'){
 				$attribute = "$table_azi_ax1";
+				$errorbar = false;
 				$query = "select a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Strain azimuth axis-2'){
 				$attribute = "$table_azi_ax2";
+				$errorbar = false;
 				$query = "select a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Strain azimuth axis-3'){
 				$attribute = "$table_azi_ax3";
+				$errorbar = false;
 				$query = "select a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Max Strain'){
 				$attribute = "$table_pmax";
@@ -471,6 +485,7 @@ class DeformationRepository {
 				$query = "select a.$table_pmin_direrr as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Barometric Pressure'){
 				$attribute = "$table_bpres";
+				$errorbar = false;
 				$query = "select a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}
 
@@ -487,13 +502,14 @@ class DeformationRepository {
 							
 							"filter"=> " ",
 						);
-			if(array_key_exists("err", $row)){
+			if($errorbar){
 				$temp["error"] = $row["err"];
-			}else{
-				$temp["error"] = null;
 			}
-			array_push($result, $temp );
+			array_push($data, $temp );
 		}
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
 		return $result;
 	}
 
@@ -538,7 +554,9 @@ class DeformationRepository {
 		$result = array();
 		$res = array();
 		$attribute = "";
-		$filterQuery = "";
+		$style = "dot";
+		$errorbar = true;
+		$data = array();
 		$filter = "";
 		if($component == 'GPS Latitude'){
 			$attribute = "dd_gps_lat";
@@ -562,8 +580,11 @@ class DeformationRepository {
 							"filter" => " "
 						);
 			
-			array_push($result, $temp );
+			array_push($data, $temp );
 		}
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
 		return $result;
 	}
 
@@ -573,7 +594,9 @@ class DeformationRepository {
 		$result = array();
 		$res = array();
 		$attribute = "";
-		$filterQuery = "";
+		$style = "horizontalbar";
+		$errorbar = true;
+		$data = array();
 		$filter = "";
 		if($component == 'GPS Displacement'){
 			$attribute = "dd_gpv_dmag";
@@ -612,8 +635,11 @@ class DeformationRepository {
 							"filter" => " "
 						);
 			
-			array_push($result, $temp );
+			array_push($data, $temp );
 		}
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
 	}
 
 	public static function getStationData_dd_lev( $table, $component ) {

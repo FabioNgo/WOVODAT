@@ -505,7 +505,6 @@ class SeismicRepository {
 		}else if($component == 'Swarm Mean Depth'){
 			$attribute = "sd_ivl_avgdepth";
 			$query = "select a.sd_ivl_eqtype  as filter,a.sd_ivl_stime as stime,a.sd_ivl_etime as etime, a.$attribute as value  $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
-
 		}else if($component == 'Swarm Vertical Dispersion'){
 			$attribute = "sd_ivl_vdispers";
 			$query = "select a.sd_ivl_eqtype  as filter,a.sd_ivl_stime as stime,a.sd_ivl_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";

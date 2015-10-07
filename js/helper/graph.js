@@ -40,7 +40,7 @@ define(function(require) {
     // setup effect for the graph
     formatGraphAppearance: function(data,timeSerieName, filterName,style, errorbars){
       
-      return {
+      var dataParam = {
         data: data, //data is 3D array (y-error value is included in the data passed in)
         label: filterName + ":"+timeSerieName,
         // color: 0,
@@ -55,21 +55,21 @@ define(function(require) {
           fill: true,
           fillColor: null,
           symbol: "circle",
-          errorbars: function(errorbars){
-            if(errorbars){
-              return "y";
-            }else{
-              return "";
-            }
-          }, // parameter to enable error-bar presentation.
-          yerr: {
+          
+          
+        },
+      };
+      if(errorbars){
+        dataParam.points.errorbars = "y";
+        dataParam.points.yerr = {
             show: true,
             color: "red",
             upperCap: "-",
             lowerCap: "-",
-          }
-        },
-      };
+        }
+      }
+           // parameter to enable error-bar presentation.
+      return dataParam;
     },
   };
 });

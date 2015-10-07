@@ -88,7 +88,7 @@ define(function(require) {
 
 
 
-      //console.log(this.data);
+      console.log(this.data[0].points.errorbars);
       this.graph = $.plot(this.$el, this.data, options);
       //To edit the series object, go to GraphHelper used for data in the prepareData method below.
       this.$el.bind('plotselected', this.selectingTimeRange, this.onSelect);
@@ -111,22 +111,35 @@ define(function(require) {
       var filters = this.selectingFilters.models;
       // console.log(filters);
       for(i=0;i<filters.length;i++){
-        console.log(filters);
+        // console.log(filters);
         for(var j = 0; j<filters[i].name.length;j++){
           var list = [];
           var filterData = filters[i].timeSerie.getDataFromFilter(filters[i].name[j])
           var style = filters[i].timeSerie.get('data').style; // plot style [bar,circle,dot,horizontalbar]
           var errorbar = filters[i].timeSerie.get('data').errorbar; // has error bar or not [true,false]
+
           filterData.forEach(function(d) {
+            var maxTime;
+            var minTime;
+            var error;
+            if(errorbar){
+              error = parseInt(d['error']);
+            }else{
+              error = 0;
+            }
+            var value = d['value'];
+            if(style == 'bar'){
+              maxTime = d['etime'];
+              minTime = d['stime'];
+            }else if(style == 'dot'){
+              maxTime = minTime = d['time'];
+            }
             
-            if(error == undefined){
-              error == 0;
+            if (minX === undefined || minTime < minX){
+              minX = minTime;
             }
-            if (minX === undefined || time < minX){
-              minX = time;
-            }
-            if (maxX === undefined || time > maxX){
-              maxX = time;
+            if (maxX === undefined || maxTime > maxX){
+              maxX = maxTime;
             }
             if (minY === undefined || value-error < minY){
               minY = value-error;
@@ -135,14 +148,16 @@ define(function(require) {
               maxY = value+error;
             }
             
-            var tempData [];
+            var tempData =  [];
             if(style == 'bar'){
               tempData.push(d['stime'],d['etime'],d['value']);
+            }else if (style == 'dot'){
+              tempData.push(d['time'],d['value']);
             }
             if(errorbar){
-              tempData.push(d['error']);
+              tempData.push(error);
             }
-            
+            list.push(tempData);
           });
           
             data.push(GraphHelper.formatGraphAppearance(list,filters[i].timeSerie.getName(),filters[i].name[j],style,errorbar));

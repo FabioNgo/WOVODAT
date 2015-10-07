@@ -151,35 +151,39 @@ class GasRepository {
 	*/
 	public static function getStationData( $table, $code, $component,$id ) {
 		foreach (self::$infor as $key => $type) if ( $type["data_type"] == $table ) 
-			return call_user_func_array("self::getStationData_".$key, array( $code, $component,$id) );
+			return call_user_func_array("self::getStationData_".$key, array( $key, $component,$id) );
 	}
 
-	public static function getStationData_gd( $code, $component,$id) {
+	public static function getStationData_gd( $table, $component,$id) {
 		global $db;
 		$cc = ', a.cc_id, a.cc_id2, a.cc_id3 ';
 		$result = array();
 		$res = array();
 		$attribute = "";
-		$filterQuery = "";
+		$style = "dot";
+		$errorbar = true;
+		$data = array();
 		$filter = "";
 		$query = "";
 		if($component == 'Gas Temperature'){
-				$attribute = "gd_gtemp";
-				$query = "select a.gd_time as time, a.$attribute as value from gd as a where a.gs_id=%s and a.gd_gtemp IS NOT NULL";
+			$attribute = "gd_gtemp";
+			$errorbar = false;
+			$query = "select a.gd_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
 	
 		}else if($component == 'Atmospheric Pressure'){
 			$attribute = "gd_bp";
-			$query = "select a.gd_time as time, a.$attribute as value from gd as a where a.gs_id=%s and a.gd_bp IS NOT NULL";
-
+			$errorbar = false;
+			$query = "select a.gd_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Gas Emission'){
 			$attribute = "gd_flow";
-			$query = "select a.gd_time as time, a.$attribute as value from gd as a where a.gs_id=%s and a.gd_flow IS NOT NULL";
+			$query = "select a.gd_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Gas Concentration'){
 			$attribute = "gd_concentration";
-			$query = "select a.gd_species as filter, a.gd_concentration_err as err, a.gd_time as time, a.$attribute as value from gd as a where a.gs_id=%s and a.gd_concentration IS NOT NULL";
+			$query = "select a.gd_species as filter, a.gd_concentration_err as err, a.gd_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
+			// echo($query);
 		}
 
-		$db->query($query, $id,$id,$id,$id);
+		$db->query($query);
 
 		$res = $db->getList();
 		foreach ($res as $row) {
@@ -194,14 +198,16 @@ class GasRepository {
 			}else{
 				$temp["filter"] = " ";
 			}
-			if(array_key_exists("err", $row)){
+			if($errorbar){
 				$temp["error"] = $row["err"];
-			}else{
-				$temp["error"] = " ";
 			}
-			array_push($result, $temp );			
+			array_push($data, $temp );			
 		}
-		return $result;
+		// echo("Asd");
+		// var_dump($data);
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
 		return $result;
 	}
 
