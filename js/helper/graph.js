@@ -50,14 +50,23 @@ define(function(require) {
         shadowSize: 3,
         points: {
           show: true,
-          radius: 5,
+          radius: 3,
           lineWidth: 2, // in pixels
-          fill: true,
+          fill: false,
           fillColor: null,
           symbol: "circle",
           
-          
         },
+        bars: {
+          show: false,
+          lineWidth: 2,
+          barWidth: 1,
+          fill: false,
+          fillColor: 0,
+          align: "left", // "left", "right", or "center"
+          horizontal: false,
+          zero: true
+        }
       };
       if(errorbars){
         dataParam.points.errorbars = "y";
@@ -67,6 +76,17 @@ define(function(require) {
             upperCap: "-",
             lowerCap: "-",
         }
+      };
+      if(style == 'bar'){
+        dataParam.bars = {show: true};
+      }
+      else if(style == 'dot'){
+        dataParam.points = {show: true, fill: true, fillColor: "#000000"};
+        console.log(dataParam);
+      }
+      else if(style == 'circle'){
+        dataParam.points = {show: true, fill: false};
+        console.log(dataParam);
       }
            // parameter to enable error-bar presentation.
       return dataParam;
