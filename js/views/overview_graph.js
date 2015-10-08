@@ -109,13 +109,15 @@ define(function(require) {
           errorbars = undefined,
           i;
       var filters = this.selectingFilters.models;
-      // console.log(filters);
+      console.log(filters);
       for(i=0;i<filters.length;i++){
         // console.log(filters);
         for(var j = 0; j<filters[i].name.length;j++){
+          console.log(filters.name);
           var list = [];
           var filterData = filters[i].timeSerie.getDataFromFilter(filters[i].name[j])
           var style = filters[i].timeSerie.get('data').style; // plot style [bar,circle,dot,horizontalbar]
+          //console.log(style);
           var errorbar = filters[i].timeSerie.get('data').errorbar; // has error bar or not [true,false]
 
           filterData.forEach(function(d) {
@@ -126,14 +128,15 @@ define(function(require) {
               error = parseInt(d['error']);
             }else{
               error = 0;
-            }
+            };
             var value = d['value'];
             if(style == 'bar'){
               maxTime = d['etime'];
               minTime = d['stime'];
-            }else if(style == 'dot'){
-              maxTime = minTime = d['time'];
             }
+            else if(style == 'dot' || style == 'circle'){
+              maxTime = minTime = d['time'];
+            };
             
             if (minX === undefined || minTime < minX){
               minX = minTime;
@@ -151,16 +154,18 @@ define(function(require) {
             var tempData =  [];
             if(style == 'bar'){
               tempData.push(d['stime'],d['etime'],d['value']);
-            }else if (style == 'dot'){
-              tempData.push(d['time'],d['value']);
             }
+            else if(style == 'dot' || style == 'circle'){
+              tempData.push(d['time'],d['value']);
+            };
+
             if(errorbar){
               tempData.push(error);
             }
             list.push(tempData);
           });
           
-            data.push(GraphHelper.formatGraphAppearance(list,filters[i].timeSerie.getName(),filters[i].name[j],style,errorbar));
+          data.push(GraphHelper.formatGraphAppearance(list,filters[i].timeSerie.getName(),filters[i].name[j],style,errorbar));
           
           
         }

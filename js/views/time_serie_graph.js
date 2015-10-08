@@ -47,20 +47,20 @@ define(function(require) {
       }
       this.$el.html("");
       var options = {
-            series: {
-              points:{
-                show: true,
-                radius: 5,
-                lineWidth: 2, // in pixels
-                fill: true,
-                fillColor: null,
-                symbol: "circle" 
-              },
-              lines:{
-                show: false
-              },
+            // series: {
+            //   points:{
+            //     show: true,
+            //     radius: 5,
+            //     lineWidth: 2, // in pixels
+            //     fill: true,
+            //     fillColor: null,
+            //     symbol: "circle" 
+            //   },
+            //   lines:{
+            //     show: false
+            //   },
 
-            },
+            // },
             xaxis: { 
               mode:'time',
               timeformat: "%d-%b-%Y",
@@ -169,19 +169,30 @@ define(function(require) {
       for(var j = 0; j<this.filters.name.length;j++){ 
         var list = [];
         var filterData = this.filters.timeSerie.getDataFromFilter(this.filters.name[j])
+        var style = this.filters.timeSerie.get('data').style; //get the plot presentation style (ie. bar, dot, circle)
         filterData.forEach(function(d) {
-          var time = d.time;
-          var value = d.value;
+          //var time = d.time;
+          var value = d['value'];
+          var maxTime;
+          var minTime;
           d.time_formated = DateHelper.formatDate(d.time);
           var error = parseFloat(d.error);
           if(error == undefined){
             error == 0;
           }
-          if (minX === undefined || time < minX){
-            minX = time;
+          if(style == 'bar'){
+              maxTime = d['etime'];
+              minTime = d['stime'];
+            }
+          else if(style == 'dot' || style == 'circle'){
+              maxTime = minTime = d['time'];
+          };
+
+          if (minX === undefined || minTime < minX){
+            minX = minTime;
           }
-          if (maxX === undefined || time > maxX){
-            maxX = time;
+          if (maxX === undefined || maxTime > maxX){
+            maxX = maxTime;
           }
           if (minY === undefined || value-error < minY){
             minY = value-error;
@@ -190,17 +201,27 @@ define(function(require) {
             maxY = value+error;
           }
 
-          if(d['error']!=undefined){
-              list.push([d['time'],d['value'],d['error']]); 
-              errorbars = "y";
-            }else{
-              list.push([d['time'],d['value']]);  
-            }
+          if(style == 'dot' || style == 'circle'){
+            if(d['error']!=undefined){
+                list.push([d['time'],d['value'],d['error']]); 
+                errorbars = "y";
+              }else{
+                list.push([d['time'],d['value']]);  
+              }
+          }
+          else if(style == 'bar'){
+            if(d['error']!=undefined){
+                list.push([d['stime'],d['etime'],d['value'],d['error']]); 
+                errorbars = "y";
+              }else{
+                list.push([d['stime'],d['etime'],d['value']]);  
+              }
+          };
         });
         // this.data contains the setting of options of the graph (ie. point,line,bar).
         // this makes the options in the $.plot(this.$el, this.data, options) 
         // cannot fully config the appearance of the graph.
-        data.push(GraphHelper.formatGraphAppearance(list,this.filters.timeSerie.getName(),this.filters.name[j],errorbars));
+        data.push(GraphHelper.formatGraphAppearance(list,this.filters.timeSerie.getName(),this.filters.name[j],style,errorbars));
       }
       this.minX = minX-86400000;
       this.maxX = maxX+86400000;
