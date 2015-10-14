@@ -5,19 +5,14 @@ class DeformationRepository {
 	public static function getTimeSeriesList($vd_id) {
 		$result = array();
 		global $db;
-		// echo ("asdas");
-		$query = "select vd_id,sta_code as ds_code from jjcn_sta as a where a.vd_id = %d AND a.type='Deformation' ";
-		// var_dump($query);
-		$db->query( $query, $vd_id);
+		$query = "select vd_id,sta_code as ds_code from jjcn_sta as a where a.vd_id = $vd_id AND a.type='Deformation' ";
+		$db->query( $query);
 		$stations = $db->getList();
-		// var_dump($stations);
 		$result = self::getTimeSeriesList_dd_tlt($vd_id,$stations);
 		$result = array_merge($result,self::getTimeSeriesList_dd_tlv($vd_id,$stations));
 		$result = array_merge($result,self::getTimeSeriesList_dd_str($vd_id,$stations));
 		$result = array_merge($result,self::getTimeSeriesList_dd_edm($vd_id,$stations));
 		$result = array_merge($result,self::getTimeSeriesList_dd_ang($vd_id,$stations));
-		// array_push(array, var)
-		// var_dump($result);
 		return $result;
 	}
 

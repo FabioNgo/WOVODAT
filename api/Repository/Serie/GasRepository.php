@@ -12,8 +12,8 @@ class GasRepository {
 
 		global $db;
 
-		$query = "(select  c.gs_code FROM cn a, gs c where a.vd_id = %d and a.cn_id = c.cn_id and a.cn_pubdate <=now() and c.gs_pubdate <= now()) UNION (select c.gs_code FROM jj_volnet a, gs c,vd_inf d WHERE a.vd_id = %d and a.vd_id=d.vd_id   and a.jj_net_flag = 'C' and a.jj_net_id = c.cn_id and (sqrt(power(d.vd_inf_slat - c.gs_lat, 2) + power(d.vd_inf_slon - c.gs_lon, 2))*100)<20 and c.gs_pubdate <= now() ORDER BY c.gs_code)";
-		$db->query( $query, $vd_id, $vd_id );
+		$query = "select vd_id,sta_code as ds_code from jjcn_sta as a where a.vd_id = $vd_id AND a.type='Gas'";
+		$db->query( $query);
 		$stations = $db->getList();
 
 		
@@ -211,72 +211,114 @@ class GasRepository {
 		return $result;
 	}
 
-	public static function getStationData_gd_plu( $code, $component ) {
+	public static function getStationData_gd_plu($table, $code, $component ) {
 		global $db;
-		$cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
+		$cc = ', a.cc_id, a.cc_id2, a.cc_id3 ';
 		$result = array();
 		$res = array();
 		$attribute = "";
-		$filterQuery = "";
+		$style = "dot";
+		$errorbar = true;
+		$data = array();
 		$filter = "";
-
-		foreach (self::$infor["gd_plu"]["params"] as $type) if ( $type["name"] == $component ) {
-			$attribute = $type["cols"];
-			if ( array_key_exists("filter", $type) ) {
-				$filter = $type["filter"];
-				$filterQuery = ", b.".$filter;
-			}
-			$query = "select b.gd_time, b.$attribute $filterQuery $cc from gs a, gd b where a.gs_code = %s and b.gs_id = a.gs_id and b.$attribute is not null and a.gs_pubdate <= now() and b.gd_pubdate <= now() order by b.gd_time desc";
-
-			$query =  "select distinct b.gd_plu_time, b.$attribute $filterQuery $cc  from gs a, gd_plu b, cs c where (a.gs_code = %s and b.gs_id = a.gs_id and a.gs_pubdate <= now()) or (b.cs_id = c.cs_id and c.cs_code = %s ) and b.gd_plu_pubdate <= now() and b.$attribute is not null order by b.gd_plu_time desc";
-			
-			$db->query($query, $code, $code);
-			$res = $db->getList();
+		$query = "";
+		if($component == 'Plume Height'){
+			$attribute = "gd_plu_height";
+			$errorbar = false;
+			$query = "select a.gd_plu_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
+	
+		}else if($component == 'Gas Emission Rate'){
+			$attribute = "gd_plu_emit";
+			$errorbar = true;
+			$style = 'horizontalbar'
+			$query = "select a.gd_plu_species as filter, a.gd_plu_emit_err as err, a.gd_plu_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Gas Emission Mass'){
+			$attribute = "gd_plu_mass";
+			$query = "select a.gd_plu_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Total Gas Emission'){
+			$attribute = "gd_plu_etot";
+			$errorbar = true;
+			$style = 'horizontalbar'
+			$query = "select a.gd_species as filter, a.gd_plu_etot_err as err, a.gd_plu_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
+			// echo($query);
 		}
 
+		$db->query($query);
+
+		$res = $db->getList();
 		foreach ($res as $row) {
-			$temp = array( "time" => 1000*strtotime($row["gd_plu_time"]) , 
-										 "value" => floatval($row[$attribute]) );
-			if ($filter != ""){
-				$temp["filter"] = $row[$filter];
+			
+			$time = strtotime($row["time"]);
+			$temp = array( "time" => floatval(1000 * $time) ,
+							"value" => floatval($row["value"]),
+						);
+			
+			if(array_key_exists("filter", $row)){
+				$temp["filter"] = $row["filter"];
 			}else{
 				$temp["filter"] = " ";
 			}
-			array_push($result, $temp );			
+			if($errorbar){
+				$temp["error"] = $row["err"];
+			}
+			array_push($data, $temp );			
 		}
+		// echo("Asd");
+		// var_dump($data);
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
 		return $result;
 	}
 
-	public static function getStationData_gd_sol( $code, $component ) {
+	public static function getStationData_gd_sol( $table, $code, $component ) {
 		global $db;
-		$cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
+		$cc = ', a.cc_id, a.cc_id2, a.cc_id3 ';
 		$result = array();
 		$res = array();
 		$attribute = "";
-		$filterQuery = "";
+		$style = "dot";
+		$errorbar = true;
+		$data = array();
 		$filter = "";
-		foreach (self::$infor["gd_sol"]["params"] as $type) if ( $type["name"] == $component ) {
-			$attribute = $type["cols"];
-			if ( array_key_exists("filter", $type) ) {
-				$filter = $type["filter"];
-				$filterQuery = ", b.".$filter;
-			}
-			$query = "select b.gd_sol_time, b.$attribute $filterQuery $cc from gs a, gd_sol b where a.gs_code = %s and b.gs_id = a.gs_id and b.$attribute is not null and a.gs_pubdate <= now() and b.gd_sol_pubdate <= now() order by b.gd_sol_time desc";
-			
-			$db->query($query, $code);
-			$res = $db->getList();
-		}
+		$query = "";
+		if($component == 'Total Gas Flux'){
+			$attribute = "gd_sol_tflux";
+			$errorbar = true;
+			$style = 'horizontalbar'
+			$query = "select  a.gd_plu_species as filter, a.gd_sol_time as time,  a.gd_sol_tflux_err as err, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
 	
+		}else if($component == 'Highest Gas Flux'){
+			$attribute = "gd_sol_high";
+			$query = "select a.gd_plu_species as filter, a.gd_sol_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Highest Temperature'){
+			$attribute = "gd_sol_htemp";
+			$query = "select a.gd_sol_time as time, a.gd_plu_species as filter, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
+		}
+
+		$db->query($query);
+
+		$res = $db->getList();
 		foreach ($res as $row) {
-			$temp = array( "time" => 1000*strtotime($row["gd_sol_time"]) , 
-										 "value" => floatval($row[$attribute]) );
-			if ($filter != ""){
-				$temp["filter"] = $row[$filter];
+			
+			$time = strtotime($row["time"]);
+			$temp = array( "time" => floatval(1000 * $time) ,
+							"value" => floatval($row["value"]),
+						);
+			
+			if(array_key_exists("filter", $row)){
+				$temp["filter"] = $row["filter"];
 			}else{
 				$temp["filter"] = " ";
 			}
-			array_push($result, $temp );			
+			if($errorbar){
+				$temp["error"] = $row["err"];
+			}
+			array_push($data, $temp );			
 		}
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
 		return $result;
 	}
 

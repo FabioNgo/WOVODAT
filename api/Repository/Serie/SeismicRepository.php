@@ -6,8 +6,8 @@ class SeismicRepository {
 	public static function getTimeSeriesList($vd_id) {
 		$result = array();
 		global $db;
-		$query = "(select c.ss_code,c.ss_lat,c.ss_lon FROM sn a, ss c  where a.vd_id = %d  and a.sn_id = c.sn_id) UNION (select c.ss_code,c.ss_lat,c.ss_lon FROM jj_volnet a, ss c , vd_inf d  WHERE a.vd_id = %d and a.vd_id=d.vd_id  and a.jj_net_flag = 'S' and a.jj_net_id = c.sn_id and (sqrt(power(d.vd_inf_slat - c.ss_lat, 2) + power(d.vd_inf_slon - c.ss_lon, 2))*100)<20)";
-		$db->query( $query, $vd_id, $vd_id );
+		$query = "select vd_id,sta_code as ds_code from jjcn_sta as a where a.vd_id = $vd_id AND a.type='Seismic'";
+		$db->query( $query);
 		$stations = $db->getList();
 
 		$result = self::getTimeSeriesList_sd_evs($vd_id,$stations);

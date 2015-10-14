@@ -4,83 +4,145 @@ class HydrologyRepository {
 
 	public static function getTimeSeriesList($vd_id) {
 		$result = array();
-
 		global $db;
-		$query = "(select  c.hs_code,c.hs_lat,c.hs_lon FROM cn a, hs c where a.vd_id = %d and a.cn_id = c.cn_id) UNION (select c.hs_code,c.hs_lat,c.hs_lon FROM jj_volnet a, hs c,vd_inf d WHERE a.vd_id = %d and a.vd_id=d.vd_id   and a.jj_net_flag = 'C' and a.jj_net_id = c.cn_id and (sqrt(power(d.vd_inf_slat - c.hs_lat, 2) + power(d.vd_inf_slon - c.hs_lon, 2))*100)<30 ORDER BY c.hs_code)";
-		$db->query( $query, $vd_id, $vd_id );
+		$query = "select vd_id,sta_code as ds_code from jjcn_sta as a where a.vd_id = $vd_id AND a.type='Hydrology' ";
+		$db->query( $query);
 		$stations = $db->getList();
-
-		//var_dump($stations);
-
-		foreach (self::$infor as $key => $value) 	
-			if ( method_exists( "HydrologyRepository", "getTimeSeriesList_".$key) ){
-				$temp = call_user_func_array("self::getTimeSeriesList_".$key, array($vd_id, $stations));
-				$result = array_merge($result, $temp );
-			}
+		$result = self::getTimeSeriesList_hd($vd_id,$stations);
 		return $result;
 	}
 
 	private static function getTimeSeriesList_hd( $vd_id, $stations ) {
 		$result = array();
 		global $db;
+				
+		$query="
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Water Temperature') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_temp IS NOT NULL 	
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Water Elevation') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_welev IS NOT NULL 	
+			union
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Water Depth') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_wdepth IS NOT NULL 	
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Water Level Changes') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_dwelev IS NOT NULL 	
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Barometric Pressure') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_bp IS NOT NULL 	
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Spring Discharge Rate') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_sdisc IS NOT NULL 	
+			union 
+			select select distinct a.sta_id,a.sta_code as ds_code,concat('Precipitation') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_prec IS NOT NULL 	
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Water PH') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_ph IS NOT NULL 	
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Conductivity') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_cond IS NOT NULL 	
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Content of Compound') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_comp_content IS NOT NULL 	
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('Air Temperature') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_atemp IS NOT NULL 	
+			union 
+			select distinct a.sta_id,a.sta_code as ds_code,concat('TDS') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_tds IS NOT NULL 	
+			";
 
-		foreach ($stations as $station) {
-			$code = $station["hs_code"];
-			foreach (self::$infor["hd"]["params"] as $type) {
-				$cols = $type["cols"];
-				$query = "select hd_id from hs, hd where hs_code = %s and hs.hs_id = hd.hs_id and hd.$cols is not null limit 0 , 1";
-				$db->query( $query, $code );
+		$db->query( $query);
+		
+		$serie_list = $db->getList();
 
-				if ( !$db->noRow() ) {
-					$x = array('category' => "Hydrology" ,
-							   'data_type' => self::$infor["hd"]["data_type"],
-							   'station_code' => $code,
-							   'component' => $type["name"] );
-					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
-		 			array_push($result,  $x );
-				}
-			}
-		}
+		for ($i=0; $i<sizeof($serie_list) ; $i++) { 
+			$serie = $serie_list[$i];
+				$x = array('category' => "Hydrology" ,
+					   'data_type' => "Hydrology",
+					   'station_code' => $serie["ss_code"],
+					   'component' => $serie["type"],
+					   'sta_id' => $serie["sta_id"],
+					   
 
+					   );
+			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+ 			array_push($result,  $x );
+		}	
 		return $result;
 	}
 
 	public static function getStationData( $table, $code, $component ) {
 		foreach (self::$infor as $key => $type) if ( $type["data_type"] == $table ) 
-			return call_user_func_array("self::getStationData_".$key, array( $code, $component) );
+			return call_user_func_array("self::getStationData_".$key, array($key, $code, $component) );
 	} 
 
-	public static function getStationData_hd( $code, $component ) {
+	public static function getStationData_hd( $table, $code, $component ) {
 		global $db;
-		$cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
+		$cc = ', a.cc_id, a.cc_id2, a.cc_id3 ';
 		$result = array();
 		$res = array();
 		$attribute = "";
-		$filterQuery = "";
+		$style = "dot";
+		$errorbar = false;
+		$data = array();
 		$filter = "";
-		foreach (self::$infor["hd"]["params"] as $type) if ( $type["name"] == $component ) {
-			$attribute = $type["cols"];
-			if ( array_key_exists("filter", $type) ) {
-				$filter = $type["filter"];
-				$filterQuery = ", b.".$filter;
-			}
-
-			$query = "select b.hd_time, b.$attribute $filterQuery $cc from hs a, hd b where a.hs_code = %s and a.hs_id = b.hs_id and b.$attribute is not null and a.hs_pubdate <= now() and b.hd_pubdate <= now() order by b.hd_time desc";
-			
-			$db->query($query, $code);
-			$res = $db->getList();
+		$query = "";
+		if($component == 'Water Temperature'){
+			$attribute = "hd_temp";
+			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Water Elevation'){
+			$attribute = "hd_welev";
+			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Water Depth'){
+			$attribute = "hd_wdepth";
+			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Water Level Changes'){
+			$attribute = "hd_dwelev";
+			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Barometric Pressure'){
+			$attribute = "hd_bp";
+			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Spring Discharge Rate'){
+			$attribute = "hd_sdisc";
+			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Precipitation'){
+			$attribute = "hd_prec";
+			$query = "select a.hd_tprec  as filter, a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Water PH'){
+			$style = "horizontalbar";
+			$errorbar = true;
+			$attribute = "hd_ph";
+			$query = "select a.hd_ph_err as err,a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Conductivity'){
+			$style = "horizontalbar";
+			$errorbar = true;
+			$attribute = "hd_cond";
+			$query = "select a.hd_cond_err as err,a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Content of Compound'){
+			$style = "horizontalbar";
+			$errorbar = true;
+			$attribute = "hd_comp_content";
+			$query = "select a.hd_comp_species  as filter,a.hd_comp_content_err as err,a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Air Temperature'){
+			$attribute = "hd_atemp";
+			$query = "select  a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'TDS'){
+			$attribute = "hd_tds";
+			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}
+		$db->query($query, $id);
 
+		$res = $db->getList();
 		foreach ($res as $row) {
-			$temp = array( "time" => 1000*strtotime($row["hd_time"]) , 
-										 "value" => floatval($row[$attribute]) );
-			if ($filter != ""){
-				$temp["filter"] = $row[$filter];
+			
+			$time = strtotime($row["time"]);
+			$temp = array( "time" => floatval(1000 * $time) ,
+							"value" => floatval($row["value"])
+						);
+			if(array_key_exists("filter", $row)){
+				$temp["filter"] = $row["filter"];
 			}else{
 				$temp["filter"] = " ";
 			}
-			array_push($result, $temp );			
+			if($errorbar){
+				$temp["error"] = $row["err"];
+			}
+			array_push($data, $temp );			
 		}
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
 		return $result;
 	}
 }
