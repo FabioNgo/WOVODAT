@@ -230,7 +230,7 @@ class GasRepository {
 		}else if($component == 'Gas Emission Rate'){
 			$attribute = "gd_plu_emit";
 			$errorbar = true;
-			$style = 'horizontalbar'
+			$style = 'horizontalbar';
 			$query = "select a.gd_plu_species as filter, a.gd_plu_emit_err as err, a.gd_plu_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Gas Emission Mass'){
 			$attribute = "gd_plu_mass";
@@ -238,7 +238,7 @@ class GasRepository {
 		}else if($component == 'Total Gas Emission'){
 			$attribute = "gd_plu_etot";
 			$errorbar = true;
-			$style = 'horizontalbar'
+			$style = 'horizontalbar';
 			$query = "select a.gd_species as filter, a.gd_plu_etot_err as err, a.gd_plu_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
 			// echo($query);
 		}
@@ -285,7 +285,7 @@ class GasRepository {
 		if($component == 'Total Gas Flux'){
 			$attribute = "gd_sol_tflux";
 			$errorbar = true;
-			$style = 'horizontalbar'
+			$style = 'horizontalbar';
 			$query = "select  a.gd_plu_species as filter, a.gd_sol_time as time,  a.gd_sol_tflux_err as err, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
 	
 		}else if($component == 'Highest Gas Flux'){
