@@ -308,14 +308,18 @@ class DeformationRepository {
 		$data = array();
 		$filter = "";
 		$query = "";
+		$unit = "";
 		if($component == 'Titlt1'){
+			$unit = "urad";
 			$attribute = "dd_tlt1";
 			$query = "select a.dd_tlt_err1 as err ,a.dd_tlt_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}
 		else if($component == 'Titlt2'){
+			$unit = "urad";
 			$attribute = "dd_tlt2";
 			$query = "select a.dd_tlt_err2 as err ,a.dd_tlt_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Temp'){
+			$unit = "oC";
 			$attribute = "dd_tlt_temp";
 			$errorbar = false;
 			$query = "select a.dd_tlt_time as time, a.$attribute as value from $table as a where $cc a.ds_id=$id and a.$attribute IS NOT NULL";
@@ -339,6 +343,7 @@ class DeformationRepository {
 		$result["style"] = $style;
 		$result["errorbar"] = $errorbar;
 		$result["data"] = $data;
+		$result["unit"] = $unit;
 		return $result;
 	}
 
@@ -390,10 +395,13 @@ class DeformationRepository {
 		$errorbar = true;
 		$data = array();
 		$filter = "";
+		$unit = "";
 		if($component == 'Titlt Mag'){
+			$unit = "urad";
 			$attribute = "dd_tlv_mag";
 			$query = "select a.dd_tlv_magerr as err ,a.dd_tlv_stime as stime, a.dd_tlv_etime as etime, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		} else if($component == 'Titlt Azimuth'){
+			$unit = "o";
 			$attribute = "dd_tlv_azi";
 			$query = "select a.dd_tlv_azierr as err ,a.dd_tlv_stime as stime, a.dd_tlv_etime as etime, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 
@@ -417,6 +425,7 @@ class DeformationRepository {
 		$result["style"] = $style;
 		$result["errorbar"] = $errorbar;
 		$result["data"] = $data;
+		$result["unit"] = $unit;
 		return $result;
 	}
 
@@ -430,58 +439,75 @@ class DeformationRepository {
 		$errorbar = true;
 		$data = array();
 		$filter = "";
+		$unit = "";
 		if($component == 'Strain Comp-1'){
-				$attribute = "$table_comp1";
-				$query = "select a.$table_err1 as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$unit = "ustrain";
+			$attribute = "$table_comp1";
+			$query = "select a.$table_err1 as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Strain Comp-2'){
-				$attribute = "$table_comp2";
-				$query = "select a.$table_err2 as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$unit = "ustrain";
+			$attribute = "$table_comp2";
+			$query = "select a.$table_err2 as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Strain Comp-3'){
-				$attribute = "$table_comp3";
-				$query = "select a.$table_err3 as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$unit = "ustrain";
+			$attribute = "$table_comp3";
+			$query = "select a.$table_err3 as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Strain Comp-4'){
-				$attribute = "$table_comp4";
-				$query = "select a.$table_err4 as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$unit = "ustrain";
+			$attribute = "$table_comp4";
+			$query = "select a.$table_err4 as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Volumetric Strain change'){
-				$attribute = "$table_vdstr";
-				$query = "select a.$table_vdstr_err as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$unit = "ustrain";
+			$attribute = "$table_vdstr";
+			$query = "select a.$table_vdstr_err as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Shear strain axis-1'){
-				$attribute = "$table_sstr_ax1";
-				$query = "select a.$table_stderr1 as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$unit = "ustrain";
+			$attribute = "$table_sstr_ax1";
+			$query = "select a.$table_stderr1 as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Shear strain axis-2'){
-				$attribute = "$table_sstr_ax2";
-				$query = "select a.$table_stderr2 as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$unit = "ustrain";
+			$attribute = "$table_sstr_ax2";
+			$query = "select a.$table_stderr2 as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Shear strain axis-3'){
-				$attribute = "$table_sstr_ax3";
-				$query = "select a.$table_stderr3 as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$unit = "ustrain";
+			$attribute = "$table_sstr_ax3";
+			$query = "select a.$table_stderr3 as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Strain azimuth axis-1'){
-				$attribute = "$table_azi_ax1";
-				$errorbar = false;
-				$query = "select a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$unit = "o";
+			$attribute = "$table_azi_ax1";
+			$errorbar = false;
+			$query = "select a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Strain azimuth axis-2'){
-				$attribute = "$table_azi_ax2";
-				$errorbar = false;
-				$query = "select a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$unit = "o";
+			$attribute = "$table_azi_ax2";
+			$errorbar = false;
+			$query = "select a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Strain azimuth axis-3'){
-				$attribute = "$table_azi_ax3";
-				$errorbar = false;
-				$query = "select a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$unit = "o";
+			$attribute = "$table_azi_ax3";
+			$errorbar = false;
+			$query = "select a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Max Strain'){
-				$attribute = "$table_pmax";
-				$query = "select a.$table_pmaxerr as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$unit = "ustrain";
+			$attribute = "$table_pmax";
+			$query = "select a.$table_pmaxerr as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Max Strain'){
-				$attribute = "$table_pmin";
-				$query = "select a.$table_pminerr as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$unit = "ustrain";
+			$attribute = "$table_pmin";
+			$query = "select a.$table_pminerr as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Max Strain Direction'){
-				$attribute = "$table_pmax_dir";
-				$query = "select a.$table_pmax_direrr as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$unit = "o";
+			$attribute = "$table_pmax_dir";
+			$query = "select a.$table_pmax_direrr as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Min Strain Direction'){
-				$attribute = "$table_pmin_dir";
-				$query = "select a.$table_pmin_direrr as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$unit = "o";
+			$attribute = "$table_pmin_dir";
+			$query = "select a.$table_pmin_direrr as err ,a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Barometric Pressure'){
-				$attribute = "$table_bpres";
-				$errorbar = false;
-				$query = "select a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$unit = "bars";
+			$attribute = "$table_bpres";
+			$errorbar = false;
+			$query = "select a.$table_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}
 
 		$db->query($query);
@@ -505,6 +531,7 @@ class DeformationRepository {
 		$result["style"] = $style;
 		$result["errorbar"] = $errorbar;
 		$result["data"] = $data;
+		$result["unit"] = $unit;
 		return $result;
 	}
 
@@ -553,13 +580,17 @@ class DeformationRepository {
 		$errorbar = true;
 		$data = array();
 		$filter = "";
+		$unit = "";
 		if($component == 'GPS Latitude'){
+			$unit = "o";
 			$attribute = "dd_gps_lat";
 			$query = "select a.dd_gps_nserr as err ,a.dd_gps_time as time, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'GPS Longtitude'){
+			$unit = "o";
 			$attribute = "dd_gps_lon";
 			$query = "select a.dd_gps_ewerr as err ,a.dd_gps_time as time, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'GPS Elevation'){
+			$unit = "m";
 			$attribute = "dd_gps_elev";
 			$query = "select a.dd_gps_verr as err ,a.dd_gps_time as time, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}
@@ -580,6 +611,7 @@ class DeformationRepository {
 		$result["style"] = $style;
 		$result["errorbar"] = $errorbar;
 		$result["data"] = $data;
+		$result["unit"] = $unit;
 		return $result;
 	}
 
@@ -593,25 +625,33 @@ class DeformationRepository {
 		$errorbar = true;
 		$data = array();
 		$filter = "";
+		$unit = "";
 		if($component == 'GPS Displacement'){
+			$unit = "mm";
 			$attribute = "dd_gpv_dmag";
 			$query = "select a.dd_gpv_dherr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'GPS N-S Displ'){
+			$unit = "mm";
 			$attribute = "dd_gpv_N";
 			$query = "select a.dd_gpv_dnerr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'GPS E-W Displ'){
+			$unit = "mm";
 			$attribute = "dd_gpv_E";
 			$query = "select a.dd_gpv_deerr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'GPS Vertical Displ'){
+			$unit = "mm";
 			$attribute = "dd_gpv_vert";
 			$query = "select a.dd_gpv_dverr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'GPS N-S Velocity'){
+			$unit = "mm/yr";
 			$attribute = "dd_gpv_staVelNorth";
 			$query = "select a.dd_gpv_staVelNorthErr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'GPS E-W Velocity'){
+			$unit = "mm/yr";
 			$attribute = "dd_gpv_staVelNorth";
 			$query = "select a.dd_gpv_staVelEastErr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'GPS Vertical Velocity'){
+			$unit = "mm/yr";
 			$attribute = "dd_gpv_staVelVert";
 			$query = "select a.dd_gpv_staVelVertErr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}
@@ -635,6 +675,7 @@ class DeformationRepository {
 		$result["style"] = $style;
 		$result["errorbar"] = $errorbar;
 		$result["data"] = $data;
+		$result["unit"] = $unit;
 	}
 
 	public static function getStationData_dd_lev( $table, $component ) {
