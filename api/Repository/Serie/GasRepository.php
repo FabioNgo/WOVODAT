@@ -165,12 +165,15 @@ class GasRepository {
 		$data = array();
 		$filter = "";
 		$query = "";
+		$unit = "";
 		if($component == 'Gas Temperature'){
+			$unit = "oC";
 			$attribute = "gd_gtemp";
 			$errorbar = false;
 			$query = "select a.gd_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
 	
 		}else if($component == 'Atmospheric Pressure'){
+			$unit = "mbar";
 			$attribute = "gd_bp";
 			$errorbar = false;
 			$query = "select a.gd_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
@@ -178,8 +181,9 @@ class GasRepository {
 			$attribute = "gd_flow";
 			$query = "select a.gd_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Gas Concentration'){
+			$unit = "mm";
 			$attribute = "gd_concentration";
-			$query = "select a.gd_species as filter, a.gd_concentration_err as err, a.gd_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
+			$query = "select a.gd_units as unit, a.gd_species as filter, a.gd_concentration_err as err, a.gd_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
 			// echo($query);
 		}
 
@@ -198,16 +202,18 @@ class GasRepository {
 			}else{
 				$temp["filter"] = " ";
 			}
+			if(array_key_exists("unit", $row)){
+				$unit = $row["unit"];
+			}
 			if($errorbar){
 				$temp["error"] = $row["err"];
 			}
 			array_push($data, $temp );			
 		}
-		// echo("Asd");
-		// var_dump($data);
 		$result["style"] = $style;
 		$result["errorbar"] = $errorbar;
 		$result["data"] = $data;
+		$result["unit"] = $unit;
 		return $result;
 	}
 
@@ -222,24 +228,29 @@ class GasRepository {
 		$data = array();
 		$filter = "";
 		$query = "";
+		$unit = "";
 		if($component == 'Plume Height'){
+			$unit = "km";
 			$attribute = "gd_plu_height";
 			$errorbar = false;
 			$query = "select a.gd_plu_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
 	
 		}else if($component == 'Gas Emission Rate'){
+
 			$attribute = "gd_plu_emit";
 			$errorbar = true;
 			$style = 'horizontalbar';
-			$query = "select a.gd_plu_species as filter, a.gd_plu_emit_err as err, a.gd_plu_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
+			$query = "select a.gd_plu_units as unit, a.gd_plu_species as filter, a.gd_plu_emit_err as err, a.gd_plu_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Gas Emission Mass'){
+			$unit = "tons";
 			$attribute = "gd_plu_mass";
 			$query = "select a.gd_plu_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Total Gas Emission'){
+
 			$attribute = "gd_plu_etot";
 			$errorbar = true;
 			$style = 'horizontalbar';
-			$query = "select a.gd_species as filter, a.gd_plu_etot_err as err, a.gd_plu_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
+			$query = "select a.gd_plu_units as unit, a.gd_species as filter, a.gd_plu_etot_err as err, a.gd_plu_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
 			// echo($query);
 		}
 
@@ -258,16 +269,18 @@ class GasRepository {
 			}else{
 				$temp["filter"] = " ";
 			}
+			if(array_key_exists("unit", $row)){
+				$unit = $row["unit"];
+			}
 			if($errorbar){
 				$temp["error"] = $row["err"];
 			}
 			array_push($data, $temp );			
 		}
-		// echo("Asd");
-		// var_dump($data);
 		$result["style"] = $style;
 		$result["errorbar"] = $errorbar;
 		$result["data"] = $data;
+		$result["unit"] = $unit;
 		return $result;
 	}
 
@@ -282,18 +295,22 @@ class GasRepository {
 		$data = array();
 		$filter = "";
 		$query = "";
+		$unit ="";
 		if($component == 'Total Gas Flux'){
+
 			$attribute = "gd_sol_tflux";
 			$errorbar = true;
 			$style = 'horizontalbar';
-			$query = "select  a.gd_plu_species as filter, a.gd_sol_time as time,  a.gd_sol_tflux_err as err, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
+			$query = "select a.gd_sol_units as unit, a.gd_sol_species as filter, a.gd_sol_time as time,  a.gd_sol_tflux_err as err, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
 	
 		}else if($component == 'Highest Gas Flux'){
+			$unit ="g/m2/d";
 			$attribute = "gd_sol_high";
-			$query = "select a.gd_plu_species as filter, a.gd_sol_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
+			$query = "select  a.gd_sol_species as filter, a.gd_sol_time as time, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Highest Temperature'){
+			$unit ="oC";
 			$attribute = "gd_sol_htemp";
-			$query = "select a.gd_sol_time as time, a.gd_plu_species as filter, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
+			$query = "select a.gd_sol_time as time, a.gd_sol_species as filter, a.$attribute as value from $table as a where a.gs_id=$id and a.$attribute IS NOT NULL";
 		}
 
 		$db->query($query);
@@ -311,6 +328,9 @@ class GasRepository {
 			}else{
 				$temp["filter"] = " ";
 			}
+			if(array_key_exists("unit", $row)){
+				$unit = $row["unit"];
+			}
 			if($errorbar){
 				$temp["error"] = $row["err"];
 			}
@@ -319,6 +339,7 @@ class GasRepository {
 		$result["style"] = $style;
 		$result["errorbar"] = $errorbar;
 		$result["data"] = $data;
+		$result["unit"] = $unit;
 		return $result;
 	}
 
