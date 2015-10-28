@@ -278,8 +278,10 @@ class SeismicRepository {
 		$style = "";
 		$errorbar = false;
 		$data = array();
+		$unit = "";
 		$filter = "";
 		if($component == 'Earthquake Depth'){
+			$unit = "km";
 			$style = "circle";
 			$errorbar = true;
 			$attribute = "sd_evn_edep";
@@ -311,6 +313,7 @@ class SeismicRepository {
 		$result["style"] = $style;
 		$result["errorbar"] = $errorbar;
 		$result["data"] = $data;
+		$result["unit"] = $unit;
 		return $result;
 	}
 	public static function getStationData_sd_evs( $table, $component,$id ) {
@@ -323,26 +326,31 @@ class SeismicRepository {
 		$errorbar = false;
 		$data = array();
 		$filter = "";
+		$unit = "";
 		if($component == 'S-P Arrival Time'){
-
-				$attribute = "sd_evs_spint";
-				$query = "select a.sd_evs_eqtype  as filter ,a.sd_evs_time as time, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
-
+			$unit = "s";
+			$attribute = "sd_evs_spint";
+			$query = "select a.sd_evs_eqtype  as filter ,a.sd_evs_time as time, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Epicenter From Event'){
-				$attribute = "sd_evs_dist_actven";
-				$query = "select a.sd_evs_eqtype  as filter ,a.sd_evs_time as time, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
+			$unit = "km";
+			$attribute = "sd_evs_dist_actven";
+			$query = "select a.sd_evs_eqtype  as filter ,a.sd_evs_time as time, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Earthquake Max-Amplitude'){
-				$attribute = "sd_evs_maxamptrac";
-				$query = "select a.sd_evs_eqtype  as filter ,a.sd_evs_time as time, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
+			$unit = "cm";
+			$attribute = "sd_evs_maxamptrac";
+			$query = "select a.sd_evs_eqtype  as filter ,a.sd_evs_time as time, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Earthquake Dominant Frequency'){
-				$attribute = "sd_evs_domFre";
-				$query = "select a.sd_evs_eqtype  as filter ,a.sd_evs_time as time, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
+			$unit = "Hz";
+			$attribute = "sd_evs_domFre";
+			$query = "select a.sd_evs_eqtype  as filter ,a.sd_evs_time as time, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Earthquake Magnitude'){
-				$attribute = "sd_evs_mag";
-				$query = "select a.sd_evs_eqtype  as filter ,a.sd_evs_time as time, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
+			$unit = "Hz";
+			$attribute = "sd_evs_mag";
+			$query = "select a.sd_evs_eqtype  as filter ,a.sd_evs_time as time, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Earthquake Energy'){
-				$attribute = "sd_evs_energy";
-				$query = "select a.sd_evs_eqtype  as filter ,a.sd_evs_time as time, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
+			$unit = "Erg";
+			$attribute = "sd_evs_energy";
+			$query = "select a.sd_evs_eqtype  as filter ,a.sd_evs_time as time, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}
 
 		$db->query($query);
@@ -362,6 +370,7 @@ class SeismicRepository {
 		$result["style"] = $style;
 		$result["errorbar"] = $errorbar;
 		$result["data"] = $data;
+		$result["unit"] = $unit;
 		return $result;
 	}
 
@@ -375,15 +384,19 @@ class SeismicRepository {
 		$errorbar = false;
 		$data = array();
 		$filter = "";
+		$unit = "";
 		if($component == 'Max Distance Felt'){
-				$attribute = "sd_int_maxdist";
-				$query = "select a.sd_int_time as time, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
+			$unit = "km";
+			$attribute = "sd_int_maxdist";
+			$query = "select a.sd_int_time as time, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Max-intensity'){
-				$attribute = "sd_int_maxrint";
-				$query = "select a.sd_int_time as time, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
+			$unit = "";
+			$attribute = "sd_int_maxrint";
+			$query = "select a.sd_int_time as time, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Distance at Max-intensity'){
-				$attribute = "sd_int_maxrint";
-				$query = "select a.sd_int_time as time, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
+			$unit = "km";
+			$attribute = "sd_int_maxrint";
+			$query = "select a.sd_int_time as time, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}
 
 		$db->query($query);
@@ -403,6 +416,7 @@ class SeismicRepository {
 		$result["style"] = $style;
 		$result["errorbar"] = $errorbar;
 		$result["data"] = $data;
+		$result["unit"] = $unit;
 		return $result;
 	}
 
@@ -416,9 +430,11 @@ class SeismicRepository {
 		$errorbar = false;
 		$data = array();
 		$filter = "";
+		$unit ="";
 		if($component == 'RSAM Counts'){
-				$attribute = "sd_rsm_count";
-				$query = "select a.sd_rsm_stime as stime,a.sd_rsm_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
+			$unit = "counts";
+			$attribute = "sd_rsm_count";
+			$query = "select a.sd_rsm_stime as stime,a.sd_rsm_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}
 
 		$db->query($query);
@@ -440,6 +456,7 @@ class SeismicRepository {
 		$result["style"] = $style;
 		$result["errorbar"] = $errorbar;
 		$result["data"] = $data;
+		$result["unit"] = $unit;
 		return $result;
 	}
 
@@ -453,16 +470,20 @@ class SeismicRepository {
 		$errorbar = false;
 		$data = array();
 		$filter = "";
+		$unit = "";
 		if($component == 'SSAM Low-freq Limit'){
-				$attribute = "sd_ssm_lowf";
-				$query = "select a.sd_ssm_stime as stime,a.sd_ssm_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
+			$unit = "Hz";
+			$attribute = "sd_ssm_lowf";
+			$query = "select a.sd_ssm_stime as stime,a.sd_ssm_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'SSAM Hight-freq Limit'){
-				$attribute = "sd_ssm_highf";
-				$query = "select a.sd_ssm_stime as stime,a.sd_ssm_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
+			$unit = "Hz";
+			$attribute = "sd_ssm_highf";
+			$query = "select a.sd_ssm_stime as stime,a.sd_ssm_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'SSAM Counts'){
-				$attribute = "sd_ssm_count";
-				$query = "select a.sd_ssm_stime as stime,a.sd_ssm_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
-		}
+			$unit = "counts";
+			$attribute = "sd_ssm_count";
+			$query = "select a.sd_ssm_stime as stime,a.sd_ssm_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
+		}	
 
 		$db->query($query);
 
@@ -483,6 +504,7 @@ class SeismicRepository {
 		$result["style"] = $style;
 		$result["errorbar"] = $errorbar;
 		$result["data"] = $data;
+		$result["unit"] = $unit;
 		return $result;
 	}
 
@@ -498,41 +520,54 @@ class SeismicRepository {
 		$style = "bar";
 		$errorbar = false;
 		$data = array();
+		$unit = "";
 		$filter = "";
 		if($component == 'Swarm Distance'){
-				$attribute = "sd_ivl_hdist";
-				$query = "select a.sd_ivl_eqtype  as filter ,a.sd_ivl_stime as stime,a.sd_ivl_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
+			$unit = "km";
+			$attribute = "sd_ivl_hdist";
+			$query = "select a.sd_ivl_eqtype  as filter ,a.sd_ivl_stime as stime,a.sd_ivl_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Swarm Mean Depth'){
+			$unit = "km";
 			$attribute = "sd_ivl_avgdepth";
 			$query = "select a.sd_ivl_eqtype  as filter,a.sd_ivl_stime as stime,a.sd_ivl_etime as etime, a.$attribute as value  $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Swarm Vertical Dispersion'){
+			$unit = "km";
 			$attribute = "sd_ivl_vdispers";
 			$query = "select a.sd_ivl_eqtype  as filter,a.sd_ivl_stime as stime,a.sd_ivl_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Hypocenter Horiz-Migration'){
+			$unit = "km";
 			$attribute = "sd_ivl_hmigr_hyp";
 			$query = "select a.sd_ivl_eqtype  as filter,a.sd_ivl_stime as stime,a.sd_ivl_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Hypocenter Vert-Migration'){
+			$unit = "km";
 			$attribute = "sd_ivl_vmigr_hyp";
 			$query = "select a.sd_ivl_eqtype  as filter,a.sd_ivl_stime as stime,a.sd_ivl_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Earthquake Counts'){
+			$unit = "counts";
 			$attribute = "sd_ivl_nrec";
 			$query = "select a.sd_ivl_eqtype  as filter,a.sd_ivl_stime as stime,a.sd_ivl_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Total Seismic Energy'){
+			$unit = "counts";
 			$attribute = "sd_ivl_nfelt";
 			$query = "select a.sd_ivl_eqtype  as filter,a.sd_ivl_stime as stime,a.sd_ivl_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Felt Earthquake Counts'){
+			$unit = "Erg";
 			$attribute = "sd_ivl_etot";
 			$query = "select a.sd_ivl_eqtype  as filter,a.sd_ivl_stime as stime,a.sd_ivl_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Earthquake Min Frequency'){
+			$unit = "Hz";
 			$attribute = "sd_ivl_fmin";
 			$query = "select a.sd_ivl_eqtype  as filter,a.sd_ivl_stime as stime,a.sd_ivl_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Earthquake Max Frequency'){
+			$unit = "Hz";
 			$attribute = "sd_ivl_fmax";
 			$query = "select a.sd_ivl_eqtype  as filter,a.sd_ivl_stime as stime,a.sd_ivl_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Earthquake Min Amplitude'){
+			$unit = "cm";
 			$attribute = "sd_ivl_amin";
 			$query = "select a.sd_ivl_eqtype  as filter,a.sd_ivl_stime as stime,a.sd_ivl_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Earthquake Max Amplitude'){
+			$unit = "cm";
 			$attribute = "sd_ivl_amax";
 			$query = "select a.sd_ivl_eqtype  as filter,a.sd_ivl_stime as stime,a.sd_ivl_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.$attribute IS NOT NULL";
 		}
@@ -558,6 +593,7 @@ class SeismicRepository {
 		$result["style"] = $style;
 		$result["errorbar"] = $errorbar;
 		$result["data"] = $data;
+		$result["unit"] = $unit;
 		return $result;
 	}
 
@@ -572,24 +608,26 @@ class SeismicRepository {
 		$errorbar = false;
 		$data = array();
 		$filter = "";
+		$unit = "";
 		if($component == 'Tremor Dominant Frequency-1'){
-				$attribute = "sd_trm_domfreq1";
-				$query = "select a.sd_trm_type  as filter,a.sd_trm_stime as stime,a.sd_trm_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.attribute IS NOT NULL";
+			$unit = "Hz";
+			$attribute = "sd_trm_domfreq1";
+			$query = "select a.sd_trm_type  as filter,a.sd_trm_stime as stime,a.sd_trm_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.attribute IS NOT NULL";
 		}else if($component == 'Tremor Dominant Frequency-2'){
-				$attribute = "sd_trm_domfreq2";
-				$query = "select a.sd_trm_type  as filter,a.sd_trm_stime as stime,a.sd_trm_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.attribute IS NOT NULL";
+			$unit = "Hz";
+			$attribute = "sd_trm_domfreq2";
+			$query = "select a.sd_trm_type  as filter,a.sd_trm_stime as stime,a.sd_trm_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.attribute IS NOT NULL";
 		}else if($component == 'Tremor Max-Amplitude'){
-				$attribute = "sd_trm_maxamp";
-				$query = "select a.sd_trm_type  as filter,a.sd_trm_stime as stime,a.sd_trm_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.attribute IS NOT NULL";
+			$unit = "cm";
+			$attribute = "sd_trm_maxamp";
+			$query = "select a.sd_trm_type  as filter,a.sd_trm_stime as stime,a.sd_trm_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.attribute IS NOT NULL";
 		}else if($component == 'Reduced Displacement'){
-				$attribute = "sd_trm_reddis";
-				$query = "select a.sd_trm_type  as filter,a.sd_trm_stime as stime,a.sd_trm_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.attribute IS NOT NULL";
+			$unit = "cm2";
+			$attribute = "sd_trm_reddis";
+			$query = "select a.sd_trm_type  as filter,a.sd_trm_stime as stime,a.sd_trm_etime as etime, a.$attribute as value $cc from $table  as a where a.ss_id=$id and a.attribute IS NOT NULL";
 		}
 
 		$db->query($query);
-		$result["style"] = $style;
-		$result["errorbar"] = $errorbar;
-		$result["data"] = $data;
 		$res = $db->getList();
 		foreach ($res as $row) {
 			
@@ -603,7 +641,11 @@ class SeismicRepository {
 			
 			array_push($data, $temp );
 		}
-		return $result;			
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
+		$result["unit"] = $unit;
+		return $result;		
 		
 	}
 
