@@ -161,6 +161,7 @@ define(function(require) {
       eruptionForecastsGraph.$el.appendTo(this.$el);
       timeSeriesGraphContainer.$el.appendTo(this.$el);
       urlLoader.$el.appendTo(this.$el);
+
       // new EruptionForecastGraph({
       //   collection: new EruptionForecasts(),
       //   observer: observer,

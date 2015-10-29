@@ -54,7 +54,7 @@ define(function(require) {
       this.eruptionForecastsGraph = options.eruptionForecastsGraph;
       //event listeners
       // this.listenTo(this.volcanoSelect,'change',this.onSelectVolcanoChanged)
-      this.listenTo(this.selectingVolcano, 'change', this.changeVolcano);
+      this.listenTo(this.selectingVolcano, 'update', this.changeVolcano);
       // this.listenTo(this.selectingTimeSeries, 'syncAll', this.onAddSelectingTimeSeries);
       // this.listenTo(this.selectingTimeSeries,'remove', this.onRemoveSelectingTimeSeries);
       this.listenTo(this.timeSeries,'sync', this.timeSeriesChanged);
@@ -91,7 +91,7 @@ define(function(require) {
       this.volcanoSelect.changeSelection(vd_id);
       this.timeSeriesSelect.changeVolcano(vd_id,this.timeSeries);
       // this.selectingTimeSeries.reset();
-      this.eruptionSelect.fetchEruptions(vd_id);
+      //this.eruptionSelect.fetchEruptions(vd_id);
     },
     timeSeriesChanged: function(e){
       this.timeSeriesSelect.timeSeriesChanged(this.timeSeries);

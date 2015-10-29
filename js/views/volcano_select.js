@@ -36,7 +36,8 @@ define(function(require) {
     onSelectChange: function() {
       var vd_id = this.$el.find('select').val();
       if (vd_id) {
-        this.selectingVolcano.set('vd_id', vd_id);
+        this.selectingVolcano.set('vd_id', vd_id); // .set auto call event in eventhandler 
+        this.selectingVolcano.trigger("update");
       }
     }
   });
