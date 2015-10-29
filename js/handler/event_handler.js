@@ -60,6 +60,7 @@ define(function(require) {
       this.listenTo(this.timeSeries,'sync', this.timeSeriesChanged);
       // this.listenTo(this.selectingTimeSeries,'reset', this.onResetSelectingTimeSeries);
       this.listenTo(this.timeSeries, 'sync', this.timeSeriesChanged);
+//this.listenTo(this.selectingTimeSeries, 'getdata', this.updateTimeSeriesData);
       this.listenTo(this.selectingTimeSeries, 'update', this.selectingTimeSeriesChanged);
       this.listenTo(this.selectingEruptions, 'add', this.changeSelectingEruptions);
       this.listenTo(this.serieGraphTimeRange,'update',this.serieGraphTimeRangeChanged);
@@ -91,18 +92,21 @@ define(function(require) {
       this.volcanoSelect.changeSelection(vd_id);
       this.timeSeriesSelect.changeVolcano(vd_id,this.timeSeries);
       // this.selectingTimeSeries.reset();
-      //this.eruptionSelect.fetchEruptions(vd_id);
+      this.eruptionSelect.fetchEruptions(vd_id);
     },
     timeSeriesChanged: function(e){
       this.timeSeriesSelect.timeSeriesChanged(this.timeSeries);
     },
    
-
+    // updateTimeSeriesData: function(e){
+    //   var vd_id = this.selectingVolcano.get('vd_id');
+    //   this.timeSeriesSelect.updateVolcanoData(vd_id, this.timeSeries);
+    // },
     
 
     selectingTimeSeriesChanged: function(e){
       
-      this.filtersSelect.selectingTimeSeriesChanged(this.selectingTimeSeries);
+      this.filtersSelect.selectingTimeSeriesChanged(this.selectingTimeSeries); // filter is rendered out.
     },
     selectingFiltersChanged: function(e){
 

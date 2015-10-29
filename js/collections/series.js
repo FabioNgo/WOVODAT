@@ -49,9 +49,82 @@ define(function(require) {
         //     })
         //   }
         // }
-      })
+      });
       
     },
+
+    updateData: function(models){
+        //success: function(collection,response){
+            models.fetch({
+                success: function(model, response) {
+              // console.log(e);
+                var filters = [];
+                
+                var data = model.get('data');
+                // console.log(data);
+                if(data == undefined){
+                  return;
+                }
+                for (var i = 0; i < data.length; i++) {
+                  var index = -1;
+                  /** find index of filter in filters**/
+                  for(var j = 0;j<filters.length;j++){
+                    // console.log({0:filters[j].name,1: data[i].filter});
+                    if(filters[j].name == data[i].filter){
+                      index = j;
+                      break;
+                    }
+                  }
+                  // var index = this.indexOfFilter(filters,data[i].filter);
+                  /** push data **/
+                  if(index == -1){
+                    filters.push({name: data[i].filter, dataIndex: []});
+                    index = filters.length-1;
+                  }
+                  filters[index].dataIndex.push(i);
+                };
+                model.filters = filters;
+                // console.log(model);
+              }
+            })
+
+
+          // for(var i=0; i<collection.length; i++) {
+          //   collection.models[i].fetch({
+          //     success: function(model, response) {
+          //     // console.log(e);
+          //       var filters = [];
+                
+          //       var data = model.get('data');
+          //       // console.log(data);
+          //       if(data == undefined){
+          //         return;
+          //       }
+          //       for (var i = 0; i < data.length; i++) {
+          //         var index = -1;
+          //         /** find index of filter in filters**/
+          //         for(var j = 0;j<filters.length;j++){
+          //           // console.log({0:filters[j].name,1: data[i].filter});
+          //           if(filters[j].name == data[i].filter){
+          //             index = j;
+          //             break;
+          //           }
+          //         }
+          //         // var index = this.indexOfFilter(filters,data[i].filter);
+          //         /** push data **/
+          //         if(index == -1){
+          //           filters.push({name: data[i].filter, dataIndex: []});
+          //           index = filters.length-1;
+          //         }
+          //         filters[index].dataIndex.push(i);
+          //       };
+          //       model.filters = filters;
+          //       // console.log(model);
+          //     }
+          //   })
+          //}
+    },
+
     getTimeSerie: function(sr_id){
       for(var i =0;i<this.models.length;i++){
         if(this.models[i].sr_id == sr_id){

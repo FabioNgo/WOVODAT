@@ -47,7 +47,10 @@ define(function(require) {
 
     var id = $(source).val();
     if ($(source).is(':checked')){
+        var selectedModel;
         selectings.add(timeSeries.getTimeSerie(id));
+        selectedModel = selectings.get(timeSeries.getTimeSerie(id));
+        selectings.updateData(selectedModel);
         var x = 0;
     }
       else {
@@ -81,8 +84,13 @@ define(function(require) {
         this.selectings.trigger('update');
       }
       
-
     },
+    // After select the Type of Data by checking the check box then the data of that catergory will be updated.
+    // updateVolcanoData: function (vd_id,timeSeries) {
+    //   timeSeries.updateData(vd_id);
+    //   this.selectings.reset();
+    //   this.selectings.trigger('update');
+    // },
 
     render: function(timeSeries) {
       
@@ -95,7 +103,7 @@ define(function(require) {
       var input = event.target;
       
           
-      if($(input).attr('name') == "category"){ // cehck category(parent) checkbox
+      if($(input).attr('name') == "category"){ // check category(parent) checkbox
         toggle(input,this.selectings,this.timeSeries);
         
       }else{ //check/uncheck child checkbox
