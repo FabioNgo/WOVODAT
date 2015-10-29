@@ -78,33 +78,25 @@ class HydrologyRepository {
 		$data = array();
 		$filter = "";
 		$query = "";
-		$unit = "";
 		if($component == 'Water Temperature'){
-			$unit ="oC";
 			$attribute = "hd_temp";
 			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Water Elevation'){
-			$unit ="m";
 			$attribute = "hd_welev";
 			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Water Depth'){
-			$unit ="m";
 			$attribute = "hd_wdepth";
 			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Water Level Changes'){
-			$unit ="m";
 			$attribute = "hd_dwelev";
 			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Barometric Pressure'){
-			$unit ="mbar";
 			$attribute = "hd_bp";
 			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Spring Discharge Rate'){
-			$unit ="L/s";
 			$attribute = "hd_sdisc";
 			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Precipitation'){
-			$unit ="mm";
 			$attribute = "hd_prec";
 			$query = "select a.hd_tprec  as filter, a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Water PH'){
@@ -118,17 +110,14 @@ class HydrologyRepository {
 			$attribute = "hd_cond";
 			$query = "select a.hd_cond_err as err,a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Content of Compound'){
-
 			$style = "horizontalbar";
 			$errorbar = true;
 			$attribute = "hd_comp_content";
-			$query = "select a.hd_comp _units as unit, a.hd_comp_species  as filter,a.hd_comp_content_err as err,a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
+			$query = "select a.hd_comp_species  as filter,a.hd_comp_content_err as err,a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Air Temperature'){
-			$unit ="oC";
 			$attribute = "hd_atemp";
 			$query = "select  a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'TDS'){
-			$unit ="mg/L";
 			$attribute = "hd_tds";
 			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}
@@ -146,9 +135,6 @@ class HydrologyRepository {
 			}else{
 				$temp["filter"] = " ";
 			}
-			if(array_key_exists("unit", $row)){
-				$unit = $row["unit"];
-			}
 			if($errorbar){
 				$temp["error"] = $row["err"];
 			}
@@ -157,7 +143,6 @@ class HydrologyRepository {
 		$result["style"] = $style;
 		$result["errorbar"] = $errorbar;
 		$result["data"] = $data;
-		$result["unit"] = $unit;
 		return $result;
 	}
 }
