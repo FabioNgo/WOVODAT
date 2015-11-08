@@ -10,7 +10,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
         //options.url = 'http://localhost:8000' + options.url;
         this.sr_id = options.sr_id;
         this.url = 'api/?data=time_serie&sr_id=' + options.sr_id;
-    
+    	this.loaded = false;
       
     },
     getName: function(){

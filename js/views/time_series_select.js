@@ -50,7 +50,8 @@ define(function(require) {
         var selectedModel;
         selectings.add(timeSeries.getTimeSerie(id));
         selectedModel = selectings.get(timeSeries.getTimeSerie(id));
-        selectings.updateData(selectedModel);
+        selectings.updateData();
+        
         var x = 0;
     }
       else {
@@ -71,7 +72,6 @@ define(function(require) {
       this.selectings = options.selectings;
       this.observer = options.observer;
       this.timeSeries = options.timeSeries;
-
     },
     
     changeVolcano: function(vd_id,timeSeries) {
@@ -110,7 +110,7 @@ define(function(require) {
         addSelection(input,this.selectings,this.timeSeries);
         categoryCheckBoxChange(input);
       }
-      this.selectings.trigger('update');
+      
       
     },
 

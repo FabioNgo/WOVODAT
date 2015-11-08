@@ -20,6 +20,7 @@ define(function(require) {
         // 'onResetSelectingTimeSeries',
         'timeSeriesChanged',
         'selectingTimeSeriesChanged',
+        'selectingTimeSeriesChangedCheck',
         'changeSelectingEruptions',
         'serieGraphTimeRangeChanged',
         'selectingTimeRangeChanged',
@@ -59,9 +60,10 @@ define(function(require) {
       // this.listenTo(this.selectingTimeSeries,'remove', this.onRemoveSelectingTimeSeries);
       this.listenTo(this.timeSeries,'sync', this.timeSeriesChanged);
       // this.listenTo(this.selectingTimeSeries,'reset', this.onResetSelectingTimeSeries);
-      this.listenTo(this.timeSeries, 'sync', this.timeSeriesChanged);
+      
 //this.listenTo(this.selectingTimeSeries, 'getdata', this.updateTimeSeriesData);
       this.listenTo(this.selectingTimeSeries, 'update', this.selectingTimeSeriesChanged);
+      this.listenTo(this.selectingTimeSeries, 'sync', this.selectingTimeSeriesChangedCheck);
       this.listenTo(this.selectingEruptions, 'add', this.changeSelectingEruptions);
       this.listenTo(this.serieGraphTimeRange,'update',this.serieGraphTimeRangeChanged);
       this.listenTo(this.forecastsGraphTimeRange,'update',this.forecastsGraphTimeRangeChanged);
@@ -107,6 +109,15 @@ define(function(require) {
     selectingTimeSeriesChanged: function(e){
       
       this.filtersSelect.selectingTimeSeriesChanged(this.selectingTimeSeries); // filter is rendered out.
+    },
+    selectingTimeSeriesChangedCheck: function(e){
+      var allLoaded = true;
+      for(var i=0;i<this.selectingTimeSeries.models.length;i++){
+        if(!this.selectingTimeSeries.models[i].loaded){
+          return;
+        }
+      }
+      this.selectingTimeSeries.trigger("update");
     },
     selectingFiltersChanged: function(e){
 
