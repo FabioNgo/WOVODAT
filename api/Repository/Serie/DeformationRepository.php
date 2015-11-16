@@ -19,32 +19,33 @@ class DeformationRepository {
 	private static function getTimeSeriesList_dd_tlt( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-				
+		$cols_name = ["dd_tlt1","dd_tlt2","dd_tlt_temp"];
+		$table_name = "es_dd_tlt";
+		$query = "select a.ds_id,a.ds_code";
+		for($i =0;$i<sizeof($cols_name);$i++){
+			$query = $query.",a.".$cols_name[$i];
+		}
+		$query = $query." from $table_name as a where a.vd_id=$vd_id";
+		$db->query( $query);
+		
+		$serie_list = $db->getList();
 
-			$query="select distinct a.sta_id,a.sta_code as ds_code,concat('Titlt1') as type from jjcn_sta as a, dd_tlt as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_tlt1 IS NOT NULL 	
-				union 
-				select distinct a.sta_id,a.sta_code as ds_code,concat('Titlt2') as type from jjcn_sta as a, dd_tlt as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_tlt2 IS NOT NULL 
-				union
-				select distinct a.sta_id,a.sta_code as ds_code,concat('Temp') as type from jjcn_sta as a, dd_tlt as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_tlt_temp IS NOT NULL ";
-
-
-
-			$db->query( $query);
-			
-			$serie_list = $db->getList();
-
-			for ($i=0; $i<sizeof($serie_list)  ; $i++) { 
-				$serie = $serie_list[$i];
+		for ($i=0; $i<sizeof($serie_list)  ; $i++) { 
+			$serie = $serie_list[$i];
+			for($j =0;$j<sizeof($cols_name);$j++){
+				if($serie[$cols_name[$j]]!=""){
 					$x = array('category' => "Deformation" ,
-						   'data_type' => "ElectronicTilt",
-						   'station_code' => $serie["ds_code"],
-						   'component' => $serie["type"],
-						   'sta_id' => $serie["sta_id"],
-					
-						   );
-				$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
-	 			array_push($result,  $x );
-			}	
+							   'data_type' => "ElectronicTilt",
+							   'station_code' => $serie["ds_code"],
+							   'component' => $serie[$cols_name[$j]],
+							   'ds_id' => $serie["ds_id"],
+							   );
+				}
+			}
+				
+			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+ 			array_push($result,  $x );
+		}	
 				
 		return $result;
 	}
@@ -52,51 +53,70 @@ class DeformationRepository {
 	private static function getTimeSeriesList_dd_edm( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-		$query="select distinct a.sta_id,a.sta_code as ds_code,concat('EDM line length') as type from jjcn_sta as a, dd_edm as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_edm_line IS NOT NULL 	
-			";
-			$db->query( $query);
-			$serie_list = $db->getList();
-		// var_dump($serie_list);
+		$cols_name = ["dd_edm_lin"];
+		$table_name = "es_dd_edm";
+		$query = "select a.ds_id1,a.ds_code1,a.ds_id2,a.ds_code2";
+		for($i =0;$i<sizeof($cols_name);$i++){
+			$query = $query.",a.".$cols_name[$i];
+		}
+		$query = $query." from $table_name as a where a.vd_id=$vd_id";
+		$db->query( $query);
+		
+		$serie_list = $db->getList();
+
 		for ($i=0; $i<sizeof($serie_list)  ; $i++) { 
 			$serie = $serie_list[$i];
-			$x = array('category' => "Deformation" ,
-					   'data_type' => "Strain",
-					   'station_code' => $serie["ds_code"],
-					   'component' => $serie["type"],
-					   'sta_id' => $serie["sta_id"],
+			for($j =0;$j<sizeof($cols_name);$j++){
+				if($serie[$cols_name[$j]]!=""){
+					$x = array('category' => "Deformation" ,
+							   'data_type' => "ElectronicTilt",
+							   'station_code1' => $serie["ds_code1"],
+							   'station_code2' => $serie["ds_code2"],
+							   'component' => $serie[$cols_name[$j]],
+							   'ds_id1' => $serie["ds_id1"],
+							   'ds_id2' => $serie["ds_id2"],
+							   );
+				}
+			}
 				
-					   );
-			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code1"].$x["station_code2"].$x["component"] );
  			array_push($result,  $x );
-		}
+		}	
+				
 		return $result;
 	}
 
 	private static function getTimeSeriesList_dd_tlv( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-		$query="select distinct a.sta_id,a.sta_code as ds_code,concat('Titlt Mag') as type from jjcn_sta as a, dd_tlv as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_tvl_mag IS NOT NULL 	
-				union 
-				select distinct a.sta_id,a.sta_code as ds_code,concat('Titlt Azimuth') as type from jjcn_sta as a, dd_tlv as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_tlv_azi IS NOT NULL ";
+		$cols_name = ["dd_tlv_mag","dd_tlv_azi"];
+		$table_name = "es_dd_tlv";
+		$query = "select a.ds_id,a.ds_code";
+		for($i =0;$i<sizeof($cols_name);$i++){
+			$query = $query.",a.".$cols_name[$i];
+		}
+		$query = $query." from $table_name as a where a.vd_id=$vd_id";
+		$db->query( $query);
+		
+		$serie_list = $db->getList();
 
-
-
-				$db->query( $query);
-				
-				$serie_list = $db->getList();
-				// var_dump($serie_list);
-				for ($i=0; $i<sizeof($serie_list) ; $i++) { 
-					$serie = $serie_list[$i];
-						$x = array('category' => "Deformation" ,
+		for ($i=0; $i<sizeof($serie_list)  ; $i++) { 
+			$serie = $serie_list[$i];
+			for($j =0;$j<sizeof($cols_name);$j++){
+				if($serie[$cols_name[$j]]!=""){
+					$x = array('category' => "Deformation" ,
 							   'data_type' => "TitltVector",
 							   'station_code' => $serie["ds_code"],
-							   'component' => $serie["type"],
-							   'sta_id' => $serie["sta_id"],
-						
+							   'component' => $serie[$cols_name[$j]],
+							   'ds_id' => $serie["ds_id"],
 							   );
-					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
-		 			array_push($result,  $x );
 				}
+			}
+				
+			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+ 			array_push($result,  $x );
+		}	
+				
 		return $result;
 	}
 
@@ -104,191 +124,182 @@ class DeformationRepository {
 
 		$result = array();
 		global $db;
-		$query="select distinct a.sta_id,a.sta_code as ds_code,concat('Strain Comp-1') as type from jjcn_sta as a, dd_str as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_str_comp1 IS NOT NULL 	
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Strain Comp-2') as type from jjcn_sta as a, dd_str as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_str_comp2 IS NOT NULL
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Strain Comp-3') as type from jjcn_sta as a, dd_str as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_str_comp3 IS NOT NULL
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Strain Comp-4') as type from jjcn_sta as a, dd_str as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_str_comp4 IS NOT NULL
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Volumetric Strain change') as type from jjcn_sta as a, dd_str as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_str_vdstr IS NOT NULL 
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Shear strain axis-1') as type from jjcn_sta as a, dd_str as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_str_sstr_ax1 IS NOT NULL
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Shear strain axis-2') as type from jjcn_sta as a, dd_str as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_str_sstr_ax2 IS NOT NULL
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Shear strain axis-3') as type from jjcn_sta as a, dd_str as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_str_sstr_ax3 IS NOT NULL
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Strain azimuth axis-1') as type from jjcn_sta as a, dd_str as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_str_azi_ax1 IS NOT NULL
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Strain azimuth axis-2') as type from jjcn_sta as a, dd_str as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_str_azi_ax2 IS NOT NULL
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Strain azimuth axis-3') as type from jjcn_sta as a, dd_str as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_str_azi_ax3 IS NOT NULL
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Max Strain') as type from jjcn_sta as a, dd_str as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_str_pmax IS NOT NULL
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Min Strain') as type from jjcn_sta as a, dd_str as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_str_pmin IS NOT NULL
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Max Strain Direction') as type from jjcn_sta as a, dd_str as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_str_pmax_dir IS NOT NULL
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Min Strain Direction') as type from jjcn_sta as a, dd_str as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_str_pmin_dir IS NOT NULL
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Barometric Pressure') as type from jjcn_sta as a, dd_str as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_str_bpres IS NOT NULL
-
-			";
-
-
-
+		$cols_name = ["dd_str_comp1","dd_str_comp2","dd_str_comp3","dd_str_comp4","dd_str_vdstr","dd_str_sstr_ax1","dd_str_sstr_ax2",
+					"dd_str_sstr_ax3","dd_str_azi_ax1","dd_str_azi_ax2","dd_str_azi_ax3","dd_str_pmax","dd_str_pmin",
+		];
+		$table_name = "es_dd_str";
+		$query = "select a.ds_id,a.ds_code";
+		for($i =0;$i<sizeof($cols_name);$i++){
+			$query = $query.",a.".$cols_name[$i];
+		}
+		$query = $query." from $table_name as a where a.vd_id=$vd_id";
 		$db->query( $query);
-			
+		
 		$serie_list = $db->getList();
-		// var_dump($serie_list);
-		for ($i=0; $i<sizeof($serie_list) ; $i++) { 
+
+		for ($i=0; $i<sizeof($serie_list)  ; $i++) { 
 			$serie = $serie_list[$i];
-			$x = array('category' => "Deformation" ,
-					   'data_type' => "Strain",
-					   'station_code' => $serie["ds_code"],
-					   'component' => $serie["type"],
-					   'sta_id' => $serie["sta_id"],
-			
-					   );
+			for($j =0;$j<sizeof($cols_name);$j++){
+				if($serie[$cols_name[$j]]!=""){
+					$x = array('category' => "Deformation" ,
+							   'data_type' => "Strain",
+							   'station_code' => $serie["ds_code"],
+							   'component' => $serie[$cols_name[$j]],
+							   'ds_id' => $serie["ds_id"],
+							   );
+				}
+			}
+				
 			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
  			array_push($result,  $x );
-		}
+		}	
+				
 		return $result;
 	}
 
 	private static function getTimeSeriesList_dd_ang( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-		$query="select distinct a.sta_id,a.sta_code as ds_code,concat('Horizontal angle target-1') as type from jjcn_sta as a, dd_ang as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_arg_hort1 IS NOT NULL 	
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Horizontal angle target-2') as type from jjcn_sta as a, dd_ang as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_ang_hort2 IS NOT NULL
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Vertical angle target-1') as type from jjcn_sta as a, dd_ang as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_ang_vert1 IS NOT NULL
-			";
-
-
-
-		$db->query( $query);
-			
-		$serie_list = $db->getList();
-		// var_dump($serie_list);
-		for ($i=0; $i<sizeof($serie_list); $i++) { 
-			$serie = $serie_list[$i];
-			$x = array('category' => "Deformation" ,
-					   'data_type' => "Angle",
-					   'station_code' => $serie["ds_code"],
-					   'component' => $serie["type"],
-					   'sta_id' => $serie["sta_id"],
-				
-					   );
-			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
- 			array_push($result,  $x );
+		$cols_name = ["dd_ang_hort1","dd_ang_hort2","dd_ang_vert1","dd_ang_vert2"];
+		$table_name = "es_dd_ang";
+		$query = "select a.ds_id1,a.ds_code1,a.ds_id2,a.ds_code2";
+		for($i =0;$i<sizeof($cols_name);$i++){
+			$query = $query.",a.".$cols_name[$i];
 		}
+		$query = $query." from $table_name as a where a.vd_id=$vd_id";
+		$db->query( $query);
 		
-		return $result;
+		$serie_list = $db->getList();
+
+		for ($i=0; $i<sizeof($serie_list)  ; $i++) { 
+			$serie = $serie_list[$i];
+			for($j =0;$j<sizeof($cols_name);$j++){
+				if($serie[$cols_name[$j]]!=""){
+					$x = array('category' => "Deformation" ,
+							   'data_type' => "Angle",
+							   'station_code1' => $serie["ds_code1"],
+							   'station_code2' => $serie["ds_code2"],
+							   'component' => $serie[$cols_name[$j]],
+							   'ds_id1' => $serie["ds_id1"],
+							   'ds_id2' => $serie["ds_id2"],
+							   );
+				}
+			}
+				
+			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code1"].$x["station_code2"].$x["component"] );
+ 			array_push($result,  $x );
+		}	
+				
+		
 	}
 
 	private static function getTimeSeriesList_dd_gps( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-		$query="select distinct a.sta_id,a.sta_code as ds_code,concat('GPS Latitude') as type from jjcn_sta as a, dd_gps as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_gps_lat IS NOT NULL 	
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('GPS Longtitude') as type from jjcn_sta as a, dd_ang as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_gps_lon IS NOT NULL
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('GPS Elevation') as type from jjcn_sta as a, dd_ang as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_gps_elev IS NOT NULL
-
-			";
-
-
-
-		$db->query( $query);
-			
-		$serie_list = $db->getList();
-		// var_dump($serie_list);
-		for ($i=0; $i<sizeof($serie_list); $i++) { 
-			$serie = $serie_list[$i];
-			$x = array('category' => "Deformation" ,
-					   'data_type' => "GPSPosition&Slope",
-					   'station_code' => $serie["ds_code"],
-					   'component' => $serie["type"],
-					   'sta_id' => $serie["sta_id"],
-					 
-					   );
-			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
- 			array_push($result,  $x );
+		$cols_name = ["dd_gps_lat","dd_gps_lon","dd_gps_elev","dd_gps_slope",];
+		$table_name = "es_dd_gps";
+		$query = "select a.ds_id,a.ds_code,a.ds_id_ref1,a.ds_code1,a.ds_id_ref2,a.ds_code2";
+		for($i =0;$i<sizeof($cols_name);$i++){
+			$query = $query.",a.".$cols_name[$i];
 		}
-		return $result;
+		$query = $query." from $table_name as a where a.vd_id=$vd_id";
+		$db->query( $query);
+		
+		$serie_list = $db->getList();
+
+		for ($i=0; $i<sizeof($serie_list)  ; $i++) { 
+			$serie = $serie_list[$i];
+			for($j =0;$j<sizeof($cols_name);$j++){
+				if($serie[$cols_name[$j]]!=""){
+					$x = array('category' => "Deformation" ,
+							   'data_type' => "GPSPosition&Slope",
+							   'station_code' => $serie["ds_code"],
+							   'station_code1' => $serie["ds_code1"],
+							   'station_code2' => $serie["ds_code2"],
+							   'component' => $serie[$cols_name[$j]],
+							   'ds_id' => $serie["ds_id"],
+							   'ds_id1' => $serie["ds_id_ref1"],
+							   'ds_id2' => $serie["ds_id_ref2"],
+							   );
+				}
+			}
+				
+			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["station_code1"].$x["station_code2"].$x["component"] );
+ 			array_push($result,  $x );
+		}	
+		
 	}
 
 	private static function getTimeSeriesList_dd_gpv( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-		$query="select distinct a.sta_id,a.sta_code as ds_code,concat('GPS Displacement') as type from jjcn_sta as a, dd_gpv as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_gpv_dmag IS NOT NULL 	
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('GPS Displ-azimuth') as type from jjcn_sta as a, dd_gpv as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_gpv_daz IS NOT NULL 	
-			union
-			select distinct a.sta_id,a.sta_code as ds_code,concat('GPS Displ-inclination') as type from jjcn_sta as a, dd_gpv as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_gpv_vincl IS NOT NULL 	
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('GPS N-S Displ') as type from jjcn_sta as a, dd_gpv as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_gpv_N IS NOT NULL 	
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('GPS E-W Displ') as type from jjcn_sta as a, dd_gpv as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_gpv_E IS NOT NULL 	
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('GPS Vertical Displ') as type from jjcn_sta as a, dd_gpv as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_gpv_vert IS NOT NULL 	
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('GPS N-S Velocity') as type from jjcn_sta as a, dd_gpv as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_gpv_staVelNorth IS NOT NULL 	
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('GPS E-W Velocity') as type from jjcn_sta as a, dd_gpv as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_gpv_staVelEast IS NOT NULL 	
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('GPS Vertical Velocity') as type from jjcn_sta as a, dd_gpv as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_gpv_staVelVert IS NOT NULL 	
-			";
-
-
-
+		$cols_name = ["dd_gpv_dmag","dd_gpv_daz","dd_gpv_vincl","dd_gpv_N","dd_gpv_E","dd_gpv_vert","dd_gpv_staVelNorth","dd_gpv_staVelEast",
+		"dd_gpv_staVelVert"
+		];
+		$table_name = "es_dd_gpv";
+		$query = "select a.ds_id,a.ds_code";
+		for($i =0;$i<sizeof($cols_name);$i++){
+			$query = $query.",a.".$cols_name[$i];
+		}
+		$query = $query." from $table_name as a where a.vd_id=$vd_id";
 		$db->query( $query);
-			
+		
 		$serie_list = $db->getList();
-		// var_dump($serie_list);
-		for ($i=0; $i<sizeof($serie_list); $i++) { 
+
+		for ($i=0; $i<sizeof($serie_list)  ; $i++) { 
 			$serie = $serie_list[$i];
-			$x = array('category' => "Deformation" ,
-					   'data_type' => "GPSVector",
-					   'station_code' => $serie["ds_code"],
-					   'component' => $serie["type"],
-					   'sta_id' => $serie["sta_id"],
-					   );
+			for($j =0;$j<sizeof($cols_name);$j++){
+				if($serie[$cols_name[$j]]!=""){
+					$x = array('category' => "Deformation" ,
+							   'data_type' => "GPSVector",
+							   'station_code' => $serie["ds_code"],
+							   'component' => $serie[$cols_name[$j]],
+							   'ds_id' => $serie["ds_id"],
+							   );
+				}
+			}
+				
 			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
  			array_push($result,  $x );
-		}
+		}	
+				
 		return $result;
 	}
 
 	private static function getTimeSeriesList_dd_lev( $vd_id, $stations ) {
-		// $result = array();
-		// global $db;
-		// $query="select distinct a.sta_id,a.sta_code as ds_code,concat('GPS Displacement') as type from jjcn_sta as a, dd_lev as b where a.type='Deformation' and a.vd_id=$vd_id and a.sta_id=b.ds_id and b.dd_lev_delev IS NOT NULL 	
-		// 	";
+		$result = array();
+		global $db;
+		$cols_name = ["dd_lev_delev"];
+		$table_name = "es_dd_lev";
+		$query = "select a.ds_id_ref,a.ds_code,a.ds_id1,a.ds_code1,a.ds_id2,a.ds_code2";
+		for($i =0;$i<sizeof($cols_name);$i++){
+			$query = $query.",a.".$cols_name[$i];
+		}
+		$query = $query." from $table_name as a where a.vd_id=$vd_id";
+		$db->query( $query);
+		
+		$serie_list = $db->getList();
 
-
-
-		// $db->query( $query);
-			
-		// $serie_list = $db->getList();
-		// // var_dump($serie_list);
-		// for ($i=0; $i<sizeof($serie_list); $i++) { 
-		// 	$serie = $serie_list[$i];
-		// 	$x = array('category' => "Deformation" ,
-		// 			   'data_type' => "GPSVector",
-		// 			   'station_code' => $serie["ds_code"],
-		// 			   'component' => $serie["type"],
-		// 			   'sta_id' => $serie["sta_id"],
-		// 			   );
-		// 	$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
- 	// 		array_push($result,  $x );
-		// }
-		// return $result;
+		for ($i=0; $i<sizeof($serie_list)  ; $i++) { 
+			$serie = $serie_list[$i];
+			for($j =0;$j<sizeof($cols_name);$j++){
+				if($serie[$cols_name[$j]]!=""){
+					$x = array('category' => "Deformation" ,
+							   'data_type' => "Leveling",
+							   'station_code' => $serie["ds_code"],
+							   'station_code1' => $serie["ds_code1"],
+							   'station_code2' => $serie["ds_code2"],
+							   'component' => $serie[$cols_name[$j]],
+							   'ds_id' => $serie["ds_id_ref"],
+							   'ds_id1' => $serie["ds_id1"],
+							   'ds_id2' => $serie["ds_id2"],
+							   );
+				}
+			}
+				
+			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["station_code1"].$x["station_code2"].$x["component"] );
+ 			array_push($result,  $x );
+		}	
 	}
 
 	public static function getStationData( $table, $code, $component, $id ) {
@@ -309,12 +320,12 @@ class DeformationRepository {
 		$filter = "";
 		$query = "";
 		$unit = "";
-		if($component == 'Titlt1'){
+		if($component == 'Radial/X-axis Tilt'){
 			$unit = "urad";
 			$attribute = "dd_tlt1";
 			$query = "select a.dd_tlt_err1 as err ,a.dd_tlt_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}
-		else if($component == 'Titlt2'){
+		else if($component == 'Tangential/Y-axis Tilt'){
 			$unit = "urad";
 			$attribute = "dd_tlt2";
 			$query = "select a.dd_tlt_err2 as err ,a.dd_tlt_time as time, a.$attribute as value $cc from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
@@ -325,7 +336,7 @@ class DeformationRepository {
 			$query = "select a.dd_tlt_time as time, a.$attribute as value from $table as a where $cc a.ds_id=$id and a.$attribute IS NOT NULL";
 		}
 		$db->query($query, $id);
-
+		// echo($query);	
 		$res = $db->getList();
 		foreach ($res as $row) {
 			

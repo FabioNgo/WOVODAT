@@ -59,7 +59,7 @@ class TimeSeriesRepository {
     $serie['data'] = call_user_func_array( $serie['category']."Repository::getStationData" , 
       array( $serie['data_type'] , 
         isset( $serie['station_code']) ? $serie['station_code'] : $serie['volcanoID'],
-        $serie['component'], $serie["sta_id"] )  );
+        $serie['component'], $serie["ds_id"] )  );
     // $serie['data'] = 
     return $serie;
   }
