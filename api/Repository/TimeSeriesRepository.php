@@ -57,7 +57,7 @@ class TimeSeriesRepository {
     if(array_key_exists("ds_id2", $serie)){
       $ids['ds_id2'] = $serie["ds_id2"];
     }
-    var_dump($ids);
+    // var_dump($ids);
     $serie['data'] = call_user_func_array( $serie['category']."Repository::getStationData" , 
       array( $serie['data_type'] , 
         isset( $serie['station_code']) ? $serie['station_code'] : $serie['volcanoID'],

@@ -19,7 +19,7 @@ class DeformationRepository {
 	private static function getTimeSeriesList_dd_tlt( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-		$cols_name = ["dd_tlt1","dd_tlt2","dd_tlt_temp"];
+		$cols_name = array("dd_tlt1","dd_tlt2","dd_tlt_temp");
 		$table_name = "es_dd_tlt";
 		$query = "select a.ds_id,a.ds_code";
 		for($i =0;$i<sizeof($cols_name);$i++){
@@ -53,7 +53,7 @@ class DeformationRepository {
 	private static function getTimeSeriesList_dd_edm( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-		$cols_name = ["dd_edm_lin"];
+		$cols_name = array("dd_edm_lin");
 		$table_name = "es_dd_edm";
 		$query = "select a.ds_id1,a.ds_code1,a.ds_id2,a.ds_code2";
 		for($i =0;$i<sizeof($cols_name);$i++){
@@ -89,7 +89,7 @@ class DeformationRepository {
 	private static function getTimeSeriesList_dd_tlv( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-		$cols_name = ["dd_tlv_mag","dd_tlv_azi"];
+		$cols_name = array("dd_tlv_mag","dd_tlv_azi");
 		$table_name = "es_dd_tlv";
 		$query = "select a.ds_id,a.ds_code";
 		for($i =0;$i<sizeof($cols_name);$i++){
@@ -124,9 +124,8 @@ class DeformationRepository {
 
 		$result = array();
 		global $db;
-		$cols_name = ["dd_str_comp1","dd_str_comp2","dd_str_comp3","dd_str_comp4","dd_str_vdstr","dd_str_sstr_ax1","dd_str_sstr_ax2",
-					"dd_str_sstr_ax3","dd_str_azi_ax1","dd_str_azi_ax2","dd_str_azi_ax3","dd_str_pmax","dd_str_pmin",
-		];
+		$cols_name = array("dd_str_comp1","dd_str_comp2","dd_str_comp3","dd_str_comp4","dd_str_vdstr","dd_str_sstr_ax1","dd_str_sstr_ax2",
+					"dd_str_sstr_ax3","dd_str_azi_ax1","dd_str_azi_ax2","dd_str_azi_ax3","dd_str_pmax","dd_str_pmin");
 		$table_name = "es_dd_str";
 		$query = "select a.ds_id,a.ds_code";
 		for($i =0;$i<sizeof($cols_name);$i++){
@@ -160,7 +159,7 @@ class DeformationRepository {
 	private static function getTimeSeriesList_dd_ang( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-		$cols_name = ["dd_ang_hort1","dd_ang_hort2","dd_ang_vert1","dd_ang_vert2"];
+		$cols_name = array("dd_ang_hort1","dd_ang_hort2","dd_ang_vert1","dd_ang_vert2");
 		$table_name = "es_dd_ang";
 		$query = "select a.ds_id1,a.ds_code1,a.ds_id2,a.ds_code2";
 		for($i =0;$i<sizeof($cols_name);$i++){
@@ -189,14 +188,14 @@ class DeformationRepository {
 			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code1"].$x["station_code2"].$x["component"] );
  			array_push($result,  $x );
 		}	
-				
+			return $result;	
 		
 	}
 
 	private static function getTimeSeriesList_dd_gps( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-		$cols_name = ["dd_gps_lat","dd_gps_lon","dd_gps_elev","dd_gps_slope",];
+		$cols_name = array("dd_gps_lat","dd_gps_lon","dd_gps_elev","dd_gps_slope");
 		$table_name = "es_dd_gps";
 		$query = "select a.ds_id,a.ds_code,a.ds_id_ref1,a.ds_code1,a.ds_id_ref2,a.ds_code2";
 		for($i =0;$i<sizeof($cols_name);$i++){
@@ -233,9 +232,8 @@ class DeformationRepository {
 	private static function getTimeSeriesList_dd_gpv( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-		$cols_name = ["dd_gpv_dmag","dd_gpv_daz","dd_gpv_vincl","dd_gpv_N","dd_gpv_E","dd_gpv_vert","dd_gpv_staVelNorth","dd_gpv_staVelEast",
-		"dd_gpv_staVelVert"
-		];
+		$cols_name = array("dd_gpv_dmag","dd_gpv_daz","dd_gpv_vincl","dd_gpv_N","dd_gpv_E","dd_gpv_vert","dd_gpv_staVelNorth","dd_gpv_staVelEast",
+		"dd_gpv_staVelVert");
 		$table_name = "es_dd_gpv";
 		$query = "select a.ds_id,a.ds_code";
 		for($i =0;$i<sizeof($cols_name);$i++){
@@ -269,7 +267,7 @@ class DeformationRepository {
 	private static function getTimeSeriesList_dd_lev( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-		$cols_name = ["dd_lev_delev"];
+		$cols_name = array("dd_lev_delev");
 		$table_name = "es_dd_lev";
 		$query = "select a.ds_id_ref,a.ds_code,a.ds_id1,a.ds_code1,a.ds_id2,a.ds_code2";
 		for($i =0;$i<sizeof($cols_name);$i++){
@@ -302,14 +300,17 @@ class DeformationRepository {
 		}	
 	}
 
-	public static function getStationData( $table, $code, $component, $id ) {
+	public static function getStationData( $table, $code, $component, $ids ) {
 		// echo("sdasfd");
 		foreach (self::$infor as $key => $type) if ( $type["data_type"] == $table ) 
-			return call_user_func_array("self::getStationData_".$key, array( $key, $component,$id) );
+			return call_user_func_array("self::getStationData_".$key, array( $key, $component,$ids) );
 	} 
 
-	public static function getStationData_dd_tlt( $table, $component,$id ) {
+	public static function getStationData_dd_tlt( $table, $component,$ids ) {
+		// $id = $ids["ds_id"];
 		global $db;
+		// echo($ids);
+		$id = $ids["ds_id"];
 		$cc = ', a.cc_id, a.cc_id2, a.cc_id3 ';
 		$result = array();
 		$res = array();
@@ -335,6 +336,7 @@ class DeformationRepository {
 			$errorbar = false;
 			$query = "select a.dd_tlt_time as time, a.$attribute as value from $table as a where $cc a.ds_id=$id and a.$attribute IS NOT NULL";
 		}
+		// echo($query);
 		$db->query($query, $id);
 		// echo($query);	
 		$res = $db->getList();
