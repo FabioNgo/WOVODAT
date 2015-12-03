@@ -1,7 +1,7 @@
 {
 	"gd" : {
 		"time" : "gd_time",
-		"data_type" : "SampledGas",
+		"data_type" : "Sampled Gas",
 		"params" : [
 			{
 				"name" : "Gtemp",
@@ -25,7 +25,7 @@
 
 	"gd_plu" : {
 		"time" : "gd_plu_time",
-		"data_type" : "Plume",
+		"data_type" : "Gas Plume",
 		"params" : [
 			{
 				"name" : "Emit",

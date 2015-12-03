@@ -41,13 +41,14 @@ class DeformationRepository {
 							   'data_type' => "ElectronicTilt",
 							   'station_code' => $serie["ds_code"],
 							   'component' => $serie[$cols_name[$j]],
-							   'ds_id' => $serie["ds_id"],
+							   'sta_id' => $serie["ds_id"],
 							   );
+					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+ 					array_push($result,  $x );
 				}
 			}
 				
-			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
- 			array_push($result,  $x );
+			
 		}	
 				
 		return $result;
@@ -78,14 +79,15 @@ class DeformationRepository {
 							   'station_code1' => $serie["sta_code"],
 							   'station_code2' => $serie["sta_code2"],
 							   'component' => $serie[$cols_name[$j]],
-							   'ds_id1' => $serie["ds_id1"],
-							   'ds_id2' => $serie["ds_id2"],
+							   'sta_id1' => $serie["ds_id1"],
+							   'sta_id2' => $serie["ds_id2"],
 							   );
+					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code1"].$x["station_code2"].$x["component"] );
+ 					array_push($result,  $x );
 				}
 			}
 				
-			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code1"].$x["station_code2"].$x["component"] );
- 			array_push($result,  $x );
+			
 		}	
 				
 		return $result;
@@ -113,13 +115,14 @@ class DeformationRepository {
 							   'data_type' => "TitltVector",
 							   'station_code' => $serie["ds_code"],
 							   'component' => $serie[$cols_name[$j]],
-							   'ds_id' => $serie["ds_id"],
+							   'sta_id' => $serie["ds_id"],
 							   );
+					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+ 					array_push($result,  $x );
 				}
 			}
 				
-			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
- 			array_push($result,  $x );
+			
 		}	
 				
 		return $result;
@@ -149,13 +152,14 @@ class DeformationRepository {
 							   'data_type' => "Strain",
 							   'station_code' => $serie["ds_code"],
 							   'component' => $serie[$cols_name[$j]],
-							   'ds_id' => $serie["ds_id"],
+							   'sta_id' => $serie["ds_id"],
 							   );
 				}
+				$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+ 				array_push($result,  $x );
 			}
 				
-			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
- 			array_push($result,  $x );
+			
 		}	
 				
 		return $result;
@@ -184,14 +188,15 @@ class DeformationRepository {
 							   'station_code1' => $serie["ds_code1"],
 							   'station_code2' => $serie["ds_code2"],
 							   'component' => $serie[$cols_name[$j]],
-							   'ds_id1' => $serie["ds_id1"],
-							   'ds_id2' => $serie["ds_id2"],
+							   'sta_id1' => $serie["ds_id1"],
+							   'sta_id2' => $serie["ds_id2"],
 							   );
+					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code1"].$x["station_code2"].$x["component"] );
+ 					array_push($result,  $x );
 				}
 			}
 				
-			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code1"].$x["station_code2"].$x["component"] );
- 			array_push($result,  $x );
+			
 		}	
 			return $result;	
 		
@@ -223,15 +228,16 @@ class DeformationRepository {
 							   'station_code1' => $serie["sta_code1"],
 							   'station_code2' => $serie["sta_code2"],
 							   'component' => $serie[$cols_name[$j]],
-							   'ds_id' => $serie["ds_id"],
-							   'ds_id1' => $serie["ds_id_ref1"],
-							   'ds_id2' => $serie["ds_id_ref2"],
+							   'sta_id' => $serie["ds_id"],
+							   'sta_id1' => $serie["ds_id_ref1"],
+							   'sta_id2' => $serie["ds_id_ref2"],
 							   );
+					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["station_code1"].$x["station_code2"].$x["component"] );
+ 					array_push($result,$x );
 				}
 			}
 				
-			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["station_code1"].$x["station_code2"].$x["component"] );
- 			array_push($result,$x );
+			
 		}
 		return $result;	
 		
@@ -260,13 +266,14 @@ class DeformationRepository {
 							   'data_type' => "GPSVector",
 							   'station_code' => $serie["sta_code"],
 							   'component' => $serie[$cols_name[$j]],
-							   'ds_id' => $serie["ds_id"],
+							   'sta_id' => $serie["ds_id"],
 							   );
+					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+ 					array_push($result,  $x );
 				}
 			}
 				
-			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
- 			array_push($result,  $x );
+			
 		}	
 				
 		return $result;
@@ -297,15 +304,16 @@ class DeformationRepository {
 							   'station_code1' => $serie["sta_code1"],
 							   'station_code2' => $serie["sta_code2"],
 							   'component' => $serie[$cols_name[$j]],
-							   'ds_id' => $serie["ds_id_ref"],
-							   'ds_id1' => $serie["ds_id1"],
-							   'ds_id2' => $serie["ds_id2"],
+							   'sta_id' => $serie["ds_id_ref"],
+							   'sta_id1' => $serie["ds_id1"],
+							   'sta_id2' => $serie["ds_id2"],
 							   );
+					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["station_code1"].$x["station_code2"].$x["component"] );
+ 					array_push($result,  $x );
 				}
 			}
 				
-			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["station_code1"].$x["station_code2"].$x["component"] );
- 			array_push($result,  $x );
+			
 
 		}
 		return $result;
@@ -319,10 +327,10 @@ class DeformationRepository {
 
 	public static function getStationData_dd_tlt( $table, $component,$ids ) {
 
-		$id = $ids["ds_id"];
+		$id = $ids["sta_id"];
 		global $db;
 		// echo($ids);
-		$id = $ids["ds_id"];
+		$id = $ids["sta_id"];
 		$cc = ', a.cc_id, a.cc_id2, a.cc_id3 ';
 		$result = array();
 		$res = array();
@@ -376,8 +384,8 @@ class DeformationRepository {
 		
 		global $db;
 		// echo($id);
-		$id1 = $ids["ds_id1"];
-		$id2 = $ids["ds_id2"];
+		$id1 = $ids["sta_id1"];
+		$id2 = $ids["sta_id2"];
 		$cc = ', a.cc_id, a.cc_id2, a.cc_id3 ';
 		$result = array();
 		$res = array();
@@ -420,7 +428,7 @@ class DeformationRepository {
 	}
 
 	public static function getStationData_dd_tlv( $table, $component,$ids ) {
-		$id = $ids["ds_id"];
+		$id = $ids["sta_id"];
 		global $db;
 		$cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
 		$result = array();
@@ -465,7 +473,7 @@ class DeformationRepository {
 	}
 
 	public static function getStationData_dd_str( $table, $component,$ids ) {
-		$id = $ids["ds_id"];
+		$id = $ids["sta_id"];
 		global $db;
 		$cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
 		$result = array();
@@ -574,8 +582,8 @@ class DeformationRepository {
 	public static function getStationData_dd_ang( $table, $component,$ids ) {
 		global $db;
 		// echo($id);
-		$id1 = $ids["ds_id1"];
-		$id2 = $ids["ds_id2"];
+		$id1 = $ids["sta_id1"];
+		$id2 = $ids["sta_id2"];
 		$cc = ', a.cc_id, a.cc_id2, a.cc_id3 ';
 		$result = array();
 		$res = array();
@@ -639,10 +647,10 @@ class DeformationRepository {
 
 	public static function getStationData_dd_gps( $table, $component,$ids ) {
 		// echo($id);
-		$id = $ids["ds_id"];
+		$id = $ids["sta_id"];
 		// echo($id);
-		$id1 = $ids["ds_id1"];
-		$id2 = $ids["ds_id2"];
+		$id1 = $ids["sta_id1"];
+		$id2 = $ids["sta_id2"];
 
 		global $db;
 		$cc = ', b.cc_id, b.cc_id2, b.cc_id3';
@@ -694,7 +702,7 @@ class DeformationRepository {
 	}
 
 	public static function getStationData_dd_gpv( $table, $component,$ids ) {
-		$id = $ids["ds_id"];
+		$id = $ids["sta_id"];
 		global $db;
 		$cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
 		$result = array();
@@ -769,9 +777,9 @@ class DeformationRepository {
 	}
 
 	public static function getStationData_dd_lev( $table, $component,$ids ) {
-		$id = $ids["ds_id"];
-		$id1 = $ids["ds_id1"];
-		$id2 = $ids["ds_id2"];
+		$id = $ids["sta_id"];
+		$id1 = $ids["sta_id1"];
+		$id2 = $ids["sta_id2"];
 		global $db;
 		$cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
 		$result = array();

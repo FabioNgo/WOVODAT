@@ -28,7 +28,7 @@ class TimeSeriesRepository {
 		$result = array();
 		
 		// $DATA_LIST = array( "Seismic", "Deformation", "Gas",  "Meteo" , "Hydrology");
-    $DATA_LIST = array("Deformation");
+    $DATA_LIST = array("Gas","Deformation");
 		foreach ($DATA_LIST as $value) {
 			$series = call_user_func_array($value."Repository::getTimeSeriesList", array($vd_id));
 			self::saveSerie($series);
@@ -48,14 +48,14 @@ class TimeSeriesRepository {
       return null;
     // var_dump($serie);
     $ids = array();
-    if(array_key_exists("ds_id", $serie)){
-      $ids['ds_id'] = $serie["ds_id"];
+    if(array_key_exists("sta_id", $serie)){
+      $ids['sta_id'] = $serie["sta_id"];
     }
-    if(array_key_exists("ds_id1", $serie)){
-      $ids['ds_id1'] = $serie["ds_id1"];
+    if(array_key_exists("sta_id1", $serie)){
+      $ids['sta_id1'] = $serie["sta_id1"];
     }
-    if(array_key_exists("ds_id2", $serie)){
-      $ids['ds_id2'] = $serie["ds_id2"];
+    if(array_key_exists("sta_id2", $serie)){
+      $ids['sta_id2'] = $serie["sta_id2"];
     }
     // var_dump($ids);
     $serie['data'] = call_user_func_array( $serie['category']."Repository::getStationData" , 
