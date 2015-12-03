@@ -13,6 +13,9 @@ class DeformationRepository {
 		$result = array_merge($result,self::getTimeSeriesList_dd_str($vd_id,$stations));
 		$result = array_merge($result,self::getTimeSeriesList_dd_edm($vd_id,$stations));
 		$result = array_merge($result,self::getTimeSeriesList_dd_ang($vd_id,$stations));
+		$result = array_merge($result,self::getTimeSeriesList_dd_gps($vd_id,$stations));
+		$result = array_merge($result,self::getTimeSeriesList_dd_gpv($vd_id,$stations));
+		$result = array_merge($result,self::getTimeSeriesList_dd_lev($vd_id,$stations));
 		return $result;
 	}
 
@@ -51,15 +54,17 @@ class DeformationRepository {
 	}
 
 	private static function getTimeSeriesList_dd_edm( $vd_id, $stations ) {
+		// echo("Asd");
 		$result = array();
 		global $db;
 		$cols_name = array("dd_edm_lin");
 		$table_name = "es_dd_edm";
-		$query = "select a.ds_id1,a.ds_code1,a.ds_id2,a.ds_code2";
+		$query = "select a.ds_id1,a.sta_code,a.ds_id2,a.sta_code2";
 		for($i =0;$i<sizeof($cols_name);$i++){
 			$query = $query.",a.".$cols_name[$i];
 		}
 		$query = $query." from $table_name as a where a.vd_id=$vd_id";
+		// echo($query);
 		$db->query( $query);
 		
 		$serie_list = $db->getList();
@@ -69,9 +74,9 @@ class DeformationRepository {
 			for($j =0;$j<sizeof($cols_name);$j++){
 				if($serie[$cols_name[$j]]!=""){
 					$x = array('category' => "Deformation" ,
-							   'data_type' => "ElectronicTilt",
-							   'station_code1' => $serie["ds_code1"],
-							   'station_code2' => $serie["ds_code2"],
+							   'data_type' => "EDM",
+							   'station_code1' => $serie["sta_code"],
+							   'station_code2' => $serie["sta_code2"],
 							   'component' => $serie[$cols_name[$j]],
 							   'ds_id1' => $serie["ds_id1"],
 							   'ds_id2' => $serie["ds_id2"],
@@ -193,15 +198,17 @@ class DeformationRepository {
 	}
 
 	private static function getTimeSeriesList_dd_gps( $vd_id, $stations ) {
+		// echo("a");
 		$result = array();
 		global $db;
 		$cols_name = array("dd_gps_lat","dd_gps_lon","dd_gps_elev","dd_gps_slope");
 		$table_name = "es_dd_gps";
-		$query = "select a.ds_id,a.ds_code,a.ds_id_ref1,a.ds_code1,a.ds_id_ref2,a.ds_code2";
+		$query = "select a.ds_id,a.sta_code,a.ds_id_ref1,a.sta_code1,a.ds_id_ref2,a.sta_code2";
 		for($i =0;$i<sizeof($cols_name);$i++){
 			$query = $query.",a.".$cols_name[$i];
 		}
 		$query = $query." from $table_name as a where a.vd_id=$vd_id";
+		// echo($query);
 		$db->query( $query);
 		
 		$serie_list = $db->getList();
@@ -212,9 +219,9 @@ class DeformationRepository {
 				if($serie[$cols_name[$j]]!=""){
 					$x = array('category' => "Deformation" ,
 							   'data_type' => "GPSPosition&Slope",
-							   'station_code' => $serie["ds_code"],
-							   'station_code1' => $serie["ds_code1"],
-							   'station_code2' => $serie["ds_code2"],
+							   'station_code' => $serie["sta_code"],
+							   'station_code1' => $serie["sta_code1"],
+							   'station_code2' => $serie["sta_code2"],
 							   'component' => $serie[$cols_name[$j]],
 							   'ds_id' => $serie["ds_id"],
 							   'ds_id1' => $serie["ds_id_ref1"],
@@ -224,8 +231,9 @@ class DeformationRepository {
 			}
 				
 			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["station_code1"].$x["station_code2"].$x["component"] );
- 			array_push($result,  $x );
-		}	
+ 			array_push($result,$x );
+		}
+		return $result;	
 		
 	}
 
@@ -235,7 +243,7 @@ class DeformationRepository {
 		$cols_name = array("dd_gpv_dmag","dd_gpv_daz","dd_gpv_vincl","dd_gpv_N","dd_gpv_E","dd_gpv_vert","dd_gpv_staVelNorth","dd_gpv_staVelEast",
 		"dd_gpv_staVelVert");
 		$table_name = "es_dd_gpv";
-		$query = "select a.ds_id,a.ds_code";
+		$query = "select a.ds_id,a.sta_code";
 		for($i =0;$i<sizeof($cols_name);$i++){
 			$query = $query.",a.".$cols_name[$i];
 		}
@@ -250,7 +258,7 @@ class DeformationRepository {
 				if($serie[$cols_name[$j]]!=""){
 					$x = array('category' => "Deformation" ,
 							   'data_type' => "GPSVector",
-							   'station_code' => $serie["ds_code"],
+							   'station_code' => $serie["sta_code"],
 							   'component' => $serie[$cols_name[$j]],
 							   'ds_id' => $serie["ds_id"],
 							   );
@@ -269,11 +277,12 @@ class DeformationRepository {
 		global $db;
 		$cols_name = array("dd_lev_delev");
 		$table_name = "es_dd_lev";
-		$query = "select a.ds_id_ref,a.ds_code,a.ds_id1,a.ds_code1,a.ds_id2,a.ds_code2";
+		$query = "select a.ds_id_ref,a.sta_code,a.ds_id1,a.sta_code1,a.ds_id2,a.sta_code2";
 		for($i =0;$i<sizeof($cols_name);$i++){
 			$query = $query.",a.".$cols_name[$i];
 		}
 		$query = $query." from $table_name as a where a.vd_id=$vd_id";
+		// echo($query);
 		$db->query( $query);
 		
 		$serie_list = $db->getList();
@@ -284,9 +293,9 @@ class DeformationRepository {
 				if($serie[$cols_name[$j]]!=""){
 					$x = array('category' => "Deformation" ,
 							   'data_type' => "Leveling",
-							   'station_code' => $serie["ds_code"],
-							   'station_code1' => $serie["ds_code1"],
-							   'station_code2' => $serie["ds_code2"],
+							   'station_code' => $serie["sta_code"],
+							   'station_code1' => $serie["sta_code1"],
+							   'station_code2' => $serie["sta_code2"],
 							   'component' => $serie[$cols_name[$j]],
 							   'ds_id' => $serie["ds_id_ref"],
 							   'ds_id1' => $serie["ds_id1"],
@@ -297,17 +306,20 @@ class DeformationRepository {
 				
 			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["station_code1"].$x["station_code2"].$x["component"] );
  			array_push($result,  $x );
-		}	
+
+		}
+		return $result;
 	}
 
-	public static function getStationData( $table, $code, $component, $ids ) {
-		// echo("sdasfd");
-		foreach (self::$infor as $key => $type) if ( $type["data_type"] == $table ) 
+	public static function getStationData( $table, $component, $ids ) {
+		// echo($table);
+		foreach (self::$infor as $key => $type) if ( $type["data_type"] == $table )
 			return call_user_func_array("self::getStationData_".$key, array( $key, $component,$ids) );
 	} 
 
 	public static function getStationData_dd_tlt( $table, $component,$ids ) {
-		// $id = $ids["ds_id"];
+
+		$id = $ids["ds_id"];
 		global $db;
 		// echo($ids);
 		$id = $ids["ds_id"];
@@ -360,45 +372,55 @@ class DeformationRepository {
 		return $result;
 	}
 
-	public static function getStationData_dd_edm( $table, $component,$id) {
-		// global $db;
-		// $cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
-		// $result = array();
-		// $res = array();
-		// $attribute = "";
-		// $filterQuery = "";
-		// $filter = "";
-		// if($component == 'Titlt1'){
-		// 	$attribute = "dd_edm_line";
-		// 	$query = "select a.dd_edm_cerr as err ,a.dd_tlt_time as time, a.$attribute as value from $table as a where a.ds_id=$id and a.dd_tlt1 IS NOT NULL";
-		// }
-		// else if($component == 'Titlt2'){
-		// 	$attribute = "dd_tlt2";
-		// 	$query = "select a.dd_tlt_err2 as err ,a.dd_tlt_time as time, a.$attribute as value from $table as a where a.ds_id=$id and a.dd_tlt2 IS NOT NULL";
+	public static function getStationData_dd_edm( $table, $component,$ids) {
+		
+		global $db;
+		// echo($id);
+		$id1 = $ids["ds_id1"];
+		$id2 = $ids["ds_id2"];
+		$cc = ', a.cc_id, a.cc_id2, a.cc_id3 ';
+		$result = array();
+		$res = array();
+		$attribute = "";
+		$style = "dot";
+		$errorbar = true;
+		$data = array();
+		$filter = "";
+		$query = "";
+		$unit = "";
+		// echo($component);
+		if($component == 'EDM Line Length'){
+			$unit = "m";
+			$attribute = "dd_edm_line";
+			$query = "select a.dd_edm_cerr as err ,a.dd_edm_time as time, a.$attribute as value $cc from $table as a where a.ds_id1=$id1 and a.ds_id2=$id2 and a.$attribute IS NOT NULL";
+		}
+		// echo($query);
 
-		// }else if($component == 'Temp'){
-		// 	$attribute = "dd_tlt_temp";
-		// 	$query = "select a.dd_tlt_time as time, a.$attribute as value from dd_tlt as a where a.ds_id=$id and a.dd_tlt_temp IS NOT NULL";
-		// }
-		// $db->query($query, $id);
-
-		// $res = $db->getList();
-		// foreach ($res as $row) {
+		$db->query($query, $id1,$id2);
+		// echo($query);	
+		$res = $db->getList();
+		foreach ($res as $row) {
 			
-		// 	$time = strtotime($row["time"]);
-		// 	$temp = array( "time" => floatval(1000 * $time) ,
-		// 					"value" => floatval($row["value"]),
-		// 					"error" => $row["err"],
-		// 					"filter" => " "
-		// 				);
+			$time = strtotime($row["time"]);
+			$temp = array( "time" => floatval(1000 * $time) ,
+							"value" => floatval($row["value"]),
+							"filter" => " "
+						);
 			
-			
-		// 	array_push($result, $temp );
-		// }
-		// return $result;
+			if($errorbar){
+				$temp["error"] = $row["err"];
+			}
+			array_push($data, $temp );			
+		}
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
+		$result["unit"] = $unit;
+		return $result;
 	}
 
-	public static function getStationData_dd_tlv( $table, $component,$id ) {
+	public static function getStationData_dd_tlv( $table, $component,$ids ) {
+		$id = $ids["ds_id"];
 		global $db;
 		$cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
 		$result = array();
@@ -442,7 +464,8 @@ class DeformationRepository {
 		return $result;
 	}
 
-	public static function getStationData_dd_str( $table, $component,$id ) {
+	public static function getStationData_dd_str( $table, $component,$ids ) {
+		$id = $ids["ds_id"];
 		global $db;
 		$cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
 		$result = array();
@@ -548,44 +571,81 @@ class DeformationRepository {
 		return $result;
 	}
 
-	public static function getStationData_dd_ang( $table, $component ) {
-		// global $db;
-		// $cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
-		// $result = array();
-		// $res = array();
-		// $attribute = "";
-		// $filterQuery = "";
-		// $filter = "";
-		// if($component == 'Horizontal Angle target-1'){
-		// 	$attribute = "dd_tlv_mag";
-		// 	$query = "select a.dd_tlv_magerr as err ,a.dd_tlv_stime as stime, a.dd_tlv_etime as etime, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
-		// } else if($component == 'Titlt Azimuth'){
-		// 	$attribute = "dd_tlv_azi";
-		// 	$query = "select a.dd_tlv_azierr as err ,a.dd_tlv_stime as stime, a.dd_tlv_etime as etime, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+	public static function getStationData_dd_ang( $table, $component,$ids ) {
+		global $db;
+		// echo($id);
+		$id1 = $ids["ds_id1"];
+		$id2 = $ids["ds_id2"];
+		$cc = ', a.cc_id, a.cc_id2, a.cc_id3 ';
+		$result = array();
+		$res = array();
+		$attribute = "";
+		$style = "dot";
+		$errorbar = true;
+		$data = array();
+		$filter = "";
+		$query = "";
+		$unit = "";
+		// echo($component);
+		if($component == 'Horizontal Angle Target-1'){
+			$unit = "o";
+			$attribute = "dd_ang_hort1";
+			$query = "select a.dd_ang_herr1 as err ,a.dd_ang_time as time, a.$attribute as value $cc from $table as a where a.ds_id1=$id1 and a.ds_id2=$id2 and a.$attribute IS NOT NULL";
+		}
+		else if($component == 'Horizontal Angle Target-2'){
+			$unit = "o";
+			$attribute = "dd_ang_hort2";
+			$query = "select a.dd_ang_herr2 as err ,a.dd_ang_time as time, a.$attribute as value $cc from $table as a where a.ds_id1=$id1 and a.ds_id2=$id2 and a.$attribute IS NOT NULL";
+		}
+		else if($component == 'Vertical Angle Target-1'){
+			$unit = "o";
+			$attribute = "dd_ang_vert1";
+			$query = "select a.dd_ang_verr1 as err ,a.dd_ang_time as time, a.$attribute as value $cc from $table as a where a.ds_id1=$id1 and a.ds_id2=$id2 and a.$attribute IS NOT NULL";
+		}
+		else if($component == 'Vertical Angle Target-2'){
+			$unit = "o";
+			$attribute = "dd_ang_vert2";
+			$query = "select a.dd_ang_verr2 as err ,a.dd_ang_time as time, a.$attribute as value $cc from $table as a where a.ds_id1=$id1 and a.ds_id2=$id2 and a.$attribute IS NOT NULL";
+		}
+		else if($component == 'Horizontal Angle Target-2'){
+			$unit = "o";
+			$attribute = "dd_ang_vert1";
+			$query = "select a.dd_ang_verr1 as err ,a.dd_ang_time as time, a.$attribute as value $cc from $table as a where a.ds_id1=$id1 and a.ds_id2=$id2 and a.$attribute IS NOT NULL";
+		}
+		// echo($query);
 
-		// }
-		// $db->query($query, $id);
-
-		// $res = $db->getList();
-		// foreach ($res as $row) {
+		$db->query($query, $id1,$id2);
+		// echo($query);	
+		$res = $db->getList();
+		foreach ($res as $row) {
 			
-		// 	$stime = strtotime($row["stime"]);
-		// 	$etime = strtotime($row["etime"]);
-		// 	$temp = array( "stime" => floatval(1000 * $stime) ,
-		// 					"etime" => floatval(1000 * $etime) ,
-		// 					"value" => floatval($row["value"]),
-		// 					"error" => $row["err"],
-		// 					"filter" => " "
-		// 				);
+			$time = strtotime($row["time"]);
+			$temp = array( "time" => floatval(1000 * $time) ,
+							"value" => floatval($row["value"]),
+							"filter" => " "
+						);
 			
-		// 	array_push($result, $temp );
-		// }
-		// return $result;
+			if($errorbar){
+				$temp["error"] = $row["err"];
+			}
+			array_push($data, $temp );			
+		}
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
+		$result["unit"] = $unit;
+		return $result;
 	}
 
-	public static function getStationData_dd_gps( $table, $component ) {
+	public static function getStationData_dd_gps( $table, $component,$ids ) {
+		// echo($id);
+		$id = $ids["ds_id"];
+		// echo($id);
+		$id1 = $ids["ds_id1"];
+		$id2 = $ids["ds_id2"];
+
 		global $db;
-		$cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
+		$cc = ', b.cc_id, b.cc_id2, b.cc_id3';
 		$result = array();
 		$res = array();
 		$attribute = "";
@@ -597,7 +657,7 @@ class DeformationRepository {
 		if($component == 'GPS Latitude'){
 			$unit = "o";
 			$attribute = "dd_gps_lat";
-			$query = "select a.dd_gps_nserr as err ,a.dd_gps_time as time, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$query = "select a.dd_gps_nserr as err ,a.dd_gps_time as time,  a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'GPS Longtitude'){
 			$unit = "o";
 			$attribute = "dd_gps_lon";
@@ -605,9 +665,14 @@ class DeformationRepository {
 		}else if($component == 'GPS Elevation'){
 			$unit = "m";
 			$attribute = "dd_gps_elev";
-			$query = "select a.dd_gps_verr as err ,a.dd_gps_time as time, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$query = "select a.dd_gps_verr as err ,a.dd_gps_time as time, a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'GPS Baseline/Slope '){
+			$unit = "m";
+			$attribute = "dd_gps_slope";
+			$query = "select a.dd_gps_errslope as err ,a.dd_gps_time as time,  a.$attribute as value from $table as a where a.ds_id=$id and a.ds_id_ref1=$id1 and a.$attribute IS NOT NULL";
 		}
-		$db->query($query, $id);
+		// echo($query);
+		$db->query($query, $id,$id1);
 
 		$res = $db->getList();
 		foreach ($res as $row) {
@@ -618,7 +683,7 @@ class DeformationRepository {
 							"error" => $row["err"],
 							"filter" => " "
 						);
-			
+
 			array_push($data, $temp );
 		}
 		$result["style"] = $style;
@@ -628,7 +693,8 @@ class DeformationRepository {
 		return $result;
 	}
 
-	public static function getStationData_dd_gpv( $table, $component ) {
+	public static function getStationData_dd_gpv( $table, $component,$ids ) {
+		$id = $ids["ds_id"];
 		global $db;
 		$cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
 		$result = array();
@@ -642,38 +708,48 @@ class DeformationRepository {
 		if($component == 'GPS Displacement'){
 			$unit = "mm";
 			$attribute = "dd_gpv_dmag";
-			$query = "select a.dd_gpv_dherr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
-		}else if($component == 'GPS N-S Displ'){
+			$query = "select a.dd_gpv_dherr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime, a.$attribute as value   from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'GPS N-S Displ.'){
 			$unit = "mm";
 			$attribute = "dd_gpv_N";
-			$query = "select a.dd_gpv_dnerr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
-		}else if($component == 'GPS E-W Displ'){
+			$query = "select a.dd_gpv_dnerr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime, a.$attribute as value   from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'GPS E-W Displ.'){
 			$unit = "mm";
 			$attribute = "dd_gpv_E";
-			$query = "select a.dd_gpv_deerr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
-		}else if($component == 'GPS Vertical Displ'){
+			$query = "select a.dd_gpv_deerr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime, a.$attribute as value   from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'GPS Vertical Displ.'){
 			$unit = "mm";
 			$attribute = "dd_gpv_vert";
-			$query = "select a.dd_gpv_dverr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$query = "select a.dd_gpv_dverr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime,a.$attribute as value   from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'GPS N-S Velocity'){
 			$unit = "mm/yr";
 			$attribute = "dd_gpv_staVelNorth";
-			$query = "select a.dd_gpv_staVelNorthErr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$query = "select a.dd_gpv_staVelNorthErr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime,a.$attribute as value   from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'GPS E-W Velocity'){
 			$unit = "mm/yr";
 			$attribute = "dd_gpv_staVelNorth";
-			$query = "select a.dd_gpv_staVelEastErr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$query = "select a.dd_gpv_staVelEastErr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime,a.$attribute as value   from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'GPS Vertical Velocity'){
 			$unit = "mm/yr";
 			$attribute = "dd_gpv_staVelVert";
-			$query = "select a.dd_gpv_staVelVertErr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$query = "select a.dd_gpv_staVelVertErr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime,a.$attribute as value   from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'GPS Displ-azimuth'){
+			$style = "dot";
+			$unit = "o";
+			$attribute = "dd_gpv_daz";
+			$query = "select a.dd_gpv_stime as stime,a.dd_gpv_etime as etime,a.$attribute as value   from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'GPS Displ-inclination'){
+			$style = "dot";
+			$unit = "o";
+			$attribute = "dd_gpv_vincl";
+			$query = "select a.dd_gpv_stime as stime,a.dd_gpv_etime as etime,a.$attribute as value   from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
 		}
-
+			
 		$db->query($query, $id);
 
 		$res = $db->getList();
 		foreach ($res as $row) {
-			
+			// var_dump($row);
 			$stime = strtotime($row["stime"]);
 			$etime = strtotime($row["etime"]);
 			$temp = array( "stime" => floatval(1000 * $stime) ,
@@ -689,38 +765,47 @@ class DeformationRepository {
 		$result["errorbar"] = $errorbar;
 		$result["data"] = $data;
 		$result["unit"] = $unit;
+		return $result;
 	}
 
-	public static function getStationData_dd_lev( $table, $component ) {
-		// global $db;
-		// $cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
-		// $result = array();
-		// $res = array();
-		// $attribute = "";
-		// $filterQuery = "";
-		// $filter = "";
-		// foreach (self::$infor["dd_lev"]["params"] as $type) if ( $type["name"] == $component ) {
-		// 	$attribute = $type["cols"];
-		// 	if ( array_key_exists("filter", $type) ) {
-		// 		$filter = $type["filter"];
-		// 		$filterQuery = ", b.".$filter;
-		// 	}
-		// 	$query = "SELECT b.dd_lev_time, b.$attribute $filterQuery $cc from ds a, dd_lev b where a.ds_code = $id and (a.ds_id = b.ds_id_ref or a.ds_id = b.ds_id1 or a.ds_id = b.ds_id2) and a.ds_pubdate <= now() and b.dd_lev_pubdate <= now() and b.$attribute is not null order by b.dd_lev_time desc";
-		// 	$db->query($query, $table, $table);
-		// 	$res = $db->getList();
-		// }
-		// foreach ($res as $row) {
-		// 	$time = strtotime($row["dd_lev_time"]);
-		// 	$temp = array( "time" => intval(1000 * $time) , 
-		// 								 "value" => floatval($row[$attribute]) );
-		// 	if ($filter != ""){
-		// 		$temp["filter"] = $row[$filter];
-		// 	}else{
-		// 		$temp["filter"] = " ";
-		// 	}
-		// 	array_push($result, $temp );			
-		// }
-		// return $result;
+	public static function getStationData_dd_lev( $table, $component,$ids ) {
+		$id = $ids["ds_id"];
+		$id1 = $ids["ds_id1"];
+		$id2 = $ids["ds_id2"];
+		global $db;
+		$cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
+		$result = array();
+		$res = array();
+		$attribute = "";
+		$style = "horizontalbar";
+		$errorbar = true;
+		$data = array();
+		$filter = "";
+		$unit = "";
+		if($component == 'Elevation Change'){
+			$unit = "mm";
+			$attribute = "dd_lev_delev";
+			$query = "select a.dd_lev_herr as err ,a.dd_lev_time as time, a.$attribute as value   from $table as a where a.ds_id_ref=$id and a.ds_id1=$id1 and a.ds_id2=$id2 and a.$attribute IS NOT NULL";
+		}
+		$db->query($query, $id);
+
+		$res = $db->getList();
+		foreach ($res as $row) {
+			// var_dump($row);
+			$time = strtotime($row["time"]);
+			$temp = array( "time" => floatval(1000 * $time) ,
+							"value" => floatval($row["value"]),
+							"error" => $row["err"],
+							"filter" => " "
+						);
+			
+			array_push($data, $temp );
+		}
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
+		$result["unit"] = $unit;
+		return $result;
 	}
 }
 

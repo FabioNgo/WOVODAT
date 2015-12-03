@@ -1,7 +1,5 @@
 {
 	"dd_tlt" : {
-		"time" : "dd_tlt_time",
-		"timecsec" : "dd_tlt_timecsec",
 		"data_type" : "ElectronicTilt",
 		"params" : [
 			{
@@ -142,7 +140,7 @@
 
 	"dd_gps" : {
 		"time" : "dd_gps_time",
-		"data_type" : "GPS",
+		"data_type" : "GPSPosition&Slope",
 		"params" : [
 			{
 				"cols" : "dd_gps_lat",
