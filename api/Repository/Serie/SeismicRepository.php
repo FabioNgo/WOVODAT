@@ -201,6 +201,7 @@ class SeismicRepository {
 	private static function getTimeSeriesList_sd_ssm( $vd_id, $stations ) {
 		$result = array();
 		global $db;
+
 		$cols_name = array("sd_ssm_lowf","sd_ssm_highf","sd_ssm_count");
 		$table_name = "es_sd_ssm";
 		$query = "select a.ss_id,a.sta_code";
@@ -330,8 +331,9 @@ class SeismicRepository {
 		$result["unit"] = $unit;
 		return $result;
 	}
-	public static function getStationData_sd_evs( $table, $component,$id ) {
+	public static function getStationData_sd_evs( $table, $component,$ids ) {
 		global $db;
+		$id = $ids["sta_id"];
 		$cc = ', a.cc_id, a.cc_id2, a.cc_id3 ';
 		$result = array();
 		$res = array();
@@ -437,8 +439,10 @@ class SeismicRepository {
 	}
 
 	public static function getStationData_sd_rsm( $table, $component,$ids ) {
+
 		global $db;
-		$id = $ids["sta_id"];
+		$id = "";
+		$sam_id = $ids["sta_id"];
 		$cc = ', a.cc_id, a.cc_id2, a.cc_id3 ';
 		$result = array();
 		$res = array();
@@ -448,23 +452,28 @@ class SeismicRepository {
 		$data = array();
 		$filter = "";
 		$unit ="";
-		$query="";
+		$query = "select a.sd_sam_id from sd_rsm as a";
+		$db->query($query);
+		$rsm_ids = $db->getList();
+		foreach ($rsm_ids as $rsm_id) {
+			$id = $rsm_id["sd_sam_id"];
+		}
 		if($component == 'RSAM Count'){
 			$unit = "counts";
 			$attribute = "sd_rsm_count";
-			$query = "select a.sd_rsm_stime as stime, a.$attribute as value from $table  as a where a.sd_rsm_id=$id and a.$attribute IS NOT NULL";
+			$query = "select a.sd_rsm_stime as stime, a.$attribute as value from $table  as a where a.sd_sam_id=$id and a.$attribute IS NOT NULL";
 		}
 			// echo($query);
-		$db->query($query);
+		$db->query($query,$id);
 
 		$res = $db->getList();
 		
 		foreach ($res as $row) {
 			
 			$stime = strtotime($row["stime"]);
-			$etime = date_timestamp_get();
+			// $etime = date_timestamp_get();
 			$temp = array( 	"stime" => floatval(1000 * $stime) ,
-							"etime" => floatval(1000 * $etime) ,
+							// "etime" => floatval(1000 * $etime) ,
 							"value" => floatval($row["value"]),
 							"filter" => " ",
 						);

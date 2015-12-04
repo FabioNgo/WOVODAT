@@ -51,19 +51,17 @@ define(function(require) {
               autoscaleMargin: 10,
             },
             yaxis: {
-              show: true,
-              position: "left",
-              number: true,
-              color: '#000000',
-              tickFormatter: function(val, axis) { 
-                // console.log(val);
-                if(val > 9999 || val <-9999){
-                  val = val.toPrecision(1);
-                }else{
+              // show: true,
+              color: '#00000000',
+              // tickFormatter: function(val, axis) { 
+              //   // console.log(val);
+              //   if(val > 9999 || val <-9999){
+              //     val = val.toPrecision(1);
+              //   }else{
                   
-                }
-                return val;
-              },
+              //   }
+              //   return val;
+              // },
               min: this.minY,
               max: this.maxY,
               axisLabelUseCanvas: true,

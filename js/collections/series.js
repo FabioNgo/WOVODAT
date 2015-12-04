@@ -23,40 +23,41 @@ define(function(require) {
     updateData: function(){
         //success: function(collection,response){
           for(var i=0;i<this.models.length;i++){
-            
-            this.models[i].fetch({
-                success: function(model, response) {
-              // console.log(e);
-                var filters = [];
-                
-                var data = model.get('data').data;
-                // console.log(data);
-                if(data == undefined){
-                  return;
-                }
-                for (var i = 0; i < data.length; i++) {
-                  var index = -1;
-                  /** find index of filter in filters**/
-                  for(var j = 0;j<filters.length;j++){
-                    // console.log({0:filters[j].name,1: data[i].filter});
-                    if(filters[j].name == data[i].filter){
-                      index = j;
-                      break;
+            if(!this.models[i].loaded){
+              this.models[i].fetch({
+                  success: function(model, response) {
+                // console.log(e);
+                  var filters = [];
+                  
+                  var data = model.get('data').data;
+                  // console.log(data);
+                  if(data == undefined){
+                    return;
+                  }
+                  for (var i = 0; i < data.length; i++) {
+                    var index = -1;
+                    /** find index of filter in filters**/
+                    for(var j = 0;j<filters.length;j++){
+                      // console.log({0:filters[j].name,1: data[i].filter});
+                      if(filters[j].name == data[i].filter){
+                        index = j;
+                        break;
+                      }
                     }
-                  }
-                  // var index = this.indexOfFilter(filters,data[i].filter);
-                  /** push data **/
-                  if(index == -1){
-                    filters.push({name: data[i].filter, dataIndex: []});
-                    index = filters.length-1;
-                  }
-                  filters[index].dataIndex.push(i);
-                };
-                model.filters = filters;
-                // console.log(model);
-                model.loaded = true;
-              }
-            })
+                    // var index = this.indexOfFilter(filters,data[i].filter);
+                    /** push data **/
+                    if(index == -1){
+                      filters.push({name: data[i].filter, dataIndex: []});
+                      index = filters.length-1;
+                    }
+                    filters[index].dataIndex.push(i);
+                  };
+                  model.filters = filters;
+                  // console.log(model);
+                  model.loaded = true;
+                }
+              })
+            }
         }
 
 

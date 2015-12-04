@@ -4,6 +4,7 @@ define(function(require) {
   return {
     generateTick: function(min,max){
       var ticks = [];
+      var numStep = 7;
       /** compute exponential Degree **/
       var expDeg = undefined
       if(MathHelper.exponentialDegree(min) < MathHelper.exponentialDegree(max)){
@@ -11,11 +12,11 @@ define(function(require) {
       }else{
         expDeg = MathHelper.exponentialDegree(min)
       }
-      var step = MathHelper.roundNumber((max-min)/10,expDeg); // step of ticks
+      var step = MathHelper.roundNumber((max-min)/numStep,expDeg); // step of ticks
       //if step is 0.xxx in computing exponential Degree, decrement expDeg
       while(step == 0){
         expDeg--;
-        step = MathHelper.roundNumber((max-min)/10,expDeg);
+        step = MathHelper.roundNumber((max-min)/numStep,expDeg);
       }
       min = MathHelper.roundNumber(min,expDeg);
       max = MathHelper.roundNumber(max,expDeg);
@@ -86,6 +87,10 @@ define(function(require) {
       }
       else if(style == 'circle'){
         dataParam.points = {show: true, fill: false};
+        console.log(dataParam);
+      }
+      else if(style == 'horizontalbar'){
+        dataParam.points = {show: true, fill: false,symbol:"square",fillColor: "#000000"};
         console.log(dataParam);
       }
            // parameter to enable error-bar presentation.

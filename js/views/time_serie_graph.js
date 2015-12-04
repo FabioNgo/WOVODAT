@@ -177,8 +177,8 @@ define(function(require) {
           var minTime;
           d.time_formated = DateHelper.formatDate(d.time);
           var error = parseFloat(d.error);
-          if(error == undefined){
-            error == 0;
+          if(d.error === undefined){
+            error = 0;
           }
           if(style == 'bar'){
               maxTime = d['etime'];
