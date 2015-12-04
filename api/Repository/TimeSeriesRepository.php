@@ -28,15 +28,16 @@ class TimeSeriesRepository {
 		$result = array();
 		
 		// $DATA_LIST = array( "Seismic", "Deformation", "Gas",  "Meteo" , "Hydrology");
-    $DATA_LIST = array("Gas","Deformation");
+    $DATA_LIST = array("Seismic","Gas","Deformation");
 		foreach ($DATA_LIST as $value) {
 			$series = call_user_func_array($value."Repository::getTimeSeriesList", array($vd_id));
-			self::saveSerie($series);
+			
 			foreach ($series as $serie) {
 				
 				array_push($result, $serie);
 			}
 		}
+    self::saveSerie($result);
 		return $result;
 	}	
 
@@ -44,6 +45,7 @@ class TimeSeriesRepository {
   public static function getTimeSerie($sr_id) {
 
     $serie = self::getSerieInfo($sr_id);
+    // var_dump($serie);
     if (!$serie)
       return null;
     // var_dump($serie);
