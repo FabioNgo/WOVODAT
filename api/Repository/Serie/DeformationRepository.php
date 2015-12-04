@@ -369,7 +369,11 @@ class DeformationRepository {
 						);
 			
 			if($errorbar){
-				$temp["error"] = $row["err"];
+				if($row["err"]!=null){
+					$temp["error"] = $row["err"];
+				}else{
+					$temp["error"] = 0;
+				}
 			}
 			array_push($data, $temp );			
 		}
@@ -416,7 +420,11 @@ class DeformationRepository {
 						);
 			
 			if($errorbar){
-				$temp["error"] = $row["err"];
+				if($row["err"]!=null){
+					$temp["error"] = $row["err"];
+				}else{
+					$temp["error"] = 0;
+				}
 			}
 			array_push($data, $temp );			
 		}
@@ -568,7 +576,11 @@ class DeformationRepository {
 							"filter"=> " ",
 						);
 			if($errorbar){
-				$temp["error"] = $row["err"];
+				if($row["err"]!=null){
+					$temp["error"] = $row["err"];
+				}else{
+					$temp["error"] = 0;
+				}
 			}
 			array_push($data, $temp );
 		}
@@ -634,7 +646,11 @@ class DeformationRepository {
 						);
 			
 			if($errorbar){
-				$temp["error"] = $row["err"];
+				if($row["err"]!=null){
+					$temp["error"] = $row["err"];
+				}else{
+					$temp["error"] = 0;
+				}
 			}
 			array_push($data, $temp );			
 		}

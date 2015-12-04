@@ -214,8 +214,12 @@ class GasRepository {
 					$unit = "";
 				}
 			}
-			if(array_key_exists("err", $row)){
-				$temp["error"] = $row["err"];
+			if($errorbar){
+				if($row["err"]!=null){
+					$temp["error"] = $row["err"];
+				}else{
+					$temp["error"] = 0;
+				}
 			}
 			array_push($data, $temp );			
 		}
@@ -227,7 +231,7 @@ class GasRepository {
 	}
 
 	public static function getStationData_gd_plu($table, $component,$ids ) {
-		
+		// echo("As");
 		global $db;
 		$id1 = $ids["sta_id1"];
 		$id2 = $ids["sta_id2"];
@@ -261,7 +265,7 @@ class GasRepository {
 			$query = "select a.gd_plu_units as unit, a.gd_plu_species as filter, a.gd_plu_etot_err as err, a.gd_plu_time as time, a.$attribute as value from $table as a where (a.gs_id=$id1 or a.cs_id=$id2) and a.$attribute IS NOT NULL";
 			
 		}
-		echo($query);
+		// echo($query);
 		$db->query($query);
 
 		$res = $db->getList();
@@ -281,7 +285,11 @@ class GasRepository {
 				$unit = $row["unit"];
 			}
 			if($errorbar){
-				$temp["error"] = $row["err"];
+				if($row["err"]!=null){
+					$temp["error"] = $row["err"];
+				}else{
+					$temp["error"] = 0;
+				}
 			}
 			array_push($data, $temp );			
 		}
@@ -341,7 +349,11 @@ class GasRepository {
 				$unit = $row["unit"];
 			}
 			if($errorbar){
-				$temp["error"] = $row["err"];
+				if($row["err"]!=null){
+					$temp["error"] = $row["err"];
+				}else{
+					$temp["error"] = 0;
+				}
 			}
 			array_push($data, $temp );			
 		}
