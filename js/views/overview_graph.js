@@ -51,8 +51,10 @@ define(function(require) {
               autoscaleMargin: 10,
             },
             yaxis: {
-              // show: true,
-              color: '#00000000',
+              show: true,
+              position: "left",
+              number: true,
+              color: '#000000',
               tickFormatter: function(val, axis) { 
                 // console.log(val);
                 if(val > 9999 || val <-9999){
@@ -63,6 +65,9 @@ define(function(require) {
                 return val;
               },
               min: this.minY,
+              max: this.maxY,
+              axisLabelUseCanvas: true,
+              autoscaleMargin: 5,
               ticks: this.ticks,
               labelWidth: 30
             },
