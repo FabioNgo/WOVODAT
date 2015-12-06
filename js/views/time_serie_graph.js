@@ -3,7 +3,7 @@ define(function(require) {
   var $ = require('jquery'),
       Backbone = require('backbone'),
       _ = require('underscore'),
-      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection', 'jquery.flot.errorbars']),
+      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection', 'jquery.flot.errorbars', 'jquery.flot.axislabels']),
       serieTooltipTemplate = require('text!templates/tooltip_serie.html'),
       Tooltip = require('views/series_tooltip'),
       TimeRange = require('models/time_range'),
@@ -74,12 +74,13 @@ define(function(require) {
               ticks: this.ticks,
               labelWidth: 30,
               zoomRange: false,
+              //axisLabel: this.dataUnit,
+              //axisLabelUseCanvas: true
             },
             grid: {
               hoverable: true,
             },
             zoom: {
-              
               interactive: true,
               
             },
@@ -170,6 +171,8 @@ define(function(require) {
         var list = [];
         var filterData = this.filters.timeSerie.getDataFromFilter(this.filters.name[j])
         var style = this.filters.timeSerie.get('data').style; //get the plot presentation style (ie. bar, dot, circle)
+        var dataUnit = this.filters.timeSerie.get('data').unit; // get the data unit for y-axis label
+        this.dataUnit = dataUnit;
         filterData.forEach(function(d) {
           //var time = d.time;
           var value = d['value'];

@@ -65,7 +65,7 @@ define(function(require) {
               min: this.minY,
               max: this.maxY,
               //axisLabelUseCanvas: true,
-              //autoscaleMargin: 5,
+              autoscaleMargin: 5,
               ticks: this.ticks,
               labelWidth: 30
             },

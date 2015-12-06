@@ -15,6 +15,7 @@ require.config({
     'excanvas' : 'vendor/jquery-flot/excanvas',
     'jquery.flot.tickrotor': 'vendor/jquery-flot/jquery.flot.tickrotor',
     'jquery.flot.errorbars': 'vendor/jquery-flot/jquery.flot.errorbars',
+    'jquery.flot.axislabels': 'vendor/jquery-flot/jquery.flot.axislabels',
   },
   config: {
       moment: {
