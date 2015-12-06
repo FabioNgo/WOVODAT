@@ -51,7 +51,7 @@ define(function(require) {
               autoscaleMargin: 10,
             },
             yaxis: {
-              // show: true,
+              show: true,
               color: '#00000000',
               // tickFormatter: function(val, axis) { 
               //   // console.log(val);
@@ -64,8 +64,8 @@ define(function(require) {
               // },
               min: this.minY,
               max: this.maxY,
-              axisLabelUseCanvas: true,
-              autoscaleMargin: 5,
+              //axisLabelUseCanvas: true,
+              //autoscaleMargin: 5,
               ticks: this.ticks,
               labelWidth: 30
             },
@@ -88,7 +88,6 @@ define(function(require) {
       this.$el.width('auto');
       this.$el.height(200);
       this.$el.addClass("overview-graph");
-
 
 
       console.log(this.data);
@@ -126,6 +125,8 @@ define(function(require) {
           filterData.forEach(function(d) {
             var maxTime;
             var minTime;
+            var upperBound = undefined;
+            var lowerBound = undefined;
             var error;
             if(errorbar){
               error = parseInt(d['error']);
@@ -136,6 +137,17 @@ define(function(require) {
             if(style == 'bar'){
               maxTime = d['etime'];
               minTime = d['stime'];
+            }
+            else if(style == 'horizontalbar'){
+              if(d.stime == undefined || d.etime == undefined){
+                maxTime = minTime = d['time'];
+              }
+              else{
+                maxTime = d['etime'];
+                minTime = d['stime'];
+                upperBound = d['value'] + 0.5; // giving upper bound a buffer of +0.5 unit to present the horizontal bar
+                lowerBound = d['value'] - 0.5; // giving lower bound a buffer of -0.5 unit to present the horizontal bar
+              };
             }
             else if(style == 'dot' || style == 'circle'){
               maxTime = minTime = d['time'];
@@ -158,6 +170,15 @@ define(function(require) {
             if(style == 'bar'){
               tempData.push(d['stime'],d['etime'],d['value']);
             }
+            else if(style == 'horizontalbar'){
+              if(lowerBound == undefined || upperBound == undefined){
+                tempData.push(d['time'],d['value']);
+              }
+              else{
+                tempData.push(minTime,maxTime,lowerBound,upperBound);
+                //tempData.push(minTime,maxTime,-5,7);
+              };
+            }
             else if(style == 'dot' || style == 'circle'){
               tempData.push(d['time'],d['value']);
             };
@@ -167,7 +188,7 @@ define(function(require) {
             }
             list.push(tempData);
           });
-          
+          console.log(list);
           data.push(GraphHelper.formatGraphAppearance(list,filters[i].timeSerie.getName(),filters[i].name[j],style,errorbar));
           
           
@@ -182,11 +203,11 @@ define(function(require) {
       
       /** setup y-axis tick **/
       if(maxY != undefined && minY != undefined){
-        maxY = maxY*1.1;
+        maxY = maxY*1.1;//1.1
         minY = minY*0.9;
         if(minY == maxY){
           minY = minY*0.5;
-          maxY = maxY*1.5;
+          maxY = maxY*1.5; 
         }
         this.ticks = GraphHelper.generateTick(minY,maxY);
         this.minY = this.ticks[0];

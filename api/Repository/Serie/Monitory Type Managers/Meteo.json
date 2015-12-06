@@ -1,0 +1,49 @@
+{
+	"med" : {
+		"time" : "med_time",
+		"data_type" : "Meteo",
+		"params" : [ 
+			{
+				"name" : "Temp",
+				"cols" : "med_temp"	
+			},
+			{
+				"name" : "Stemp",
+				"cols" : "med_stemp"	
+			},
+			{
+				"name" : "Bp",
+				"cols" : "med_bp"
+			},
+			{
+				"name" : "Prec",
+				"cols" : "med_prec",
+				"filter" : "med_tprec"
+			},
+			{
+				"name" : "Hd",
+				"cols" : "med_hd"
+			},
+			{
+				"name" : "Wind",
+				"cols" : "med_wind"
+			},
+			{
+				"name" : "Wsmin",
+				"cols" : "med_wsmin"
+			},
+			{
+				"name" : "Wsmax",
+				"cols" : "med_wsmax"
+			},
+			{
+				"name" : "Wdir",
+				"cols" : "med_wdir"
+			},
+			{
+				"name" : "Clc",
+				"cols" : "med_clc"
+			}
+		]
+ 	}
+}

@@ -3,7 +3,7 @@
  *	This class supports query the data series (deformation, gas, seismic..) for a volcano
  * 	
  */
-DEFINE('HOST', 'localhost');
+// DEFINE('HOST', 'localhost');
 
 class TimeSeriesRepository {
 
