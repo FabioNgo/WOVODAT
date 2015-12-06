@@ -50,7 +50,7 @@ define(function(require) {
         },
         shadowSize: 3,
         points: {
-          show: true,
+          show: false,
           radius: 3,
           lineWidth: 2, // in pixels
           fill: false,
@@ -90,7 +90,8 @@ define(function(require) {
         console.log(dataParam);
       }
       else if(style == 'horizontalbar'){
-        dataParam.points = {show: true, fill: false,symbol:"square",fillColor: "#000000"};
+        dataParam.bars = {show: true};
+        // Have not accounted for the case horizontal bar with no start time and end time
         console.log(dataParam);
       }
            // parameter to enable error-bar presentation.

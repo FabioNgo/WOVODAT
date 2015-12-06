@@ -175,6 +175,8 @@ define(function(require) {
           var value = d['value'];
           var maxTime;
           var minTime;
+          var upperBound = undefined;
+          var lowerBound = undefined;
           d.time_formated = DateHelper.formatDate(d.time);
           var error = parseFloat(d.error);
           if(d.error === undefined){
@@ -183,7 +185,18 @@ define(function(require) {
           if(style == 'bar'){
               maxTime = d['etime'];
               minTime = d['stime'];
-            }
+          }
+          else if(style == 'horizontalbar'){
+            if(d.stime == undefined || d.etime == undefined){
+                maxTime = minTime = d['time'];
+              }
+              else{
+                maxTime = d['etime'];
+                minTime = d['stime'];
+                upperBound = value+0.5; // giving upper bound a buffer of +0.5 unit to present the horizontal bar
+                lowerBound = value-0.5;  // giving lower bound a buffer of -0.5 unit to present the horizontal bar
+              };
+          }
           else if(style == 'dot' || style == 'circle'){
               maxTime = minTime = d['time'];
           };
@@ -216,6 +229,14 @@ define(function(require) {
               }else{
                 list.push([d['stime'],d['etime'],d['value']]);  
               }
+          }
+          else if(style == 'horizontalbar'){
+            if(d['error']!=undefined){
+                list.push([minTime,maxTime,lowerBound,upperBound,d['error']]); 
+                errorbars = "y";
+              }else{
+                list.push(minTime,maxTime,lowerBound,upperBound);
+              };
           };
         });
         // this.data contains the setting of options of the graph (ie. point,line,bar).
@@ -223,7 +244,7 @@ define(function(require) {
         // cannot fully config the appearance of the graph.
         data.push(GraphHelper.formatGraphAppearance(list,this.filters.timeSerie.getName(),this.filters.name[j],style,errorbars));
       }
-      this.minX = minX-86400000;
+      this.minX = minX-86400000; 
       this.maxX = maxX+86400000;
        if(minY!= undefined){
         this.minY = minY.toFixed();
