@@ -15,60 +15,46 @@ class HydrologyRepository {
 	private static function getTimeSeriesList_hd( $vd_id, $stations ) {
 		$result = array();
 		global $db;
-				
-		$query="
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Water Temperature') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_temp IS NOT NULL 	
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Water Elevation') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_welev IS NOT NULL 	
-			union
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Water Depth') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_wdepth IS NOT NULL 	
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Water Level Changes') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_dwelev IS NOT NULL 	
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Barometric Pressure') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_bp IS NOT NULL 	
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Spring Discharge Rate') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_sdisc IS NOT NULL 	
-			union 
-			select select distinct a.sta_id,a.sta_code as ds_code,concat('Precipitation') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_prec IS NOT NULL 	
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Water PH') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_ph IS NOT NULL 	
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Conductivity') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_cond IS NOT NULL 	
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Content of Compound') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_comp_content IS NOT NULL 	
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('Air Temperature') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_atemp IS NOT NULL 	
-			union 
-			select distinct a.sta_id,a.sta_code as ds_code,concat('TDS') as type from jjcn_sta as a, hd as b where a.type='Hydrology' and a.vd_id=$vd_id and a.sta_id=b.hs_id and b.hd_tds IS NOT NULL 	
-			";
-
+		$cols_name = array("hd_temp","hd_wdepth","hd_bp","hd_sdisc","hd_prec","hd_ph","hd_cond","hd_comp_content","hd_atemp","hd_tds");
+		$table_name = "es_hd";
+		$query = "select a.hs_id,a.sta_code";
+		for($i =0;$i<sizeof($cols_name);$i++){
+			$query = $query.",a.".$cols_name[$i];
+		}
+		$query = $query." from $table_name as a where a.vd_id=$vd_id";
 		$db->query( $query);
 		
 		$serie_list = $db->getList();
 
-		for ($i=0; $i<sizeof($serie_list) ; $i++) { 
+		for ($i=0; $i<sizeof($serie_list)  ; $i++) { 
 			$serie = $serie_list[$i];
-				$x = array('category' => "Hydrology" ,
-					   'data_type' => "Hydrology",
-					   'station_code' => $serie["ss_code"],
-					   'component' => $serie["type"],
-					   'sta_id' => $serie["sta_id"],
-					   
-
-					   );
-			$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
- 			array_push($result,  $x );
+			for($j =0;$j<sizeof($cols_name);$j++){
+				if($serie[$cols_name[$j]]!=""){
+					$x = array('category' => "Hydrology" ,
+							   'data_type' => "Hydrology",
+							   'station_code' => $serie["sta_code"],
+							   'component' => $serie[$cols_name[$j]],
+							   'sta_id' => $serie["hs_id"],
+							   );
+					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
+ 					array_push($result,  $x );
+				}
+			}
+				
+			
 		}	
+				
 		return $result;
 	}
 
-	public static function getStationData( $table, $code, $component ) {
-		foreach (self::$infor as $key => $type) if ( $type["data_type"] == $table ) 
-			return call_user_func_array("self::getStationData_".$key, array($key, $code, $component) );
-	} 
+	public static function getStationData( $table, $component, $ids ) {
+		foreach (self::$infor as $key => $type) if ( $type["data_type"] == $table )
+			return call_user_func_array("self::getStationData_".$key, array( $key, $component,$ids) );
+	}
 
-	public static function getStationData_hd( $table, $code, $component ) {
+	public static function getStationData_hd( $table, $component,$ids ) {
 		global $db;
+		$id = $ids["sta_id"];
 		$cc = ', a.cc_id, a.cc_id2, a.cc_id3 ';
 		$result = array();
 		$res = array();
@@ -78,30 +64,40 @@ class HydrologyRepository {
 		$data = array();
 		$filter = "";
 		$query = "";
+		// echo("a");
+		$unit = "";
 		if($component == 'Water Temperature'){
 			$attribute = "hd_temp";
+			$unit ="oC";
 			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Water Elevation'){
 			$attribute = "hd_welev";
+			$unit ="m";
 			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Water Depth'){
 			$attribute = "hd_wdepth";
+			$unit ="m";
 			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Water Level Changes'){
 			$attribute = "hd_dwelev";
+			$unit ="m";
 			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Barometric Pressure'){
 			$attribute = "hd_bp";
+			$unit ="mbar";
 			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Spring Discharge Rate'){
 			$attribute = "hd_sdisc";
+			$unit ="L/s";
 			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Precipitation'){
 			$attribute = "hd_prec";
+			$unit ="mm";
 			$query = "select a.hd_tprec  as filter, a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
-		}else if($component == 'Water PH'){
+		}else if($component == 'Water ph'){
 			$style = "horizontalbar";
 			$errorbar = true;
+
 			$attribute = "hd_ph";
 			$query = "select a.hd_ph_err as err,a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'Conductivity'){
@@ -112,13 +108,17 @@ class HydrologyRepository {
 		}else if($component == 'Content of Compound'){
 			$style = "horizontalbar";
 			$errorbar = true;
+
 			$attribute = "hd_comp_content";
-			$query = "select a.hd_comp_species  as filter,a.hd_comp_content_err as err,a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
+			$query = "select a.hd_comp_species  as filter,a.hd_comp_units as unit,a.hd_comp_content_err as err,a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
+
 		}else if($component == 'Air Temperature'){
 			$attribute = "hd_atemp";
+			$unit ="oC";
 			$query = "select  a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}else if($component == 'TDS'){
 			$attribute = "hd_tds";
+			$unit ="mg/L";
 			$query = "select a.hd_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
 		}
 		$db->query($query, $id);
@@ -136,13 +136,25 @@ class HydrologyRepository {
 				$temp["filter"] = " ";
 			}
 			if($errorbar){
-				$temp["error"] = $row["err"];
+				if($row["err"] == null){
+					$temp["error"] = 0;
+				}else{
+					$temp["error"] = $row["err"];
+				}
+				
+			}
+			if(array_key_exists("unit", $row)){
+				$unit = $row["unit"];
+				if($unit==null){
+					$unit = "";
+				}
 			}
 			array_push($data, $temp );			
 		}
 		$result["style"] = $style;
 		$result["errorbar"] = $errorbar;
 		$result["data"] = $data;
+		$result["unit"] = $unit;
 		return $result;
 	}
 }

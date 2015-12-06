@@ -153,6 +153,7 @@ class GasRepository {
 	
 	public static function getStationData( $table, $component, $ids ) {
 		// echo($table);
+		// var_dump(self::$infor);
 		foreach (self::$infor as $key => $type) if ( $type["data_type"] == $table )
 			return call_user_func_array("self::getStationData_".$key, array( $key, $component,$ids) );
 	} 

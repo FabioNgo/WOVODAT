@@ -1,7 +1,7 @@
 {
 	"hd" : {
 		"time" : "hd_time",
-		"data_type" : "Hydrologic",
+		"data_type" : "Hydrology",
 		"params" : [ 
 			{
 				"name" : "Temp",

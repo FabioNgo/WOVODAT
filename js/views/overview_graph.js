@@ -184,8 +184,13 @@ define(function(require) {
       if(maxY != undefined && minY != undefined){
         maxY = maxY*1.1;
         minY = minY*0.9;
+        if(minY == maxY){
+          minY = minY*0.5;
+          maxY = maxY*1.5;
+        }
         this.ticks = GraphHelper.generateTick(minY,maxY);
         this.minY = this.ticks[0];
+        this.maxY = this.ticks[this.ticks.length-1];
       }
       this.timeRange.set({
         'startTime': this.minX,

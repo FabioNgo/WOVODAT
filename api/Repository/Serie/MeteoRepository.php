@@ -4,80 +4,143 @@ class MeteoRepository {
 
 	public static function getTimeSeriesList( $vd_id ) {
 		$result = array();
-
 		global $db;
-
-		//$query = "(select  c.ms_code FROM cn a, ms c where a.vd_id = %d and a.cn_id = c.cn_id)";
-
-		$query = "(select c.ms_code FROM cn a, ms c where a.vd_id = %d and a.cn_id = c.cn_id) UNION (select c.ms_code FROM jj_volnet a, ms c,vd_inf d WHERE a.vd_id = %d and a.vd_id=d.vd_id   and a.jj_net_flag = 'C' and a.jj_net_id = c.cn_id and (sqrt(power(d.vd_inf_slat - c.ms_lat, 2) + power(d.vd_inf_slon - c.ms_lon, 2))*100)<30 ORDER BY c.ms_code)";
-		$db->query( $query, $vd_id, $vd_id );
+		$query = "select vd_id,sta_code as ds_code from jjcn_sta as a where a.vd_id = $vd_id AND a.type='Meteo' ";
+		$db->query( $query);
 		$stations = $db->getList();
-
-		foreach (self::$infor as $key => $value) {
-			$temp = call_user_func_array("self::getTimeSeriesList_".$key, array($vd_id, $stations));
-			$result = array_merge($result, $temp );
-		}
+		$result = self::getTimeSeriesList_med($vd_id,$stations);
 		return $result;
 	}
 
 	public static function getTimeSeriesList_med( $vd_id, $stations ) {
 		$result = array();
 		global $db;
+		$cols_name = array("med_temp","med_stemp","med_bp","med_hd","med_prec","med_wind","med_wsmin","med_wsmax","med_wdir","med_clc");
+		$table_name = "es_med";
+		$query = "select a.ms_id,a.sta_code";
+		for($i =0;$i<sizeof($cols_name);$i++){
+			$query = $query.",a.".$cols_name[$i];
+		}
+		$query = $query." from $table_name as a where a.vd_id=$vd_id";
+		$db->query( $query);
+		
+		$serie_list = $db->getList();
 
-		foreach ($stations as $station) {
-			$code = $station["ms_code"];
-			foreach (self::$infor["med"]["params"] as $type) {
-				$cols = $type["cols"];
-				$query = "select med_id from ms, med where ms_code = %s and ms.ms_id = med.ms_id and med.$cols is not null  limit 0 , 1";
-				$db->query( $query, $code );
-
-				if ( !$db->noRow() ) {
-					$x = array('category' => "Meteo" ,
-							   'data_type' => self::$infor["med"]["data_type"],
-							   'station_code' => $code,
-							   'component' => $type["name"] );
+		for ($i=0; $i<sizeof($serie_list)  ; $i++) { 
+			$serie = $serie_list[$i];
+			for($j =0;$j<sizeof($cols_name);$j++){
+				if($serie[$cols_name[$j]]!=""){
+					$x = array('category' => "Meteology" ,
+							   'data_type' => "Meteology",
+							   'station_code' => $serie["sta_code"],
+							   'component' => $serie[$cols_name[$j]],
+							   'sta_id' => $serie["ms_id"],
+							   );
 					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
-		 			array_push($result,  $x );
+ 					array_push($result,  $x );
 				}
 			}
-		}
-
+				
+			
+		}	
+				
 		return $result;
 	}
 
-	public static function getStationData( $table, $code, $component ) {
-		foreach (self::$infor as $key => $type) if ( $type["data_type"] == $table ) 
-			return call_user_func_array("self::getStationData_".$key, array( $code, $component) );
+	public static function getStationData( $table, $component, $ids ) {
+		foreach (self::$infor as $key => $type) if ( $type["data_type"] == $table )
+			return call_user_func_array("self::getStationData_".$key, array( $key, $component,$ids) );
 	} 
 
-	public static function getStationData_med( $code, $component ) {
+	public static function getStationData_med( $code, $component,$ids ) {
 		global $db;
-		$cc = ', b.cc_id, b.cc_id2, b.cc_id3 ';
+		$id = $ids["sta_id"];
+		$cc = ', a.cc_id, a.cc_id2, a.cc_id3 ';
 		$result = array();
 		$res = array();
 		$attribute = "";
-		$filterQuery = "";
+		$style = "dot";
+		$errorbar = false;
+		$data = array();
 		$filter = "";
-		foreach (self::$infor["med"]["params"] as $type) if ( $type["name"] == $component ) {
-			$attribute = $type["cols"];
-			if ( array_key_exists("filter", $type) ) {
-				$filter = $type["filter"];
-				$filterQuery = ", b.".$filter;
-			}
-
-			$query = "select b.med_time, b.$attribute $filterQuery $cc from ms a, med b where a.ms_code = %s and a.ms_id = b.ms_id and b.$attribute is not null and a.ms_pubdate <= now() and b.med_pubdate <= now() order by b.med_time desc";
+		$query = "";
+		// echo("a");
+		$unit = "";
+		if($component == 'Air Temperature'){
+			$attribute = "med_temp";
+			$unit ="oC";
+			$query = "select a.med_time as time, a.$attribute as value $cc from $table as a where a.ms_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Soil Temperature'){
+			$attribute = "med_stemp";
+			$unit ="oC";
+			$query = "select a.med_time as time, a.$attribute as value $cc from $table as a where a.ms_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Barometric Pressure'){
+			$attribute = "med_bp";
+			$unit ="Mbar";
+			$query = "select a.med_time as time, a.$attribute as value $cc from $table as a where a.ms_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Precipitation'){
+			$attribute = "med_prec";
+			$unit ="mm";
+			$query = "select a.med_tprec  as filter, a.med_time as time, a.$attribute as value $cc from $table as a where a.ms_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Humidity'){
 			
-			$db->query($query, $code);
-			$res = $db->getList();
-		}
+			$unit = "%";
+			$attribute = "med_hd";
+			$query = "select a.med_ph_err as err,a.med_time as time, a.$attribute as value $cc from $table as a where a.hs_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Wind Speed'){
+			$unit ="m/s";
+			
+			$attribute = "med_wind";
+			$query = "select a.med_time as time, a.$attribute as value $cc from $table as a where a.ms_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Min Wind Speed'){
+			
+			$unit ="m/s";
+			$attribute = "med_wsmin";
+			$query = "select a.med_time as time, a.$attribute as value $cc from $table as a where a.ms_id=$id and a.$attribute IS NOT NULL";
 
-		foreach ($res as $row) {
-			$temp = array( "time" => 1000*strtotime($row["med_time"]) , 
-										 "value" => floatval($row[$attribute]) );
-			if ($filter != "") 
-				$temp["filter"] = $row[$filter];
-			array_push($result, $temp );			
+		}else if($component == 'Max Wind Speed'){
+			
+			$unit ="m/s";
+			$attribute = "med_wsmax";
+			$query = "select a.med_time as time, a.$attribute as value $cc from $table as a where a.ms_id=$id and a.$attribute IS NOT NULL";
+
+		}else if($component == 'Wind Direction'){
+			$attribute = "med_wdir";
+			$unit ="o";
+			$query = "select  a.med_time as time, a.$attribute as value $cc from $table as a where a.ms_id=$id and a.$attribute IS NOT NULL";
+		}else if($component == 'Cloud Coverage'){
+			$attribute = "med_clc";
+			$unit ="%";
+			$query = "select a.med_time as time, a.$attribute as value $cc from $table as a where a.ms_id=$id and a.$attribute IS NOT NULL";
 		}
+		$db->query($query, $id);
+
+		$res = $db->getList();
+		foreach ($res as $row) {
+			
+			$time = strtotime($row["time"]);
+			$temp = array( "time" => floatval(1000 * $time) ,
+							"value" => floatval($row["value"])
+						);
+			if(array_key_exists("filter", $row)){
+				$temp["filter"] = $row["filter"];
+			}else{
+				$temp["filter"] = " ";
+			}
+			if($errorbar){
+				if($row["err"] == null){
+					$temp["error"] = 0;
+				}else{
+					$temp["error"] = $row["err"];
+				}
+				
+			}
+			array_push($data, $temp );			
+		}
+		$result["style"] = $style;
+		$result["errorbar"] = $errorbar;
+		$result["data"] = $data;
+		$result["unit"] = $unit;
 		return $result;
 	}
 

@@ -27,8 +27,8 @@ class TimeSeriesRepository {
 	public static function getTimeSeriesList($vd_id) {
 		$result = array();
 		
-		// $DATA_LIST = array( "Seismic", "Deformation", "Gas",  "Meteo" , "Hydrology");
-    $DATA_LIST = array("Seismic","Gas","Deformation");
+		$DATA_LIST = array( "Seismic", "Deformation", "Gas",  "Meteo" , "Hydrology","Thermal","Gas");
+    
 		foreach ($DATA_LIST as $value) {
 			$series = call_user_func_array($value."Repository::getTimeSeriesList", array($vd_id));
 			
