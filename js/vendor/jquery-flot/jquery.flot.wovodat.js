@@ -1097,31 +1097,43 @@ var jQuery = $;//Assign local jQuery variable with imported $
                 s = series[i];
 
                 data = s.data;
+
                 format = s.datapoints.format;
-
                 if (!format) {
-                    format = [];
-                    // find out how to copy
-                    format.push({ x: true, number: true, required: true });
-                    format.push({ y: true, number: true, required: true });
+	                if(s.bars.fullparams && s.bars.show){
+	                	format = [];
+	                    // find out how to copy
+	                    format.push({ x1: true, number: true, required: true });
+	                    format.push({ x2: true, number: true, required: true });
+	                    format.push({ y1: true, number: true, required: true });
+						format.push({ y2: true, number: true, required: true });
 
-                    if (s.bars.show || (s.lines.show && s.lines.fill)) {
-                        var autoscale = !!((s.bars.show && s.bars.zero) || (s.lines.show && s.lines.zero));
-                        format.push({ y: true, number: true, required: false, defaultValue: 0, autoscale: autoscale });
-                        if (s.bars.horizontal) {
-                            delete format[format.length - 1].y;
-                            format[format.length - 1].x = true;
-                        }
-                    }
+	                    s.datapoints.format = format;
+	                }else{
+	                
+	                    format = [];
+	                    // find out how to copy
+	                    format.push({ x: true, number: true, required: true });
+	                    format.push({ y: true, number: true, required: true });
 
-                    if (s.bars.show && s.bars.wovodat) {
-                    	// barWidth
-                    	format.push({ width: true, number: true, required: false, defaultValue: s.bars.barWidth });
-                    }
+	                    if (s.bars.show || (s.lines.show && s.lines.fill)) {
+	                        var autoscale = !!((s.bars.show && s.bars.zero) || (s.lines.show && s.lines.zero));
+	                        format.push({ y: true, number: true, required: false, defaultValue: 0, autoscale: autoscale });
+	                        if (s.bars.horizontal) {
+	                            delete format[format.length - 1].y;
+	                            format[format.length - 1].x = true;
+	                        }
+	                    }
 
-                    s.datapoints.format = format;
-                }
+	                    if (s.bars.show && s.bars.wovodat) {
+	                    	// barWidth
+	                    	format.push({ width: true, number: true, required: false, defaultValue: s.bars.barWidth });
+	                    }
 
+	                    s.datapoints.format = format;
+	                
+            		}
+				}
                 if (s.datapoints.pointsize != null)
                     continue; // already filled in
 
@@ -2553,8 +2565,7 @@ var jQuery = $;//Assign local jQuery variable with imported $
                        series.xaxis, series.yaxis, symbol);
             ctx.restore();
         }
-
-        function drawBar(x, y, b, barLeft, barRight, fillStyleCallback, axisx, axisy, c, horizontal, lineWidth, options) {
+        function drawBar4params(x1,x2,y1,y2,fillStyleCallback, axisx, axisy, c, lineWidth, options){
         	var left, right, bottom, top,
                 drawLeft, drawRight, drawTop, drawBottom,
                 tmp;
@@ -2562,44 +2573,15 @@ var jQuery = $;//Assign local jQuery variable with imported $
             // in horizontal mode, we start the bar from the left
             // instead of from the bottom so it appears to be
             // horizontal rather than vertical
-            if (horizontal) {
-                drawBottom = drawRight = drawTop = true;
-                drawLeft = false;
-                left = b;
-                right = x;
-                top = y + barLeft;
-                bottom = y + barRight;
+            
+            drawBottom = drawLeft = drawRight = drawTop = true;
+            
 
-                // account for negative bars
-                if (right < left) {
-                    tmp = right;
-                    right = left;
-                    left = tmp;
-                    drawLeft = true;
-                    drawRight = false;
-                }
-            }
-            else {
-                drawLeft = drawRight = drawTop = true;
-                if(options && options.drawBottom)
-                	drawBottom = true;
-                else
-                	drawBottom = false;
+            left = x1;
+            right = x2;
+            bottom = y1;
+            top = y2;
 
-                left = x + barLeft;
-                right = x + barRight;
-                bottom = b;
-                top = y;
-
-                // account for negative bars
-                if (top < bottom) {
-                    tmp = top;
-                    top = bottom;
-                    bottom = tmp;
-                    drawBottom = true;
-                    drawTop = false;
-                }
-            }
 
             // clip
             if (right < axisx.min || left > axisx.max ||
@@ -2662,6 +2644,55 @@ var jQuery = $;//Assign local jQuery variable with imported $
                 c.stroke();
             }
         }
+        function drawBar(x, y, b, barLeft, barRight, fillStyleCallback, axisx, axisy, c, horizontal, lineWidth, options) {
+        	var left, right, bottom, top,
+                drawLeft, drawRight, drawTop, drawBottom,
+                tmp;
+
+            // in horizontal mode, we start the bar from the left
+            // instead of from the bottom so it appears to be
+            // horizontal rather than vertical
+            if (horizontal) {
+                drawBottom = drawRight = drawTop = true;
+                drawLeft = true;
+                left = b;
+                right = x;
+                top = y + barLeft;
+                bottom = y + barRight;
+
+                // account for negative bars
+                if (right < left) {
+                    tmp = right;
+                    right = left;
+                    left = tmp;
+                    drawLeft = true;
+                    drawRight = true;
+                }
+            }
+            else {
+                drawLeft = drawRight = drawTop = true;
+                if(options && options.drawBottom)
+                	drawBottom = true;
+                else
+                	drawBottom = false;
+
+                left = x + barLeft;
+                right = x + barRight;
+                bottom = b;
+                top = y;
+
+                // account for negative bars
+                if (top < bottom) {
+                    tmp = top;
+                    top = bottom;
+                    bottom = tmp;
+                    drawBottom = true;
+                    drawTop = false;
+                }
+            }
+
+            this.drawBar4params(left,right,bottom,top,fillStyleCallback,axisx,axisy,lineWidth,options);
+        }
 
         function drawSeriesBars(series) {
             function plotBars(datapoints, barLeft, barRight, fillStyleCallback, axisx, axisy) {
@@ -2673,7 +2704,15 @@ var jQuery = $;//Assign local jQuery variable with imported $
                     drawBar(points[i], points[i + 1], points[i + 2], barLeft, barRight, fillStyleCallback, axisx, axisy, ctx, series.bars.horizontal, series.bars.lineWidth);
                 }
             }
+            function plotBars4params(datapoints,fillStyleCallback,axisx,axisy){
+            	var points = datapoints.points, ps = datapoints.pointsize;
 
+                for (var i = 0; i < points.length; i += ps) {
+                    if (points[i] == null)
+                        continue;
+                    drawBar4params(points[i], points[i + 1], points[i + 2],points[i+3], fillStyleCallback, axisx, axisy, ctx, series.bars.horizontal, series.bars.lineWidth);
+                }
+            }
             ctx.save();
             ctx.translate(plotOffset.left, plotOffset.top);
 
@@ -2695,7 +2734,12 @@ var jQuery = $;//Assign local jQuery variable with imported $
             }
 
             var fillStyleCallback = series.bars.fill ? function (bottom, top) { return getFillStyle(series.bars, series.color, bottom, top); } : null;
-            plotBars(series.datapoints, barLeft, barLeft + series.bars.barWidth, fillStyleCallback, series.xaxis, series.yaxis);
+            if(series.bars.fullparams){
+            	plotBars4params(series.datapoints,fillStyleCallback,series.xaxis,series.yaxis);
+            }else{
+            	plotBars(series.datapoints, barLeft, barLeft + series.bars.barWidth, fillStyleCallback, series.xaxis, series.yaxis);
+            }
+            
             ctx.restore();
         }
 
@@ -2706,6 +2750,7 @@ var jQuery = $;//Assign local jQuery variable with imported $
                 for (var i = 0; i < points.length; i += ps) {
                     if (points[i] == null)
                         continue;
+                    //points order: left, right, top, down .....
                     drawBar(points[i], points[i + 1], points[i + 2], barLeft, barLeft + points[i + 3], fillStyleCallback, axisx, axisy, ctx, series.bars.horizontal, series.bars.lineWidth, {drawBottom: series.bars.drawBottom});
                 }
             }

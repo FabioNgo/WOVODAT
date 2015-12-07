@@ -107,7 +107,7 @@ div.xAxis div.tickLabel
 }
 div.overview-graph div.flot-text div.yAxis div.tickLabel
 {    
-    /*color: transparent;*/
+    color: transparent;
     
 }
 .eruption-select{

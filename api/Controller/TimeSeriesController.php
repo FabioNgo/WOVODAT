@@ -8,12 +8,16 @@
 		*		data list
 		*/
 		public static function loadDataList($vd_id) {
-			return TimeSeriesRepository::getTimeSeriesList($vd_id);
+			$instance = TimeSeriesManager::getInstance();
+			$result = $instance->getTimeSeriesList($vd_id);
+			return $result;
 		}	
 
 
 		public static function loadTimeSerie($sr_id) {
-			return TimeSeriesRepository::getTimeSerie($sr_id);
+			$instance = TimeSeriesManager::getInstance();
+			$result = $instance->getTimeSerie($sr_id);
+			return $result;
 		}
 
 	}
