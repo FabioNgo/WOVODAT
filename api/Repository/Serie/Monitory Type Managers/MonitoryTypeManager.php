@@ -21,6 +21,7 @@ abstract class MonitoryTypeManager implements MonitoryTypeManagerInterface {
 		$stations = $db->getList();
 
 		foreach ($this->tableManagers as $col => $tableManager) {
+			// var_dump($tableManager);	
 			$result = array_merge($result,$tableManager->getTimeSeriesList($vd_id,$stations));
 			// var_dump($result);
 		}
@@ -29,9 +30,18 @@ abstract class MonitoryTypeManager implements MonitoryTypeManagerInterface {
 	}
 	public function getStationData($serie ){
 		$result = array();
-		foreach ($this->tableManagers as $tableManager) {
-			$result = array_merge($result,$tableManager->getStationData($serie));
+		// var_dump($serie);
+		$table = "";
+		foreach ($this->infor as $key => $type) if ( $type["data_type"] == $serie["data_type"] ){
+			$table = $key;
 		}
+		foreach ($this->tableManagers as $tableName=> $tableManager) {
+			if($table == $tableName){
+				$result = array_merge($result,$tableManager->getStationData($serie));
+			}
+			
+		}
+
 		return $result;
 	}
 	

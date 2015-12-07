@@ -39,8 +39,9 @@ abstract class TableManager implements TableManagerInterface {
 		$query = $query." from $this->table_name as a where a.vd_id=$vd_id";
 
 		$db->query( $query);
+		// var_dump($query);
 		$serie_list = $db->getList();
-
+		// var_dump($serie_list);
 		foreach ($serie_list as $serie) {
 
 			foreach ($this->cols_name as $col_name) {
@@ -80,11 +81,11 @@ abstract class TableManager implements TableManagerInterface {
 		$errorbar = $stationDataParams["errorbar"];
 		$query = $stationDataParams["query"];
 		$db->query($query, $id1,$id2);
-		echo($query);	
+		// echo($query);
 		// var_dump($this);
 		$res = $db->getList();
 		foreach ($res as $row) {
-			// var_dump($res);
+			// var_dump($row);
 			//add value attributes
 			$temp = array("value" => floatval($row["value"]));
 			//add time value attributes (time or (etime, stime))
@@ -127,6 +128,7 @@ abstract class TableManager implements TableManagerInterface {
 		$result["errorbar"] = $errorbar;
 		$result["data"] = $data;
 		$result["unit"] = $unit;
+		// var_dump($result);
 		return $result;
   	}
 } 

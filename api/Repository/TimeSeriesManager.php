@@ -17,13 +17,15 @@ class TimeSeriesManager {
   }
 
   private function TimeSeriesManager(){
-    $this->timeSeriesManagers = array("Deformation" => new DeformationManager,
+    $this->timeSeriesManagers = array(
+                                      "Deformation" => new DeformationManager,
                                       "Seismic" => new SeismicManager,
                                       "Gas" => new GasManager,
                                       "Hydrology" => new HydrologyManager,
                                       "Thermal" =>new ThermalManager,
                                       "Meteo" =>new MeteoManager,
-                                      "Fields" => new FieldsManager);
+                                      "Fields" => new FieldsManager
+                                      );
     
   }
 
@@ -43,6 +45,7 @@ class TimeSeriesManager {
 		$result = array();
     // var_dump($this->timeSeriesManagers);
     foreach ($this->timeSeriesManagers as $type => $class){
+      // var_dump($class);
       $series = $class->getTimeSeriesList($vd_id);
       $result = array_merge($result,$series);
     }
@@ -57,12 +60,18 @@ class TimeSeriesManager {
     if (!$serie)
       return null;
     $serie['data'] = array();
+    $data = array();
+    // var_dump($this->timeSeriesManagers);
     foreach ($this->timeSeriesManagers as $type => $class){
+
       if($type == $serie['category']){
-        $data = $class->getStationData($serie);
-        $serie['data'] = array_merge($serie['data'],$data);
+        $temp = $class->getStationData($serie);
+        // var_dump($type);
+        $data = array_merge($data,$temp);
+        // var_dump($temp);
       }
     }
+    $serie["data"] = $data;
     return $serie;
   }
 
