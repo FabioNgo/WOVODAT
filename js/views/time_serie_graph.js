@@ -71,6 +71,7 @@ define(function(require) {
             yaxis: {
               show: true,
               min: this.minY,
+              max: this.maxY,
               ticks: this.ticks,
               labelWidth: 30,
               zoomRange: false,
@@ -156,113 +157,8 @@ define(function(require) {
         this.data = undefined;
         return;
       }
-      var minX = undefined,
-          maxX = undefined,
-          minY = undefined,
-          maxY = undefined,
-          data = [],
-          errorbars = undefined,
-          i;
-      
-      
-
-      for(var j = 0; j<this.filters.name.length;j++){ 
-        var list = [];
-        var filterData = this.filters.timeSerie.getDataFromFilter(this.filters.name[j])
-        var style = this.filters.timeSerie.get('data').style; //get the plot presentation style (ie. bar, dot, circle)
-        filterData.forEach(function(d) {
-          //var time = d.time;
-          var value = d['value'];
-          var maxTime;
-          var minTime;
-          var upperBound = undefined;
-          var lowerBound = undefined;
-          d.time_formated = DateHelper.formatDate(d.time);
-          var error = parseFloat(d.error);
-          if(d.error === undefined){
-            error = 0;
-          }
-          if(style == 'bar'){
-              maxTime = d['etime'];
-              minTime = d['stime'];
-          }
-          else if(style == 'horizontalbar'){
-            if(d.stime == undefined || d.etime == undefined){
-                maxTime = minTime = d['time'];
-              }
-              else{
-                maxTime = d['etime'];
-                minTime = d['stime'];
-                upperBound = value+0.5; // giving upper bound a buffer of +0.5 unit to present the horizontal bar
-                lowerBound = value-0.5;  // giving lower bound a buffer of -0.5 unit to present the horizontal bar
-              };
-          }
-          else if(style == 'dot' || style == 'circle'){
-              maxTime = minTime = d['time'];
-          };
-
-          if (minX === undefined || minTime < minX){
-            minX = minTime;
-          }
-          if (maxX === undefined || maxTime > maxX){
-            maxX = maxTime;
-          }
-          if (minY === undefined || value-error < minY){
-            minY = value-error;
-          }
-          if (maxY === undefined || value+error > maxY){
-            maxY = value+error;
-          }
-
-          if(style == 'dot' || style == 'circle'){
-            if(d['error']!=undefined){
-                list.push([d['time'],d['value'],d['error']]); 
-                errorbars = "y";
-              }else{
-                list.push([d['time'],d['value']]);  
-              }
-          }
-          else if(style == 'bar'){
-            if(d['error']!=undefined){
-                list.push([d['stime'],d['etime'],d['value'],d['error']]); 
-                errorbars = "y";
-              }else{
-                list.push([d['stime'],d['etime'],d['value']]);  
-              }
-          }
-          else if(style == 'horizontalbar'){
-            if(d['error']!=undefined){
-                list.push([minTime,maxTime,lowerBound,upperBound,d['error']]); 
-                errorbars = "y";
-              }else{
-                list.push(minTime,maxTime,lowerBound,upperBound);
-              };
-          };
-        });
-        // this.data contains the setting of options of the graph (ie. point,line,bar).
-        // this makes the options in the $.plot(this.$el, this.data, options) 
-        // cannot fully config the appearance of the graph.
-        data.push(GraphHelper.formatGraphAppearance(list,this.filters.timeSerie.getName(),this.filters.name[j],style,errorbars));
-      }
-      this.minX = minX-86400000; 
-      this.maxX = maxX+86400000;
-       if(minY!= undefined){
-        this.minY = minY.toFixed();
-      }else{
-        this.minY = minY;
-      }
-      if(maxY != undefined && minY != undefined){
-        maxY = maxY*1.1;
-        minY = minY*0.9;
-        this.ticks = GraphHelper.generateTick(minY,maxY);
-        this.minY = this.ticks[0];
-      }
-      this.timeRange.set({
-        'startTime': this.minX,
-        'endTime': this.maxX,
-      });
-      // this.timeRange.trigger('change');
-      this.data = data;
+      var filters = [this.filters];
+      GraphHelper.formatData(this,filters,true);
     },
     
     destroy: function() {

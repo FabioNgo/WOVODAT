@@ -78,11 +78,20 @@ shadowSize and lineWidth are derived as well from the points series.
             return;
 
         // x,y values
-        var format = [
-            { x: true, number: true, required: true },
-            { y: true, number: true, required: true }
+        var format;
+        if(series.bars.fullparams){
+            format = [
+            { x1: true, number: true, required: true },
+            { x2: true, number: true, required: true },
+            { y1: true, number: true, required: true },
+            { y2: true, number: true, required: true }
         ];
-
+        }else{
+            format = [
+                { x: true, number: true, required: true },
+                { y: true, number: true, required: true }
+            ];
+        }
         var errors = series.points.errorbars;
         // error bars - first X then Y
         if (errors == 'x' || errors == 'xy') {

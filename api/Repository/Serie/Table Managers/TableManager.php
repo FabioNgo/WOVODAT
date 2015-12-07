@@ -39,7 +39,8 @@ abstract class TableManager implements TableManagerInterface {
 		$query = $query." from $this->table_name as a where a.vd_id=$vd_id";
 
 		$db->query( $query);
-		// var_dump($query);
+
+		// echo($this->monitoryType."   ".$query."\n");
 		$serie_list = $db->getList();
 		// var_dump($serie_list);
 		foreach ($serie_list as $serie) {
@@ -57,7 +58,7 @@ abstract class TableManager implements TableManagerInterface {
 						       'component' => $serie[$col_name],
 						   		);
 
-					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code1"].$x["station_code2"].$x["component"] );
+					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_id1"].$x["station_id2"].$x["component"] );
 					array_push($result,  $x );
 
 				}
@@ -117,7 +118,7 @@ abstract class TableManager implements TableManagerInterface {
 			// add error bar
 			if($errorbar){
 				if($row["err"]!=null){
-					$temp["error"] = $row["err"];
+					$temp["error"] = floatval($row["err"]);
 				}else{
 					$temp["error"] = 0;
 				}

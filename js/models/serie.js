@@ -14,7 +14,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
       
     },
     getName: function(){
-      return ""+this.get('category')+" - " + this.get('station_code')+" (" + this.get('component') +")";
+      return ""+this.get('category')+" - " + this.get('station_code1')+" (" + this.get('component') +")";
     },
     /** return the data of time serie in term of filter**/
     getDataFromFilter: function(filterName){

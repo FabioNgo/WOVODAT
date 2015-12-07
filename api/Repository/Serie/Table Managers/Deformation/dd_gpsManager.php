@@ -22,7 +22,7 @@ class dd_gpsManager extends TableManager {
 	} // Data type for each data table
 	//if there is 1 station, station1 is the same as station2
 	protected function setStationID(){
-		$result = array("ds_id1","ds_id_ref1");
+		$result = array("ds_id","ds_id_ref1");
 		return $result;
 	} // column names represent stationID1,station ID2
 	protected function setStationCode(){
@@ -39,19 +39,19 @@ class dd_gpsManager extends TableManager {
 		if($component == 'GPS Latitude'){
 			$unit = "o";
 			$attribute = "dd_gps_lat";
-			$query = "select a.dd_gps_nserr as err ,a.dd_gps_time as time,  a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$query = "select a.dd_gps_nserr as err ,a.dd_gps_time as time,  a.$attribute as value from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'GPS Longtitude'){
 			$unit = "o";
 			$attribute = "dd_gps_lon";
-			$query = "select a.dd_gps_ewerr as err ,a.dd_gps_time as time, $cc a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$query = "select a.dd_gps_ewerr as err ,a.dd_gps_time as time, $cc a.$attribute as value from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'GPS Elevation'){
 			$unit = "m";
 			$attribute = "dd_gps_elev";
-			$query = "select a.dd_gps_verr as err ,a.dd_gps_time as time, a.$attribute as value from $table as a where a.ds_id=$id and a.$attribute IS NOT NULL";
+			$query = "select a.dd_gps_verr as err ,a.dd_gps_time as time, a.$attribute as value from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'GPS Baseline/Slope '){
 			$unit = "m";
 			$attribute = "dd_gps_slope";
-			$query = "select a.dd_gps_errslope as err ,a.dd_gps_time as time,  a.$attribute as value from $table as a where a.ds_id=$id and a.ds_id_ref1=$id1 and a.$attribute IS NOT NULL";
+			$query = "select a.dd_gps_errslope as err ,a.dd_gps_time as time,  a.$attribute as value from $table as a where a.ds_id=%s and a.ds_id_ref1=%s1 and a.$attribute IS NOT NULL";
 		}
 		$result = array("unit" => $unit,
 						"style" => $style,

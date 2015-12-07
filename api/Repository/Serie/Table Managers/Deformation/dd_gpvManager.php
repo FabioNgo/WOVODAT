@@ -34,7 +34,7 @@ class dd_gpvManager extends TableManager {
 		$unit="";
 		$attribute = "";
 		$query = "";
-		$table = "dd_gps";
+		$table = "dd_gpv";
 		$errorbar = true;
 		$style = "horizontalbar";
 		if($component == 'GPS Displacement'){
