@@ -189,9 +189,10 @@ define(function(require) {
         dataParam.points.errorbars = "y";
         dataParam.points.yerr = {
             show: true,
-            color: "red",
+            color: "#D50000",
             upperCap: "-",
             lowerCap: "-",
+            radius:2,
         }
       };
       if(styleParams.style == 'bar'){
@@ -208,6 +209,8 @@ define(function(require) {
       else if(styleParams.style == 'horizontalbar'){
         dataParam.bars.show = true;
         dataParam.bars.horizontal = true;
+        dataParam.points.shadowSize = 0;
+        
         // Have not accounted for the case horizontal bar with no start time and end time
         // console.log(dataParam);
       }
