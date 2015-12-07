@@ -34,7 +34,7 @@ class ThermalRepository {
 							   'data_type' => "Thermal",
 							   'station_code' => $serie["sta_code"],
 							   'component' => $serie[$cols_name[$j]],
-							   'sta_id' => $serie["hs_id"],
+							   'sta_id' => $serie["ts_id"],
 							   );
 					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_code"].$x["component"] );
  					array_push($result,  $x );

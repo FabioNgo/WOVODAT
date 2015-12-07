@@ -72,7 +72,7 @@ class GasRepository {
 	private static function getTimeSeriesList_gd_plu( $vd_id , $stations ) {
 		$result = array();
 		global $db;
-		$cols_name = array("gd_plu_height","gd_plu_mass","gd_plu_etot");
+		$cols_name = array("gd_plu_height","gd_plu_mass","gd_plu_etot"," gd_plu_emit");
 		$table_name = "es_gd_plu";
 		$query = "select a.gs_id,a.gs_code,a.cs_id,a.cs_code";
 		for($i =0;$i<sizeof($cols_name);$i++){

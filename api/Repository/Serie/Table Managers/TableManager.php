@@ -75,12 +75,16 @@ abstract class TableManager implements TableManagerInterface {
 		$result = array();
 		$res = array();
 		$data = array();
+		$unit = "";
 		$stationDataParams = $this->setStationDataParams($stations['component']);
+		$errorbar = $stationDataParams["errorbar"];
 		$query = $stationDataParams["query"];
-		$db->query($query, $id1);
-		// echo($query);	
+		$db->query($query, $id1,$id2);
+		echo($query);	
+		// var_dump($this);
 		$res = $db->getList();
 		foreach ($res as $row) {
+			// var_dump($res);
 			//add value attributes
 			$temp = array("value" => floatval($row["value"]));
 			//add time value attributes (time or (etime, stime))
@@ -95,13 +99,19 @@ abstract class TableManager implements TableManagerInterface {
 			}
 			//add filter attribute
 			if(array_key_exists("filter", $row)){
-				if($row["filter"] == $id2){
-					$temp["filter"] = $stations["station_code2"];
-				}else{
-					$temp["filter"] = $row["filter"];
-				}
+				
+				$temp["filter"] = $row["filter"];
+				
 			}else{
 				$temp["filter"] = " ";
+			}
+			// find attribute
+			if(array_key_exists("unit", $row)){
+				
+				$unit = $row["unit"];
+				
+			}else{
+				$unit = $stationDataParams["unit"];
 			}
 			// add error bar
 			if($errorbar){
@@ -114,9 +124,9 @@ abstract class TableManager implements TableManagerInterface {
 			array_push($data, $temp );			
 		}
 		$result["style"] = $stationDataParams["style"];
-		$result["errorbar"] = $stationDataParams["errorbar"];
+		$result["errorbar"] = $errorbar;
 		$result["data"] = $data;
-		$result["unit"] = $stationDataParams["unit"];
+		$result["unit"] = $unit;
 		return $result;
   	}
 } 

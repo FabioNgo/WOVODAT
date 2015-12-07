@@ -1,5 +1,4 @@
 <?php 
-require_once('MonitoryTypeManager.php');
 class DeformationManager extends MonitoryTypeManager{
 
 	protected function setTableManagers(){
