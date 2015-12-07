@@ -1100,7 +1100,7 @@ var jQuery = $;//Assign local jQuery variable with imported $
 
                 format = s.datapoints.format;
                 if (!format) {
-	                if(s.bars.fullparams){
+	                if(s.bars.fullparams && s.bars.show){
 	                	format = [];
 	                    // find out how to copy
 	                    format.push({ x1: true, number: true, required: true });
