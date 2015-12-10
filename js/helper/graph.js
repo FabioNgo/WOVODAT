@@ -99,7 +99,7 @@ define(function(require) {
             }
             else if(style == 'horizontalbar'){
               
-              tempData.push(d.stime,d.etime,d.value,d.value);
+              tempData.push(d.stime,d.etime,d.value + 0.5,d.value - 0.5); // add the upperBound and lowerBound to show the bar
               
             }
             else if(style == 'dot' || style == 'circle'){
