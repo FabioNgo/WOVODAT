@@ -67,7 +67,7 @@ define(function(require) {
               //axisLabelUseCanvas: true,
               autoscaleMargin: 5,
               ticks: this.ticks,
-              labelWidth: 30
+              labelWidth: 40
             },
             selection: { 
               mode: 'x', 

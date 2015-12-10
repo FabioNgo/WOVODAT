@@ -79,7 +79,7 @@ define(function(require) {
               min: this.minY,
               max: this.maxY,
               ticks: this.ticks,
-              labelWidth: 30,
+              labelWidth: 40,
               zoomRange: false,
               axisLabel: unit,
               axisLabelUseCanvas: true
@@ -139,13 +139,13 @@ define(function(require) {
     },
     // UNCOMMENTED !!!!
     setUpTimeranges: function(startTime, endTime){
-      this.serieGraphTimeRange.set({
-        'startTime': startTime,
-        'endTime': endTime,
-      });
-      // console.log(this.serieGraphTimeRange);
+      // this.serieGraphTimeRange.set({
+      //   'startTime': startTime,
+      //   'endTime': endTime,
+      // });
+      // // console.log(this.serieGraphTimeRange);
       
-      this.serieGraphTimeRange.trigger('update',this.serieGraphTimeRange);
+      // this.serieGraphTimeRange.trigger('update',this.serieGraphTimeRange);
       // this.forecastsGraphTimeRange.set({
       //   'startTime': startTime,
       //   'endTime': endTime,
