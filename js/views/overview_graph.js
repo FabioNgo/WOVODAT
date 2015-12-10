@@ -105,7 +105,7 @@ define(function(require) {
     prepareData: function() {
      
       var filters = this.selectingFilters.models;
-      GraphHelper.formatData(this,filters,false);
+      GraphHelper.formatData(this,filters,false,false); //formatData: function(graph,filters,allowErrorbar,allowAxisLabel)
       
     },
     

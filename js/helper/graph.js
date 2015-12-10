@@ -38,7 +38,7 @@ define(function(require) {
       
       return ticks;
     },
-    formatData: function(graph,filters,allowErrorbar){
+    formatData: function(graph,filters,allowErrorbar,allowAxisLabel){
      var minX = undefined,
          maxX = undefined,
          minY = undefined,
@@ -53,12 +53,19 @@ define(function(require) {
           var filterData = filter.timeSerie.getDataFromFilter(filterName)
           var style = filter.timeSerie.get('data').style; // plot style [bar,circle,dot,horizontalbar]
           var errorbar;
+          var axisLabel; // show unit on Y-axis
           if(!allowErrorbar){
             errorbar = false;
           }else{
             errorbar = filter.timeSerie.get('data').errorbar; // has error bar or not [true,false]
           }
           
+          if(!allowAxisLabel){
+            axisLabel = undefined;
+          }
+          else{
+            axisLabel = filter.timeSerie.get('data').unit;
+          };
 
           filterData.forEach(function(d) {
             var maxTime;
@@ -115,6 +122,7 @@ define(function(require) {
           var styleParams = {
             style: style,
             errorbar: errorbar,
+            axisLabel: axisLabel
           }
           data.push(this.formatGraphAppearance(list,filter.timeSerie.getName(),filterName,styleParams));
           
@@ -151,7 +159,7 @@ define(function(require) {
     /** setup effect for the graph
     *   data : data for floting
     *   filterName: filter name
-    *   styleParams: params for styling graph {barwith,errorbar....}
+    *   styleParams: params for styling graph {barwith,errorbar, y-axis unit....}
     **/
     formatGraphAppearance: function(data,timeSerieName, filterName,styleParams){
       
@@ -161,6 +169,9 @@ define(function(require) {
         // color: 0,
         lines: { 
           show: false
+        },
+        yaxis: {
+          axisLabel: ""
         },
         shadowSize: 3,
         points: {
@@ -194,6 +205,10 @@ define(function(require) {
             lowerCap: "-",
             radius:2,
         }
+      };
+      if(styleParams.axisLabel){
+        dataParam.yaxis.axisLabel = styleParams.axisLabel;
+        console.log(dataParam.yaxis.axisLabel);
       };
       if(styleParams.style == 'bar'){
         dataParam.bars = {show: true};

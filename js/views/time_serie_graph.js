@@ -46,6 +46,12 @@ define(function(require) {
         return;
       }
       this.$el.html("");
+      var unit = undefined;
+      for(var i=0;i<this.data.length;i++){
+        if(this.data[i].yaxis.axisLabel != undefined){
+          unit = this.data[i].yaxis.axisLabel;
+        }
+      };
       var options = {
             // series: {
             //   points:{
@@ -75,8 +81,8 @@ define(function(require) {
               ticks: this.ticks,
               labelWidth: 30,
               zoomRange: false,
-              //axisLabel: this.dataUnit,
-              //axisLabelUseCanvas: true
+              axisLabel: unit,
+              axisLabelUseCanvas: true
             },
             grid: {
               hoverable: true,
@@ -89,8 +95,7 @@ define(function(require) {
               show: true,
             },
             
-          };
-          
+          }; 
       if (!this.data || !this.data.length) {
         this.$el.html('');
         return;
@@ -132,14 +137,15 @@ define(function(require) {
       }
 
     },
+    // UNCOMMENTED !!!!
     setUpTimeranges: function(startTime, endTime){
-      // this.serieGraphTimeRange.set({
-      //   'startTime': startTime,
-      //   'endTime': endTime,
-      // });
-      // // console.log(this.serieGraphTimeRange);
+      this.serieGraphTimeRange.set({
+        'startTime': startTime,
+        'endTime': endTime,
+      });
+      // console.log(this.serieGraphTimeRange);
       
-      // this.serieGraphTimeRange.trigger('update',this.serieGraphTimeRange);
+      this.serieGraphTimeRange.trigger('update',this.serieGraphTimeRange);
       // this.forecastsGraphTimeRange.set({
       //   'startTime': startTime,
       //   'endTime': endTime,
@@ -159,7 +165,7 @@ define(function(require) {
         return;
       }
       var filters = [this.filters];
-      GraphHelper.formatData(this,filters,true);
+      GraphHelper.formatData(this,filters,true,true); //formatData: function(graph,filters,allowErrorbar,allowAxisLabel)
     },
     
     destroy: function() {
