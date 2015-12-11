@@ -38,7 +38,7 @@ define(function(require) {
       
       return ticks;
     },
-    formatData: function(graph,filters,allowErrorbar,allowAxisLabel){
+    formatData: function(graph,filters,allowErrorbar,allowAxisLabel,limitNumberOfData){
      var minX = undefined,
          maxX = undefined,
          minY = undefined,
@@ -67,7 +67,25 @@ define(function(require) {
             axisLabel = filter.timeSerie.get('data').unit;
           };
 
-          filterData.forEach(function(d) {
+          /*Limit number of data to be rendered
+          this to prevent the overload of data in Overview Graph 
+          when the number of data is too large.
+          Here we limit the amount of data to be presented on Graph to 5000 data
+          */
+          var requiredData = [];
+          if(limitNumberOfData&&filterData.length>5000){
+            //threshold = 5000 data to be rendered each Overview Graph
+            var threshold = parseInt(filterData.length/5000)+1;
+            for(var i=0;i<filterData.length;i+=threshold){
+              requiredData.push(filterData[i]);
+            }
+          }
+          else{
+            requiredData = filterData;
+          };
+
+          //requiredData is the array of filterData that has been restricted in amount.
+          requiredData.forEach(function(d) {
             var maxTime;
             var minTime;
             var upperBound = undefined;
@@ -214,7 +232,7 @@ define(function(require) {
       };
       if(styleParams.axisLabel){
         dataParam.yaxis.axisLabel = styleParams.axisLabel;
-        console.log(dataParam.yaxis.axisLabel);
+        //console.log(dataParam.yaxis.axisLabel);
       };
       
        if(styleParams.style == 'dot'){

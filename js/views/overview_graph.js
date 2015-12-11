@@ -89,8 +89,9 @@ define(function(require) {
       this.$el.height(200);
       this.$el.addClass("overview-graph");
 
-
-      // console.log(this.data);
+      //limit data to be rendered
+      
+      console.log(this.data);
       this.graph = $.plot(this.$el, this.data, options);
       //To edit the series object, go to GraphHelper used for data in the prepareData method below.
       this.$el.bind('plotselected', this.selectingTimeRange, this.onSelect);
@@ -105,7 +106,11 @@ define(function(require) {
     prepareData: function() {
      
       var filters = this.selectingFilters.models;
-      GraphHelper.formatData(this,filters,false,false); //formatData: function(graph,filters,allowErrorbar,allowAxisLabel)
+      var allowErrorbar = false;
+      var allowAxisLabel =false;
+      var limitNumberOfData =true;
+      //formatData: function(graph,filters,allowErrorbar,allowAxisLabel,limitNumberOfData)
+      GraphHelper.formatData(this,filters,allowErrorbar,allowAxisLabel,limitNumberOfData); 
       
     },
     

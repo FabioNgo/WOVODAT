@@ -107,6 +107,7 @@ define(function(require) {
       // plot the time series graph after being selected (eg. onSelect in OverViewGraph).
       // config graph theme colors
       options.colors = ["#000000", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"];
+      //console.log(this.data);
       this.graph = $.plot(this.$el, this.data, options);
       this.$el.bind('plothover', this.tooltip,this.onHover);
       var eventData = {
@@ -164,7 +165,11 @@ define(function(require) {
         return;
       }
       var filters = [this.filters];
-      GraphHelper.formatData(this,filters,true,true); //formatData: function(graph,filters,allowErrorbar,allowAxisLabel)
+      var allowErrorbar = true;
+      var allowAxisLabel =true;
+      var limitNumberOfData =false;
+      //formatData: function(graph,filters,allowErrorbar,allowAxisLabel,limitNumberOfData)
+      GraphHelper.formatData(this,filters,allowErrorbar,allowAxisLabel,limitNumberOfData); 
     },
     
     destroy: function() {
