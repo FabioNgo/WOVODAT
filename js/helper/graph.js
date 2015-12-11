@@ -160,6 +160,7 @@ define(function(require) {
       });
       // graph.timeRange.trigger('change');
       graph.data = data;
+      // console.log(data);
     },
     /** setup effect for the graph
     *   data : data for floting
@@ -217,7 +218,9 @@ define(function(require) {
       };
       
        if(styleParams.style == 'dot'){
-        dataParam.points = {show: true, fill: true, fillColor: "#000000"};
+        dataParam.points.show = true;
+        dataParam.points.fill = true;
+        dataParam.points.fillColor = "#000000";
         // console.log(dataParam);
       }
       else if(styleParams.style == 'circle'){

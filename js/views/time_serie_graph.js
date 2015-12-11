@@ -137,7 +137,6 @@ define(function(require) {
       }
 
     },
-    // UNCOMMENTED !!!!
     setUpTimeranges: function(startTime, endTime){
       // this.serieGraphTimeRange.set({
       //   'startTime': startTime,

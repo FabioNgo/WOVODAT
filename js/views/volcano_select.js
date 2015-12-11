@@ -35,7 +35,6 @@ define(function(require) {
       }
       for(var i=0;i<this.collection.models.length;i++){
         var model = this.collection.models[i];
-        var a = model.get("vd_num");
         if(vd_num == model.get("vd_num")){
           this.selectingVolcano.set('vd_id', model.id); // .set auto call event in eventhandler 
           this.selectingVolcano.trigger("update");
@@ -66,10 +65,16 @@ define(function(require) {
     },
     onSelectChange: function() {
       var vd_id = this.$el.find('select').val();
-      if (vd_id) {
-        this.selectingVolcano.set('vd_id', vd_id); // .set auto call event in eventhandler 
-        this.selectingVolcano.trigger("update");
+      for(var i=0;i<this.collection.models.length;i++){
+        var model = this.collection.models[i];
+        if(vd_id == model.id){
+          window.location.replace("http://localhost/eruption/?vnum="+model.get("vd_num"));
+        }
       }
+      // if (vd_id) {
+      //   this.selectingVolcano.set('vd_id', vd_id); // .set auto call event in eventhandler 
+      //   this.selectingVolcano.trigger("update");
+      // }
     }
   });
 });
