@@ -5,6 +5,8 @@ var curCategory = "";
 var maxNumCol = 4;
 var colWidth = 100.0/3;
 var count = 0;
+var station1 = "";
+var station2= "";
 
 if (!_.isEmpty(timeSeries)) { 
 	
@@ -49,7 +51,22 @@ if (!_.isEmpty(timeSeries)) {
 		}
     	%>             <!-- list stations -->
     					<ul class="list-station"><input  type="checkbox" name = "<%= timeSerie.get('category') %>" value="<%= timeSerie.get('sr_id') %>"/>
-    					 <%= timeSerie.get('station_code1') %> (<%= timeSerie.get('component') %>)</ul>
+                        <%
+
+                        station1 = timeSerie.get('station_code1') ;
+                        if (timeSerie.get('station_id1') != timeSerie.get('station_id2')){
+                            if(timeSerie.get('station_code1') == ""){
+                                station2 = timeSerie.get('station_code2');
+                            }else{
+                                station2 = " - " + timeSerie.get('station_code2');
+
+                            }
+                        }else{
+                            station2 = "";
+                        }
+                        %>
+    					 <%= station1 %> <%= station2 %> (<%= timeSerie.get('component') %>)</ul>
+                        
     <% }); %>
     </table>
   </div><!--end time serie select container -->
