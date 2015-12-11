@@ -29,10 +29,15 @@ define(function(require) {
         volcanoes: this.collection.models
       }));
       // read volcano parameter on url
-      var  vd_id = this.getUrlParameter("volcano");
+      var  vd_num = this.getUrlParameter("vnum");
+      if(vd_num == undefined){
+        return;
+      }
       for(var i=0;i<this.collection.models.length;i++){
-        if(vd_id == this.collection.models[i].id){
-          this.selectingVolcano.set('vd_id', vd_id); // .set auto call event in eventhandler 
+        var model = this.collection.models[i];
+        var a = model.get("vd_num");
+        if(vd_num == model.get("vd_num")){
+          this.selectingVolcano.set('vd_id', model.id); // .set auto call event in eventhandler 
           this.selectingVolcano.trigger("update");
           return;
         }

@@ -141,8 +141,13 @@ define(function(require) {
         maxY = maxY*1.1;//1.1
         minY = minY*0.9;
         if(minY == maxY){
-          minY = minY*0.5;
-          maxY = maxY*1.5; 
+          if(minY!=0){
+            minY = minY*0.5;
+            maxY = maxY*1.5; 
+          }else{
+            minY = -0.5;
+            maxY = 0.5;
+          }
         }
         graph.ticks = this.generateTick(minY,maxY);
         graph.minY = graph.ticks[0];
@@ -210,10 +215,8 @@ define(function(require) {
         dataParam.yaxis.axisLabel = styleParams.axisLabel;
         console.log(dataParam.yaxis.axisLabel);
       };
-      if(styleParams.style == 'bar'){
-        dataParam.bars = {show: true};
-      }
-      else if(styleParams.style == 'dot'){
+      
+       if(styleParams.style == 'dot'){
         dataParam.points = {show: true, fill: true, fillColor: "#000000"};
         // console.log(dataParam);
       }
@@ -221,7 +224,7 @@ define(function(require) {
         dataParam.points = {show: true, fill: false};
         // console.log(dataParam);
       }
-      else if(styleParams.style == 'horizontalbar'){
+      else if(styleParams.style == 'horizontalbar'||styleParams.style == 'bar'){
         dataParam.bars.show = true;
         dataParam.bars.horizontal = true;
         dataParam.points.shadowSize = 0;

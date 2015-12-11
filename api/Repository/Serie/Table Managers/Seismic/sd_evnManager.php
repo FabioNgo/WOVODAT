@@ -36,30 +36,17 @@ class sd_evnManager extends TableManager {
 		$table = "sd_evn";
 		$errorbar = true;
 		$style = "circle";
-		if($component == 'S-P Arrival Time'){
-			$unit = "s";
-			$attribute = "sd_evs_spint";
-			$query = "select a.sd_evs_eqtype  as filter ,a.sd_evs_time as time, a.$attribute as value  from $table  as a where a.ss_id=%s and a.$attribute IS NOT NULL";
-		}else if($component == 'Epicenter From Event'){
+		if($component == 'Earthquake Depth'){
 			$unit = "km";
-			$attribute = "sd_evs_dist_actven";
-			$query = "select a.sd_evs_eqtype  as filter ,a.sd_evs_time as time, a.$attribute as value  from $table  as a where a.ss_id=%s and a.$attribute IS NOT NULL";
-		}else if($component == 'Earthquake Max-Amplitude'){
-			$unit = "cm";
-			$attribute = "sd_evs_maxamptrac";
-			$query = "select a.sd_evs_eqtype  as filter ,a.sd_evs_time as time, a.$attribute as value  from $table  as a where a.ss_id=%s and a.$attribute IS NOT NULL";
-		}else if($component == 'Earthquake Dominant Frequency'){
-			$unit = "Hz";
-			$attribute = "sd_evs_domFre";
-			$query = "select a.sd_evs_eqtype  as filter ,a.sd_evs_time as time, a.$attribute as value  from $table  as a where a.ss_id=%s and a.$attribute IS NOT NULL";
+			$style = "circle";
+			$errorbar = true;
+			$attribute = "sd_evn_edep";
+			$query = "select a.sd_evn_eqtype  as filter, a.sd_evn_derr as err ,a.sd_evn_time as time, a.$attribute as value  from $table  as a where a.sn_id=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'Earthquake Magnitude'){
-			$unit = "Hz";
-			$attribute = "sd_evs_mag";
-			$query = "select a.sd_evs_eqtype  as filter ,a.sd_evs_time as time, a.$attribute as value  from $table  as a where a.ss_id=%s and a.$attribute IS NOT NULL";
-		}else if($component == 'Earthquake Energy'){
-			$unit = "Erg";
-			$attribute = "sd_evs_energy";
-			$query = "select a.sd_evs_eqtype  as filter ,a.sd_evs_time as time, a.$attribute as value  from $table  as a where a.ss_id=%s and a.$attribute IS NOT NULL";
+			$style = "circle";
+			$errorbar = false;
+			$attribute = "sd_evn_pmag";
+			$query = "select a.sd_evn_eqtype  as filter ,a.sd_evn_time as time, a.$attribute as value  from $table  as a where a.sn_id=%s and a.$attribute IS NOT NULL";
 		}
 		$result = array("unit" => $unit,
 						"style" => $style,

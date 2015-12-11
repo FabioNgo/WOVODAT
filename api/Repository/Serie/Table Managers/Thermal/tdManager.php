@@ -33,7 +33,7 @@ class tdManager extends TableManager {
 		$unit="";
 		$attribute = "";
 		$query = "";
-		$table = "hd";
+		$table = "td";
 		$errorbar = true;
 		$style = "dot";
 		if($component == 'Temperature'){

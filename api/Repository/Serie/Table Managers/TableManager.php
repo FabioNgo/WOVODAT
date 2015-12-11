@@ -95,7 +95,17 @@ abstract class TableManager implements TableManagerInterface {
 				$temp["time"] = floatval(1000*$time);
 			}else{
 				$stime = strtotime($row["stime"]);
-				$etime = strtotime($row["etime"]);
+				$etime = 0;
+				if(array_key_exists("etime", $row)){
+					$etime = strtotime($row["etime"]);
+				}else{
+					// if data have no etime, assume that the bars are continuous
+					$data_size = sizeof($data);
+					if($data_size!=0){
+						$data[$data_size-1]["etime"] = $stime*1000;
+					}
+				}
+				
 				$temp["stime"] = floatval(1000*$stime);
 				$temp["etime"] = floatval(1000*$etime);
 			}
