@@ -8,7 +8,7 @@
 class sd_ivlManager extends TableManager {
 	
 	protected function setColumnsName(){
-		$result = array(	"sd_ivl_spint","sd_ivl_hdist","sd_ivl_avgdepth","sd_ivl_vdispers",
+		$result = array(	"sd_ivl_hdist","sd_ivl_avgdepth","sd_ivl_vdispers",
 							"sd_ivl_hmigr_hyp","sd_ivl_vmigr_hyp","sd_ivl_nrec",
 							"sd_ivl_nfelt","sd_ivl_etot","sd_ivl_fmin","sd_ivl_fmax","sd_ivl_amin","sd_ivl_amax"
 							);

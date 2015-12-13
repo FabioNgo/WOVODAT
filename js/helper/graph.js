@@ -38,7 +38,7 @@ define(function(require) {
       
       return ticks;
     },
-    formatData: function(graph,filters,allowErrorbar){
+    formatData: function(graph,filters,allowErrorbar,allowAxisLabel,limitNumberOfData){
      var minX = undefined,
          maxX = undefined,
          minY = undefined,
@@ -53,14 +53,39 @@ define(function(require) {
           var filterData = filter.timeSerie.getDataFromFilter(filterName)
           var style = filter.timeSerie.get('data').style; // plot style [bar,circle,dot,horizontalbar]
           var errorbar;
+          var axisLabel; // show unit on Y-axis
           if(!allowErrorbar){
             errorbar = false;
           }else{
             errorbar = filter.timeSerie.get('data').errorbar; // has error bar or not [true,false]
           }
           
+          if(!allowAxisLabel){
+            axisLabel = undefined;
+          }
+          else{
+            axisLabel = filter.timeSerie.get('data').unit;
+          };
 
-          filterData.forEach(function(d) {
+          /*Limit number of data to be rendered
+          this to prevent the overload of data in Overview Graph 
+          when the number of data is too large.
+          Here we limit the amount of data to be presented on Graph to 5000 data
+          */
+          var requiredData = [];
+          if(limitNumberOfData&&filterData.length>5000){
+            //threshold = 5000 data to be rendered each Overview Graph
+            var threshold = parseInt(filterData.length/5000)+1;
+            for(var i=0;i<filterData.length;i+=threshold){
+              requiredData.push(filterData[i]);
+            }
+          }
+          else{
+            requiredData = filterData;
+          };
+
+          //requiredData is the array of filterData that has been restricted in amount.
+          requiredData.forEach(function(d) {
             var maxTime;
             var minTime;
             var upperBound = undefined;
@@ -99,7 +124,7 @@ define(function(require) {
             }
             else if(style == 'horizontalbar'){
               
-              tempData.push(d.stime,d.etime,d.value,d.value);
+              tempData.push(d.stime,d.etime,d.value + 0.5,d.value - 0.5); // add the upperBound and lowerBound to show the bar
               
             }
             else if(style == 'dot' || style == 'circle'){
@@ -115,6 +140,7 @@ define(function(require) {
           var styleParams = {
             style: style,
             errorbar: errorbar,
+            axisLabel: axisLabel
           }
           data.push(this.formatGraphAppearance(list,filter.timeSerie.getName(),filterName,styleParams));
           
@@ -133,8 +159,13 @@ define(function(require) {
         maxY = maxY*1.1;//1.1
         minY = minY*0.9;
         if(minY == maxY){
-          minY = minY*0.5;
-          maxY = maxY*1.5; 
+          if(minY!=0){
+            minY = minY*0.5;
+            maxY = maxY*1.5; 
+          }else{
+            minY = -0.5;
+            maxY = 0.5;
+          }
         }
         graph.ticks = this.generateTick(minY,maxY);
         graph.minY = graph.ticks[0];
@@ -147,11 +178,12 @@ define(function(require) {
       });
       // graph.timeRange.trigger('change');
       graph.data = data;
+      // console.log(data);
     },
     /** setup effect for the graph
     *   data : data for floting
     *   filterName: filter name
-    *   styleParams: params for styling graph {barwith,errorbar....}
+    *   styleParams: params for styling graph {barwith,errorbar, y-axis unit....}
     **/
     formatGraphAppearance: function(data,timeSerieName, filterName,styleParams){
       
@@ -161,6 +193,9 @@ define(function(require) {
         // color: 0,
         lines: { 
           show: false
+        },
+        yaxis: {
+          axisLabel: ""
         },
         shadowSize: 3,
         points: {
@@ -189,25 +224,32 @@ define(function(require) {
         dataParam.points.errorbars = "y";
         dataParam.points.yerr = {
             show: true,
-            color: "red",
+            color: "#D50000",
             upperCap: "-",
             lowerCap: "-",
+            radius:2,
         }
       };
-      if(styleParams.style == 'bar'){
-        dataParam.bars = {show: true};
-      }
-      else if(styleParams.style == 'dot'){
-        dataParam.points = {show: true, fill: true, fillColor: "#000000"};
+      if(styleParams.axisLabel){
+        dataParam.yaxis.axisLabel = styleParams.axisLabel;
+        //console.log(dataParam.yaxis.axisLabel);
+      };
+      
+       if(styleParams.style == 'dot'){
+        dataParam.points.show = true;
+        dataParam.points.fill = true;
+        dataParam.points.fillColor = "#000000";
         // console.log(dataParam);
       }
       else if(styleParams.style == 'circle'){
         dataParam.points = {show: true, fill: false};
         // console.log(dataParam);
       }
-      else if(styleParams.style == 'horizontalbar'){
+      else if(styleParams.style == 'horizontalbar'||styleParams.style == 'bar'){
         dataParam.bars.show = true;
         dataParam.bars.horizontal = true;
+        dataParam.points.shadowSize = 0;
+        
         // Have not accounted for the case horizontal bar with no start time and end time
         // console.log(dataParam);
       }

@@ -12,13 +12,13 @@ class sd_ssmManager extends TableManager {
 		return $result;
 	}
 	protected function setTableName(){
-		return "es_sd_rsm";
+		return "es_sd_ssm";
 	}
 	protected function setMonitoryType(){
 		return "Seismic";
 	} // monitory type Deformation, Gas, ....
 	protected function setDataType(){
-		return "RSAM";
+		return "SSAM";
 	} // Data type for each data table
 	//if there is 1 station, station1 is the same as station2
 	protected function setStationID(){
@@ -33,7 +33,7 @@ class sd_ssmManager extends TableManager {
 		$unit="";
 		$attribute = "";
 		$query = "";
-		$table = "sd_rsm";
+		$table = "sd_ssm";
 		$errorbar = false;
 		$style = "bar";
 		if($component == 'SSAM Low-freq Limit'){

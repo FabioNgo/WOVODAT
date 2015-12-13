@@ -6,7 +6,7 @@ class GasManager extends MonitoryTypeManager{
 		
 		$prefix = "gd_";
 		$result["gd"] = new gdManager;
-		$result[$prefix."flu"] = new gd_pluManager;
+		$result[$prefix."plu"] = new gd_pluManager;
 		$result[$prefix."sol"] = new gd_solManager;
 		return $result;
 	}

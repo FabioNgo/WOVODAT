@@ -18,7 +18,7 @@ class sd_rsmManager extends TableManager {
 		return "Seismic";
 	} // monitory type Deformation, Gas, ....
 	protected function setDataType(){
-		return "SSAM";
+		return "RSAM";
 	} // Data type for each data table
 	//if there is 1 station, station1 is the same as station2
 	protected function setStationID(){
@@ -47,7 +47,7 @@ class sd_rsmManager extends TableManager {
 		if($component == 'RSAM Count'){
 			$unit = "counts";
 			$attribute = "sd_rsm_count";
-			$query = "select a.sd_rsm_stime as stime, a.$attribute as value from $table  as a where a.sd_sam_id=%s and a.$attribute IS NOT NULL";
+			$query = "select a.sd_rsm_stime as stime, a.sd_rsm_count as value from sd_rsm as a, sd_sam as b where a.sd_sam_id=b.sd_sam_id and b.ss_id=%s and a.sd_rsm_count IS NOT NULL";
 		}
 		$result = array("unit" => $unit,
 						"style" => $style,

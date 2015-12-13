@@ -46,6 +46,12 @@ define(function(require) {
         return;
       }
       this.$el.html("");
+      var unit = undefined;
+      for(var i=0;i<this.data.length;i++){
+        if(this.data[i].yaxis.axisLabel != undefined){
+          unit = this.data[i].yaxis.axisLabel;
+        }
+      };
       var options = {
             // series: {
             //   points:{
@@ -73,10 +79,10 @@ define(function(require) {
               min: this.minY,
               max: this.maxY,
               ticks: this.ticks,
-              labelWidth: 30,
+              labelWidth: 40,
               zoomRange: false,
-              //axisLabel: this.dataUnit,
-              //axisLabelUseCanvas: true
+              axisLabel: unit,
+              axisLabelUseCanvas: true
             },
             grid: {
               hoverable: true,
@@ -89,8 +95,7 @@ define(function(require) {
               show: true,
             },
             
-          };
-          
+          }; 
       if (!this.data || !this.data.length) {
         this.$el.html('');
         return;
@@ -102,6 +107,7 @@ define(function(require) {
       // plot the time series graph after being selected (eg. onSelect in OverViewGraph).
       // config graph theme colors
       options.colors = ["#000000", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"];
+      //console.log(this.data);
       this.graph = $.plot(this.$el, this.data, options);
       this.$el.bind('plothover', this.tooltip,this.onHover);
       var eventData = {
@@ -159,7 +165,11 @@ define(function(require) {
         return;
       }
       var filters = [this.filters];
-      GraphHelper.formatData(this,filters,true);
+      var allowErrorbar = true;
+      var allowAxisLabel =true;
+      var limitNumberOfData =false;
+      //formatData: function(graph,filters,allowErrorbar,allowAxisLabel,limitNumberOfData)
+      GraphHelper.formatData(this,filters,allowErrorbar,allowAxisLabel,limitNumberOfData); 
     },
     
     destroy: function() {

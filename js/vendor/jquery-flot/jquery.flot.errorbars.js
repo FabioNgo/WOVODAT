@@ -116,7 +116,10 @@ shadowSize and lineWidth are derived as well from the points series.
     function parseErrors(series, i){
 
         var points = series.datapoints.points;
-
+        var errstep=2;
+        if(series.bars.show && series.bars.fullparams){
+            errstep=4
+        }
         // read errors from points array
         var exl = null,
                 exu = null,
@@ -129,27 +132,27 @@ shadowSize and lineWidth are derived as well from the points series.
         // error bars - first X
         if (eb == 'x' || eb == 'xy') {
             if (xerr.asymmetric) {
-                exl = points[i + 2];
-                exu = points[i + 3];
+                exl = points[i + errstep];
+                exu = points[i + errstep+1];
                 if (eb == 'xy')
                     if (yerr.asymmetric){
-                        eyl = points[i + 4];
-                        eyu = points[i + 5];
-                    } else eyl = points[i + 4];
+                        eyl = points[i + errstep+2];
+                        eyu = points[i + errstep+3];
+                    } else eyl = points[i + errstep+2];
             } else {
-                exl = points[i + 2];
+                exl = points[i + errstep];
                 if (eb == 'xy')
                     if (yerr.asymmetric) {
-                        eyl = points[i + 3];
-                        eyu = points[i + 4];
-                    } else eyl = points[i + 3];
+                        eyl = points[i + errstep+1];
+                        eyu = points[i + errstep+2];
+                    } else eyl = points[i + errstep+1];
             }
         // only Y
         } else if (eb == 'y')
             if (yerr.asymmetric) {
-                eyl = points[i + 2];
-                eyu = points[i + 3];
-            } else eyl = points[i + 2];
+                eyl = points[i + errstep];
+                eyu = points[i + errstep+1];
+            } else eyl = points[i + errstep];
 
         // symmetric errors?
         if (exu == null) exu = exl;
@@ -209,6 +212,11 @@ shadowSize and lineWidth are derived as well from the points series.
                     //data coordinates
                     var x = points[i],
                         y = points[i + 1];
+                    if(s.bars.fullparams && s.bars.show){
+                        x = (points[i]+points[i+1])/2;
+                        y = (points[i+2]+points[i+3 ])/2
+                    }
+                    
 
                     //errorbar ranges
                     var upper = [x, y][e] + errRanges[e * err.length + 1],
@@ -275,7 +283,7 @@ shadowSize and lineWidth are derived as well from the points series.
                     ctx.strokeStyle = err[e].color? err[e].color: s.color;
                     ctx.lineWidth = lw;
                     //draw it
-                    drawError(ctx, err[e], x, y, upper, lower, drawUpper, drawLower, radius, 0, minmax);
+                    drawError(ctx, err[e], x, y, upper, lower, drawUpper, drawLower, radius, lw/2, minmax);
                 }
             }
         }
@@ -290,15 +298,15 @@ shadowSize and lineWidth are derived as well from the points series.
 
         // error bar - avoid plotting over circles
         if (err.err == 'x'){
-            if (upper > x + radius) drawPath(ctx, [[upper,y],[Math.max(x + radius,minmax[0]),y]]);
+            if (upper > x + radius) drawPath(ctx, [[upper,y],[Math.max(x,minmax[0]),y]]);
             else drawUpper = false;
-            if (lower < x - radius) drawPath(ctx, [[Math.min(x - radius,minmax[1]),y],[lower,y]] );
+            if (lower < x - radius) drawPath(ctx, [[Math.min(x,minmax[1]),y],[lower,y]] );
             else drawLower = false;
         }
         else {
-            if (upper < y - radius) drawPath(ctx, [[x,upper],[x,Math.min(y - radius,minmax[0])]] );
+            if (upper < y - radius) drawPath(ctx, [[x,upper],[x,Math.min(y,minmax[0])]] );
             else drawUpper = false;
-            if (lower > y + radius) drawPath(ctx, [[x,Math.max(y + radius,minmax[1])],[x,lower]] );
+            if (lower > y + radius) drawPath(ctx, [[x,Math.max(y,minmax[1])],[x,lower]] );
             else drawLower = false;
         }
 

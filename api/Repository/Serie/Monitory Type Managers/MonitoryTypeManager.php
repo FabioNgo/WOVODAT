@@ -19,7 +19,7 @@ abstract class MonitoryTypeManager implements MonitoryTypeManagerInterface {
 		global $db;
 		$db->query($this->timeSeriesListQuery,$vd_id);
 		$stations = $db->getList();
-
+		// var_dump($this->tableManagers);
 		foreach ($this->tableManagers as $col => $tableManager) {
 			// var_dump($tableManager);	
 			$result = array_merge($result,$tableManager->getTimeSeriesList($vd_id,$stations));
