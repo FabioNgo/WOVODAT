@@ -8,6 +8,7 @@ define(function(require) {
       Volcano = require('models/volcano'),
       Volcanoes = require('collections/volcanoes'),
       VolcanoSelect = require('views/volcano_select'),
+      TimeSeriesSelect = require('views/time_series_select'),
       Eruption = require('models/eruption'),
       Eruptions = require('collections/eruptions'),
       EruptionSelect = require('views/eruption_select'),
@@ -15,13 +16,12 @@ define(function(require) {
       EruptionForecasts = require('collections/eruption_forecasts'),
       EruptionForecastsGraph = require('views/eruption_forecast_graph'),
       TimeSerie = require('models/serie'),
-      TimeSeriesSelect = require('views/time_series_select'),   
+      // TimeSeriesSelect = require('views/time_series_select'),
       OverviewGraphContainer = require('views/overview_graph_container'),
       OverviewGraph = require('views/overview_graph'),
       Filter = require('models/filter'),
       FilterSelect = require('views/filter_select'),
       Filters = require('collections/filters'),
-      
       TimeRange = require('models/time_range'),
       TimeSeries = require('collections/series'),
       TimeSeriesContainer = require('views/time_series_container'),
@@ -33,6 +33,7 @@ define(function(require) {
     el: '#main',
     
     initialize: function() {
+      require('material');
       this.render();
     },
     render: function() {

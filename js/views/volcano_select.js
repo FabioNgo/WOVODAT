@@ -21,24 +21,64 @@ define(function(require) {
       this.collection = options.collection;
       this.collection.fetch();
       this.listenTo(this.collection, 'sync', this.render);
+      
     },
 
     render: function() {
       this.$el.html(this.template({
         volcanoes: this.collection.models
       }));
+
+      // read volcano parameter on url
+      var  vd_num = this.getUrlParameter("vnum");
+      if(vd_num == undefined){
+        $('select').material_select();
+      }
+      for(var i=0;i<this.collection.models.length;i++){
+        var model = this.collection.models[i];
+        if(vd_num == model.get("vd_num")){
+          this.selectingVolcano.set('vd_id', model.id); // .set auto call event in eventhandler 
+          this.selectingVolcano.trigger("update");
+          break;
+        }
+      }
+      
     },
 
     changeSelection: function(vd_id) {
-      this.$el.find('select').val(vd_id);
+      
+      $(document).ready(function() {
+        $('select').val(vd_id);
+        $('select').material_select();
+      });
+      
     },
+    getUrlParameter: function(sParam) {
+      var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+          sURLVariables = sPageURL.split('&'),
+          sParameterName,
+          i;
 
+      for (i = 0; i < sURLVariables.length; i++) {
+          sParameterName = sURLVariables[i].split('=');
+
+          if (sParameterName[0] === sParam) {
+              return sParameterName[1] === undefined ? true : sParameterName[1];
+          }
+      }
+    },
     onSelectChange: function() {
       var vd_id = this.$el.find('select').val();
-      if (vd_id) {
-        this.selectingVolcano.set('vd_id', vd_id); // .set auto call event in eventhandler 
-        this.selectingVolcano.trigger("update");
+      for(var i=0;i<this.collection.models.length;i++){
+        var model = this.collection.models[i];
+        if(vd_id == model.id){
+          window.location.replace("http://localhost/eruption/?vnum="+model.get("vd_num"));
+        }
       }
+      // if (vd_id) {
+      //   this.selectingVolcano.set('vd_id', vd_id); // .set auto call event in eventhandler 
+      //   this.selectingVolcano.trigger("update");
+      // }
     }
   });
 });

@@ -1,13 +1,15 @@
 require.config({
   paths: {
     // Vendors.
-    'jquery': 'vendor/jquery/dist/jquery.min',
-    'backbone': 'vendor/backbone-amd/backbone-min',
-    'underscore': 'vendor/underscore-amd/underscore-min',
-    'text': 'vendor/requirejs-text/text',
-    'moment': 'vendor/moment/moment',
-    'pace': 'vendor/pace/pace.min',
-
+    'jquery': '//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min',
+    'backbone': '//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min',
+    'underscore': '//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min',
+    'text': '//cdnjs.cloudflare.com/ajax/libs/require-text/2.0.12/text.min',
+    'moment': '//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min',
+    'pace': '//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min',
+    'material':'//cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min',
+    'hammer':'//cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.4/hammer',
+    'velocity':'//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min',
     'jquery.flot': 'vendor/jquery-flot/jquery.flot.wovodat',
     'jquery.flot.navigate': 'vendor/jquery-flot/jquery.flot.navigate',
     'jquery.flot.selection': 'vendor/jquery-flot/jquery.flot.selection',
@@ -16,6 +18,11 @@ require.config({
     'jquery.flot.tickrotor': 'vendor/jquery-flot/jquery.flot.tickrotor',
     'jquery.flot.errorbars': 'vendor/jquery-flot/jquery.flot.errorbars',
     'jquery.flot.axislabels': 'vendor/jquery-flot/jquery.flot.axislabels',
+  },
+  shim: {
+    'material': {
+      deps: ['jquery', 'hammer', 'velocity']
+    }
   },
   config: {
       moment: {

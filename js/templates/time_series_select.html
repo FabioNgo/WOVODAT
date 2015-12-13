@@ -5,55 +5,17 @@ var curCategory = "";
 var maxNumCol = 4;
 var colWidth = 100.0/3;
 var count = 0;
-
-if (!_.isEmpty(timeSeries)) { 
-	
-	
-	
-	%>
-    <div class="time-serie-select">
-    <div class="title">Available Data:</div>
-    <div class="time-serie-select-container" id="time-serie-select">
-
-	<table  class="time-serie-select-table">
-    <% _.forEach(timeSeries, function(timeSerie) { 
-
-    	if(curCategory != timeSerie.get('category')){
-    		
-    		if(curCategory != ""){ %>
-            <!-- end 1 category -->
-    			</div>
-    			
-    			</td>
-    			
-    			<% 
-	    		count = (count+1)%maxNumCol; 
-	    		if(count == 0){ %>
-                <!-- end last group cat , go to the new row -->
-	    			</tr>
-
-	    		<%}
-    		}
-    		curCategory = timeSerie.get('category'); 
-    		if(count==0) { %>
-                <!-- start new group cat -->
-    			<tr class="group-cat">
-    		<% }
-    		%>
-            <!-- list categories -->
-    		<td class="category">
-    			<input type="checkbox" name ="category" value="<%= timeSerie.get('category') %>"/> <%= timeSerie.get('category') %>
-    				<div style="padding-top:5px">
-    		<%
-
-		}
-    	%>             <!-- list stations -->
-    					<ul class="list-station"><input  type="checkbox" name = "<%= timeSerie.get('category') %>" value="<%= timeSerie.get('sr_id') %>"/>
-    					 <%= timeSerie.get('station_code1') %> (<%= timeSerie.get('component') %>)</ul>
-    <% }); %>
-    </table>
-  </div><!--end time serie select container -->
-<% } else { %>
-  <div class="message">No time serie found.</div>
-<% } %>
-    </div>
+var station1 = "";
+var station2= "";
+%>
+  <div class="card-panel">
+    <div class="input-field col s12 ">
+    <select multiple>
+      <option value="" disabled selected>Choose your Seismic data</option>
+      <option value="1">Option 1</option>
+      <option value="2">Option 2</option>
+      <option value="3">Option 3</option>
+    </select>
+    <label>Materialize Multiple Select</label>
+  </div>
+  </div>
