@@ -7,15 +7,132 @@ var colWidth = 100.0/3;
 var count = 0;
 var station1 = "";
 var station2= "";
+var seismic = timeSeries.Seismic;
+console.log(timeSeries);
+var deformation = timeSeries.Deformation;
+var gas = timeSeries.Gas;
+var hydrology = timeSeries.Hydrology;
+var thermal = timeSeries.Thermal;
+var field = timeSeries.Field;
+var meteology = timeSeries.Meteology;
+var station1 ="";
+var station2 = "";
+function determineStationCode(data){
+  if(data.get('station_id1') == data.get('station_2')){
+    station1 = data.get('station_code1');
+    station2 = "";
+  }else{
+    if(data.get('station_id1') == 0){
+      station1 = "";
+      station2 = data.get('station_code2');
+    }else {
+      station1 = data.get('station_code1');
+      if(data.get('station_code2') == 0){
+        station2 = "";
+      }else{
+        station2 = " - "+data.get('station_code2');
+      }
+    }
+  }
+}
 %>
   <div class="card-panel">
     <div class="input-field col s12 ">
     <select multiple>
       <option value="" disabled selected>Choose your Seismic data</option>
-      <option value="1">Option 1</option>
-      <option value="2">Option 2</option>
-      <option value="3">Option 3</option>
+      <% 
+      if(seismic != undefined){
+      for(var i = 0; i<seismic.length;i++){
+        var data = seismic[i];
+        this.determineStationCode(data);
+       %>
+        <option value="<%= data.sr_id %>"><%= station1 %><%= station2 %> (<%= data.get('component') %> </option>
+      <%}}%>
     </select>
-    <label>Materialize Multiple Select</label>
-  </div>
+    <label>Seismic Data</label>
+    </div>
+    <div class="input-field col s12 ">
+    <select multiple>
+      <option value="" disabled selected>Choose your Deformation data</option>
+      <% 
+      if(deformation != undefined){
+      for(var i = 0; i<deformation.length;i++){
+        var data = deformation[i];
+        this.determineStationCode(data);
+       %>
+        <option value="<%= data.sr_id %>"><%= station1 %><%= station2 %> (<%= data.get('component') %> </option>
+      <%}}%>
+    </select>
+    <label>Deformation Data</label>
+    </div>
+    <div class="input-field col s12 ">
+    <select multiple>
+      <option value="" disabled selected>Choose your Gas data</option>
+      <% 
+      if(gas != undefined){
+      for(var i = 0; i<gas.length;i++){
+        var data = gas[i];
+        this.determineStationCode(data);
+       %>
+        <option value="<%= data.sr_id %>"><%= station1 %><%= station2 %> (<%= data.get('component') %> </option>
+      <%}}%>
+    </select>
+    <label>Gas Data</label>
+    </div>
+    <div class="input-field col s12 ">
+    <select multiple>
+      <option value="" disabled selected>Choose your Thermal data</option>
+      <% 
+      if(thermal != undefined){
+      for(var i = 0; i<thermal.length;i++){
+        var data = thermal[i];
+        this.determineStationCode(data);
+       %>
+        <option value="<%= data.sr_id %>"><%= station1 %><%= station2 %> (<%= data.get('component') %> </option>
+      <%}}%>
+    </select>
+    <label>Thermal Data</label>
+    </div>
+    <div class="input-field col s12 ">
+    <select multiple>
+      <option value="" disabled selected>Choose your Hydrology data</option>
+      <% 
+      if(hydrology != undefined){
+      for(var i = 0; i<hydrology.length;i++){
+        var data = hydrology[i];
+        this.determineStationCode(data);
+       %>
+        <option value="<%= data.sr_id %>"><%= station1 %><%= station2 %> (<%= data.get('component') %> </option>
+      <%}}%>
+    </select>
+    <label>Hydrology Data</label>
+    </div>
+    <div class="input-field col s12 ">
+    <select multiple>
+      <option value="" disabled selected>Choose your Meteology data</option>
+      <% 
+      if(meteology != undefined){
+      for(var i = 0; i<meteology.length;i++){
+        var data = meteology[i];
+        this.determineStationCode(data);
+       %>
+        <option value="<%= data.sr_id %>"><%= station1 %><%= station2 %> (<%= data.get('component') %> </option>
+      <%}}%>
+    </select>
+    <label>Meteology Data</label>
+    </div>
+    <div class="input-field col s12 ">
+    <select multiple>
+      <option value="" disabled selected>Choose your Field data</option>
+      <% 
+      if(field != undefined){
+      for(var i = 0; i<field.length;i++){
+        var data = field[i];
+        this.determineStationCode(data);
+       %>
+        <option value="<%= data.sr_id %>"><%= station1 %><%= station2 %> (<%= data.get('component') %> </option>
+      <%}}%>
+    </select>
+    <label>Field Data</label>
+    </div>
   </div>
