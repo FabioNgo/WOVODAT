@@ -76,21 +76,20 @@ define(function(require) {
       this.$el.width(0);
       this.trigger('hide');
     },
-    gernerateBarChartFlotData: function(data,color,label,barWidth,dataType,name){
+    gernerateBarChartFlotData: function(data,color,label,dataType,name){
       return {
-        data: [data],
+        data: data,
         color: color,
         label: label,
         bars:{
           show: true,
-          barWidth: barWidth,
+          fullparams: true,
+          horizontal:true,
           
 
         },
         dataType: dataType,
         name: name,
-        startTime: data[0],
-        endTime: data[0]+barWidth,
       }
     },
     render: function() {
@@ -121,7 +120,6 @@ define(function(require) {
               tickSize: 1,
               panRange: false,
               zoomRange: false,
-              tickFormatter: function(val, axis) { return val < axis.max ? val.toFixed(0) : 'VEI'; },
               labelWidth: 30,
               panRange: false
             },
@@ -136,18 +134,14 @@ define(function(require) {
       
       /** Phreatic Eruption **/
       var temp = data.ed_phs_data;
-      for(var i =0;i<temp.length;i++){
-        if(i==0){
-          graph_pram_data.push(this.gernerateBarChartFlotData(temp[i].data,'#F44336','Eruption Phase',temp[i].duration,'ed_phs',temp[i].type));
-        }else{
-          graph_pram_data.push(this.gernerateBarChartFlotData(temp[i].data,'#F44336',undefined,temp[i].duration,'ed_phs',temp[i].type));
-        }
-      }
+      
+      graph_pram_data.push(this.gernerateBarChartFlotData(temp,'#F44336','Eruption Phase','ed_phs',""));
+        
       /** Eruption part **/
-      graph_pram_data.push(this.gernerateBarChartFlotData (data.edData.data, 'Gray','Eruption', data.edData.duration,'ed',""));
+      graph_pram_data.push(this.gernerateBarChartFlotData ([data.edData.data], 'Gray','Eruption','ed',""));
       el.width('auto');
       el.height(150);
-      el.addClass("eruption-graph");
+      el.addClass("eruption-graph card-panel");
       this.graph = $.plot(el, graph_pram_data, option);
       var eventDataZoom = {
         startTime: this.startTime,
@@ -234,7 +228,8 @@ define(function(require) {
     prepareData: function() {
       var self = this,
           edData,
-          ed_phs_data = [];
+          ed_phs_data = [],
+          ed_phs_data_type = [];
 
         if(this.selectingEruption == undefined){ // no eruption is selected
           return;
@@ -244,7 +239,7 @@ define(function(require) {
         // console.log(ed);
         var ed_stime = ed.get('ed_stime'),
             ed_etime = ed.get('ed_etime'),
-            ed_vei = ed.get('ed_vei');
+            ed_vei = parseInt(ed.get('ed_vei'));
         var start_date = new Date(ed_stime);
         this.startTime = this.getStartingTime(ed_stime);
         this.endTime = this.startTime+ Const.ONE_YEAR;
@@ -253,9 +248,8 @@ define(function(require) {
         
         
         edData = {
-          data: [ed_stime, 0,ed_vei],
-          0: 0,
-          duration: ed_etime - ed_stime,
+          //left,right,bottom,up
+          data: [ed_stime, ed_etime,0,ed_vei],
           attributes: ed.attributes
         };
         // endOfTime = Math.max(endOfTime, ed_stime + Const.ONE_YEAR);
@@ -264,7 +258,6 @@ define(function(require) {
           
           var ed_phs_stime = ed_phs.ed_phs_stime,
               ed_phs_etime = ed_phs.ed_phs_etime,
-              ed_phs_duration = ed_phs_etime - ed_phs_stime,
               ed_phs_lower_vei = undefined,
               ed_phs_upper_vei = undefined,
               ed_phs_type = ed_phs.ed_phs_type;
@@ -293,18 +286,19 @@ define(function(require) {
             ed_phs_lower_vei = 0;
             ed_phs_upper_vei = ed_phs.ed_phs_vei;
           }
-          ed_phs_data.push({
-            data: [ed_phs_stime,ed_phs_lower_vei,ed_phs_upper_vei],
-            duration: ed_phs_duration,
-            type: ed_phs_type
-          });
+          ed_phs_data.push(
+            //left,right,bottom,up
+            [ed_phs_stime,ed_phs_etime,ed_phs_lower_vei,ed_phs_upper_vei]
+            
+          );
+          ed_phs_data_type.push(ed_phs_type);
         });
       // });
 
       return {
         edData: edData,
-        ed_phs_data: ed_phs_data
-        
+        ed_phs_data: ed_phs_data,
+        ed_phs_data_type: ed_phs_data_type
       };
     }
   });

@@ -26,8 +26,7 @@ define(function(require) {
       TimeSeries = require('collections/series'),
       TimeSeriesContainer = require('views/time_series_container'),
       TimeSeriesGraphContainer = require('views/time_serie_graph_container'),
-      EventHandler = require('handler/event_handler'),
-      UrlLoader = require('models/url_loader');
+      EventHandler = require('handler/event_handler');
 
   return Backbone.View.extend({
     el: '#main',
@@ -119,12 +118,12 @@ define(function(require) {
 
           }),
 
-          urlLoader = new UrlLoader({
-            observer: observer,
-            volcanoes: volcanoes,
-            eruptions: eruptions,
-            selectingEruptions: selectingEruptions
-          }),
+          // urlLoader = new UrlLoader({
+          //   observer: observer,
+          //   volcanoes: volcanoes,
+          //   eruptions: eruptions,
+          //   selectingEruptions: selectingEruptions
+          // }),
 
           eventHandler = new EventHandler({
             volcanoSelect: volcanoSelect,
@@ -161,7 +160,7 @@ define(function(require) {
       eruptionGraph.$el.appendTo(this.$el);
       eruptionForecastsGraph.$el.appendTo(this.$el);
       timeSeriesGraphContainer.$el.appendTo(this.$el);
-      urlLoader.$el.appendTo(this.$el);
+      // urlLoader.$el.appendTo(this.$el);
 
       // new EruptionForecastGraph({
       //   collection: new EruptionForecasts(),

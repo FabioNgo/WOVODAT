@@ -23,7 +23,22 @@ require.config({
   shim: {
     'material': {
       deps: ['jquery', 'hammer', 'velocity']
-    }
+    },
+    'jquery.flot.time': {
+      deps: ['jquery.flot']
+    },
+    'jquery.flot.navigate': {
+      deps: ['jquery.flot']
+    },
+    'jquery.flot.errorbars': {
+      deps: ['jquery.flot']
+    },
+    'jquery.flot.axislabels': {
+      deps: ['jquery.flot']
+    },
+    'jquery.flot.legendoncanvas': {
+      deps: ['jquery.flot']
+    },
   },
   config: {
       moment: {
