@@ -40,21 +40,26 @@ define(['jquery', 'backbone'], function($, Backbone) {
     /** return the data of time serie in term of filter**/
     getDataFromFilter: function(filterName){
       var data = [];
-      var filters = this.filters;
-      if(filters == undefined){
-        return undefined;
-      }
-      var filter;
-      //find filter
-      for(var i =0;i<filters.length;i++){
-        if(filters[i].name == filterName){
-          filter = filters[i];
-          break;
-        }
-      }
+      // var filters = this.filters;
+      // if(filters == undefined){
+      //   return undefined;
+      // }
+      // var filter;
+      // //find filter
+      // for(var i =0;i<filters.length;i++){
+      //   if(filters[i].name == filterName){
+      //     filter = filters[i];
+      //     break;
+      //   }
+      // }
       // get data
-      for(var i=0; i< filter.dataIndex.length;i++ ){
-        data.push(this.get('data').data[filter.dataIndex[i]]);
+      var serieDatas = this.get('data').data;
+      for(var i=0; i< serieDatas.length;i++ ){
+        var serieData = serieDatas[i];
+        if(filterName == serieData.filter){
+          data.push(serieData);
+        }
+        
       }
       return data;
     }

@@ -66,14 +66,7 @@ define(function(require) {
                       break;
                     }
                   }
-                  // var index = this.indexOfFilter(filters,data[i].filter);
-                  /** push data **/
-                  if(index == -1){
-                    filters.push({name: data[i].filter, dataIndex: []});
-                    index = filters.length-1;
-                  }
-                  filters[index].dataIndex.push(i);
-                };
+                }
                 model.filters = filters;
                 // console.log(model);
                 

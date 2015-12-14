@@ -31,12 +31,12 @@ define(function(require) {
       }
       
     },
-    pop: function(timeSerie,filter){
+    pop: function(timeSerie,filterName){
       var index = this.indexOfTimeSerie(timeSerie);
       if(index == -1){
         return;
       }else{
-        this.models[index].removeFilter(filter);
+        this.models[index].removeFilter(filterName);
       }
       if(this.models[index].name.length == 0){
         this.remove(this.models[index]);

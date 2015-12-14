@@ -3,7 +3,7 @@ define(function(require) {
   var $ = require('jquery'),
       Backbone = require('backbone'),
       _ = require('underscore'),
-      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection','excanvas','jquery.flot.errorbars']),
+      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection','excanvas','jquery.flot.errorbars','jquery.flot.legendoncanvas']),
       TimeRange = require('models/time_range'),
       GraphHelper = require('helper/graph');
   return Backbone.View.extend({
@@ -76,6 +76,9 @@ define(function(require) {
             zoom: {
               interactive: false,
             },
+            legend :{
+              type: 'canvas'
+            },
           };
           //pass color into options
           options.colors = ["#000000", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"];
@@ -87,7 +90,7 @@ define(function(require) {
 
       this.$el.width('auto');
       this.$el.height(200);
-      this.$el.addClass("overview-graph");
+      this.$el.addClass("overview-graph card-panel progress indeterminate");
 
       //limit data to be rendered
       
@@ -95,6 +98,7 @@ define(function(require) {
       this.graph = $.plot(this.$el, this.data, options);
       //To edit the series object, go to GraphHelper used for data in the prepareData method below.
       this.$el.bind('plotselected', this.selectingTimeRange, this.onSelect);
+
     },
 
     update: function() {

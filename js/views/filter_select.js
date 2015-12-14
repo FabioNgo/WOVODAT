@@ -84,33 +84,13 @@ define(function(require) {
           var filterName = filter.name[j];
           if(filterName == " "){
             //select data having no filter (filter = " ")
-            var timeSerie = this.selectingTimeSeries.getTimeSerie(this.filters[i].timeSerie);
-            this.selectingFilters.push(timeSerie,filters[i].filter);
+            var timeSerie = this.selectingTimeSeries.get(filter.timeSerie.sr_id);
+            this.selectingFilters.push(timeSerie,filterName);
           }
         }
       }
       this.selectingFilters.trigger('update');
       var selectingFilters = this.selectingFilters.getAllFilters();
-      /* check selected filters */
-      // var selects = $('.filter-select');
-      // // for(var i = 0; i<selects.length;i++){
-      //   var select = selects;
-      //   var ul = select.prev();
-      //   for(var j=0;j<selectingFilters.length;j++){
-      //     var selectingFilter = selectingFilters[j];
-      //     var value = selectingFilter.timeSerie + " " +selectingFilter.filter;
-      //     var checkboxesArr = ul.children('li').toArray();
-      //     for(var k = 0;k<checkboxesArr.length;k++){
-      //       var checkbox = checkboxesArr[k];
-      //       var option = select.children('option').toArray()[k];
-      //       if(option.value == value){
-      //         $(checkbox).addClass('active');
-      //       }else{
-      //         $(checkbox).removeClass('active');
-      //       }
-      //     }
-      //   // }
-      // }
       this.$el.html(this.template({
         filters : this.filters.models,
         selectings :this.selectingFilters
@@ -143,7 +123,7 @@ define(function(require) {
       
       for(var i = 0;i<newValuesArr.length;i++){
           var value = newValuesArr[i];
-          var temp = value.split(" ");
+          var temp = value.split("_");
           this.selectingFilters.push(this.selectingTimeSeries.get(temp[0]),temp[1]);
         
       }
