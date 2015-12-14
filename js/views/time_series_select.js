@@ -11,7 +11,7 @@ define(function(require) {
     el: '',
 
     events: {
-      'change input': 'onChange'
+      'change select': 'showFilter'
     },
 
     template: _.template(template),
@@ -46,20 +46,32 @@ define(function(require) {
       this.$el.html(this.template({
         timeSeries: timeSeries.groupedData,
       }));
-      $('select').material_select();
+      $('.time-serie-select').material_select();
+      // $('#showGraphBtn').click(function(){
+      //   this.showGraph());
+      // });
+      
     },
 
-    onChange: function(event) {
-      var input = event.target;
-      
-          
-      if($(input).attr('name') == "category"){ // check category(parent) checkbox
-        toggle(input,this.selectings,this.timeSeries);
+    showFilter: function(event) {
         
-      }else{ //check/uncheck child checkbox
-        addSelection(input,this.selectings,this.timeSeries);
-        categoryCheckBoxChange(input);
+        
+      
+      this.selectings.reset();
+      var newValuesArr = [];
+      var select = $('.time-serie-select');
+      var ul = select.prev();
+      ul.children('li').toArray().forEach(function (li, i) {
+          if ($(li).hasClass('active')) {
+              newValuesArr.push(select.children('option').toArray()[i].value);
+          }
+      });
+      for(var i = 0;i<newValuesArr.length;i++){
+        
+          this.selectings.add(this.timeSeries.get(newValuesArr[i]));
+        
       }
+      this.selectings.trigger("change");
       
       
     },

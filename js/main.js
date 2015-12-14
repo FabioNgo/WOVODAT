@@ -7,7 +7,7 @@ require.config({
     'text': '//cdnjs.cloudflare.com/ajax/libs/require-text/2.0.12/text.min',
     'moment': '//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min',
     'pace': '//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min',
-    'material':'//cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/js/materialize.min',
+    'material':'vendor/materialize/materialize',
     'hammer':'//cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.4/hammer',
     'velocity':'//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min',
     'jquery.flot': 'vendor/jquery-flot/jquery.flot.wovodat',

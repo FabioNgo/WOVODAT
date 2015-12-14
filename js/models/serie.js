@@ -14,7 +14,28 @@ define(['jquery', 'backbone'], function($, Backbone) {
       
     },
     getName: function(){
-      return ""+this.get('category')+" - " + this.get('station_code1')+" (" + this.get('component') +")";
+      var data = this.attributes;
+      var station1 = "";
+      var station2 = "";
+      if(data.station_id1 == data.station_id2){
+        station1 = data.station_code1;
+        station2 = "";
+      }else{
+        if(data.station_id1 == "0"){
+          station1 = "";
+          station2 = data.station_code2;
+        }else {
+          station1 = data.station_code1;
+          if(data.station_id == "0"){
+            station2 = "";
+          }else{
+            station2 = " - "+data.station_code2;
+          }
+        }
+      }
+      var component = data.component;
+      return station1 + station2 + "(" + component +")";
+      
     },
     /** return the data of time serie in term of filter**/
     getDataFromFilter: function(filterName){

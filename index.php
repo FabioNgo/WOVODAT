@@ -8,8 +8,8 @@
 ?> 
 <html>
   <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.3/css/materialize.min.css">
-
+    <link rel="stylesheet" href="css/materialize.css">
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <title>WOVOdat :: The World Organization of Volcano Observatories (WOVO): Database of Volcanic Unrest (WOVOdat), by IAVCEI</title>
     <meta http-equiv="content-type" content="text/html;charset=iso-8859-1">
     <meta http-equiv="cache-control" content="no-cache, must-revalidate">

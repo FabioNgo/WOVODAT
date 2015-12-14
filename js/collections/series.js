@@ -11,6 +11,7 @@ define(function(require) {
     initialize: function() {
       // this.isVocalnoChanged = false;
     },
+    
     changeVolcano: function(vd_id, handler) {
 
       this.url = 'api/?data=time_series_list&vd_id=' + vd_id;
@@ -27,7 +28,7 @@ define(function(require) {
             }
             collection.groupedData[currentCategory].push(model);
           }
-          
+          collection.trigger("loaded");
         }
       });
       
@@ -36,10 +37,18 @@ define(function(require) {
     updateData: function(){
         //success: function(collection,response){
         for(var i=0;i<this.models.length;i++){
+          
+        }
+    },
+
+    get: function(sr_id){
+      for(var i =0;i<this.models.length;i++){
+        if(this.models[i].sr_id == sr_id){
+          
           if(!this.models[i].loaded){
             this.models[i].fetch({
               success: function(model, response) {
-            // console.log(e);
+            // console.log(e); 
                 var filters = [];
                 
                 var data = model.get('data').data;
@@ -67,18 +76,12 @@ define(function(require) {
                 };
                 model.filters = filters;
                 // console.log(model);
+                
                 model.loaded = true;
+                model.name = model.getName();
               }
             })
-          }
-        }
-    },
-
-    getTimeSerie: function(sr_id){
-      for(var i =0;i<this.models.length;i++){
-        if(this.models[i].sr_id == sr_id){
-          
-            
+          }  
           return this.models[i];           
  
           

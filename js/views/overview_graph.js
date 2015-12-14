@@ -91,7 +91,7 @@ define(function(require) {
 
       //limit data to be rendered
       
-      console.log(this.data);
+      // console.log(this.data);
       this.graph = $.plot(this.$el, this.data, options);
       //To edit the series object, go to GraphHelper used for data in the prepareData method below.
       this.$el.bind('plotselected', this.selectingTimeRange, this.onSelect);
