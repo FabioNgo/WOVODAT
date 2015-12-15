@@ -1,10 +1,19 @@
-<div class = "eruption-select">
-<select >
-	<option value="-1">------</option>
+<div class = "card-panel">
+<% if (eruptions.length == 0){ %>
+	<div class="message">No eruption found.</div>
+<% } else{ %>
+<div class="input-field col s12">
+<select class="eruption-select" >
+	<option value="-1" selected>Please select an eruption</option>
 	<% _.each(eruptions, function(eruption) {
+		var temp = new Date('0001-01-01');
 		
+		if(eruption.get('ed_stime')>temp.getTime()){
 		%>
 	  <option value="<%= eruption.get('ed_id') %>" ><%= eruption.getDate() %></option>
-	<% }); %>
+	<% }}); %>
 </select>
+<label>Select Eruption</label>
+</div>
+<% } %>
 </div>

@@ -17,6 +17,8 @@ define(function(require) {
       this.fetch().done(handler);
     },
     getAvailableEruptions: function(timeRange){
+      
+      
       if(timeRange == undefined){
         return this.models;
       }else{

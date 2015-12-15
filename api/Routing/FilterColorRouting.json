@@ -1,0 +1,11 @@
+{
+    "controller": "FilterColorController",
+    "routing":
+    [
+        {
+            "request": "filter_color_list",
+            "method": "loadFilterColor",
+            "params": []
+        }
+    ]
+}

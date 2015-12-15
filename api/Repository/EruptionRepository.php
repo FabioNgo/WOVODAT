@@ -30,7 +30,7 @@
 		*/
 		public static function getEruptionIdList($vd_id) {
 			global $db;
-			$query = "select ed_id from ed where ed.vd_id = %d and ed.ed_etime IS NOT NULL ORDER BY ed.ed_etime DESC" ;
+			$query = "select ed_id from ed where ed.vd_id = %d ORDER BY ed.ed_stime DESC" ;
 			$db->query($query, $vd_id);
 			return $db->getList();
 		}

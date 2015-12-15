@@ -9,7 +9,7 @@ define(function(require) {
       edTemplate = require('text!templates/tooltip_ed.html'),
       edphsTemplate = require('text!templates/tooltip_ed_phs.html'),
       TimeRange = require('models/time_range'),
-      Tooltip = require('views/tooltip');
+      Tooltip = require('views/eruption_tooltip');
 
   return Backbone.View.extend({
     el: '',
@@ -23,8 +23,10 @@ define(function(require) {
       );
       this.observer = options.observer;
       //this.eruptions = options.eruptions;
-      this.timeRange = new TimeRange();
+      this.timeRange = options.eruptionTimeRange;
+      this.overviewGraphTimeRange = options.overviewGraphTimeRange;
       this.serieGraphTimeRange = options.serieGraphTimeRange;
+      this.forecastsGraphTimeRange = options.forecastsGraphTimeRange;
       // this.eruptions = new Array();
       this.selectingEruption = options.selectingEruption;
       this.edTooltip = new Tooltip({
@@ -33,10 +35,12 @@ define(function(require) {
       this.edphsTooltip = new Tooltip({
         template: edphsTemplate
       });
-      // this.listenTo(this.eruptions, 'sync', this.render);
-      // this.listenTo(this.observer, 'change-start-time', this.updateStartTime);
     },
-
+    eruptionTimeRangeChanged: function(timeRange){
+      this.startTime = timeRange.get('startTime');
+      this.endTime = timeRange.get('endTime');
+      this.render();
+    },
     onHover: function(event, pos, item) {
       if (!item) {
         this.edTooltip.hide();
@@ -50,10 +54,6 @@ define(function(require) {
       }
     },
 
-    // updateStartTime: function(startTime) {
-    //   this.startTime = startTime;
-    //   this.render();
-    // },
     changeEruption: function(selectingEruption){
       if(selectingEruption.get('ed_id') == -1){
         this.hide();
@@ -76,16 +76,20 @@ define(function(require) {
       this.$el.width(0);
       this.trigger('hide');
     },
-    gernerateBarChartFlotData: function(data,color,label,barWidth,dataType){
+    gernerateBarChartFlotData: function(data,color,label,dataType,name){
       return {
-        data: [data],
+        data: data,
         color: color,
         label: label,
         bars:{
           show: true,
-          barWidth: barWidth
+          fullparams: true,
+          horizontal:true,
+          
+
         },
-        dataType: dataType
+        dataType: dataType,
+        name: name,
       }
     },
     render: function() {
@@ -116,37 +120,88 @@ define(function(require) {
               tickSize: 1,
               panRange: false,
               zoomRange: false,
-              tickFormatter: function(val, axis) { return val < axis.max ? val.toFixed(0) : 'VEI'; },
-              labelWidth: 30
+              labelWidth: 30,
+              panRange: false
             },
+            
             pan: {
-              interactive: false
+              interactive: true
             },
             zoom: {
-              interactive: false
+              interactive: true
             }
           };
-      /** Eruption part **/
-      graph_pram_data.push(this.gernerateBarChartFlotData (data.edData.data, 'Gray','Eruption', data.edData.duration,'ed'));
+      
       /** Phreatic Eruption **/
       var temp = data.ed_phs_data;
-      for(var i =0;i<temp.length;i++){
-        graph_pram_data.push(this.gernerateBarChartFlotData(temp[i].data,'#F44336',undefined,temp[i].duration,'ed_phs'));
-      }
+      
+      graph_pram_data.push(this.gernerateBarChartFlotData(temp,'#F44336','Eruption Phase','ed_phs',""));
+        
+      /** Eruption part **/
+      graph_pram_data.push(this.gernerateBarChartFlotData ([data.edData.data], 'Gray','Eruption','ed',""));
       el.width('auto');
       el.height(150);
-      el.addClass("eruption-graph");
-      // console.log(param_ed);
-      console.log(option);
-      // console.log(param_ed_phs_phe_erup);
+      el.addClass("eruption-graph card-panel");
       this.graph = $.plot(el, graph_pram_data, option);
-
+      var eventDataZoom = {
+        startTime: this.startTime,
+        endTime: this.endTime,
+        data: graph_pram_data,
+        graph: this.graph,
+        el: this.$el,
+        self: this,
+        original_option: option
+      };
+      var eventDataPan = {
+        minX: Math.min(this.startTime,this.overviewGraphTimeRange.get('startTime')),
+        maxX: Math.max(this.endTime,this.overviewGraphTimeRange.get('endTime')),
+        data: graph_pram_data,
+        graph: this.graph,
+        el: this.$el,
+        self: this,
+        original_option: option
+      };
       el.bind('plothover', this.onHover);
-      // el.bind('plotpan', this.changeTimeRange);
-      el.bind('plotzoom', this.changeTimeRange);
-      // this.changeTimeRange();
+      el.bind('plotzoom', eventDataZoom,this.onZoom);
+      el.bind('plotpan', eventDataPan,this.onPan);
     },
-
+    onPan: function(event,plot){
+      var option = event.data.original_option;
+      var xaxis = plot.getXAxes()[0];
+      var data = event.data.data;
+      var self = event.data.self;
+      var minX = Math.min(self.startTime,self.overviewGraphTimeRange.get('startTime'));
+      var maxX = Math.max(self.endTime,self.overviewGraphTimeRange.get('endTime'));
+      if(xaxis.min<minX){
+        option.xaxis.min = minX;
+        option.xaxis.max = minX+Const.ONE_YEAR;
+        self.setUpTimeranges(option.xaxis.min,option.xaxis.max);
+        event.data.graph = $.plot(event.data.el,data,option);
+      }else{
+        if(xaxis.max>maxX){
+          option.xaxis.min = maxX-Const.ONE_YEAR;
+          option.xaxis.max = maxX;
+          self.setUpTimeranges(option.xaxis.min,option.xaxis.max);
+          event.data.graph = $.plot(event.data.el,data,option);
+        }
+        self.setUpTimeranges(xaxis.min,xaxis.max);
+      }
+    },
+    onZoom: function(event,plot){
+      var option = event.data.original_option;
+      var xaxis = plot.getXAxes()[0];
+      var data = event.data.data;
+      var self = event.data.self;
+      /* The zooming range cannot wider than the original range */
+      if(xaxis.min<event.data.startTime || xaxis.max > event.data.endTime){
+        option.xaxis.min = event.data.startTime;
+        option.xaxis.max = event.data.endTime;
+        self.setUpTimeranges(option.xaxis.min,option.xaxis.max);
+        event.data.graph = $.plot(event.data.el,data,option);
+      }else{
+        self.setUpTimeranges(xaxis.min,xaxis.max);
+      }
+    },
     getStartingTime: function(ed_stime){
       var date = new Date(ed_stime);
       var year = date.getFullYear();
@@ -154,42 +209,55 @@ define(function(require) {
       return starting_date.getTime();
 
     },
+
+    setUpTimeranges: function(startTime, endTime){
+      this.serieGraphTimeRange.set({
+        'startTime': startTime,
+        'endTime': endTime,
+      });
+      // console.log(this.serieGraphTimeRange);
+      
+      this.serieGraphTimeRange.trigger('update',this.serieGraphTimeRange);
+      this.forecastsGraphTimeRange.set({
+        'startTime': startTime,
+        'endTime': endTime,
+      });
+      this.forecastsGraphTimeRange.trigger('update',this.forecastsGraphTimeRange);
+
+    },
     prepareData: function() {
       var self = this,
           edData,
-          ed_phs_data = [];
+          ed_phs_data = [],
+          ed_phs_data_type = [];
 
         if(this.selectingEruption == undefined){ // no eruption is selected
           return;
         }
 
         var ed = this.selectingEruption;
-
+        // console.log(ed);
         var ed_stime = ed.get('ed_stime'),
             ed_etime = ed.get('ed_etime'),
-            ed_vei = ed.get('ed_vei');
+            ed_vei = parseInt(ed.get('ed_vei'));
         var start_date = new Date(ed_stime);
         this.startTime = this.getStartingTime(ed_stime);
         this.endTime = this.startTime+ Const.ONE_YEAR;
-        this.serieGraphTimeRange.set({
-          'startTime': this.startTime,
-          'endTime': this.endTime,
-        });
+        this.setUpTimeranges(this.startTime,this.endTime);
         // console.log(this.serieGraphTimeRange);
-        this.serieGraphTimeRange.trigger('update',this.serieGraphTimeRange);
+        
+        
         edData = {
-            data: [ed_stime, ed_vei],
-            0: 0,
-            duration: ed_etime - ed_stime,
-            attributes: ed.attributes
-          };
+          //left,right,bottom,up
+          data: [ed_stime, ed_etime,0,ed_vei],
+          attributes: ed.attributes
+        };
         // endOfTime = Math.max(endOfTime, ed_stime + Const.ONE_YEAR);
 
         ed.get('ed_phs').forEach(function(ed_phs) {
           
           var ed_phs_stime = ed_phs.ed_phs_stime,
               ed_phs_etime = ed_phs.ed_phs_etime,
-              ed_phs_duration = ed_phs_etime - ed_phs_stime,
               ed_phs_lower_vei = undefined,
               ed_phs_upper_vei = undefined,
               ed_phs_type = ed_phs.ed_phs_type;
@@ -218,18 +286,19 @@ define(function(require) {
             ed_phs_lower_vei = 0;
             ed_phs_upper_vei = ed_phs.ed_phs_vei;
           }
-          ed_phs_data.push({
-            data: [ed_phs_stime,ed_phs_lower_vei,ed_phs_upper_vei],
-            duration: ed_phs_duration,
-            type: ed_phs_type
-          });
+          ed_phs_data.push(
+            //left,right,bottom,up
+            [ed_phs_stime,ed_phs_etime,ed_phs_lower_vei,ed_phs_upper_vei]
+            
+          );
+          ed_phs_data_type.push(ed_phs_type);
         });
       // });
 
       return {
         edData: edData,
-        ed_phs_data: ed_phs_data
-        
+        ed_phs_data: ed_phs_data,
+        ed_phs_data_type: ed_phs_data_type
       };
     }
   });

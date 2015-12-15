@@ -3,37 +3,24 @@ define(function(require) {
   var $ = require('jquery'),
       Backbone = require('backbone'),
       _ = require('underscore'),
-      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection']),
+      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection', 'jquery.flot.errorbars', 'jquery.flot.axislabels']),
       serieTooltipTemplate = require('text!templates/tooltip_serie.html'),
-      Tooltip = require('views/tooltip'),
+      Tooltip = require('views/series_tooltip'),
       TimeRange = require('models/time_range'),
+      GraphHelper = require('helper/graph'),
       DateHelper = require('helper/date');
 
-  var template = require("text!templates/time_serie_graph.html");
-
   return Backbone.View.extend({    
-    template : _.template(template),
     initialize: function(options) {
-      // _(this).bindAll(
-      //   // 'prepareDataAndRender',
-      //   'onTimeRangeChange'
-      //   // 'onHover',
-      //   // 'onPan'
-      // );
       this.filters = options.filters;
-
-      // console.log(this.timeSerie);
+      this.eruptionTimeRange = options.eruptionTimeRange;
+      this.serieGraphTimeRange = options.serieGraphTimeRange;
+      this.forecastsGraphTimeRange = options.forecastsGraphTimeRange;
       this.timeRange = new TimeRange();
-      // this.timeRange = options.timeRange;
       this.tooltip = new Tooltip({
-        template: serieTooltipTemplate,
-        model : this.model
+        template: serieTooltipTemplate
       });
       this.prepareData();
-      // this.model.fetch();
-      // this.show();
-      
-      // this.listenTo(this.model, 'change', this.prepareDataAndRender);
     },
 
     timeRangeChanged: function(TimeRange){
@@ -49,44 +36,37 @@ define(function(require) {
       var tooltip = event.data;
       tooltip.update(pos, item);
     },
-
-    // onPan: function() {
-    //   var startTime = this.graph.getAxes().xaxis.options.min,
-    //       endTime = this.graph.getAxes().xaxis.options.max;
-      
-    //   this.stopListening(this.timeRange, 'change');
-    //   this.timeRange.set({
-    //     startTime: startTime,
-    //     endTime: endTime
-    //   });
-    //   this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
-    // },
     show: function(){
       
       // this.timeRangeChanged(this.timeRange);
       this.render();
     },
     render: function() {
-      // this.data = this.timeSerie.get('data');
       if(this.data==undefined){
         return;
       }
-      // console.log(this.timeSerie);
       this.$el.html("");
-      // var date = new DateHelper();
-      
-      // console.log(data);
-      
-      
-
-      
-      // console.log(this.timeSerie);
+      var unit = undefined;
+      for(var i=0;i<this.data.length;i++){
+        if(this.data[i].yaxis.axisLabel != undefined){
+          unit = this.data[i].yaxis.axisLabel;
+        }
+      };
       var options = {
-            series: {
-              lines: { 
-                show: true
-              },
-            },
+            // series: {
+            //   points:{
+            //     show: true,
+            //     radius: 5,
+            //     lineWidth: 2, // in pixels
+            //     fill: true,
+            //     fillColor: null,
+            //     symbol: "circle" 
+            //   },
+            //   lines:{
+            //     show: false
+            //   },
+
+            // },
             xaxis: { 
               mode:'time',
               timeformat: "%d-%b-%Y",
@@ -96,29 +76,26 @@ define(function(require) {
             },
             yaxis: {
               show: true,
-              tickFormatter: function(val, axis) { 
-                // console.log(val);
-                if(val > 9999 || val <-9999){
-                  val = val.toPrecision(1);
-                }else{
-                  
-                }
-                return val
-              },
-              // max: this.maxY,
-              // min: this.minY,
+              min: this.minY,
+              max: this.maxY,
               ticks: this.ticks,
-              labelWidth: 30
+              labelWidth: 40,
+              zoomRange: false,
+              axisLabel: unit,
+              axisLabelUseCanvas: true
             },
             grid: {
               hoverable: true,
+            },
+            zoom: {
+              interactive: true,
+              
             },
             tooltip:{
               show: true,
             },
             
-          };
-          
+          }; 
       if (!this.data || !this.data.length) {
         this.$el.html('');
         return;
@@ -126,139 +103,77 @@ define(function(require) {
       // console.log(this.data);
       this.$el.width('auto');
       this.$el.height(200);
-      this.$el.addClass('time-serie-graph');
-      // this.$el.bind('pageshow',function(){    
-      //   $.plot(this.$el, this.data, options);
-      // });
+      this.$el.addClass('time-serie-graph card-panel');
+      // plot the time series graph after being selected (eg. onSelect in OverViewGraph).
+      // config graph theme colors
+      options.colors = ["#000000", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"];
+      //console.log(this.data);
       this.graph = $.plot(this.$el, this.data, options);
-      // console.log(this.graph);
       this.$el.bind('plothover', this.tooltip,this.onHover);
       var eventData = {
-        startTime: this.startTime,
-        endTime: this.endTime,
-        param_ds: this.param_ds,
+        startTime: this.minX,
+        endTime: this.maxX,
+        data: this.data,
         graph: this.graph,
-        el: this.$el
+        el: this.$el,
+        self: this,
+        original_option: options
       }
-      // this.$el.bind('plotzoom',eventData, this.onZoom);
+      this.$el.bind('plotzoom',eventData, this.onZoom);
     },
     onZoom: function(event,plot){
-      var option = plot.getOptions();
+      var option = event.data.original_option;
       var xaxis = plot.getXAxes()[0];
-      var data = event.data;
+      var data = event.data.data;
+      var self = event.data.self;
       /* The zooming range cannot wider than the original range */
-      if(xaxis.min<data.startTime || xaxis.max > data.endTime){
-        option.xaxis.min = data.startTime;
-        option.xaxis.max = data.endTime; 
-        event.data.graph = $.plot(event.data.el,[data.param_ds],option);
+      if(xaxis.min<event.data.startTime || xaxis.max > event.data.endTime){
+        option.xaxis.min = event.data.startTime;
+        option.xaxis.max = event.data.endTime;
+
+        event.data.graph = $.plot(event.data.el,data,option);
+        self.setUpTimeranges(option.xaxis.min,option.xaxis.max);
+      }else{
+        self.setUpTimeranges(xaxis.min,xaxis.max);
       }
-      
-      
-      
-      
+
     },
-    // setup effect for the graph
-    formatGraphAppearance: function(data,timeSerieName, filterName){
+    setUpTimeranges: function(startTime, endTime){
+      // this.serieGraphTimeRange.set({
+      //   'startTime': startTime,
+      //   'endTime': endTime,
+      // });
+      // // console.log(this.serieGraphTimeRange);
       
-      return {
-        data: data,
-        label: filterName + ":"+timeSerieName,
-        lines: { 
-          show: true
-        },
-        shadowSize: 3,
-        points: {
-          show: true,
-          radius: 1,
-          symbol: "circle",
-          // fillColor: "#EDC240"
-        },
-        // color: "#EDC240"
-      }
+      // this.serieGraphTimeRange.trigger('update',this.serieGraphTimeRange);
+      // this.forecastsGraphTimeRange.set({
+      //   'startTime': startTime,
+      //   'endTime': endTime,
+      // });
+      // this.forecastsGraphTimeRange.trigger('update',this.forecastsGraphTimeRange);
+      // this.eruptionTimeRange.set({
+      //   'startTime': startTime,
+      //   'endTime': endTime,
+      // });
+      // this.eruptionTimeRange.trigger('update',this.eruptionTimeRange);
+
+
     },
     prepareData: function() {
       if(this.filters == undefined){
         this.data = undefined;
         return;
       }
-      var minX = undefined,
-          maxX = undefined,
-          minY = undefined,
-          maxY = undefined,
-          data = [],
-          i;
-      
-      
-
-      for(var j = 0; j<this.filters.name.length;j++){ 
-        var list = [];
-        var filterData = this.filters.timeSerie.getDataFromFilter(this.filters.name[j])
-        filterData.forEach(function(d) {
-          // console.log(d);
-          // var start_time = d.time;
-          // var end_time = d.time;
-          var time = d.time;
-          var value = d.value;
-          // d.stime_formated = DateHelper.formatDate(d.stime);
-          // d.etime_formated = DateHelper.formatDate(d.etime);
-          d.time_formated = DateHelper.formatDate(d.time);
-          // var x = d.start_time || d.time;
-          if (minX === undefined || time < minX){
-            minX = time;
-          }
-          if (maxX === undefined || time > maxX){
-            maxX = time;
-          }
-          if (minY === undefined || value < minY){
-            minY = value;
-          }
-          if (maxY === undefined || value > maxY){
-            maxY = value;
-          }
-
-          list.push([d['time'],d['value']]);
-        });
-        data.push(this.formatGraphAppearance(list,this.filters.timeSerie.getName(),this.filters.name[j]));
-      }
-
-      
-      
-
-      this.minX = minX*0.9;
-      this.maxX = maxX*1.1;
-       if(minY!= undefined){
-        this.minY = minY.toFixed();
-      }else{
-        this.minY = minY;
-      }
-      if(maxY != undefined && minY != undefined){
-        this.ticks = function(){
-          var ticks = [];
-          
-          var step = (maxY - minY) /8.0;
-          var preTick = (minY -step*2).toPrecision(1); // previous tick
-          for(var i = -1;i<=8;i++){
-            var curTick = (minY + step*i).toPrecision(1); // current tick
-            if(curTick != preTick){
-              ticks.push(curTick);
-              preTick = curTick;
-            }
-          }
-          return ticks;
-        };
-      }
-      this.timeRange.set({
-        'startTime': this.minX,
-        'endTime': this.maxX,
-      });
-      // this.timeRange.trigger('change');
-      this.data = data;
+      var filters = [this.filters];
+      var allowErrorbar = true;
+      var allowAxisLabel =true;
+      var limitNumberOfData =false;
+      //formatData: function(graph,filters,allowErrorbar,allowAxisLabel,limitNumberOfData)
+      GraphHelper.formatData(this,filters,allowErrorbar,allowAxisLabel,limitNumberOfData); 
     },
-
-
+    
     destroy: function() {
       // From StackOverflow with love.
-      //console.log("destroy");
       this.undelegateEvents();
       this.$el.removeData().unbind(); 
       this.remove();  

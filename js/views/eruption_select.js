@@ -20,13 +20,15 @@ define(function(require) {
       
       this.observer = options.observer;
       this.selectingEruptions = options.selectingEruptions;
-      this.collection = options.collection;
+      this.eruptions = options.eruptions;
+      this.eruptionForecasts = options.eruptionForecasts;
       this.availableEruptions = [];
     },
     
     fetchEruptions: function(vd_id) {
-      this.collection.changeVolcano(vd_id);
-      this.availableEruptions = this.collection.getAvailableEruptions();
+      this.eruptions.changeVolcano(vd_id);
+      this.eruptionForecasts.changeVolcano(vd_id);
+      this.availableEruptions = this.eruptions.getAvailableEruptions();
       
     },
 
@@ -35,16 +37,20 @@ define(function(require) {
       this.$el.find('select').change();
     },
     selectingTimeRangeChanged: function(timeRange){
-      this.availableEruptions = this.collection.getAvailableEruptions(timeRange);
+      this.availableEruptions = this.eruptions.getAvailableEruptions(timeRange);
       this.show();
     },
    
     render: function() {
       var selectingEruption = this.selectingEruptions.models[0];
+      
+      
+      // console.log(this.availableEruptions);
       this.$el.html(this.template({
         eruptions: this.availableEruptions,
         selectingEruption: selectingEruption
       }));
+      $('.eruption-select').material_select();
     },
 
     onChangeEruption: function() {
@@ -55,7 +61,7 @@ define(function(require) {
       if(ed_id == -1){
         this.selectingEruptions.add(new Eruption({'ed_id':-1})); // select ----
       }else{
-        this.selectingEruptions.add(this.collection.get(ed_id));  
+        this.selectingEruptions.add(this.eruptions.get(ed_id));  
       }
       
       // this.selectingEruption.set('ed_id', ed_id);
@@ -82,6 +88,7 @@ define(function(require) {
 
     //when no filter select, eruption not appear
     selectingFiltersChanged: function(selectingFilters) {
+      this.availableEruptions = this.eruptions.getAvailableEruptions();
       if (selectingFilters.length == 0) {
         this.hide();
       }else{

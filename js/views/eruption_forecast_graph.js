@@ -5,25 +5,22 @@ define(function(require) {
       _ = require('underscore'),
       Const = require('helper/const'),
       ed_phs_forTemplate = require('text!templates/tooltip_ed_phs_for.html'),
-      Tooltip = require('views/tooltip');
+      Tooltip = require('views/eruption_tooltip');
 
   return Backbone.View.extend({
     el: '',
     
     initialize: function(options) {
-      _(this).bindAll('render', 'onHover', 'onTimeRangeChange', 'onDataChange', 'onVolcanoChange');
+      _(this).bindAll('onHover');
       
       this.observer = options.observer;
       this.timeRange = options.timeRange;
-      this.volcano = options.volcano;
 
       this.tooltip = new Tooltip({
         template: ed_phs_forTemplate
       });
-
-      this.listenTo(this.volcano, 'change', this.onVolcanoChange);
-      this.listenTo(this.timeRange, 'change', this.onTimeRangeChange);
-      this.listenTo(this.collection, 'sync', this.onDataChange);
+      this.eruptionForecasts = options.eruptionForecasts;
+        
     },
 
     previousHover: {
@@ -35,75 +32,133 @@ define(function(require) {
       this.tooltip.update(pos, item);
     },
 
-    onDataChange: function() {
-      // Prepares data.
-      var data = this.collection.models,
+    // onDataChange: function() {
+    //   // Prepares data.
+    //   var data = this.collection.models,
+    //       ed_forData = [];
+
+    //   data.forEach(function(ed_for) {
+    //     var ed_for_astime = ed_for.get('ed_for_astime'),
+    //         ed_for_aetime = ed_for.get('ed_for_aetime');
+    //     ed_forData.push([ed_for_astime, 2, 0, ed_for_aetime - ed_for_astime, ed_for.attributes]);
+    //   });
+
+    //   // Saves prepared data to the view object.
+    //   this.data = ed_forData;
+
+    //   this.render({
+    //     startTime: this.startTime,
+    //     endTime: this.endTime,
+    //     data: this.data
+    //   });
+    // },
+
+    changeEruption: function(selectingEruption){
+      if(selectingEruption.get('ed_id') == -1){
+        this.hide();
+      }else{
+        this.selectingEruption = selectingEruption;
+        this.show();
+      }
+
+    },
+    forecastsGraphTimeRangeChanged: function(timeRange){
+      this.startTime = timeRange.get('startTime');
+      this.endTime = timeRange.get('endTime');
+      this.render();
+    },
+    
+    //show eruption forecast graph
+    show: function(){
+      this.render();
+    },
+    //hide eruption cast graph
+    hide: function(){
+      this.selectingEruption = undefined;
+      this.$el.html("");
+      this.$el.height(0);
+      this.$el.width(0);
+    },
+    prepareData: function() {
+      var self = this,
           ed_forData = [];
 
+      
+      // if(this.eruptionForecasts == undefined){
+      //   return;
+      // }
+      var data = this.eruptionForecasts.models;
+
+      ed_forData = [];
       data.forEach(function(ed_for) {
         var ed_for_astime = ed_for.get('ed_for_astime'),
-            ed_for_aetime = ed_for.get('ed_for_aetime');
-        ed_forData.push([ed_for_astime, 2, 0, ed_for_aetime - ed_for_astime, ed_for.attributes]);
+            ed_for_aetime = ed_for.get('ed_for_aetime'),
+            ed_for_type = ed_for.get('ed_for_alevel');
+        ed_forData.push({
+          data: [ed_for_astime,0,1], //start time, lower value, upper value
+          stime: ed_for_astime,
+          duration: ed_for_aetime - ed_for_astime,
+          type: ed_for_type
+        });
       });
 
       // Saves prepared data to the view object.
-      this.data = ed_forData;
-
-      this.render({
-        startTime: this.startTime,
-        endTime: this.endTime,
-        data: this.data
-      });
+      
+      return ed_forData; 
+      
     },
+    gernerateBarChartFlotData: function(data,color,label,barWidth,dataType,name){
+      return {
+        data: [data],
+        color: color,
+        label: label,
+        bars:{
+          show: true,
+          
+          
 
-    onVolcanoChange: function() {
-      this.collection.changeVolcano(this.volcano.get('vd_id'));
+        },
+        dataType: dataType,
+        name: name,
+        startTime: data[0],
+        endTime: data[0]+barWidth,
+      }
     },
-
-    onTimeRangeChange: function() {
-      this.startTime = this.timeRange.get('startTime');
-      this.endTime = this.timeRange.get('endTime');
-      this.render({
-        startTime: this.startTime,
-        endTime: this.endTime,
-        data: this.data
-      });
-    },
-
     render: function(options) {
       var el = this.$el,
-          param_ed_for = {
-            label: 'Alert level',
-            data: options.data,
-            bars: {
-              show: true,
-              wovodat: true,
-              drawBottom: true,
-              lineWidth: 0
-            },
-            dataType: 'ed_for'
-          },
+          data = this.prepareData(),
           option = {
             grid: {
               hoverable: true
             },
             xaxis: {
-              min: options.startTime,
-              max: options.endTime,
+              min: this.startTime,
+              max: this.endTime,
               autoscale: true,
               mode: 'time',
-              timeformat: '%Y-%m'
+              timeformat: '%d-%b-%Y'
             },
             yaxis: {
-              show:false,
+              show:true,
+              ticks: [0,1],
+              labelWidth: 30,
               panRange: false
             }
           };
-          
-      el.width(800);
+      var temp = data;
+      var graph_pram_data = [];
+      for(var i =0;i<temp.length;i++){
+        if(i==0){
+          graph_pram_data.push(this.gernerateBarChartFlotData(temp[i].data,'#F44336','Alert Level',temp[i].duration,'ed_for',temp[i].type));
+        }else{
+          graph_pram_data.push(this.gernerateBarChartFlotData(temp[i].data,'#F44336',undefined,temp[i].duration,'ed_for',temp[i].type));
+        }
+      }
+      el.width('auto');
       el.height(60);
+      el.addClass("eruption-forecasts-graph");
 
-      $.plot(el, [param_ed_for], option);
+      // $.plot(el, graph_pram_data, option);
       el.bind('plothover', this.onHover);
     },
   });

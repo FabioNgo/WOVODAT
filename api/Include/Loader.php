@@ -4,13 +4,24 @@
 	class Loader {
 
 		private static function loadFolder($path) {
+
 			$files = scandir($path);
+
 			foreach ($files as $file) {
+				// var_dump($file);
+				if ($file == '.' || $file == '..') continue;
+				if (is_dir($path . $file)) {
+					// self::loadFolder($path . $file . '/');
+				} else if (substr($file, -4) === '.php') {
+					
+					require_once($path . $file);
+				}
+			}
+			foreach ($files as $file) {
+				// var_dump($file);
 				if ($file == '.' || $file == '..') continue;
 				if (is_dir($path . $file)) {
 					self::loadFolder($path . $file . '/');
-				} else if (substr($file, -4) === '.php') {
-					require_once($path . $file);
 				}
 			}
 		}

@@ -15,7 +15,7 @@ define(function(require) {
     template: _.template(template),
 
     events: {
-      'change input': 'onChange'
+      'change select': 'showGraph'
     },
     
     initialize: function(options) {
@@ -28,15 +28,16 @@ define(function(require) {
     selectingTimeSeriesChanged: function(selectingTimeSeries){
       this.selectingTimeSeries = selectingTimeSeries;
       // this.filters.reset();
-      if(this.selectingTimeSeries.length == 0){
+      if(this.selectingTimeSeries.length == 0){ 
         this.hide();
       }else{
         this.render(this.filters);  
       }
       
     },
+    //this.filter is grouped by timeSerie
     getFilter: function(timeSerie){
-      var data = timeSerie.get('data');
+      var data = timeSerie.attributes.data.data;
       if(data == undefined){
         return;
       }
@@ -75,30 +76,26 @@ define(function(require) {
       /*and update selecting Filters*/
       this.updateSelectingFilters();
 
-      var filters = this.filters.getAllFilters();
+      
       /* if timeSerie has no filter ( filter = " "), select by default */
-      for(var i = 0; i< filters.length;i++){
-        if(filters[i].filter == " "){
-          var timeSerie = this.selectingTimeSeries.getTimeSerie(filters[i].timeSerie);
-          this.selectingFilters.push(timeSerie,filters[i].filter);
+      for(var i = 0; i< this.filters.length;i++){ // go through all timeSeries
+        var filter = this.filters.models[i];
+        for(var j = 0;j<filter.name.length;j++){ //go through all filterName in each timeSeries
+          var filterName = filter.name[j];
+          if(filterName == " "){
+            //select data having no filter (filter = " ")
+            var timeSerie = this.selectingTimeSeries.get(filter.timeSerie.sr_id);
+            this.selectingFilters.push(timeSerie,filterName);
+          }
         }
       }
       this.selectingFilters.trigger('update');
       var selectingFilters = this.selectingFilters.getAllFilters();
-      /* check selected filters */
-      for(var i =0;i<filters.length;i++){
-        for(var j=0;j<selectingFilters.length;j++){
-          if(filters[i].name == selectingFilters[j].name && filters[i].timeSerie == selectingFilters[j].timeSerie){
-            filters[i].isChecked = true;
-            break;
-          }else{
-            filters[i].isChecked = false;
-          }
-        }
-      }
       this.$el.html(this.template({
-        filters : filters
+        filters : this.filters.models,
+        selectings :this.selectingFilters
       }));
+      $('.filter-select').material_select(); 
     },
     hide: function(){
       this.$el.html("");
@@ -107,20 +104,25 @@ define(function(require) {
 
     },
     
-    
-    onChange: function(event) {
-      var input = event.target,
-          value = $(input).val();
-      var timeSerie = this.selectingTimeSeries.getTimeSerie(value);
-      var filter = $(input).attr('name');
-      if ($(input).is(':checked')) {
+    showGraph: function(event) {
         
-        this.selectingFilters.push(timeSerie,filter);
+        
+      
+      this.selectingFilters.reset();
+      var options = $('.filter-select-option');
+      // for(var i = 0; i<selects.length;i++){
+      for(var i = 0;i<options.length;i++){
+        var option = options[i];
+        if(option.selected){
+          var temp = option.value.split("_");
+          this.selectingFilters.push(this.selectingTimeSeries.get(temp[0]),temp[1]);
+        }
+      
       }
-      else {
-        this.selectingFilters.pop(timeSerie,filter);
-      }
+        
       this.selectingFilters.trigger('update');
+      
+      
     },
     
     destroy: function() {

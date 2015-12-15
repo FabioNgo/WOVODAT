@@ -200,6 +200,7 @@
 			$args = func_get_args();
 			array_shift($args);
 			$this->_sql = $this->replacePrefix($this->parseArgument($sql, $args));
+			
 			$this->_cursor = mysql_query($this->_sql, $this->_resource);
 			return $this->_cursor;
 		}
