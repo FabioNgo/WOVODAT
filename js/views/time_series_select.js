@@ -58,17 +58,14 @@ define(function(require) {
         
       
       this.selectings.reset();
-      var newValuesArr = [];
-      var select = $('.time-serie-select');
-      var ul = select.prev();
-      ul.children('li').toArray().forEach(function (li, i) {
-          if ($(li).hasClass('active')) {
-              newValuesArr.push(select.children('option').toArray()[i].value);
+      
+      var options = $('.time-serie-select-option');
+      
+      for(var i = 0;i<options.length;i++){
+          var option = options[i];
+          if(option.selected){
+            this.selectings.add(this.timeSeries.get(option.value));
           }
-      });
-      for(var i = 0;i<newValuesArr.length;i++){
-        
-          this.selectings.add(this.timeSeries.get(newValuesArr[i]));
         
       }
       this.selectings.trigger("change");

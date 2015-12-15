@@ -109,24 +109,17 @@ define(function(require) {
         
       
       this.selectingFilters.reset();
-      var newValuesArr = [];
-      var selects = $('.filter-select');
+      var options = $('.filter-select-option');
       // for(var i = 0; i<selects.length;i++){
-        var select = selects;
-        var ul = select.prev();
-        ul.children('li').toArray().forEach(function (li, i) {
-          if ($(li).hasClass('active')) {
-            newValuesArr.push(select.children('option').toArray()[i].value);
-          }
-        });
-      // }
-      
-      for(var i = 0;i<newValuesArr.length;i++){
-          var value = newValuesArr[i];
-          var temp = value.split("_");
+      for(var i = 0;i<options.length;i++){
+        var option = options[i];
+        if(option.selected){
+          var temp = option.value.split("_");
           this.selectingFilters.push(this.selectingTimeSeries.get(temp[0]),temp[1]);
-        
+        }
+      
       }
+        
       this.selectingFilters.trigger('update');
       
       

@@ -20,12 +20,11 @@
     <link href="/css/tooltip.css" rel="stylesheet">
   </head>
   <body>
-    <div id="wrapborder_x">
+    <div id="" class=" red darken-4">
       
-      <?php include 'php/include/header_beta.php'; ?>
+      
       <div id="main" class="container">
       </div>
-      <?php include 'php/include/footer_main_beta.php'; ?>
       
     </div>
 

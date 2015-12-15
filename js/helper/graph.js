@@ -1,35 +1,36 @@
 /** Use for overview and time serie graph only **/
 define(function(require) {
-  var MathHelper = require('helper/math');
+  'use strict';
+  // var this = require('helper/math');
   return {
     generateTick: function(min,max){
       var ticks = [];
       var numStep = 7;
       /** compute exponential Degree **/
       var expDeg = undefined
-      if(MathHelper.exponentialDegree(min) < MathHelper.exponentialDegree(max)){
-        expDeg = MathHelper.exponentialDegree(max);
+      if(this.exponentialDegree(min) < this.exponentialDegree(max)){
+        expDeg = this.exponentialDegree(max);
       }else{
-        expDeg = MathHelper.exponentialDegree(min)
+        expDeg = this.exponentialDegree(min)
       }
-      var step = MathHelper.roundNumber((max-min)/numStep,expDeg); // step of ticks
+      var step = this.roundNumber((max-min)/numStep,expDeg); // step of ticks
       //if step is 0.xxx in computing exponential Degree, decrement expDeg
       while(step == 0){
         expDeg--;
-        step = MathHelper.roundNumber((max-min)/numStep,expDeg);
+        step = this.roundNumber((max-min)/numStep,expDeg);
       }
-      min = MathHelper.roundNumber(min,expDeg);
-      max = MathHelper.roundNumber(max,expDeg);
+      min = this.roundNumber(min,expDeg);
+      max = this.roundNumber(max,expDeg);
 
       /**** compute ticks ****/
-      var startTick = MathHelper.roundNumber(min -step,expDeg); // start tick
-      var endTick = MathHelper.roundNumber(max+step,expDeg); // end tick
+      var startTick = this.roundNumber(min -step,expDeg); // start tick
+      var endTick = this.roundNumber(max+step,expDeg); // end tick
       var curTick = startTick;
       if(curTick == endTick){
         ticks.push(curTick);
       }else{
         for(var i=0; curTick<endTick;i++){
-          curTick = MathHelper.roundNumber(startTick + i *step,expDeg);
+          curTick = this.roundNumber(startTick + i *step,expDeg);
           ticks.push(curTick);
           
         }  
@@ -48,7 +49,7 @@ define(function(require) {
       for(var i=0;i<filters.length;i++){
         var filter = filters[i];
         for(var j=0;j<filter.name.length;j++){
-          filterName = filter.name[j];
+          var filterName = filter.name[j];
           var list = [];
           var filterData = filter.timeSerie.getDataFromFilter(filterName)
           var style = filter.timeSerie.get('data').style; // plot style [bar,circle,dot,horizontalbar]
@@ -256,5 +257,41 @@ define(function(require) {
            // parameter to enable error-bar presentation.
       return dataParam;
     },
+    decimalPlaces: function(value) {
+      if (Math.floor(value) === value ) return 0;
+      return value.toString().split(".")[1].length || 0;
+    },
+    //expDegree always greater than expDegree of numberStr
+    // Round the number to expDegree
+    roundNumber: function(numberStr,desExpDegree){
+      var desCoe; // destination Coefficient
+      var number = parseFloat(numberStr)
+      number = number/ Math.pow(10,desExpDegree);
+     //   var sourceExpDegree = this.exponentialDegree(number); //expoential Degree of this number
+
+     //   var sourceCoe = this.coefficient(number);
+     //   if(sourceExpDegree >=desExpDegree){
+     //     var differExpDeg = sourceExpDegree-desExpDegree;
+     //     desCoe = sourceCoe * Math.pow(10,differExpDeg);
+      // }else{
+     //    desCoe = 0;
+     //  }
+        number = Math.round(number);
+        return number*Math.pow(10,desExpDegree);
+    },
+    exponentialDegree: function(value){
+        value = value.toExponential();
+        var a =  value.toString().split("e")[1];
+        var exp = parseInt(a);
+        return exp;
+    },
+    /** no decimal place **/
+    coefficient: function(value){ 
+        value = value.toExponential();
+        var a =  value.toString().split("e")[0];
+        var coe = parseFloat(a);
+        coe = Math.round(coe);
+        return coe;
+    }
   };
 });

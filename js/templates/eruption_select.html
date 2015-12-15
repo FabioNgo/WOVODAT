@@ -1,10 +1,9 @@
 <div class = "card-panel">
-<% console.log(eruptions); %>
 <% if (eruptions.length == 0){ %>
 	<div class="message">No eruption found.</div>
 <% } else{ %>
 <div class="input-field col s12">
-<select class="blue-text text-darken-2 eruption-select" >
+<select class="eruption-select" >
 	<option value="-1" selected>Please select an eruption</option>
 	<% _.each(eruptions, function(eruption) {
 		var temp = new Date('0001-01-01');
