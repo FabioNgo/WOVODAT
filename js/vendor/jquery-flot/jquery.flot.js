@@ -1,6 +1,6 @@
-/* Javascript plotting library for jQuery, version 0.8.3.
+/* Javascript plotting library for jQuery, version 0.8.2.
 
-Copyright (c) 2007-2014 IOLA and Ole Laursen.
+Copyright (c) 2007-2013 IOLA and Ole Laursen.
 Licensed under the MIT license.
 
 */
@@ -30,6 +30,7 @@ Licensed under the MIT license.
  * produce a color rather than just crashing.
  */
 
+ 
 //Start export wrapper
 (function(root, factory){
     if (typeof define === 'function' && define.amd)
@@ -49,22 +50,6 @@ var jQuery = $;//Assign local jQuery variable with imported $
 	// Cache the prototype hasOwnProperty for faster access
 
 	var hasOwnProperty = Object.prototype.hasOwnProperty;
-
-    // A shim to provide 'detach' to jQuery versions prior to 1.4.  Using a DOM
-    // operation produces the same effect as detach, i.e. removing the element
-    // without touching its jQuery data.
-
-    // Do not merge this into Flot 0.9, since it requires jQuery 1.4.4+.
-
-    if (!$.fn.detach) {
-        $.fn.detach = function() {
-            return this.each(function() {
-                if (this.parentNode) {
-                    this.parentNode.removeChild( this );
-                }
-            });
-        };
-    }
 
 	///////////////////////////////////////////////////////////////////////////
 	// The Canvas object is a wrapper around an HTML5 <canvas> tag.
@@ -842,24 +827,10 @@ var jQuery = $;//Assign local jQuery variable with imported $
             if (options.x2axis) {
                 options.xaxes[1] = $.extend(true, {}, options.xaxis, options.x2axis);
                 options.xaxes[1].position = "top";
-                // Override the inherit to allow the axis to auto-scale
-                if (options.x2axis.min == null) {
-                    options.xaxes[1].min = null;
-                }
-                if (options.x2axis.max == null) {
-                    options.xaxes[1].max = null;
-                }
             }
             if (options.y2axis) {
                 options.yaxes[1] = $.extend(true, {}, options.yaxis, options.y2axis);
                 options.yaxes[1].position = "right";
-                // Override the inherit to allow the axis to auto-scale
-                if (options.y2axis.min == null) {
-                    options.yaxes[1].min = null;
-                }
-                if (options.y2axis.max == null) {
-                    options.yaxes[1].max = null;
-                }
             }
             if (options.grid.coloredAreas)
                 options.grid.markings = options.grid.coloredAreas;
@@ -913,7 +884,7 @@ var jQuery = $;//Assign local jQuery variable with imported $
                     s.data = d[i];
                 res.push(s);
             }
-
+            // console.log(res);
             return res;
         }
 
@@ -1101,7 +1072,7 @@ var jQuery = $;//Assign local jQuery variable with imported $
                 data, format;
 
             function updateAxis(axis, min, max) {
-                if (min < axis.datamin && min != -fakeInfinity)
+            	if (min < axis.datamin && min != -fakeInfinity)
                     axis.datamin = min;
                 if (max > axis.datamax && max != fakeInfinity)
                     axis.datamax = max;
@@ -1126,26 +1097,43 @@ var jQuery = $;//Assign local jQuery variable with imported $
                 s = series[i];
 
                 data = s.data;
+
                 format = s.datapoints.format;
-
                 if (!format) {
-                    format = [];
-                    // find out how to copy
-                    format.push({ x: true, number: true, required: true });
-                    format.push({ y: true, number: true, required: true });
+	                if(s.bars.fullparams && s.bars.show){
+	                	format = [];
+	                    // find out how to copy
+	                    format.push({ x1: true, number: true, required: true });
+	                    format.push({ x2: true, number: true, required: true });
+	                    format.push({ y1: true, number: true, required: true });
+						format.push({ y2: true, number: true, required: true });
 
-                    if (s.bars.show || (s.lines.show && s.lines.fill)) {
-                        var autoscale = !!((s.bars.show && s.bars.zero) || (s.lines.show && s.lines.zero));
-                        format.push({ y: true, number: true, required: false, defaultValue: 0, autoscale: autoscale });
-                        if (s.bars.horizontal) {
-                            delete format[format.length - 1].y;
-                            format[format.length - 1].x = true;
-                        }
-                    }
+	                    s.datapoints.format = format;
+	                }else{
+	                
+	                    format = [];
+	                    // find out how to copy
+	                    format.push({ x: true, number: true, required: true });
+	                    format.push({ y: true, number: true, required: true });
 
-                    s.datapoints.format = format;
-                }
+	                    if (s.bars.show || (s.lines.show && s.lines.fill)) {
+	                        var autoscale = !!((s.bars.show && s.bars.zero) || (s.lines.show && s.lines.zero));
+	                        format.push({ y: true, number: true, required: false, defaultValue: 0, autoscale: autoscale });
+	                        if (s.bars.horizontal) {
+	                            delete format[format.length - 1].y;
+	                            format[format.length - 1].x = true;
+	                        }
+	                    }
 
+	                    if (s.bars.show && s.bars.wovodat) {
+	                    	// barWidth
+	                    	format.push({ width: true, number: true, required: false, defaultValue: s.bars.barWidth });
+	                    }
+
+	                    s.datapoints.format = format;
+	                
+            		}
+				}
                 if (s.datapoints.pointsize != null)
                     continue; // already filled in
 
@@ -1237,6 +1225,8 @@ var jQuery = $;//Assign local jQuery variable with imported $
                 executeHooks(hooks.processDatapoints, [ s, s.datapoints]);
             }
 
+
+
             // second pass: find datamax/datamin for auto-scaling
             for (i = 0; i < series.length; ++i) {
                 s = series[i];
@@ -1269,10 +1259,17 @@ var jQuery = $;//Assign local jQuery variable with imported $
                             if (val > ymax)
                                 ymax = val;
                         }
+                        if (s.bars.wovodat && f.width) {
+                        	val += points[j];
+                        	if (val < xmin)
+                        		xmin = val;
+                        	if (val > xmax)
+                        		xmax = val;
+                        }
                     }
                 }
 
-                if (s.bars.show) {
+                if (s.bars.show && !s.bars.wovodat) {
                     // make sure we got room for the bar on the dancing floor
                     var delta;
 
@@ -1296,7 +1293,6 @@ var jQuery = $;//Assign local jQuery variable with imported $
                         xmax += delta + s.bars.barWidth;
                     }
                 }
-
                 updateAxis(s.xaxis, xmin, xmax);
                 updateAxis(s.yaxis, ymin, ymax);
             }
@@ -1319,7 +1315,7 @@ var jQuery = $;//Assign local jQuery variable with imported $
                     return !$(this).hasClass("flot-overlay") && !$(this).hasClass('flot-base');
                 }).remove();
 
-            if (placeholder.css("position") == 'static')
+            // if (placeholder.css("position") == 'static')
                 placeholder.css("position", "relative"); // for positioning labels and overlay
 
             surface = new Canvas("flot-base", placeholder);
@@ -1458,7 +1454,7 @@ var jQuery = $;//Assign local jQuery variable with imported $
             // Determine the axis's position in its direction and on its side
 
             $.each(isXAxis ? xaxes : yaxes, function(i, a) {
-                if (a && (a.show || a.reserveSpace)) {
+                if (a && a.reserveSpace) {
                     if (a === axis) {
                         found = true;
                     } else if (a.options.position === pos) {
@@ -1562,12 +1558,17 @@ var jQuery = $;//Assign local jQuery variable with imported $
             // jump as much around with replots
             $.each(allAxes(), function (_, axis) {
                 if (axis.reserveSpace && axis.ticks && axis.ticks.length) {
+                    var lastTick = axis.ticks[axis.ticks.length - 1];
                     if (axis.direction === "x") {
                         margins.left = Math.max(margins.left, axis.labelWidth / 2);
-                        margins.right = Math.max(margins.right, axis.labelWidth / 2);
+                        if (lastTick.v <= axis.max) {
+                            margins.right = Math.max(margins.right, axis.labelWidth / 2);
+                        }
                     } else {
                         margins.bottom = Math.max(margins.bottom, axis.labelHeight / 2);
-                        margins.top = Math.max(margins.top, axis.labelHeight / 2);
+                        if (lastTick.v <= axis.max) {
+                            margins.top = Math.max(margins.top, axis.labelHeight / 2);
+                        }
                     }
                 }
             });
@@ -1601,18 +1602,20 @@ var jQuery = $;//Assign local jQuery variable with imported $
                 }
             }
 
+            // init axes
             $.each(axes, function (_, axis) {
-                var axisOpts = axis.options;
-                axis.show = axisOpts.show == null ? axis.used : axisOpts.show;
-                axis.reserveSpace = axisOpts.reserveSpace == null ? axis.show : axisOpts.reserveSpace;
+                axis.show = axis.options.show;
+                if (axis.show == null)
+                    axis.show = axis.used; // by default an axis is visible if it's got data
+
+                axis.reserveSpace = axis.show || axis.options.reserveSpace;
+
                 setRange(axis);
             });
 
             if (showGrid) {
 
-                var allocatedAxes = $.grep(axes, function (axis) {
-                    return axis.show || axis.reserveSpace;
-                });
+                var allocatedAxes = $.grep(axes, function (axis) { return axis.reserveSpace; });
 
                 $.each(allocatedAxes, function (_, axis) {
                     // make the ticks
@@ -1741,8 +1744,8 @@ var jQuery = $;//Assign local jQuery variable with imported $
             axis.tickDecimals = Math.max(0, maxDec != null ? maxDec : dec);
             axis.tickSize = opts.tickSize || size;
 
-            // Time mode was moved to a plug-in in 0.8, and since so many people use it
-            // we'll add an especially friendly reminder to make sure they included it.
+            // Time mode was moved to a plug-in in 0.8, but since so many people use this
+            // we'll add an especially friendly make sure they remembered to include it.
 
             if (opts.mode == "time" && !axis.tickGenerator) {
                 throw new Error("Time mode requires the flot.time plugin.");
@@ -1978,6 +1981,7 @@ var jQuery = $;//Assign local jQuery variable with imported $
                         xrange = extractRange(m, "x"),
                         yrange = extractRange(m, "y");
 
+
                     // fill in missing
                     if (xrange.from == null)
                         xrange.from = xrange.axis.min;
@@ -1998,34 +2002,26 @@ var jQuery = $;//Assign local jQuery variable with imported $
                     yrange.from = Math.max(yrange.from, yrange.axis.min);
                     yrange.to = Math.min(yrange.to, yrange.axis.max);
 
-                    var xequal = xrange.from === xrange.to,
-                        yequal = yrange.from === yrange.to;
-
-                    if (xequal && yequal) {
+                    if (xrange.from == xrange.to && yrange.from == yrange.to)
                         continue;
-                    }
 
                     // then draw
-                    xrange.from = Math.floor(xrange.axis.p2c(xrange.from));
-                    xrange.to = Math.floor(xrange.axis.p2c(xrange.to));
-                    yrange.from = Math.floor(yrange.axis.p2c(yrange.from));
-                    yrange.to = Math.floor(yrange.axis.p2c(yrange.to));
+                    xrange.from = xrange.axis.p2c(xrange.from);
+                    xrange.to = xrange.axis.p2c(xrange.to);
+                    yrange.from = yrange.axis.p2c(yrange.from);
+                    yrange.to = yrange.axis.p2c(yrange.to);
 
-                    if (xequal || yequal) {
-                        var lineWidth = m.lineWidth || options.grid.markingsLineWidth,
-                            subPixel = lineWidth % 2 ? 0.5 : 0;
+                    if (xrange.from == xrange.to || yrange.from == yrange.to) {
+                        // draw line
                         ctx.beginPath();
                         ctx.strokeStyle = m.color || options.grid.markingsColor;
-                        ctx.lineWidth = lineWidth;
-                        if (xequal) {
-                            ctx.moveTo(xrange.to + subPixel, yrange.from);
-                            ctx.lineTo(xrange.to + subPixel, yrange.to);
-                        } else {
-                            ctx.moveTo(xrange.from, yrange.to + subPixel);
-                            ctx.lineTo(xrange.to, yrange.to + subPixel);                            
-                        }
+                        ctx.lineWidth = m.lineWidth || options.grid.markingsLineWidth;
+                        ctx.moveTo(xrange.from, yrange.from);
+                        ctx.lineTo(xrange.to, yrange.to);
                         ctx.stroke();
-                    } else {
+                    }
+                    else {
+                        // fill area
                         ctx.fillStyle = m.color || options.grid.markingsColor;
                         ctx.fillRect(xrange.from, yrange.to,
                                      xrange.to - xrange.from,
@@ -2241,10 +2237,14 @@ var jQuery = $;//Assign local jQuery variable with imported $
         }
 
         function drawSeries(series) {
-            if (series.lines.show)
+    	    if (series.lines.show)
                 drawSeriesLines(series);
-            if (series.bars.show)
-                drawSeriesBars(series);
+            if (series.bars.show) {
+                if(series.bars.wovodat) {
+                	drawSeriesWovodatBars(series);
+                } else
+                	drawSeriesBars(series);
+            }
             if (series.points.show)
                 drawSeriesPoints(series);
         }
@@ -2565,49 +2565,23 @@ var jQuery = $;//Assign local jQuery variable with imported $
                        series.xaxis, series.yaxis, symbol);
             ctx.restore();
         }
-
-        function drawBar(x, y, b, barLeft, barRight, fillStyleCallback, axisx, axisy, c, horizontal, lineWidth) {
-            var left, right, bottom, top,
+        function drawBar4params(x1,x2,y1,y2,fillStyleCallback, axisx, axisy, c, lineWidth, options){
+        	var left, right, bottom, top,
                 drawLeft, drawRight, drawTop, drawBottom,
                 tmp;
 
             // in horizontal mode, we start the bar from the left
             // instead of from the bottom so it appears to be
             // horizontal rather than vertical
-            if (horizontal) {
-                drawBottom = drawRight = drawTop = true;
-                drawLeft = false;
-                left = b;
-                right = x;
-                top = y + barLeft;
-                bottom = y + barRight;
+            
+            drawBottom = drawLeft = drawRight = drawTop = true;
+            
 
-                // account for negative bars
-                if (right < left) {
-                    tmp = right;
-                    right = left;
-                    left = tmp;
-                    drawLeft = true;
-                    drawRight = false;
-                }
-            }
-            else {
-                drawLeft = drawRight = drawTop = true;
-                drawBottom = false;
-                left = x + barLeft;
-                right = x + barRight;
-                bottom = b;
-                top = y;
+            left = x1;
+            right = x2;
+            bottom = y1;
+            top = y2;
 
-                // account for negative bars
-                if (top < bottom) {
-                    tmp = top;
-                    top = bottom;
-                    bottom = tmp;
-                    drawBottom = true;
-                    drawTop = false;
-                }
-            }
 
             // clip
             if (right < axisx.min || left > axisx.max ||
@@ -2670,6 +2644,55 @@ var jQuery = $;//Assign local jQuery variable with imported $
                 c.stroke();
             }
         }
+        function drawBar(x, y, b, barLeft, barRight, fillStyleCallback, axisx, axisy, c, horizontal, lineWidth, options) {
+        	var left, right, bottom, top,
+                drawLeft, drawRight, drawTop, drawBottom,
+                tmp;
+
+            // in horizontal mode, we start the bar from the left
+            // instead of from the bottom so it appears to be
+            // horizontal rather than vertical
+            if (horizontal) {
+                drawBottom = drawRight = drawTop = true;
+                drawLeft = true;
+                left = b;
+                right = x;
+                top = y + barLeft;
+                bottom = y + barRight;
+
+                // account for negative bars
+                if (right < left) {
+                    tmp = right;
+                    right = left;
+                    left = tmp;
+                    drawLeft = true;
+                    drawRight = true;
+                }
+            }
+            else {
+                drawLeft = drawRight = drawTop = true;
+                if(options && options.drawBottom)
+                	drawBottom = true;
+                else
+                	drawBottom = false;
+
+                left = x + barLeft;
+                right = x + barRight;
+                bottom = b;
+                top = y;
+
+                // account for negative bars
+                if (top < bottom) {
+                    tmp = top;
+                    top = bottom;
+                    bottom = tmp;
+                    drawBottom = true;
+                    drawTop = false;
+                }
+            }
+
+            this.drawBar4params(left,right,bottom,top,fillStyleCallback,axisx,axisy,lineWidth,options);
+        }
 
         function drawSeriesBars(series) {
             function plotBars(datapoints, barLeft, barRight, fillStyleCallback, axisx, axisy) {
@@ -2679,6 +2702,56 @@ var jQuery = $;//Assign local jQuery variable with imported $
                     if (points[i] == null)
                         continue;
                     drawBar(points[i], points[i + 1], points[i + 2], barLeft, barRight, fillStyleCallback, axisx, axisy, ctx, series.bars.horizontal, series.bars.lineWidth);
+                }
+            }
+            function plotBars4params(datapoints,fillStyleCallback,axisx,axisy){
+            	var points = datapoints.points, ps = datapoints.pointsize;
+
+                for (var i = 0; i < points.length; i += ps) {
+                    if (points[i] == null)
+                        continue;
+                    drawBar4params(points[i], points[i + 1], points[i + 2],points[i+3], fillStyleCallback, axisx, axisy, ctx, series.bars.horizontal, series.bars.lineWidth);
+                }
+            }
+            ctx.save();
+            ctx.translate(plotOffset.left, plotOffset.top);
+
+            // FIXME: figure out a way to add shadows (for instance along the right edge)
+            ctx.lineWidth = series.bars.lineWidth;
+            ctx.strokeStyle = series.color;
+
+            var barLeft;
+
+            switch (series.bars.align) {
+                case "left":
+                    barLeft = 0;
+                    break;
+                case "right":
+                    barLeft = -series.bars.barWidth;
+                    break;
+                default:
+                    barLeft = -series.bars.barWidth / 2;
+            }
+
+            var fillStyleCallback = series.bars.fill ? function (bottom, top) { return getFillStyle(series.bars, series.color, bottom, top); } : null;
+            if(series.bars.fullparams){
+            	plotBars4params(series.datapoints,fillStyleCallback,series.xaxis,series.yaxis);
+            }else{
+            	plotBars(series.datapoints, barLeft, barLeft + series.bars.barWidth, fillStyleCallback, series.xaxis, series.yaxis);
+            }
+            
+            ctx.restore();
+        }
+
+        function drawSeriesWovodatBars(series) {
+            function plotBars(datapoints, barLeft, fillStyleCallback, axisx, axisy) {
+                var points = datapoints.points, ps = datapoints.pointsize;
+
+                for (var i = 0; i < points.length; i += ps) {
+                    if (points[i] == null)
+                        continue;
+                    //points order: left, right, top, down .....
+                    drawBar(points[i], points[i + 1], points[i + 2], barLeft, barLeft + points[i + 3], fillStyleCallback, axisx, axisy, ctx, series.bars.horizontal, series.bars.lineWidth, {drawBottom: series.bars.drawBottom});
                 }
             }
 
@@ -2703,9 +2776,10 @@ var jQuery = $;//Assign local jQuery variable with imported $
             }
 
             var fillStyleCallback = series.bars.fill ? function (bottom, top) { return getFillStyle(series.bars, series.color, bottom, top); } : null;
-            plotBars(series.datapoints, barLeft, barLeft + series.bars.barWidth, fillStyleCallback, series.xaxis, series.yaxis);
+            plotBars(series.datapoints, barLeft, fillStyleCallback, series.xaxis, series.yaxis);
             ctx.restore();
         }
+
 
         function getFillStyle(filloptions, seriesColor, bottom, top) {
             var fill = filloptions.fill;
@@ -2843,6 +2917,8 @@ var jQuery = $;//Assign local jQuery variable with imported $
                 smallestDistance = maxDistance * maxDistance + 1,
                 item = null, foundPoint = false, i, j, ps;
 
+            var lowest = null;
+
             for (i = series.length - 1; i >= 0; --i) {
                 if (!seriesFilter(series[i]))
                     continue;
@@ -2891,7 +2967,7 @@ var jQuery = $;//Assign local jQuery variable with imported $
                     }
                 }
 
-                if (s.bars.show && !item) { // no other point can be nearby
+                if (s.bars.show) { // no other point can be nearby
 
                     var barLeft, barRight;
 
@@ -2906,6 +2982,7 @@ var jQuery = $;//Assign local jQuery variable with imported $
                             barLeft = -s.bars.barWidth / 2;
                     }
 
+
                     barRight = barLeft + s.bars.barWidth;
 
                     for (j = 0; j < points.length; j += ps) {
@@ -2913,13 +2990,24 @@ var jQuery = $;//Assign local jQuery variable with imported $
                         if (x == null)
                             continue;
 
+                        if(s.bars.wovodat) {
+                        	barRight = barLeft + points[j+3];
+                        }
+
                         // for a bar graph, the cursor must be inside the bar
                         if (series[i].bars.horizontal ?
                             (mx <= Math.max(b, x) && mx >= Math.min(b, x) &&
                              my >= y + barLeft && my <= y + barRight) :
                             (mx >= x + barLeft && mx <= x + barRight &&
-                             my >= Math.min(b, y) && my <= Math.max(b, y)))
-                                item = [i, j / ps];
+                             my >= Math.min(b, y) && my <= Math.max(b, y))) {
+                        		if(series[i].bars.wovodat) {
+                        			if(lowest == null || Math.max(b, y) < lowest) {
+                        				lowest = Math.max(b, y);
+                        				item = [i, j / ps];
+                        			}
+                        		} else
+                                	item = [i, j / ps];
+                        }
                     }
                 }
             }
@@ -2928,7 +3016,6 @@ var jQuery = $;//Assign local jQuery variable with imported $
                 i = item[0];
                 j = item[1];
                 ps = series[i].datapoints.pointsize;
-
                 return { datapoint: series[i].datapoints.points.slice(j * ps, (j + 1) * ps),
                          dataIndex: j,
                          series: series[i],
@@ -3120,7 +3207,12 @@ var jQuery = $;//Assign local jQuery variable with imported $
             octx.lineWidth = series.bars.lineWidth;
             octx.strokeStyle = highlightColor;
 
-            drawBar(point[0], point[1], point[2] || 0, barLeft, barLeft + series.bars.barWidth,
+            var barRight = barLeft + series.bars.barWidth;
+            
+            if(series.bars.wovodat)
+            	barRight = barLeft + point[3];
+
+            drawBar(point[0], point[1], point[2] || 0, barLeft, barRight,
                     function () { return fillStyle; }, series.xaxis, series.yaxis, octx, series.bars.horizontal, series.bars.lineWidth);
         }
 
@@ -3154,13 +3246,13 @@ var jQuery = $;//Assign local jQuery variable with imported $
     // Add the plot function to the top level of the jQuery object
 
     $.plot = function(placeholder, data, options) {
-        //var t0 = new Date();
+    	//var t0 = new Date();
         var plot = new Plot($(placeholder), data, options, $.plot.plugins);
         //(window.console ? console.log : alert)("time used (msecs): " + ((new Date()).getTime() - t0.getTime()));
         return plot;
     };
 
-    $.plot.version = "0.8.3";
+    $.plot.version = "0.8.2";
 
     $.plot.plugins = [];
 

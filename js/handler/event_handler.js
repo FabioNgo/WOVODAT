@@ -58,12 +58,13 @@ define(function(require) {
       this.listenTo(this.selectingVolcano, 'update', this.changeVolcano);
       // this.listenTo(this.selectingTimeSeries, 'syncAll', this.onAddSelectingTimeSeries);
       // this.listenTo(this.selectingTimeSeries,'remove', this.onRemoveSelectingTimeSeries);
-      this.listenTo(this.timeSeries,'sync', this.timeSeriesChanged);
+      this.listenTo(this.timeSeries,'loaded', this.timeSeriesChanged);
       // this.listenTo(this.selectingTimeSeries,'reset', this.onResetSelectingTimeSeries);
       
 //this.listenTo(this.selectingTimeSeries, 'getdata', this.updateTimeSeriesData);
-      this.listenTo(this.selectingTimeSeries, 'update', this.selectingTimeSeriesChanged);
-      this.listenTo(this.selectingTimeSeries, 'sync', this.selectingTimeSeriesChangedCheck);
+      this.listenTo(this.selectingTimeSeries, 'allLoaded', this.selectingTimeSeriesChanged);
+      //when each selecting model fetched success, trigger this event
+      this.listenTo(this.selectingTimeSeries, 'change', this.selectingTimeSeriesChangedCheck);
       this.listenTo(this.selectingEruptions, 'add', this.changeSelectingEruptions);
       this.listenTo(this.serieGraphTimeRange,'update',this.serieGraphTimeRangeChanged);
       this.listenTo(this.forecastsGraphTimeRange,'update',this.forecastsGraphTimeRangeChanged);
@@ -112,12 +113,20 @@ define(function(require) {
     },
     selectingTimeSeriesChangedCheck: function(e){
       var allLoaded = true;
-      for(var i=0;i<this.selectingTimeSeries.models.length;i++){
-        if(!this.selectingTimeSeries.models[i].loaded){
-          return;
+      // while(!allLoaded){
+        for(var i=0;i<this.selectingTimeSeries.models.length;i++){
+          var model = this.selectingTimeSeries.models[i];
+          if(model.get('data') == undefined){
+            allLoaded = false;
+            break;
+          }
         }
+      // }
+      if(allLoaded){
+        this.selectingTimeSeries.trigger("allLoaded");
       }
-      this.selectingTimeSeries.trigger("update");
+      //   this.selectingTimeSeries.trigger("check");
+      // }
     },
     selectingFiltersChanged: function(e){
 

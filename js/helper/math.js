@@ -1,4 +1,5 @@
-define(function() {
+define(function(require) {
+  "use strict";
   return {
     decimalPlaces: function(value) {
       if (Math.floor(value) === value ) return 0;

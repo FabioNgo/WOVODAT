@@ -114,7 +114,7 @@ define(function(require) {
         label: label,
         bars:{
           show: true,
-          barWidth: barWidth,
+          
           
 
         },
@@ -158,7 +158,7 @@ define(function(require) {
       el.height(60);
       el.addClass("eruption-forecasts-graph");
 
-      $.plot(el, graph_pram_data, option);
+      // $.plot(el, graph_pram_data, option);
       el.bind('plothover', this.onHover);
     },
   });

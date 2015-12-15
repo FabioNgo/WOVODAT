@@ -6,63 +6,12 @@ define(function(require) {
       TimeSerie = require('models/serie'),
 
       template = require('text!templates/time_series_select.html');
-  //check/uncheck all checkboxes
-  function toggle(source,selectings,timeSeries) {
-    var checkboxes = document.getElementsByName(source.value);
-    for (var i =0;i<checkboxes.length; i++){
-     checkboxes[i].checked = source.checked;
-     addSelection(checkboxes[i],selectings,timeSeries);
-    }
-  }
-  //get category checkbox 
-  //@params source: category name
-  function getCategoryCheckbox(source){
-    var categoryCheckboxes = document.getElementsByName("category");
-    for (var i = 0; i < categoryCheckboxes.length; i++) {
-      if(categoryCheckboxes[i].value == source){
-        return categoryCheckboxes[i];
-      }
-    };
-  }
-  //category checkbox will be checked or unchecked depending on children checkbox
-  //when source is checked or unchecked
-  function categoryCheckBoxChange(source){
-    var category = source.name;
-    var checkboxes = document.getElementsByName(category);
-    var isCheckedAll = true;
-    var categoryCheckbox = getCategoryCheckbox(source.name);
-    for (var i =0;i<checkboxes.length; i++){
-      if(!checkboxes[i].checked){
-        isCheckedAll = false;
-        break;
-      }
-    }
-    
-      
-      categoryCheckbox.checked = isCheckedAll;
-    
-  }
-  // add selected time serie to shown respective graph
-  function addSelection(source,selectings,timeSeries) {
-
-    var id = $(source).val();
-    if ($(source).is(':checked')){
-        var selectedModel;
-        selectings.add(timeSeries.getTimeSerie(id));
-        selectedModel = selectings.get(timeSeries.getTimeSerie(id));
-        selectings.updateData();
-        
-        var x = 0;
-    }
-      else {
-        selectings.remove(timeSeries.getTimeSerie(id));
-      }
-  }
+  
   return Backbone.View.extend({
     el: '',
 
     events: {
-      'change input': 'onChange'
+      'change select': 'showFilter'
     },
 
     template: _.template(template),
@@ -95,21 +44,31 @@ define(function(require) {
     render: function(timeSeries) {
       
       this.$el.html(this.template({
-        timeSeries: timeSeries.models,
+        timeSeries: timeSeries.groupedData,
       }));
+      $('.time-serie-select').material_select();
+      // $('#showGraphBtn').click(function(){
+      //   this.showGraph());
+      // });
+      
     },
 
-    onChange: function(event) {
-      var input = event.target;
-      
-          
-      if($(input).attr('name') == "category"){ // check category(parent) checkbox
-        toggle(input,this.selectings,this.timeSeries);
+    showFilter: function(event) {
         
-      }else{ //check/uncheck child checkbox
-        addSelection(input,this.selectings,this.timeSeries);
-        categoryCheckBoxChange(input);
+        
+      
+      this.selectings.reset();
+      
+      var options = $('.time-serie-select-option');
+      
+      for(var i = 0;i<options.length;i++){
+          var option = options[i];
+          if(option.selected){
+            this.selectings.add(this.timeSeries.get(option.value));
+          }
+        
       }
+      this.selectings.trigger("change");
       
       
     },

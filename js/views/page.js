@@ -8,6 +8,7 @@ define(function(require) {
       Volcano = require('models/volcano'),
       Volcanoes = require('collections/volcanoes'),
       VolcanoSelect = require('views/volcano_select'),
+      TimeSeriesSelect = require('views/time_series_select'),
       Eruption = require('models/eruption'),
       Eruptions = require('collections/eruptions'),
       EruptionSelect = require('views/eruption_select'),
@@ -15,24 +16,23 @@ define(function(require) {
       EruptionForecasts = require('collections/eruption_forecasts'),
       EruptionForecastsGraph = require('views/eruption_forecast_graph'),
       TimeSerie = require('models/serie'),
-      TimeSeriesSelect = require('views/time_series_select'),   
+      // TimeSeriesSelect = require('views/time_series_select'),
       OverviewGraphContainer = require('views/overview_graph_container'),
       OverviewGraph = require('views/overview_graph'),
       Filter = require('models/filter'),
       FilterSelect = require('views/filter_select'),
       Filters = require('collections/filters'),
-      
       TimeRange = require('models/time_range'),
       TimeSeries = require('collections/series'),
       TimeSeriesContainer = require('views/time_series_container'),
       TimeSeriesGraphContainer = require('views/time_serie_graph_container'),
-      EventHandler = require('handler/event_handler'),
-      UrlLoader = require('models/url_loader');
+      EventHandler = require('handler/event_handler');
 
   return Backbone.View.extend({
     el: '#main',
     
     initialize: function() {
+      require('material');
       this.render();
     },
     render: function() {
@@ -118,12 +118,12 @@ define(function(require) {
 
           }),
 
-          urlLoader = new UrlLoader({
-            observer: observer,
-            volcanoes: volcanoes,
-            eruptions: eruptions,
-            selectingEruptions: selectingEruptions
-          }),
+          // urlLoader = new UrlLoader({
+          //   observer: observer,
+          //   volcanoes: volcanoes,
+          //   eruptions: eruptions,
+          //   selectingEruptions: selectingEruptions
+          // }),
 
           eventHandler = new EventHandler({
             volcanoSelect: volcanoSelect,
@@ -160,7 +160,7 @@ define(function(require) {
       eruptionGraph.$el.appendTo(this.$el);
       eruptionForecastsGraph.$el.appendTo(this.$el);
       timeSeriesGraphContainer.$el.appendTo(this.$el);
-      urlLoader.$el.appendTo(this.$el);
+      // urlLoader.$el.appendTo(this.$el);
 
       // new EruptionForecastGraph({
       //   collection: new EruptionForecasts(),

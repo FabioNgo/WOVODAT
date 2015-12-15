@@ -42,6 +42,7 @@ define(function(require) {
     },
 
     render: function() {
+      
       this.overviewGraph.$el.appendTo(this.$el);
     }
   });

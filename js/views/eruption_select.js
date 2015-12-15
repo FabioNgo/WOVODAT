@@ -50,6 +50,7 @@ define(function(require) {
         eruptions: this.availableEruptions,
         selectingEruption: selectingEruption
       }));
+      $('.eruption-select').material_select();
     },
 
     onChangeEruption: function() {

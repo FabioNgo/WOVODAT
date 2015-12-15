@@ -28,17 +28,18 @@ define(function(require) {
       this.$el.html(this.template({
         volcanoes: this.collection.models
       }));
+
       // read volcano parameter on url
       var  vd_num = this.getUrlParameter("vnum");
       if(vd_num == undefined){
-        return;
+        $('select').material_select();
       }
       for(var i=0;i<this.collection.models.length;i++){
         var model = this.collection.models[i];
         if(vd_num == model.get("vd_num")){
           this.selectingVolcano.set('vd_id', model.id); // .set auto call event in eventhandler 
           this.selectingVolcano.trigger("update");
-          return;
+          break;
         }
       }
       
@@ -46,7 +47,10 @@ define(function(require) {
 
     changeSelection: function(vd_id) {
       
-      this.$el.find('select').val(vd_id);
+      $(document).ready(function() {
+        $('select').val(vd_id);
+        $('select').material_select();
+      });
       
     },
     getUrlParameter: function(sParam) {

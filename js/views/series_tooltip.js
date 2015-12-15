@@ -1,6 +1,6 @@
 define(function(require) {
   'use strict';
-  var $ = require('jquery'),
+  var $ = require('jquery','material'),
       Backbone = require('backbone'),
       _ = require('underscore'),
       DateHelper = require('helper/date');
