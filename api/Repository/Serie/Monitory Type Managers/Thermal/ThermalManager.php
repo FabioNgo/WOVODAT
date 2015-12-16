@@ -4,7 +4,7 @@ class ThermalManager extends MonitoryTypeManager{
 	protected function setTableManagers(){
 		$result = array();
 		
-		$prefix = "gd_";
+		$prefix = "td_";
 		$result["td"] = new tdManager;
 		return $result;
 	}

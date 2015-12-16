@@ -72,7 +72,7 @@ define(function(require) {
       for(var i=0;i<this.collection.models.length;i++){
         var model = this.collection.models[i];
         if(vd_id == model.id){
-          window.location.replace("http://localhost/eruption/?vnum="+model.get("vd_num"));
+          window.location.replace("index.php?vnum="+model.get("vd_num"));
         }
       }
       // if (vd_id) {

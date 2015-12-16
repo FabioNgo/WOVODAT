@@ -96,7 +96,7 @@ function determineStationCode(data){
         var data = thermal[i];
         determineStationCode(data);
        %>
-        <option value="<%= data.sr_id %>"><%= station1 %><%= station2 %> (<%= data.component %>) </option>
+        <option class="time-serie-select-option" value="<%= data.sr_id %>"><%= station1 %><%= station2 %> (<%= data.component %>) </option>
       <%}%>
     </select>
     <label>Thermal Data</label>
