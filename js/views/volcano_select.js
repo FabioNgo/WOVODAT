@@ -3,7 +3,8 @@ define(function(require) {
   var $ = require('jquery'),
       Backbone = require('backbone'),
       _ = require('underscore'),
-      template = require('text!templates/volcano_select.html');
+      template = require('text!templates/volcano_select.html'),
+      materialize = require('material');
 
   return Backbone.View.extend({
     el: '',

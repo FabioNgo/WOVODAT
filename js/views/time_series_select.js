@@ -5,7 +5,8 @@ define(function(require) {
       _ = require('underscore'),
       TimeSerie = require('models/serie'),
 
-      template = require('text!templates/time_series_select.html');
+      template = require('text!templates/time_series_select.html'),
+        materialize = require('material');
   
   return Backbone.View.extend({
     el: '',

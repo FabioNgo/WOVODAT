@@ -8,7 +8,7 @@ require.config({
     'moment': 'vendor/momentjs/moment.min',
     'material':'vendor/materialize/materialize',
     'hammer':'vendor/materialize/hammerjs',
-    'velocity':'vendor/materialize/velocity.min',
+    // 'velocity':'vendor/materialize/velocity.min',
     'pace': 'vendor/pace/pace.min',
     'jquery.flot': 'vendor/jquery-flot/src/jquery.flot',
     'jquery.colorhelpers' : 'vendor/jquery-flot/lib/jquery.colorhelpers',
@@ -33,7 +33,16 @@ require.config({
       exports: 'Backbone'
     },
     'material': {
-      deps: ['jquery', 'hammer', 'velocity']
+      deps: ['jquery', 'hammer']
+    },
+    'jquery.colorhelpers': {
+      deps: ['jquery']
+    },
+    'jquery.resize': {
+      deps: ['jquery']
+    },
+    'jquery.mousewheel': {
+      deps: ['jquery']
     },
     'jquery.flot': {
       deps: ['jquery','excanvas','jquery.colorhelpers','jquery.mousewheel','jquery.resize'],
@@ -65,7 +74,7 @@ require.config({
   }
 });
 define(function(require) {
-  require(['routes/router'], function(App) {
+  require(['routes/router','jquery','backbone','jquery.flot'], function(App) {
     'use strict';
     new App();
   });

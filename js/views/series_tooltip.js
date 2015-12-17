@@ -1,29 +1,28 @@
 define(function(require) {
   'use strict';
   var $ = require('jquery'),
-      Backbone = require('backbone'),
       _ = require('underscore'),
-      DateHelper = require('helper/date');
+      Backbone = require('backbone'),
       
+
+      DateHelper = require('helper/date');
 
   return Backbone.View.extend({
     el: '',
-
     initialize: function(options) {
       this.template = _.template(options.template);
       _(this).bindAll('remove');
-      this.$el.html('<div></div>');
-      this.$el.addClass('tooltip');
-      this.hide();
+      
       this.$el.appendTo('body');
     },
 
     move: function(x, y) {
+      // console.log(x,y);
       this.$el.css({
         top: y + 5,
         left: x + 20,
       });
-      this.show();
+      this.$el.show();
     },
 
     show: function() {

@@ -27,16 +27,16 @@ define(function(require) {
     },
 
     show: function() {
-      this.$el.show();      
+      // this.$el.show();      
     },
 
     hide: function() {
-      this.$el.hide();
+      // this.$el.hide();
     },
 
     render: function(x, y, content) {
-      this.$el.html(content);
-      this.move(x, y);
+      // this.$el.html(content);
+      // this.move(x, y);
     },
 
     previous: {
@@ -45,34 +45,34 @@ define(function(require) {
     },
 
     update: function(pos, item) {
-      if (item) {
-        if(this.previous.dataType === item.series.dataType){
-          if (this.previous.dataIndex === item.dataIndex) {
-            this.move(pos.pageX, pos.pageY);
-          } else {
-            this.previous.dataIndex = item.dataIndex;
-            this.html = this.template({
-              name: item.series.name,
-              startTime: DateHelper.formatDate(item.series.startTime),
-              endTime: DateHelper.formatDate(item.series.endTime),
-              value: item.series.data[0][1]
-            })
-            this.render(pos.pageX, pos.pageY, this.html);
-          }
-        }else{
-          this.previous.dataIndex = item.dataIndex;
-          this.previous.dataType = item.series.dataType;
-            this.html = this.template({
-              name:item.series.name,
-              startTime: DateHelper.formatDate(item.series.startTime),
-              endTime: DateHelper.formatDate(item.series.endTime),
-              value: item.series.data[0][2]
-            })
-            this.render(pos.pageX, pos.pageY, this.html);
-        }
-      } else {
-        this.hide();
-      }
+      // if (item) {
+      //   if(this.previous.dataType === item.series.dataType){
+      //     if (this.previous.dataIndex === item.dataIndex) {
+      //       this.move(pos.pageX, pos.pageY);
+      //     } else {
+      //       this.previous.dataIndex = item.dataIndex;
+      //       this.html = this.template({
+      //         name: item.series.name,
+      //         startTime: DateHelper.formatDate(item.series.startTime),
+      //         endTime: DateHelper.formatDate(item.series.endTime),
+      //         value: item.series.data[0][1]
+      //       })
+      //       this.render(pos.pageX, pos.pageY, this.html);
+      //     }
+      //   }else{
+      //     this.previous.dataIndex = item.dataIndex;
+      //     this.previous.dataType = item.series.dataType;
+      //       this.html = this.template({
+      //         name:item.series.name,
+      //         startTime: DateHelper.formatDate(item.series.startTime),
+      //         endTime: DateHelper.formatDate(item.series.endTime),
+      //         value: item.series.data[0][2]
+      //       })
+      //       this.render(pos.pageX, pos.pageY, this.html);
+      //   }
+      // } else {
+      //   this.hide();
+      // }
     
     }
   });

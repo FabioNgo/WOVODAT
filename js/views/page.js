@@ -4,6 +4,7 @@ define(function(require) {
       Backbone = require('backbone'),
       _ = require('underscore'),
       Pace = require('pace'),
+
       template = require('text!templates/page.html'),
       Volcano = require('models/volcano'),
       Volcanoes = require('collections/volcanoes'),
@@ -25,14 +26,16 @@ define(function(require) {
       TimeRange = require('models/time_range'),
       TimeSeries = require('collections/series'),
       TimeSeriesContainer = require('views/time_series_container'),
+      Tooltip = require('views/series_tooltip'),
       TimeSeriesGraphContainer = require('views/time_serie_graph_container'),
       EventHandler = require('handler/event_handler');
+
 
   return Backbone.View.extend({
     el: '#main',
     
     initialize: function() {
-      require('material');
+      
       this.render();
     },
     render: function() {
