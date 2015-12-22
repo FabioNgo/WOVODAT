@@ -1,4 +1,21 @@
-<center>
-<%= time %><br/>
-<%= value %>
-</center>
+<%if(type == "bar"){%>
+	<center>
+	<% if (stime == etime){%>
+		<%= stime %><br/>
+	<%}else{%>
+		from <%= stime %> to <%= etime %><br/>
+	<%}%>
+	
+	<%= value %>
+	<% if(error != undefined) %>
+		&plusmn <%= error %>
+	</center>
+<%}%>
+<%if(type == "point"){%>
+	<center>
+	<%= time %><br/>
+	<%= value %>
+	<% if(error != undefined) %>
+		&plusmn <%= error %>
+	</center>
+<%}%>

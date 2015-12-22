@@ -3580,8 +3580,8 @@ Licensed under the MIT license.
                         if(s.bars.fullparams){
                             left = points[j];
                             right = points[j+1];
-                            bottom = points[j+3];
-                            top = points[j+2];
+                            bottom = points[j+2];
+                            top = points[j+3];
                         }else{
                             x = points[j];
                             y = points[j + 1];
@@ -3597,15 +3597,6 @@ Licensed under the MIT license.
                             
                             if(mx > left && mx <right && my>bottom && my<top){
                                 item = [i,j/ps];
-                                // console.log({
-                                //     left:left,
-                                //     right:right,
-                                //     bottom:bottom,
-                                //     top:top,
-                                //     my:my,
-                                //     mx:mx,
-
-                                // });
                             }
                         }else{
                             if (series[i].bars.horizontal ?
