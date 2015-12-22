@@ -53,7 +53,7 @@ define(function(require) {
             yaxis: {
               show: true,
               color: '#00000000',
-              canvas: true,
+              canvas: false,
               // tickFormatter: function(val, axis) { 
               //   // console.log(val);
               //   if(val > 9999 || val <-9999){

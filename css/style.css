@@ -24,3 +24,8 @@ div.overview-graph div.flot-text div.yAxis div.tickLabel
     color: transparent;
     
 }
+div.eruption-forecasts-graph div.flot-text div.yAxis div.tickLabel
+{    
+    color: transparent;
+    
+}

@@ -121,7 +121,7 @@ define(function(require) {
               tickSize: 1,
               panRange: false,
               zoomRange: false,
-              labelWidth: 30,
+              labelWidth: 60,
               panRange: false
             },
             

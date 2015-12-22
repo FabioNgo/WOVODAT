@@ -30,7 +30,12 @@ define(function(require) {
     },
     
     onHover: function(event, pos, item) {
-      this.tooltip.update(pos, item);
+      if(item!=undefined){
+       this.tooltip.update(pos, item, this.data.ed_forDataType[item.dataIndex]); 
+     }else{
+      this.tooltip.hide();
+     }
+      
     },
 
     // onDataChange: function() {
@@ -72,6 +77,7 @@ define(function(require) {
     
     //show eruption forecast graph
     show: function(){
+     this.data = this.prepareData();
       this.render();
     },
     //hide eruption cast graph
@@ -142,10 +148,11 @@ define(function(require) {
             },
             yaxis: {
               show:true,
+              canvas: false,
               ticks: [0,1],
               min:0,
               max:1,
-              labelWidth: 30,
+              labelWidth: 60,
               panRange: false
             }
           };
