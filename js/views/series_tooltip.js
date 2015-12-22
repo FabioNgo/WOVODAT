@@ -12,8 +12,9 @@ define(function(require) {
     initialize: function(options) {
       this.template = _.template(options.template);
       _(this).bindAll('remove');
+      this.$el.html("asdasdasd");
+      // var a = $('.time-series-graph-container');
       
-      this.$el.appendTo('body');
     },
 
     move: function(x, y) {
@@ -34,8 +35,11 @@ define(function(require) {
     },
 
     render: function(x, y, content) {
+      console.log(x,y);
       this.$el.html(content);
       this.move(x, y);
+      this.$el.appendTo('body');
+      this.$el.addClass("graph-tooltip");
     },
 
     previous: {

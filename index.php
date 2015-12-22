@@ -19,11 +19,11 @@
     <link href="/css/tooltip.css" rel="stylesheet">
   </head>
   <body>
-    <div id="" class="red darken-4">
+    <div id="" class="blue lighten-4">
       
       
       <div id="main" class="container main">
-      </div>
+      
       
     </div>
 
