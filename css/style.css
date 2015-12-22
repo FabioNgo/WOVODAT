@@ -5,7 +5,8 @@
   padding: 10px 8px;
   font-size: 1rem;
   z-index: 2000;
-  background-color: transparent;
+  background-color: #e3f2fd;
+  box-shadow: 2px 2px 1px #888888;
   border-radius: 2px;
   min-height: 36px;
   line-height: 120%;

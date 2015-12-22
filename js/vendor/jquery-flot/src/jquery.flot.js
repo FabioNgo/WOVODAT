@@ -3576,21 +3576,47 @@ Licensed under the MIT license.
                     barRight = barLeft + s.bars.barWidth;
 
                     for (j = 0; j < points.length; j += ps) {
-                        x = points[j];
-                        y = points[j + 1];
-                        var b = points[j + 2];
-                        if (x == null) {
-                            continue;
+                        var left,right,bottom, top;
+                        if(s.bars.fullparams){
+                            left = points[j];
+                            right = points[j+1];
+                            bottom = points[j+3];
+                            top = points[j+2];
+                        }else{
+                            x = points[j];
+                            y = points[j + 1];
+                            var b = points[j + 2];
+                            if (x == null) {
+                                continue;
+                            }    
                         }
+                        
 
                         // for a bar graph, the cursor must be inside the bar
-                        if (series[i].bars.horizontal ?
-                            (mx <= Math.max(b, x) && mx >= Math.min(b, x) &&
-                             my >= y + barLeft && my <= y + barRight) :
-                            (mx >= x + barLeft && mx <= x + barRight &&
-                             my >= Math.min(b, y) && my <= Math.max(b, y))) {
-                            item = [i, j / ps];
+                        if(series[i].bars.fullparams){
+                            
+                            if(mx > left && mx <right && my>bottom && my<top){
+                                item = [i,j/ps];
+                                // console.log({
+                                //     left:left,
+                                //     right:right,
+                                //     bottom:bottom,
+                                //     top:top,
+                                //     my:my,
+                                //     mx:mx,
+
+                                // });
+                            }
+                        }else{
+                            if (series[i].bars.horizontal ?
+                                (mx <= Math.max(b, x) && mx >= Math.min(b, x) &&
+                                 my >= y + barLeft && my <= y + barRight) :
+                                (mx >= x + barLeft && mx <= x + barRight &&
+                                 my >= Math.min(b, y) && my <= Math.max(b, y))) {
+                                item = [i, j / ps];
+                            }
                         }
+                        
                     }
                 }
             }
