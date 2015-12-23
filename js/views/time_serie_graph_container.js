@@ -92,6 +92,7 @@ define(function(require) {
     },
     show: function(){
       this.$el.html("");
+      this.$el.addClass("time-series-graph-container");
       for (var i = 0; i < this.graphs.length; i++) {
         this.$el.append(this.graphs[i].$el);
         this.graphs[i].show();

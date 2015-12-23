@@ -46,10 +46,11 @@ define(function(require) {
         this.edTooltip.hide();
         this.edphsTooltip.hide();
       } else if (item.series.dataType === 'ed'){
-        this.edTooltip.update(pos, item);
+        this.edTooltip.update(pos, item,"");
         this.edphsTooltip.hide();
       } else {
-        this.edphsTooltip.update(pos, item);
+        var datatype = event.data.ed_phs_data_type;
+        this.edphsTooltip.update(pos,item,datatype[item.dataIndex]);
         this.edTooltip.hide();
       }
     },
@@ -120,7 +121,7 @@ define(function(require) {
               tickSize: 1,
               panRange: false,
               zoomRange: false,
-              labelWidth: 30,
+              labelWidth: 60,
               panRange: false
             },
             
@@ -161,7 +162,10 @@ define(function(require) {
         self: this,
         original_option: option
       };
-      el.bind('plothover', this.onHover);
+      var eventDataHover = {
+        ed_phs_data_type:data.ed_phs_data_type
+      };
+      el.bind('plothover', eventDataHover, this.onHover);
       el.bind('plotzoom', eventDataZoom,this.onZoom);
       el.bind('plotpan', eventDataPan,this.onPan);
     },

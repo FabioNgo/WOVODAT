@@ -4,7 +4,8 @@ define(function(require) {
       Backbone = require('backbone'),
       _ = require('underscore'),
       Eruption = require('models/eruption'),
-      template = require('text!templates/eruption_select.html');
+      template = require('text!templates/eruption_select.html'),
+      materialize = require('material');
           
   return Backbone.View.extend({
     el: '',

@@ -33,7 +33,7 @@ class fd_magManager extends TableManager {
 		$unit="";
 		$attribute = "";
 		$query = "";
-		$table = "fd_gra";
+		$table = "fd_mag";
 		$errorbar = true;
 		$style = "dot";
 		if($component == 'Magnetic'){

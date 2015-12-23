@@ -1,15 +1,15 @@
 require.config({
   paths: {
     // Vendors.
-    'jquery': '//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min',
-    'backbone': '//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.3/backbone-min',
-    'underscore': '//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min',
-    'text': '//cdnjs.cloudflare.com/ajax/libs/require-text/2.0.12/text.min',
-    'moment': '//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min',
-    'pace': '//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min',
+    'jquery': 'vendor/jquery/jquery.min',
+    'backbone': 'vendor/backbone/backbone-min',
+    'underscore': 'vendor/underscore/underscore-min',
+    'text': 'vendor/require-text/text.min',
+    'moment': 'vendor/momentjs/moment.min',
     'material':'vendor/materialize/materialize',
     'hammer':'vendor/materialize/hammerjs',
-    'velocity':'//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min',
+    // 'velocity':'vendor/materialize/velocity.min',
+    'pace': 'vendor/pace/pace.min',
     'jquery.flot': 'vendor/jquery-flot/src/jquery.flot',
     'jquery.colorhelpers' : 'vendor/jquery-flot/lib/jquery.colorhelpers',
     'jquery.drag' : 'vendor/jquery-flot/lib/jquery.drag',
@@ -33,7 +33,16 @@ require.config({
       exports: 'Backbone'
     },
     'material': {
-      deps: ['jquery', 'hammer', 'velocity']
+      deps: ['jquery', 'hammer']
+    },
+    'jquery.colorhelpers': {
+      deps: ['jquery']
+    },
+    'jquery.resize': {
+      deps: ['jquery']
+    },
+    'jquery.mousewheel': {
+      deps: ['jquery']
     },
     'jquery.flot': {
       deps: ['jquery','excanvas','jquery.colorhelpers','jquery.mousewheel','jquery.resize'],
@@ -65,7 +74,7 @@ require.config({
   }
 });
 define(function(require) {
-  require(['routes/router'], function(App) {
+  require(['routes/router','jquery','backbone','jquery.flot'], function(App) {
     'use strict';
     new App();
   });

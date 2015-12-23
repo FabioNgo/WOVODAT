@@ -37,10 +37,10 @@ if ( filters.length > 0 ) { %>
         	filterShowingName = "No filter";
         }
         if(isSelecting(filter.timeSerie,filterName,selectings)){%>
-    		<option class="filter-select-option"  selected value="<%= filter.timeSerie.sr_id+ "_"+ filterName %>"><%= filterShowingName %> </option>
+    		<option class="filter-select-option"  selected value="<%= filter.timeSerie.sr_id+ "."+ filterName %>"><%= filterShowingName %> </option>
         <%} else { %>
        
-        <option class="filter-select-option" value="<%= filter.timeSerie.sr_id+ "_"+ filterName %>"><%= filterShowingName %> </option>
+        <option class="filter-select-option" value="<%= filter.timeSerie.sr_id+ "."+ filterName %>"><%= filterShowingName %> </option>
       <%}
       }%>
     </select>

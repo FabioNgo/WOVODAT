@@ -13,7 +13,7 @@ define(function(require) {
       this.template = _.template(options.template);
       _(this).bindAll('remove');
       this.$el.html('<div></div>');
-      this.$el.addClass('tooltip');
+      this.$el.addClass("graph-tooltip");
       this.hide();
       this.$el.appendTo('body');
     },
@@ -44,32 +44,15 @@ define(function(require) {
       dataType: undefined
     },
 
-    update: function(pos, item) {
+    update: function(pos, item,name) {
       if (item) {
-        if(this.previous.dataType === item.series.dataType){
-          if (this.previous.dataIndex === item.dataIndex) {
-            this.move(pos.pageX, pos.pageY);
-          } else {
-            this.previous.dataIndex = item.dataIndex;
-            this.html = this.template({
-              name: item.series.name,
-              startTime: DateHelper.formatDate(item.series.startTime),
-              endTime: DateHelper.formatDate(item.series.endTime),
-              value: item.series.data[0][1]
+        this.html = this.template({
+              name:name,
+              startTime: DateHelper.formatDate(item.datapoint[0]),
+              endTime: DateHelper.formatDate(item.datapoint[1]),
+              value: item.datapoint[3]
             })
             this.render(pos.pageX, pos.pageY, this.html);
-          }
-        }else{
-          this.previous.dataIndex = item.dataIndex;
-          this.previous.dataType = item.series.dataType;
-            this.html = this.template({
-              name:item.series.name,
-              startTime: DateHelper.formatDate(item.series.startTime),
-              endTime: DateHelper.formatDate(item.series.endTime),
-              value: item.series.data[0][2]
-            })
-            this.render(pos.pageX, pos.pageY, this.html);
-        }
       } else {
         this.hide();
       }

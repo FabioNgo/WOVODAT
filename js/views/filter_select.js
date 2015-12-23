@@ -5,7 +5,8 @@ define(function(require) {
       _ = require('underscore'),
       Filter = require('models/filter'),
       Filters = require('collections/filters'),
-      template = require('text!templates/filter.html');
+      template = require('text!templates/filter.html'),
+      materialize = require('material');
       
   return Backbone.View.extend({
     el: '',
@@ -114,7 +115,7 @@ define(function(require) {
       for(var i = 0;i<options.length;i++){
         var option = options[i];
         if(option.selected){
-          var temp = option.value.split("_");
+          var temp = option.value.split(".");
           this.selectingFilters.push(this.selectingTimeSeries.get(temp[0]),temp[1]);
         }
       

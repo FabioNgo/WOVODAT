@@ -3,7 +3,8 @@ define(function(require) {
   var $ = require('jquery'),
       Backbone = require('backbone'),
       _ = require('underscore'),
-      template = require('text!templates/volcano_select.html');
+      template = require('text!templates/volcano_select.html'),
+      materialize = require('material');
 
   return Backbone.View.extend({
     el: '',
@@ -72,7 +73,7 @@ define(function(require) {
       for(var i=0;i<this.collection.models.length;i++){
         var model = this.collection.models[i];
         if(vd_id == model.id){
-          window.location.replace("http://localhost/eruption/?vnum="+model.get("vd_num"));
+          window.location.replace("index.php?vnum="+model.get("vd_num"));
         }
       }
       // if (vd_id) {

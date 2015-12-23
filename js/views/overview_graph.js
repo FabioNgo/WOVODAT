@@ -3,7 +3,7 @@ define(function(require) {
   var $ = require('jquery'),
       Backbone = require('backbone'),
       _ = require('underscore'),
-      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection','excanvas','jquery.flot.errorbars','jquery.flot.legendoncanvas']),
+      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection','excanvas','jquery.flot.errorbars','jquery.flot.legendoncanvas','jquery.flot.axislabels']),
       TimeRange = require('models/time_range'),
       GraphHelper = require('helper/graph');
   return Backbone.View.extend({
@@ -44,7 +44,7 @@ define(function(require) {
               mode:'time',
               timeformat: "%d-%b-%Y",
               autoscale: true,
-              axisLabelUseCanvas: true,
+              canvas: true,
               rotateTicks: 90,
               min: this.minX,
               max: this.maxX,
@@ -53,6 +53,7 @@ define(function(require) {
             yaxis: {
               show: true,
               color: '#00000000',
+              canvas: false,
               // tickFormatter: function(val, axis) { 
               //   // console.log(val);
               //   if(val > 9999 || val <-9999){
@@ -67,7 +68,7 @@ define(function(require) {
               //axisLabelUseCanvas: true,
               autoscaleMargin: 5,
               ticks: this.ticks,
-              labelWidth: 40
+              labelWidth: 60
             },
             selection: { 
               mode: 'x', 

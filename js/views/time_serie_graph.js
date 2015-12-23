@@ -1,14 +1,17 @@
-define(function(require) {
+define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
+  function(require) {
   'use strict';
-  var $ = require('jquery'),
+  var 
+  $ = require('jquery'),
       Backbone = require('backbone'),
       _ = require('underscore'),
-      flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection', 'jquery.flot.errorbars', 'jquery.flot.axislabels']),
+      // flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection', 'jquery.flot.errorbars', 'jquery.flot.axislabels','jquery.flot.legendoncanvas']),
+
       serieTooltipTemplate = require('text!templates/tooltip_serie.html'),
       Tooltip = require('views/series_tooltip'),
       TimeRange = require('models/time_range'),
-      GraphHelper = require('helper/graph'),
-      DateHelper = require('helper/date');
+      GraphHelper = require('helper/graph');
+       // materialize = require('material');
 
   return Backbone.View.extend({    
     initialize: function(options) {
@@ -17,6 +20,7 @@ define(function(require) {
       this.serieGraphTimeRange = options.serieGraphTimeRange;
       this.forecastsGraphTimeRange = options.forecastsGraphTimeRange;
       this.timeRange = new TimeRange();
+      // console.log(Tooltip);
       this.tooltip = new Tooltip({
         template: serieTooltipTemplate
       });
@@ -72,17 +76,18 @@ define(function(require) {
               timeformat: "%d-%b-%Y",
               autoscale: true,
               min: this.minX,
-              max: this.maxX
+              max: this.maxX,
+              canvas: true,
             },
             yaxis: {
               show: true,
               min: this.minY,
               max: this.maxY,
               ticks: this.ticks,
-              labelWidth: 40,
+              labelWidth: 60,
               zoomRange: false,
               axisLabel: unit,
-              axisLabelUseCanvas: true
+              canvas: true,
             },
             grid: {
               hoverable: true,
@@ -120,6 +125,7 @@ define(function(require) {
         original_option: options
       }
       this.$el.bind('plotzoom',eventData, this.onZoom);
+      
     },
     onZoom: function(event,plot){
       var option = event.data.original_option;
