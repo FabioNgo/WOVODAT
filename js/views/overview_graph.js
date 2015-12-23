@@ -5,8 +5,10 @@ define(function(require) {
       _ = require('underscore'),
       flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection','excanvas','jquery.flot.errorbars','jquery.flot.legendoncanvas','jquery.flot.axislabels']),
       TimeRange = require('models/time_range'),
+      loading = require('text!templates/loading.html'),
       GraphHelper = require('helper/graph');
   return Backbone.View.extend({
+    loading: _.template(loading),
     initialize: function(options) {
       
       this.serieGraphTimeRange = options.serieGraphTimeRange;
@@ -36,6 +38,9 @@ define(function(require) {
       this.$el.width(0);
       this.$el.height(0);
       this.trigger('hide');
+    },
+    showLoading: function(){
+      this.$el.html(this.loading);
     },
     render: function() {
       
@@ -91,7 +96,7 @@ define(function(require) {
 
       this.$el.width('auto');
       this.$el.height(200);
-      this.$el.addClass("overview-graph card-panel progress indeterminate");
+      this.$el.addClass("overview-graph card-panel");
 
       //limit data to be rendered
       
@@ -103,6 +108,7 @@ define(function(require) {
     },
 
     update: function() {
+      // this.showLoading();
       this.prepareData();
       this.render();
     },

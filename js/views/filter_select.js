@@ -6,6 +6,7 @@ define(function(require) {
       Filter = require('models/filter'),
       Filters = require('collections/filters'),
       template = require('text!templates/filter.html'),
+      loading = require('text!templates/loading.html'),
       materialize = require('material');
       
   return Backbone.View.extend({
@@ -14,6 +15,7 @@ define(function(require) {
     className : "mgt15",
 
     template: _.template(template),
+    loading: _.template(loading),
 
     events: {
       'change select': 'showGraph'
@@ -47,6 +49,9 @@ define(function(require) {
         this.filters.push(timeSerie,data[i].filter);
       }
 
+    },
+    showLoading: function(){
+      this.$el.html(this.loading);
     },
     updateSelectingFilters: function(){
       /* remove timeseries which are no longer selected*/

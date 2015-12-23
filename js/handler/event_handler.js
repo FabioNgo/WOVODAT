@@ -112,6 +112,7 @@ define(function(require) {
       this.filtersSelect.selectingTimeSeriesChanged(this.selectingTimeSeries); // filter is rendered out.
     },
     selectingTimeSeriesChangedCheck: function(e){
+      this.filtersSelect.showLoading();
       var allLoaded = true;
       // while(!allLoaded){
         for(var i=0;i<this.selectingTimeSeries.models.length;i++){

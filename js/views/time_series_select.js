@@ -6,6 +6,7 @@ define(function(require) {
       TimeSerie = require('models/serie'),
 
       template = require('text!templates/time_series_select.html'),
+      loading = require('text!templates/loading.html'),
         materialize = require('material');
   
   return Backbone.View.extend({
@@ -16,6 +17,7 @@ define(function(require) {
     },
 
     template: _.template(template),
+    loading: _.template(loading),
     
     initialize: function(options) {
       this.volcano = options.volcano;
@@ -57,7 +59,7 @@ define(function(require) {
     showFilter: function(event) {
         
         
-      
+      // this.$el.append(this.loading);
       this.selectings.reset();
       
       var options = $('.time-serie-select-option');
