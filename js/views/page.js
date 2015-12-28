@@ -35,7 +35,7 @@ define(function(require) {
     el: '#main',
     
     initialize: function() {
-      
+      this.$el.html("");
       this.render();
     },
     render: function() {

@@ -43,7 +43,7 @@ define(function(require) {
       this.$el.html(this.loading);
     },
     render: function() {
-      
+      // this.showLoading();
       var options = {
             xaxis: { 
               mode:'time',
@@ -108,7 +108,7 @@ define(function(require) {
     },
 
     update: function() {
-      // this.showLoading();
+      this.showLoading();
       this.prepareData();
       this.render();
     },

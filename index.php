@@ -9,7 +9,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="css/materialize.css">
+    <link rel="stylesheet" href="css/materialize.min.css">
     <title>WOVOdat :: The World Organization of Volcano Observatories (WOVO): Database of Volcanic Unrest (WOVOdat), by IAVCEI</title>
     <meta http-equiv="content-type" content="text/html;charset=iso-8859-1">
     <meta http-equiv="cache-control" content="no-cache, must-revalidate">
@@ -26,7 +26,9 @@
       
       
       <div id="main" class="container ">
-      
+        <div class="progress">
+      <div class="indeterminate"></div>
+  </div>
       </div>
     </div>
 
