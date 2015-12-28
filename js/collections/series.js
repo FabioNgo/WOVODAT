@@ -48,27 +48,7 @@ define(function(require) {
           if(!this.models[i].loaded){
             this.models[i].fetch({
               success: function(model, response) {
-            // console.log(e); 
-                var filters = [];
-                
-                var data = model.get('data').data;
-                // console.log(data);
-                if(data == undefined){
-                  return;
-                }
-                for (var i = 0; i < data.length; i++) {
-                  var index = -1;
-                  /** find index of filter in filters**/
-                  for(var j = 0;j<filters.length;j++){
-                    // console.log({0:filters[j].name,1: data[i].filter});
-                    if(filters[j].name == data[i].filter){
-                      index = j;
-                      break;
-                    }
-                  }
-                }
-                model.filters = filters;
-                // console.log(model);
+
                 
                 model.loaded = true;
                 model.name = model.getName();
