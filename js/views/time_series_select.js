@@ -30,7 +30,7 @@ define(function(require) {
       this.$el.html(this.loading);
     },
     changeVolcano: function(vd_id,timeSeries) {
-      // this.showLoading();
+      this.showLoading();
       if(vd_id == -1){ // when user select "Please select vocalno"
         this.$el.html(""); // no time serie appears
         this.trigger('hide');

@@ -24,6 +24,7 @@ define(function(require) {
       this.collection = options.collection;
       this.collection.fetch();
       this.listenTo(this.collection, 'sync', this.render);
+      this.selecting_vd_num = options.selecting_vd_num;
       
     },
     showLoading: function(){
@@ -33,25 +34,23 @@ define(function(require) {
       this.$el.html(this.template({
         volcanoes: this.collection.models
       }));
-
-      // read volcano parameter on url
-      var  vd_num = parseInt(this.getUrlParameter("vnum"));
-      if(isNaN(vd_num)){
-        $('select').material_select();
-      }else{
+      $('select').material_select();
+      /** selecting volcano from url **/
+      if(this.selecting_vd_num != undefined ){
         for(var i=0;i<this.collection.models.length;i++){
           var model = this.collection.models[i];
-          if(vd_num == model.get("vd_num")){
+          if(this.selecting_vd_num == model.get("vd_num")){
             this.selectingVolcano.set('vd_id', model.id); // .set auto call event in eventhandler 
             this.selectingVolcano.trigger("update");
             break;
           }
         }  
       }
+
       
       
     },
-
+ 
     changeSelection: function(vd_id) {
       
       $(document).ready(function() {
@@ -60,32 +59,22 @@ define(function(require) {
       });
       
     },
-    getUrlParameter: function(sParam) {
-      var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-          sURLVariables = sPageURL.split('&'),
-          sParameterName,
-          i;
-
-      for (i = 0; i < sURLVariables.length; i++) {
-          sParameterName = sURLVariables[i].split('=');
-
-          if (sParameterName[0] === sParam) {
-              return sParameterName[1] === undefined ? true : sParameterName[1];
-          }
-      }
-    },
+    
     onSelectChange: function() {
       var vd_id = this.$el.find('select').val();
       for(var i=0;i<this.collection.models.length;i++){
         var model = this.collection.models[i];
         if(vd_id == model.id){
-          window.location.replace("index.php?vnum="+model.get("vd_num"));
+          this.selectingVolcano.set('vd_id',model.id);
+          this.selectingVolcano.trigger("update");
+          var state = {
+            id:vd_id,
+            a: model
+          }
+          Backbone.history.navigate("vnum="+model.get('vd_num'))
+
         }
       }
-      // if (vd_id) {
-      //   this.selectingVolcano.set('vd_id', vd_id); // .set auto call event in eventhandler 
-      //   this.selectingVolcano.trigger("update");
-      // }
     }
   });
 });

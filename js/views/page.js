@@ -34,7 +34,8 @@ define(function(require) {
   return Backbone.View.extend({
     el: '#main',
     
-    initialize: function() {
+    initialize: function(selecting_vd_num) {
+      this.selecting_vd_num = selecting_vd_num;
       this.$el.html("");
       this.render();
     },
@@ -61,7 +62,8 @@ define(function(require) {
           volcanoSelect = new VolcanoSelect({
             collection: volcanoes,
             observer: observer,
-            selectingVolcano: selectingVolcano
+            selectingVolcano: selectingVolcano,
+            selecting_vd_num: this.selecting_vd_num
           }),
 
           timeSeriesSelect = new TimeSeriesSelect({
