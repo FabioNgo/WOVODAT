@@ -11,7 +11,7 @@ define(function(require) {
 
     routes: {
       '': 'loadPage',
-      'vnum=:number' : 'loadPage'
+      'vnum=*:number' : 'loadPage'
     },
     loadPage: function(number){
       var selecting_vd_num = parseInt(number);
