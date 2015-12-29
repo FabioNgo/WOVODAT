@@ -10,12 +10,15 @@ define(function(require) {
     },
 
     routes: {
-      '': 'loadPage',
+      '*anything': 'loadPage1',
       'vnum=*:number' : 'loadPage'
     },
     loadPage: function(number){
       var selecting_vd_num = parseInt(number);
       var a = new Page(selecting_vd_num);
+    },
+    loadPage1: function(){
+      var a = new Page();
     },
   });
 });
