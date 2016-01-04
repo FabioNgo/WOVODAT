@@ -13,7 +13,6 @@ define(['jquery', 'backbone'], function($, Backbone) {
     	this.timeSerie = timeSerie;
     	this.name = [];
     	this.name.push(filter);
-    	this.isChecked = false;
     	// console.log(this);
     },
     addFilter: function(filter){

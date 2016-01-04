@@ -22,7 +22,8 @@ require.config({
     'jquery.flot.tickrotor': 'vendor/jquery-flot/src/plugins/jquery.flot.tickrotor',
     'jquery.flot.errorbars': 'vendor/jquery-flot/src/plugins/jquery.flot.errorbars',
     'jquery.flot.axislabels': 'vendor/jquery-flot/src/plugins/jquery.flot.axislabels',
-    'jquery.flot.legendoncanvas' :'vendor/jquery-flot/src/plugins/jquery.flot.legendoncanvas',    
+    'jquery.flot.legendoncanvas' :'vendor/jquery-flot/src/plugins/jquery.flot.legendoncanvas',
+    'handlebars' : 'vendor/handlebars/handlebars.amd.min',
   },
   shim: {
     'jquery' : {

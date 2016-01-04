@@ -7,6 +7,7 @@ define(function(require) {
       Filters = require('collections/filters'),
       template = require('text!templates/filter.html'),
       loading = require('text!templates/loading.html'),
+      Handlebars = require('handlebars'),
       materialize = require('material');
       
   return Backbone.View.extend({
@@ -38,7 +39,7 @@ define(function(require) {
       }
       
     },
-    //this.filter is grouped by timeSerie
+    //this.filter is grouped by timeSerie and category
     getFilter: function(timeSerie){
       var data = timeSerie.attributes.data.data;
       if(data == undefined){
@@ -50,7 +51,6 @@ define(function(require) {
       for (var i = 0; i < data.length; i++) {
         this.filters.push(timeSerie,data[i].filter);
       }
-
     },
     showLoading: function(){
       this.$el.html(this.loading);
@@ -75,6 +75,7 @@ define(function(require) {
     },
     render: function(options) {
       this.filters.reset();
+       $('.filter-field').empty();
       /* get filter from selecting Time Series */
       var models = this.selectingTimeSeries.models;
       for (var i = 0; i < models.length; i++) {
@@ -86,12 +87,76 @@ define(function(require) {
 
       
       this.selectingFilters.trigger('update');
-      var selectingFilters = this.selectingFilters.getAllFilters();
-      this.$el.html(this.template({
-        filters : this.filters.models,
-        selectings :this.selectingFilters
-      }));
+      var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
+      var selectingFilters = [];
+      for(var i = 0;i<categories.length;i++){
+        selectingFilters = this.selectingFilters.getAllFilters(categories[i]);
+      }
+
+      var temp = Handlebars.compile(template);
+      Handlebars.registerHelper('list', function(items, options) {
+        var ret = "";
+        for(var i=0, j=items.length; i<j; i++) {
+          ret = ret+options.fn(items[i]);
+        }
+        return ret;
+      });
+      Handlebars.registerHelper('if', function(condition, options) {
+        if(condition) {
+          return options.fn(this);
+        } else {
+          return options.inverse(this);
+        }
+      });
+      for(var i=0;i<categories.length;i++){
+        var category = categories[i];
+        var options = {
+          series: this.generateData(category)
+        }
+        var html = temp(options);
+        $('.filter-field'+'.'+category).append(html);
+      }
+      
+
+      
       $('.filter-select').material_select(); 
+    },
+    //generate data for html template
+    /* {[{nodata,
+          showingName,
+          filter:[{isSelected,value,showingName}] 
+          }]} */
+    generateData: function(category){
+      var output = [];
+      var nodata = true;
+      if(this.filters[category] == undefined){
+        return output;
+      }
+      for(var i = 0 ;i<this.filters[category].length;i++){
+        var groupFilters = this.filters[category][i];
+        var serie = {}
+        serie.name = groupFilters.timeSerie.attributes.showingName;
+        if(groupFilters.name== "  "){
+          serie.nodata = true;
+        }else{
+          serie.nodata = false;
+        }
+        
+        if(groupFilters.name != "  "){
+          serie.filters = [];
+          for(var k = 0;k<groupFilters.name.length;k++){
+            var filter = groupFilters.name[k];
+            var object = {
+              value: groupFilters.timeSerie.sr_id+ "."+ filter,
+              showingName: filter,
+            }
+            object.isSelected  = this.isSelected(groupFilters.timeSerie,filter);
+            serie.filters.push(object);
+          }
+        }  
+        output.push(serie);
+      }
+      return output;
     },
     hide: function(){
       this.$el.html("");
@@ -120,7 +185,21 @@ define(function(require) {
       
       
     },
-    
+    isSelected: function(timeSerie,filterName){
+  
+      for(var i = 0;i<this.selectingFilters.length;i++){
+        
+        var model = selectingsFilters.models[i];
+        if(timeSerie.sr_id == model.timeSerie.sr_id){
+          for(var j = 0;j<model.name.length;j++){
+            if(filterName == model.name[j]){
+              return true;
+            }
+          }
+        }
+      }
+      return false;
+    },
     destroy: function() {
       // From StackOverflow with love.
       this.undelegateEvents();
@@ -128,5 +207,6 @@ define(function(require) {
       this.remove();  
       Backbone.View.prototype.remove.call(this);
     }
+
   });
 });

@@ -17,17 +17,39 @@ define(function(require) {
       this.url = 'api/?data=time_series_list&vd_id=' + vd_id;
       this.fetch({
         success: function(collection,response){
-          collection.groupedData = {};
+          //group Data in categroy
+          
           var currentCategory = "";
             //success: function(collection,response){
           for(var i=0;i<response.length;i++){
-            var model = response[i];
-            if(currentCategory == "" | currentCategory != model.category){
-              collection.groupedData[model.category] = [];
-              currentCategory = model.category;
+            var model = collection.models[i];
+            var item = model.attributes;
+            var station1 = "";
+            var station2 = "";
+            if(item.station_id1 == item.station_id2){
+              station1 = item.station_code1;
+              station2 = "";
+            }else{
+              if(item.station_id1 == "0"){
+                station1 = "";
+                station2 = item.station_code2;
+              }else {
+                station1 = item.station_code1;
+                if(item.station_id == "0"){
+                  station2 = "";
+                }else{
+                  station2 = " - "+item.station_code2;
+                }
+              }
             }
-            collection.groupedData[currentCategory].push(model);
+            model.attributes.showingName = station1 + station2 + "(" + item.component + ")";
+            if(currentCategory == "" | currentCategory != item.category){
+              collection[item.category] = [];
+              currentCategory = item.category;
+            }
+            collection[currentCategory].push(model);
           }
+          // console.log(collection);
           collection.trigger("loaded");
         }
       });
@@ -51,7 +73,7 @@ define(function(require) {
 
                 
                 model.loaded = true;
-                model.name = model.getName();
+                
               }
             })
           }  

@@ -12,8 +12,9 @@ define(function(require) {
       
     },
     indexOfTimeSerie: function(timeSerie){
-      for(var i=0;i<this.models.length;i++){
-        if(timeSerie == this.models[i].timeSerie){
+      var items = this[timeSerie.get("category")];
+      for(var i=0;i<items.length;i++){
+        if(timeSerie == items[i].timeSerie){
           return i;
         }
       }
@@ -23,33 +24,28 @@ define(function(require) {
       if(timeSerie == undefined){
         return;
       }
+      var category = timeSerie.get("category");
+      if(this[category]==undefined){
+        this[category] = [];
+      }
       var index = this.indexOfTimeSerie(timeSerie);
       if(index == -1){
-        this.add(new Filter(timeSerie,filter));
+        this[category].push(new Filter(timeSerie,filter));
       }else{
-        this.models[index].addFilter(filter);
+        this[category][index].addFilter(filter);
       }
       
     },
-    pop: function(timeSerie,filterName){
-      var index = this.indexOfTimeSerie(timeSerie);
-      if(index == -1){
-        return;
-      }else{
-        this.models[index].removeFilter(filterName);
-      }
-      if(this.models[index].name.length == 0){
-        this.remove(this.models[index]);
-      }
-    },
-    getAllFilters: function(){
+    getAllFilters: function(category){
       var filters = [];
-      for(var i = 0;i<this.models.length;i++){
-        for(var j = 0;j<this.models[i].name.length;j++){
-          filters.push({
-            timeSerie:this.models[i].timeSerie.get('sr_id'),
-            filter: this.models[i].name[j]
-          });
+      if(this[category]!= undefined){
+        for(var i = 0;i<this[category].length;i++){
+          for(var j = 0;j<this[category][i].name.length;j++){
+            filters.push({
+              timeSerie:this[category][i].timeSerie.get('sr_id'),
+              filter: this[category][i].name[j]
+            });
+          }
         }
       }
       return filters;

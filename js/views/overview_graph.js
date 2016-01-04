@@ -6,7 +6,9 @@ define(function(require) {
       flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection','excanvas','jquery.flot.errorbars','jquery.flot.legendoncanvas','jquery.flot.axislabels']),
       TimeRange = require('models/time_range'),
       loading = require('text!templates/loading.html'),
+      
       GraphHelper = require('helper/graph');
+
   return Backbone.View.extend({
     loading: _.template(loading),
     initialize: function(options) {

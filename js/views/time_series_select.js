@@ -7,6 +7,7 @@ define(function(require) {
 
       template = require('text!templates/time_series_select.html'),
       loading = require('text!templates/loading.html'),
+      Handlebars = require('handlebars'),
         materialize = require('material');
   
   return Backbone.View.extend({
@@ -16,8 +17,8 @@ define(function(require) {
       'change select': 'showFilter'
     },
 
-    template: _.template(template),
-    loading: _.template(loading),
+    // template: _.template(template),
+    // loading: _.template(loading),
     
     initialize: function(options) {
       this.volcano = options.volcano;
@@ -41,25 +42,65 @@ define(function(require) {
       }
       
     },
-    // After select the Type of Data by checking the check box then the data of that catergory will be updated.
-    // updateVolcanoData: function (vd_id,timeSeries) {
-    //   timeSeries.updateData(vd_id);
-    //   this.selectings.reset();
-    //   this.selectings.trigger('update');
-    // },
 
     render: function(timeSeries) {
+      this.$el.html("");
+      var container =$("<div></div>");
+      container.addClass("time_series_select_container card-panel");
+      this.$el.append(container);
       
-      this.$el.html(this.template({
-        timeSeries: timeSeries.groupedData,
-      }));
+      // console.log(timeSeries);
+      var temp = Handlebars.compile(template);
+      Handlebars.registerHelper('list', function(items, options) {
+        var ret = "";
+        for(var i=0, j=items.length; i<j; i++) {
+          ret = ret+options.fn(items[i]);
+        }
+        return ret;
+      });
+
+      var options = {
+        timeserie: this.generateCategories(timeSeries)
+      }
+
+      var html = temp(options);
+      $('.time_series_select_container').append(html);
       $('.time-serie-select').material_select();
-      // $('#showGraphBtn').click(function(){
-      //   this.showGraph());
-      // });
       
     },
-
+    //generate Categories for html template
+    //output: [{title,data}]
+    generateCategories: function(timeSeries){
+      var output=[];
+      var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
+      for(var i =0;i<categories.length;i++){
+        var category = timeSeries[categories[i]];
+        if(category!=undefined){
+          output.push({
+            category:categories[i],
+            data: this.generateData(category)
+          })
+        }
+      }
+      
+      return output;
+    },
+    //generate Data for html template
+    /* output: {[{sr_id,station1,station2,component}]} */
+    generateData: function(items){
+      var output = [];
+      var station1 = "";
+      var station2 = "";
+      for(var i=0;i<items.length;i++){
+        var item = items[i].attributes;
+        
+        output.push({
+          sr_id:item.sr_id,
+          showingName: item.showingName
+        })
+      }
+      return output;
+    },
     showFilter: function(event) {
         
         
