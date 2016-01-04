@@ -35,7 +35,7 @@ define(function(require) {
     },
     selectingFiltersChanged: function(selectingFilters) {
       this.selectingFilters = selectingFilters;
-      if (this.selectingFilters.length == 0) {
+      if (this.selectingFilters.empty) {
         this.hide();
       }else{
         this.show();

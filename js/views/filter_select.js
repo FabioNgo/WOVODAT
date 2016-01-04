@@ -14,14 +14,6 @@ define(function(require) {
     el: '',
 
     className : "mgt15",
-
-    template: _.template(template),
-    loading: _.template(loading),
-
-    events: {
-      'change select': 'showGraph'
-    },
-    
     initialize: function(options) {
       
       this.observer = options.observer;
@@ -45,6 +37,7 @@ define(function(require) {
       if(data == undefined){
         return;
       }
+      this.filters.empty = false;
       if(data.length == 0){
         this.filters.push(timeSerie,"  "); //no data
       }
@@ -52,46 +45,65 @@ define(function(require) {
         this.filters.push(timeSerie,data[i].filter);
       }
     },
-    showLoading: function(){
-      this.$el.html(this.loading);
-    },
+    
     updateSelectingFilters: function(){
       /* remove timeseries which are no longer selected*/
-      for(var i = 0;i<this.selectingFilters.length;i++){
+      var filters =[];
+      var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
+      for(var i=0;i<categories.length;i++){
+        if(this.selectingFilters[categories[i]]!=undefined){
+          filters = filters.concat(this.selectingFilters[categories[i]]);   
+        }
+      }
+      for(var i = 0;i<filters.length;i++){
         var pos = -1;
         for(var j = 0;j<this.selectingTimeSeries.length;j++){
           
-          if(this.selectingTimeSeries.models[j].get('sr_id') == this.selectingFilters.models[i].timeSerie.get('sr_id')){
+          if(this.selectingTimeSeries.models[j].get('sr_id') == filters[i].timeSerie.get('sr_id')){
             pos = j;
             break;
           }
           
         }
         if(pos == -1){
-            this.selectingFilters.remove(this.selectingFilters.models[i]);
-            i--;
+          this.selectingFilters.removeFilter(filters[i]);
+        }
+      }
+      //add timeseries have no filter
+      for(var i=0;i<categories.length;i++){
+        if(this.filters[categories[i]]!=undefined){
+          var groupedFilters = this.filters[categories[i]];
+          for(var j=0;j<groupedFilters.length;j++){
+            var filter = groupedFilters[j];
+            if(filter.name == " "){
+              this.selectingFilters.push(filter.timeSerie," ");
+              this.selectingFilters.empty = false;
+            }  
           }
+          
+        }
       }
     },
     render: function(options) {
       this.filters.reset();
        $('.filter-field').empty();
       /* get filter from selecting Time Series */
+      var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
+      for(var i =0;i<categories.length;i++){
+        delete this.filters[categories[i]];
+      }
+      this.filters.empty = true;
       var models = this.selectingTimeSeries.models;
       for (var i = 0; i < models.length; i++) {
         this.getFilter(models[i]);
 
       };
-      /*and update selecting Filters*/
-      this.updateSelectingFilters();
-
-      
-      this.selectingFilters.trigger('update');
-      var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
-      var selectingFilters = [];
-      for(var i = 0;i<categories.length;i++){
-        selectingFilters = this.selectingFilters.getAllFilters(categories[i]);
-      }
+      this.showGraph();
+      // var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
+      // var selectingFilters = [];
+      // for(var i = 0;i<categories.length;i++){
+      //   selectingFilters = selectingFilters.concat(this.selectingFilters.getAllFilters(categories[i]));
+      // }
 
       var temp = Handlebars.compile(template);
       Handlebars.registerHelper('list', function(items, options) {
@@ -120,6 +132,7 @@ define(function(require) {
 
       
       $('.filter-select').material_select(); 
+      
     },
     //generate data for html template
     /* {[{nodata,
@@ -146,6 +159,11 @@ define(function(require) {
           serie.filters = [];
           for(var k = 0;k<groupFilters.name.length;k++){
             var filter = groupFilters.name[k];
+            if(filter == " "){
+              serie.hasfilter = false;
+              break;
+            }
+            serie.hasfilter = true;
             var object = {
               value: groupFilters.timeSerie.sr_id+ "."+ filter,
               showingName: filter,
@@ -160,7 +178,13 @@ define(function(require) {
     },
     hide: function(){
       this.$el.html("");
-      this.selectingFilters.reset();
+
+      var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
+      for(var i =0;i<categories.length;i++){
+        delete this.selectingFilters[categories[i]];
+      }
+      this.selectingFilters.empty = true;
+      this.render();
       this.trigger('hide');
 
     },
@@ -168,28 +192,35 @@ define(function(require) {
     showGraph: function(event) {
         
         
-      
-      this.selectingFilters.reset();
+      // var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
+      // for(var i =0;i<categories.length;i++){
+      //   delete this.selectingFilters[categories[i]];
+      // }
+      // this.selectingFilters.empty = true;
       var options = $('.filter-select-option');
       // for(var i = 0; i<selects.length;i++){
       for(var i = 0;i<options.length;i++){
         var option = options[i];
         if(option.selected){
           var temp = option.value.split(".");
+          this.selectingFilters.empty = false;
           this.selectingFilters.push(this.selectingTimeSeries.get(temp[0]),temp[1]);
         }
       
       }
-        
+      this.updateSelectingFilters();
       this.selectingFilters.trigger('update');
       
       
     },
     isSelected: function(timeSerie,filterName){
-  
-      for(var i = 0;i<this.selectingFilters.length;i++){
+      var selectingFilters = this.selectingFilters[timeSerie.get('category')];
+      if(selectingFilters == undefined){
+        return false;
+      }
+      for(var i = 0;i<selectingFilters.length;i++){
         
-        var model = selectingsFilters.models[i];
+        var model = selectingFilters[i];
         if(timeSerie.sr_id == model.timeSerie.sr_id){
           for(var j = 0;j<model.name.length;j++){
             if(filterName == model.name[j]){
@@ -207,6 +238,5 @@ define(function(require) {
       this.remove();  
       Backbone.View.prototype.remove.call(this);
     }
-
   });
 });

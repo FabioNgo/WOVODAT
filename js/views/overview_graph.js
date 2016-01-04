@@ -6,7 +6,7 @@ define(function(require) {
       flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection','excanvas','jquery.flot.errorbars','jquery.flot.legendoncanvas','jquery.flot.axislabels']),
       TimeRange = require('models/time_range'),
       loading = require('text!templates/loading.html'),
-      
+
       GraphHelper = require('helper/graph');
 
   return Backbone.View.extend({
@@ -103,6 +103,7 @@ define(function(require) {
       //limit data to be rendered
       
       // console.log(this.data);
+      console.log(this.$el);
       this.graph = $.plot(this.$el, this.data, options);
       //To edit the series object, go to GraphHelper used for data in the prepareData method below.
       this.$el.bind('plotselected', this.selectingTimeRange, this.onSelect);
@@ -117,8 +118,13 @@ define(function(require) {
     
   
     prepareData: function() {
-     
-      var filters = this.selectingFilters.models;
+      var filters =[];
+      var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
+      for(var i=0;i<categories.length;i++){
+        if(this.selectingFilters[categories[i]]!=undefined){
+          filters = filters.concat(this.selectingFilters[categories[i]]);   
+        }
+      }
       var allowErrorbar = false;
       var allowAxisLabel =false;
       var limitNumberOfData =true;

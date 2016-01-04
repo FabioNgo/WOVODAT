@@ -1,5 +1,7 @@
 {{#list series}}
+{{#if hasfilter}}
 	<div class="input-field col s12 ">
+
     <select class="filter-select" multiple>
       {{#if nodata}}
         <option class="filter-select-option"  value="" disabled selected>No Data</option>
@@ -17,4 +19,5 @@
     </select>
     <label>{{name}}</label>
   </div>
+  {{/if}}
 {{/list}}

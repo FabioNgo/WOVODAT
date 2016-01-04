@@ -69,8 +69,9 @@ define(function(require) {
           timeSeriesSelect = new TimeSeriesSelect({
             observer: observer,
             volcano: selectingVolcano,
-            selectings: selectingTimeSeries,
-            timeSeries: timeSeries
+            selectingTimeSeries: selectingTimeSeries,
+            timeSeries: timeSeries,
+            selectingFilters: selectingFilters
           }),
           filtersSelect = new FilterSelect({
             observer: observer,

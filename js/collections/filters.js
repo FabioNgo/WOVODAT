@@ -9,7 +9,7 @@ define(function(require) {
   return Backbone.Collection.extend({
     model: Filter,
     initialize: function() {
-      
+      this.empty = true;
     },
     indexOfTimeSerie: function(timeSerie){
       var items = this[timeSerie.get("category")];
@@ -35,6 +35,20 @@ define(function(require) {
         this[category][index].addFilter(filter);
       }
       
+    },
+    removeFilter:function(filter){
+      var groupedFilters = this[filter.timeSerie.get('category')];
+      groupedFilters = _.filter(groupedFilters, function(groupedFilter){
+        groupedFilter.name = _.filter(groupedFilter.name, function(name){
+          return name == filter.name;
+        })
+        return groupedFilter.name!=0;
+      })
+      if(groupedFilters.length == 0){
+        delete this[filter.timeSerie.get('category')]
+      }else{
+       this[filter.timeSerie.get('category')] = groupedFilters;
+      }
     },
     getAllFilters: function(category){
       var filters = [];

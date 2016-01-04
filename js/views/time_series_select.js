@@ -14,7 +14,7 @@ define(function(require) {
     el: '',
 
     events: {
-      'change select': 'showFilter'
+      'change select': 'selectChangedHandler'
     },
 
     // template: _.template(template),
@@ -22,9 +22,10 @@ define(function(require) {
     
     initialize: function(options) {
       this.volcano = options.volcano;
-      this.selectings = options.selectings;
+      this.selectingTimeSeries = options.selectingTimeSeries;
       this.observer = options.observer;
       this.timeSeries = options.timeSeries;
+      this.selectingFilters = options.selectingFilters;
 
     },
     showLoading: function(){
@@ -37,8 +38,8 @@ define(function(require) {
         this.trigger('hide');
       }else{
         timeSeries.changeVolcano(vd_id);
-        this.selectings.reset();
-        this.selectings.trigger('update');
+        this.selectingTimeSeries.reset();
+        this.selectingTimeSeries.trigger('update');
       }
       
     },
@@ -101,25 +102,33 @@ define(function(require) {
       }
       return output;
     },
+    selectChangedHandler: function(event){
+      if(event.target.classList[0]=="time-serie-select"){
+        this.showFilter();
+      }else{
+        this.trigger("filter-select-change");
+      }
+    },
     showFilter: function(event) {
         
         
       // this.$el.append(this.loading);
-      this.selectings.reset();
+      this.selectingTimeSeries.reset();
       
       var options = $('.time-serie-select-option');
       
       for(var i = 0;i<options.length;i++){
           var option = options[i];
           if(option.selected){
-            this.selectings.add(this.timeSeries.get(option.value));
+            this.selectingTimeSeries.add(this.timeSeries.get(option.value));
           }
         
       }
-      this.selectings.trigger("change");
+      this.selectingTimeSeries.trigger("change");
       
       
     },
+    
 
     destroy: function() {
       // From StackOverflow with love.
