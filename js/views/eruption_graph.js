@@ -86,7 +86,8 @@ define(function(require) {
           show: true,
           fullparams: true,
           horizontal:true,
-          
+          fill: false,
+          fillcolor: null,
 
         },
         dataType: dataType,
@@ -139,7 +140,7 @@ define(function(require) {
       graph_pram_data.push(this.gernerateBarChartFlotData(temp,'#F44336','Eruption Phase','ed_phs',""));
         
       /** Eruption part **/
-      graph_pram_data.push(this.gernerateBarChartFlotData ([data.edData.data], 'Gray','Eruption','ed',""));
+      graph_pram_data.push(this.gernerateBarChartFlotData ([data.edData.data], 'Black','Eruption','ed',""));
       el.width('auto');
       el.height(150);
       el.addClass("eruption-graph card-panel");
