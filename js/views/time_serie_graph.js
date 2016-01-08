@@ -85,6 +85,7 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
               max: this.maxY,
               ticks: this.ticks,
               labelWidth: 60,
+
               zoomRange: false,
               axisLabel: unit,
               canvas: true,

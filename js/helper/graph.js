@@ -39,7 +39,7 @@ define(function(require) {
       
       return ticks;
     },
-    formatData: function(graph,filters,allowErrorbar,allowAxisLabel,limitNumberOfData){
+    formatData: function(graph,filters,earthquakeTypeColor,allowErrorbar,allowAxisLabel,limitNumberOfData){
      var minX = undefined,
          maxX = undefined,
          minY = undefined,
@@ -48,13 +48,30 @@ define(function(require) {
          errorbars = undefined;
       for(var i=0;i<filters.length;i++){
         var filter = filters[i];
+        //console.log(filter);
         for(var j=0;j<filter.name.length;j++){
           var filterName = filter.name[j];
+          //console.log(filterName);
           var list = [];
           var filterData = filter.timeSerie.getDataFromFilter(filterName)
           var style = filter.timeSerie.get('data').style; // plot style [bar,circle,dot,horizontalbar]
           var errorbar;
           var axisLabel; // show unit on Y-axis
+
+          // Set up filter color for special earthquake types
+          var filterColor = null;
+          for(var k=0; k<earthquakeTypeColor.length; k++){
+            if(earthquakeTypeColor.models[k].id == filterName){
+              var filterColor = earthquakeTypeColor.models[k].attributes.color;
+              break;
+            }
+            // // Test
+            // var filterColor = earthquakeTypeColor.models[k].attributes.color;
+            // break;
+            //console.log(filterName);
+          }
+
+
           if(!allowErrorbar){
             errorbar = false;
           }else{
@@ -137,11 +154,13 @@ define(function(require) {
             }
             list.push(tempData);
           });
-          // console.log(list);
+          //console.log(list.length);
+
           var styleParams = {
             style: style,
             errorbar: errorbar,
-            axisLabel: axisLabel
+            axisLabel: axisLabel,
+            filterColor: filterColor // Pre-coded color for certain earthquake type
           }
           data.push(this.formatGraphAppearance(list,filter.timeSerie.getName(),filterName,styleParams));
           
@@ -186,12 +205,12 @@ define(function(require) {
     *   filterName: filter name
     *   styleParams: params for styling graph {barwith,errorbar, y-axis unit....}
     **/
-    formatGraphAppearance: function(data,timeSerieName, filterName,styleParams){
+    formatGraphAppearance: function(data,timeSerieName,filterName,styleParams){
       
       var dataParam = {
         data: data, //data is 3D array (y-error value is included in the data passed in)
         label: filterName + ":"+timeSerieName,
-        // color: 0,
+        color: null,
         lines: { 
           show: false
         },
@@ -221,6 +240,12 @@ define(function(require) {
           zero: true
         }
       };
+
+      // Set up for special earthquake type Colors
+      if(styleParams.filterColor){
+        dataParam.color = styleParams.filterColor;
+      };
+
       if(styleParams.errorbar){
         dataParam.points.errorbars = "y";
         dataParam.points.yerr = {
@@ -231,12 +256,18 @@ define(function(require) {
             radius:2,
         }
       };
+
       if(styleParams.axisLabel){
         dataParam.yaxis.axisLabel = styleParams.axisLabel;
         //console.log(dataParam.yaxis.axisLabel);
       };
+
+      if(styleParams.earthquakeTypeColor != null){
+        dataParam.color = styleParams.earthquakeTypeColor;
+        console.log(dataParam.earthquakeTypeColor);
+      }
       
-       if(styleParams.style == 'dot'){
+      if(styleParams.style == 'dot'){
         dataParam.points.show = true;
         dataParam.points.fill = true;
         dataParam.points.fillColor = "#000000";

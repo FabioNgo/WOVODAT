@@ -21,6 +21,7 @@ define(function(require) {
       this.selectingVolcano = options.selectingVolcano;
       this.collection = options.collection;
       this.collection.fetch();
+      //console.log(this.collection);
       this.listenTo(this.collection, 'sync', this.render);
       
     },

@@ -30,7 +30,6 @@ define(function(require) {
       TimeSeriesGraphContainer = require('views/time_serie_graph_container'),
       EventHandler = require('handler/event_handler');
 
-
   return Backbone.View.extend({
     el: '#main',
     
@@ -58,6 +57,8 @@ define(function(require) {
           selectingTimeRange = new TimeRange(),
           eruptionTimeRange = new TimeRange(),
           overviewGraphTimeRange = new TimeRange(),
+
+
           volcanoSelect = new VolcanoSelect({
             collection: volcanoes,
             observer: observer,
@@ -79,7 +80,8 @@ define(function(require) {
             selectingTimeSeries: this.overviewSelectingTimeSeries,
             serieGraphTimeRange: serieGraphTimeRange,
             selectingTimeRange: selectingTimeRange,
-            overviewGraphTimeRange: overviewGraphTimeRange
+            overviewGraphTimeRange: overviewGraphTimeRange,
+            // collection: filterColorCollection
           }),
 
           overviewGraphContainer = new OverviewGraphContainer({
@@ -128,6 +130,8 @@ define(function(require) {
           //   selectingEruptions: selectingEruptions
           // }),
 
+
+
           eventHandler = new EventHandler({
             volcanoSelect: volcanoSelect,
             timeSeriesSelect: timeSeriesSelect,
@@ -148,6 +152,9 @@ define(function(require) {
             selectingFilters: selectingFilters,
             eruptionForecastsGraph: eruptionForecastsGraph
           });
+          //console.log(volcanoes);
+          // console.log(filterColorCollection);
+          // console.log(overviewGraph);
       /** Body **/
       // var test = new TimeSerie('58166f4b40cca4e8ed2522b5f00bc756');
       // test.fetch({

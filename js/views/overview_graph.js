@@ -5,13 +5,20 @@ define(function(require) {
       _ = require('underscore'),
       flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection','excanvas','jquery.flot.errorbars','jquery.flot.legendoncanvas','jquery.flot.axislabels']),
       TimeRange = require('models/time_range'),
-      GraphHelper = require('helper/graph');
+      GraphHelper = require('helper/graph'),
+      //Filter Color for each earthquake type configuration
+      FilterColor = require('models/filter_color'),
+      FilterColorCollection = require('collections/filter_colors');
   return Backbone.View.extend({
     initialize: function(options) {
       
       this.serieGraphTimeRange = options.serieGraphTimeRange;
       this.timeRange = options.overviewGraphTimeRange;
       this.selectingTimeRange = options.selectingTimeRange;
+      this.filterColorCollection = new FilterColorCollection;
+      this.filterColorCollection.fetch();
+      //console.log(this.filterColorCollection);
+
     },
     
     selectingFiltersChanged: function(selectingFilters) {
@@ -111,11 +118,14 @@ define(function(require) {
     prepareData: function() {
      
       var filters = this.selectingFilters.models;
+      //console.log(filters);
       var allowErrorbar = false;
       var allowAxisLabel =false;
       var limitNumberOfData =true;
+      // this variable helps to set color for each earthquake type
+      var earthquakeTypeColor = this.filterColorCollection;
       //formatData: function(graph,filters,allowErrorbar,allowAxisLabel,limitNumberOfData)
-      GraphHelper.formatData(this,filters,allowErrorbar,allowAxisLabel,limitNumberOfData); 
+      GraphHelper.formatData(this,filters,earthquakeTypeColor,allowErrorbar,allowAxisLabel,limitNumberOfData); 
       
     },
     
