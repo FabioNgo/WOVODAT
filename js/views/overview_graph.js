@@ -47,49 +47,54 @@ define(function(require) {
     render: function() {
       // this.showLoading();
       var options = {
-            xaxis: { 
-              mode:'time',
-              timeformat: "%d-%b-%Y",
-              autoscale: true,
-              canvas: true,
-              rotateTicks: 90,
-              min: this.minX,
-              max: this.maxX,
-              autoscaleMargin: 10,
-            },
-            yaxis: {
-              show: true,
-              color: '#00000000',
-              canvas: false,
-              // tickFormatter: function(val, axis) { 
-              //   // console.log(val);
-              //   if(val > 9999 || val <-9999){
-              //     val = val.toPrecision(1);
-              //   }else{
-                  
-              //   }
-              //   return val;
-              // },
-              min: this.minY,
-              max: this.maxY,
-              //axisLabelUseCanvas: true,
-              autoscaleMargin: 5,
-              ticks: this.ticks,
-              labelWidth: 60
-            },
-            selection: { 
-              mode: 'x', 
-              color: '#451A2B' 
-            },
-            zoom: {
-              interactive: false,
-            },
-            legend :{
-              type: 'canvas'
-            },
-          };
+        grid:{
+          // margin: 20,
+          minBorderMargin : 10
+        },
+        xaxis: { 
+          mode:'time',
+          timeformat: "%d-%b<br>%Y",
+          autoscale: true,
+          canvas: true,
+          rotateTicks: 90,
+          min: this.minX,
+          max: this.maxX,
+          // minTickSize: [1, "month"],
+          ticks: 6,
+        },
+        yaxis: {
+          show: true,
+          color: '#00000000',
+          canvas: false,
+          // tickFormatter: function(val, axis) { 
+          //   // console.log(val);
+          //   if(val > 9999 || val <-9999){
+          //     val = val.toPrecision(1);
+          //   }else{
+              
+          //   }
+          //   return val;
+          // },
+          min: this.minY,
+          max: this.maxY,
+          //axisLabelUseCanvas: true,
+          autoscaleMargin: 5,
+          ticks: this.ticks,
+          labelWidth: 40
+        },
+        selection: { 
+          mode: 'x', 
+          color: '#451A2B' 
+        },
+        zoom: {
+          interactive: false,
+        },
+        legend :{
+          type: 'canvas'
+        },
+      };
           //pass color into options
-          options.colors = ["#000000", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"];
+      options.colors = ["#000000", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"];
 
       if (!this.data || !this.data.length) {
         this.$el.html(''); //$(this) = this.$el
@@ -103,7 +108,6 @@ define(function(require) {
       //limit data to be rendered
       
       // console.log(this.data);
-      console.log(this.$el);
       this.graph = $.plot(this.$el, this.data, options);
       //To edit the series object, go to GraphHelper used for data in the prepareData method below.
       this.$el.bind('plotselected', this.selectingTimeRange, this.onSelect);

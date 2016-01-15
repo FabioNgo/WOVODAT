@@ -192,11 +192,11 @@ define(function(require) {
     showGraph: function(event) {
         
         
-      // var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
-      // for(var i =0;i<categories.length;i++){
-      //   delete this.selectingFilters[categories[i]];
-      // }
-      // this.selectingFilters.empty = true;
+      var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
+      for(var i =0;i<categories.length;i++){
+        delete this.selectingFilters[categories[i]];
+      }
+      this.selectingFilters.empty = true;
       var options = $('.filter-select-option');
       // for(var i = 0; i<selects.length;i++){
       for(var i = 0;i<options.length;i++){

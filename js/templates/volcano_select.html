@@ -1,11 +1,26 @@
 <div id="volcano-select" class="card-panel">
+
 <div class="input-field col s12">
-<select class="" id="select-volcano">
-  <option value="-1"  disabled selected>Please select a volcano</option>
-  <% _.each(volcanoes, function(volcano) { %>
-    <option value="<%= volcano.get('vd_id') %>"><%= volcano.get('vd_name')  %></option>
-  <% }); %>
-  
+<select class="volcanoes_select">
+	{{#if selected}}
+	  	<option value="-1"  disabled>Please select a volcano</option>
+		{{#list volcanoes}}
+			{{#if select}}
+				<option value="{{vd_id}}" selected>{{vd_name}}</option>
+			{{else}}
+				<option value="{{vd_id}}">{{vd_name}}</option>
+			{{/if}}
+		{{/list}}
+  	{{else}}
+  		<option value="-1"  disabled selected>Please select a volcano</option>
+		{{#list volcanoes}}
+			{{#if select}}
+				<option value="{{vd_id}}" selected>{{vd_name}}</option>
+			{{else}}
+				<option value="{{vd_id}}">{{vd_name}}</option>
+			{{/if}}
+		{{/list}}
+	{{/if}}
 </select>
 <label>Select Volcano</label>
 </div>

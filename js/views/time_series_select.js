@@ -57,13 +57,15 @@ define(function(require) {
         for(var i=0, j=items.length; i<j; i++) {
           ret = ret+options.fn(items[i]);
         }
+        if(ret == ""){
+          ret = "No data";
+        }
         return ret;
       });
 
       var options = {
         timeserie: this.generateCategories(timeSeries)
       }
-
       var html = temp(options);
       $('.time_series_select_container').append(html);
       $('.time-serie-select').material_select();
