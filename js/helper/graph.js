@@ -39,7 +39,7 @@ define(function(require) {
       
       return ticks;
     },
-    formatData: function(graph,filters,earthquakeTypeColor,allowErrorbar,allowAxisLabel,limitNumberOfData){
+    formatData: function(graph,filters,allowErrorbar,allowAxisLabel,limitNumberOfData){
      var minX = undefined,
          maxX = undefined,
          minY = undefined,
@@ -49,9 +49,9 @@ define(function(require) {
       for(var i=0;i<filters.length;i++){
         var filter = filters[i];
         //console.log(filter);
-        for(var j=0;j<filter.name.length;j++){
-          var filterName = filter.name[j];
-          //console.log(filterName);
+        for(var j=0;j<filter.filterAttributes.length;j++){
+          var filterName = filter.filterAttributes[j].name;
+          //console.log(filter.filterAttributes[j]);
           var list = [];
           var filterData = filter.timeSerie.getDataFromFilter(filterName)
           var style = filter.timeSerie.get('data').style; // plot style [bar,circle,dot,horizontalbar]
@@ -59,17 +59,8 @@ define(function(require) {
           var axisLabel; // show unit on Y-axis
 
           // Set up filter color for special earthquake types
-          var filterColor = null;
-          for(var k=0; k<earthquakeTypeColor.length; k++){
-            if(earthquakeTypeColor.models[k].id == filterName){
-              var filterColor = earthquakeTypeColor.models[k].attributes.color;
-              break;
-            }
-            // // Test
-            // var filterColor = earthquakeTypeColor.models[k].attributes.color;
-            // break;
-            //console.log(filterName);
-          }
+          var filterColor = filter.filterAttributes[j].color;
+          //console.log(filterColor);
 
 
           if(!allowErrorbar){
@@ -269,8 +260,8 @@ define(function(require) {
       
       if(styleParams.style == 'dot'){
         dataParam.points.show = true;
-        dataParam.points.fill = true;
-        dataParam.points.fillColor = "#000000";
+        dataParam.points.fill = true; // Set whether point color is be filled
+        dataParam.points.fillColor = dataParam.color; //"#000000";
         // console.log(dataParam);
       }
       else if(styleParams.style == 'circle'){

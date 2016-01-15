@@ -88,8 +88,7 @@ define(function(require) {
               type: 'canvas'
             },
           };
-          //pass color into options
-          options.colors = ["#000000", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"];
+          // Graph Options such as points, lines, bars and colors are prepared in prepared data
 
       if (!this.data || !this.data.length) {
         this.$el.html(''); //$(this) = this.$el
@@ -116,16 +115,49 @@ define(function(require) {
     
   
     prepareData: function() {
-     
+      
       var filters = this.selectingFilters.models;
       //console.log(filters);
+      // this variable helps to set color for each earthquake type
+      var earthquakeTypeColor = this.filterColorCollection;
+      // Preset color for each filter data to achieve color coherence in between overview and time series graph.
+      var presetColorArray = ["#000000", "#396ab1", "#cb4b4b", "#4da74d", "#9440ed", "#948b3d", "#da7c30", "#cb1480", "#85004e", "#19d1d6"];
+      // ensure the color will not be repeated unless it has reached the end of the presetColorArray 
+      var counter = 0;
+      for(var i=0;i<filters.length;i++){
+        var currentFilter = filters[i];
+        console.log(i);
+        for(var k=0;k<currentFilter.filterAttributes.length;k++){
+          console.log(k);
+            var currentFilterAttributes = currentFilter.filterAttributes[k];
+            // Checking whether the filterAtribute name is an earthquake type (eg.R,v,...).
+            // If yes, then use the pre-assigned color in the database.
+            // Else use the color from the presetColorArray above.
+            var graphColorForEarthquakeType = null;
+            for(var j=0;j<earthquakeTypeColor.length;j++){
+              if(currentFilterAttributes.name == earthquakeTypeColor.models[j].id){
+                graphColorForEarthquakeType = earthquakeTypeColor.models[j].attributes.color;
+                break;
+              }
+            }
+            //console.log(currentFilterAttributes.color);
+            if(graphColorForEarthquakeType == null){
+              var colorPos = counter%(presetColorArray.length);
+              currentFilterAttributes.color = presetColorArray[colorPos];
+              counter++;
+            }
+            else{
+              currentFilterAttributes.color = graphColorForEarthquakeType;
+            }
+            //console.log(counter);
+        } 
+      }
+      console.log(filters);
       var allowErrorbar = false;
       var allowAxisLabel =false;
       var limitNumberOfData =true;
-      // this variable helps to set color for each earthquake type
-      var earthquakeTypeColor = this.filterColorCollection;
       //formatData: function(graph,filters,allowErrorbar,allowAxisLabel,limitNumberOfData)
-      GraphHelper.formatData(this,filters,earthquakeTypeColor,allowErrorbar,allowAxisLabel,limitNumberOfData); 
+      GraphHelper.formatData(this,filters,allowErrorbar,allowAxisLabel,limitNumberOfData); 
       
     },
     

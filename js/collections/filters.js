@@ -38,17 +38,18 @@ define(function(require) {
       }else{
         this.models[index].removeFilter(filterName);
       }
-      if(this.models[index].name.length == 0){
+      if(this.models[index].filterAttributes.length == 0){
         this.remove(this.models[index]);
       }
     },
     getAllFilters: function(){
       var filters = [];
       for(var i = 0;i<this.models.length;i++){
-        for(var j = 0;j<this.models[i].name.length;j++){
+        for(var j = 0;j<this.models[i].filterAttributes.length;j++){
           filters.push({
             timeSerie:this.models[i].timeSerie.get('sr_id'),
-            filter: this.models[i].name[j]
+            filter: this.models[i].filterAttributes[j].name
+
           });
         }
       }

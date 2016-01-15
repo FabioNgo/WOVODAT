@@ -81,8 +81,8 @@ define(function(require) {
       /* if timeSerie has no filter ( filter = " "), select by default */
       for(var i = 0; i< this.filters.length;i++){ // go through all timeSeries
         var filter = this.filters.models[i];
-        for(var j = 0;j<filter.name.length;j++){ //go through all filterName in each timeSeries
-          var filterName = filter.name[j];
+        for(var j = 0;j<filter.filterAttributes.length;j++){ //go through all filterName in each timeSeries
+          var filterName = filter.filterAttributes[j].name;
           if(filterName == " "){
             //select data having no filter (filter = " ")
             var timeSerie = this.selectingTimeSeries.get(filter.timeSerie.sr_id);

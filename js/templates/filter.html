@@ -8,8 +8,8 @@ function isSelecting(timeSerie,filterName,selectings){
 		
 		var model = selectings.models[i];
 		if(timeSerie.sr_id == model.timeSerie.sr_id){
-			for(var j = 0;j<model.name.length;j++){
-				if(filterName == model.name[j]){
+			for(var j = 0;j<model.filterAttributes.length;j++){
+				if(filterName == model.filterAttributes[j].name){
 					return true;
 				}
 			}
@@ -28,9 +28,9 @@ if ( filters.length > 0 ) { %>
       <option class="filter-select-option"  value="" disabled selected>Select your filter</option>
       <% 
       
-      for(var j = 0; j<filter.name.length;j++){
+      for(var j = 0; j<filter.filterAttributes.length;j++){
 
-        var filterName = filter.name[j];
+        var filterName = filter.filterAttributes[j].name;
 
         var filterShowingName = filterName;
         if(filterName == " "){
