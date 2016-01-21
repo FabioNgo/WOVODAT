@@ -12,7 +12,7 @@ class dd_levManager extends TableManager {
 		return $result;
 	}
 	protected function setTableName(){
-		return "es_dd_gpv";
+		return "es_dd_lev";
 	}
 	protected function setMonitoryType(){
 		return "Deformation";
@@ -33,7 +33,7 @@ class dd_levManager extends TableManager {
 		$unit="";
 		$attribute = "";
 		$query = "";
-		$table = "dd_gps";
+		$table = "dd_lev";
 		$errorbar = true;
 		$style = "horizontalbar";
 		if($component == 'Elevation Change'){
