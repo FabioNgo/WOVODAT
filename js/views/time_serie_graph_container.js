@@ -80,8 +80,15 @@ define(function(require) {
     selectingFiltersChanged: function(selectingFilters){
       this.graphs.length =0;
       this.$el.html("");
-      for (var i = 0; i < selectingFilters.models.length; i++) {
-        this.addGraph(selectingFilters.models[i]);
+      var filters =[];
+      var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
+      for(var i=0;i<categories.length;i++){
+        if(selectingFilters[categories[i]]!=undefined){
+          filters = filters.concat(selectingFilters[categories[i]]);   
+        }
+      }
+      for (var i = 0; i < filters.length; i++) {
+        this.addGraph(filters[i]);
       };
     },
     // render: function(selectingTimeSeries) {

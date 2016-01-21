@@ -6,14 +6,20 @@ define(function(require) {
   return Backbone.Router.extend({
     initialize: function(options) {
       Backbone.history.start();
+      this.vnum = -1;
     },
 
     routes: {
-      '': 'loadPage'
+      'vnum=*:number' : 'loadPage',
+      '*anything': 'loadPage1',
+      
     },
-
-    loadPage: function() {
-       var a = new Page();
-    }
+    loadPage: function(number){
+      var selecting_vd_num = parseInt(number);
+      var a = new Page(selecting_vd_num);
+    },
+    loadPage1: function(){
+      var a = new Page();
+    },
   });
 });

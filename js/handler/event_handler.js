@@ -19,6 +19,7 @@ define(function(require) {
         // 'onRemoveSelectingTimeSeries',
         // 'onResetSelectingTimeSeries',
         'timeSeriesChanged',
+        'filtersSelectChange',
         'selectingTimeSeriesChanged',
         'selectingTimeSeriesChangedCheck',
         'changeSelectingEruptions',
@@ -59,6 +60,7 @@ define(function(require) {
       // this.listenTo(this.selectingTimeSeries, 'syncAll', this.onAddSelectingTimeSeries);
       // this.listenTo(this.selectingTimeSeries,'remove', this.onRemoveSelectingTimeSeries);
       this.listenTo(this.timeSeries,'loaded', this.timeSeriesChanged);
+      this.listenTo(this.timeSeriesSelect,"filter-select-change", this.filtersSelectChange);
       // this.listenTo(this.selectingTimeSeries,'reset', this.onResetSelectingTimeSeries);
       
 //this.listenTo(this.selectingTimeSeries, 'getdata', this.updateTimeSeriesData);
@@ -106,12 +108,15 @@ define(function(require) {
     //   this.timeSeriesSelect.updateVolcanoData(vd_id, this.timeSeries);
     // },
     
-
+    filtersSelectChange : function(e){
+      this.filtersSelect.showGraph();
+    },
     selectingTimeSeriesChanged: function(e){
       
       this.filtersSelect.selectingTimeSeriesChanged(this.selectingTimeSeries); // filter is rendered out.
     },
     selectingTimeSeriesChangedCheck: function(e){
+      // this.filtersSelect.showLoading();
       var allLoaded = true;
       // while(!allLoaded){
         for(var i=0;i<this.selectingTimeSeries.models.length;i++){
