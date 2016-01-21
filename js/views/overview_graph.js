@@ -7,9 +7,11 @@ define(function(require) {
       TimeRange = require('models/time_range'),
       GraphHelper = require('helper/graph'),
       //Filter Color for each earthquake type configuration
+      loading = require('text!templates/loading.html'),
       FilterColor = require('models/filter_color'),
       FilterColorCollection = require('collections/filter_colors');
   return Backbone.View.extend({
+    loading: _.template(loading),
     initialize: function(options) {
       
       this.serieGraphTimeRange = options.serieGraphTimeRange;
@@ -44,51 +46,60 @@ define(function(require) {
       this.$el.height(0);
       this.trigger('hide');
     },
+    showLoading: function(){
+      this.$el.html(this.loading);
+    },
     render: function() {
-      
+      // this.showLoading();
       var options = {
-            xaxis: { 
-              mode:'time',
-              timeformat: "%d-%b-%Y",
-              autoscale: true,
-              canvas: true,
-              rotateTicks: 90,
-              min: this.minX,
-              max: this.maxX,
-              autoscaleMargin: 10,
-            },
-            yaxis: {
-              show: true,
-              color: '#00000000',
-              canvas: false,
-              // tickFormatter: function(val, axis) { 
-              //   // console.log(val);
-              //   if(val > 9999 || val <-9999){
-              //     val = val.toPrecision(1);
-              //   }else{
-                  
-              //   }
-              //   return val;
-              // },
-              min: this.minY,
-              max: this.maxY,
-              //axisLabelUseCanvas: true,
-              autoscaleMargin: 5,
-              ticks: this.ticks,
-              labelWidth: 60
-            },
-            selection: { 
-              mode: 'x', 
-              color: '#451A2B' 
-            },
-            zoom: {
-              interactive: false,
-            },
-            legend :{
-              type: 'canvas'
-            },
-          };
-          // Graph Options such as points, lines, bars and colors are prepared in prepared data
+        grid:{
+          // margin: 20,
+          minBorderMargin : 10
+        },
+        xaxis: { 
+          mode:'time',
+          timeformat: "%d-%b<br>%Y",
+          autoscale: true,
+          canvas: true,
+          rotateTicks: 90,
+          min: this.minX,
+          max: this.maxX,
+          // minTickSize: [1, "month"],
+          ticks: 6,
+        },
+        yaxis: {
+          show: true,
+          color: '#00000000',
+          canvas: false,
+          // tickFormatter: function(val, axis) { 
+          //   // console.log(val);
+          //   if(val > 9999 || val <-9999){
+          //     val = val.toPrecision(1);
+          //   }else{
+              
+          //   }
+          //   return val;
+          // },
+          min: this.minY,
+          max: this.maxY,
+          //axisLabelUseCanvas: true,
+          autoscaleMargin: 5,
+          ticks: this.ticks,
+          labelWidth: 40
+        },
+        selection: { 
+          mode: 'x', 
+          color: '#451A2B' 
+        },
+        zoom: {
+          interactive: false,
+        },
+        legend :{
+          type: 'canvas'
+        },
+      };
+          //pass color into options
+      options.colors = ["#000000", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"];
 
       if (!this.data || !this.data.length) {
         this.$el.html(''); //$(this) = this.$el
@@ -97,7 +108,7 @@ define(function(require) {
 
       this.$el.width('auto');
       this.$el.height(200);
-      this.$el.addClass("overview-graph card-panel progress indeterminate");
+      this.$el.addClass("overview-graph card-panel");
 
       //limit data to be rendered
       
@@ -109,12 +120,14 @@ define(function(require) {
     },
 
     update: function() {
+      this.showLoading();
       this.prepareData();
       this.render();
     },
     
   
     prepareData: function() {
+
       
       var filters = this.selectingFilters.models;
       //console.log(filters);
@@ -152,7 +165,14 @@ define(function(require) {
             //console.log(counter);
         } 
       }
-      console.log(filters);
+
+      var filters =[];
+      var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
+      for(var i=0;i<categories.length;i++){
+        if(this.selectingFilters[categories[i]]!=undefined){
+          filters = filters.concat(this.selectingFilters[categories[i]]);   
+        }
+      }
       var allowErrorbar = false;
       var allowAxisLabel =false;
       var limitNumberOfData =true;

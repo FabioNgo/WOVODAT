@@ -57,27 +57,18 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
         }
       };
       var options = {
-            // series: {
-            //   points:{
-            //     show: true,
-            //     radius: 5,
-            //     lineWidth: 2, // in pixels
-            //     fill: true,
-            //     fillColor: null,
-            //     symbol: "circle" 
-            //   },
-            //   lines:{
-            //     show: false
-            //   },
-
-            // },
+            grid:{
+              margin: 50,
+            },
             xaxis: { 
               mode:'time',
-              timeformat: "%d-%b-%Y",
-              autoscale: true,
+              timeformat: "%d-%b<br>%Y",
               min: this.minX,
               max: this.maxX,
+
+              autoscale: true,
               canvas: true,
+              ticks: 6
             },
             yaxis: {
               show: true,
@@ -89,6 +80,7 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
               zoomRange: false,
               axisLabel: unit,
               canvas: true,
+              autoscaleMargin: 5,
             },
             grid: {
               hoverable: true,

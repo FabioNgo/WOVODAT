@@ -33,8 +33,9 @@ define(function(require) {
   return Backbone.View.extend({
     el: '#main',
     
-    initialize: function() {
-      
+    initialize: function(selecting_vd_num) {
+      this.selecting_vd_num = selecting_vd_num;
+      this.$el.html("");
       this.render();
     },
     render: function() {
@@ -62,14 +63,16 @@ define(function(require) {
           volcanoSelect = new VolcanoSelect({
             collection: volcanoes,
             observer: observer,
-            selectingVolcano: selectingVolcano
+            selectingVolcano: selectingVolcano,
+            selecting_vd_num: this.selecting_vd_num
           }),
 
           timeSeriesSelect = new TimeSeriesSelect({
             observer: observer,
             volcano: selectingVolcano,
-            selectings: selectingTimeSeries,
-            timeSeries: timeSeries
+            selectingTimeSeries: selectingTimeSeries,
+            timeSeries: timeSeries,
+            selectingFilters: selectingFilters
           }),
           filtersSelect = new FilterSelect({
             observer: observer,
