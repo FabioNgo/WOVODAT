@@ -75,7 +75,7 @@ define(function(require) {
           var groupedFilters = this.filters[categories[i]];
           for(var j=0;j<groupedFilters.length;j++){
             var filter = groupedFilters[j];
-            if(filter.filterAttributes.name == " "){
+            if(filter.filterAttributes[0].name == " "){
               this.selectingFilters.push(filter.timeSerie," ");
               this.selectingFilters.empty = false;
             }  

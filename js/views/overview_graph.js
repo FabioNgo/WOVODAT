@@ -147,7 +147,6 @@ define(function(require) {
         var currentFilter = filters[i];
         console.log(i);
         for(var k=0;k<currentFilter.filterAttributes.length;k++){
-          console.log(k);
             var currentFilterAttributes = currentFilter.filterAttributes[k];
             // Checking whether the filterAtribute name is an earthquake type (eg.R,v,...).
             // If yes, then use the pre-assigned color in the database.

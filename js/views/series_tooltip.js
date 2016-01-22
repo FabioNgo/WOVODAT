@@ -41,15 +41,15 @@ define(function(require) {
     },
 
     previous: {
-      dataIndex: -8121993
+      item : undefined
     },
 
     update: function(pos, item) {
       if (item) {
-        if (this.previous.dataIndex === item.dataIndex) {
+        if (JSON.stringify(this.previous.item) === JSON.stringify(item) ) {
           this.move(pos.pageX, pos.pageY);
         } else {
-          this.previous.dataIndex = item.dataIndex;
+          this.previous.item = item;
           switch(item.datapoint.length){
             case 5: case 4:
               this.html = this.template({

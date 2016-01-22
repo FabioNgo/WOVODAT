@@ -37,8 +37,11 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
     },
 
     onHover: function(event, pos, item) {
-      var tooltip = event.data;
-      tooltip.update(pos, item);
+      // if(item!=null){
+        var tooltip = event.data;
+      tooltip.update(pos, item);  
+      // }
+      
     },
     show: function(){
       

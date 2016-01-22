@@ -35,11 +35,11 @@ class dd_levManager extends TableManager {
 		$query = "";
 		$table = "dd_lev";
 		$errorbar = true;
-		$style = "horizontalbar";
+		$style = "dot";
 		if($component == 'Elevation Change'){
 			$unit = "mm";
 			$attribute = "dd_lev_delev";
-			$query = "select a.ds_id2 as filter, a.dd_lev_herr as err ,a.dd_lev_time as time, a.$attribute as value   from $table as a where a.ds_id1=%s and a.$attribute IS NOT NULL";
+			$query = "select  a.dd_lev_herr as err ,a.dd_lev_time as time, a.$attribute as value   from $table as a where a.ds_id1=%s and a.ds_id2=%s and a.$attribute IS NOT NULL";
 		}
 		$result = array("unit" => $unit,
 						"style" => $style,
