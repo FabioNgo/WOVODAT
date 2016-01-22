@@ -129,7 +129,13 @@ define(function(require) {
     prepareData: function() {
 
       
-      var filters = this.selectingFilters.models;
+      var filters =[];
+      var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
+      for(var i=0;i<categories.length;i++){
+        if(this.selectingFilters[categories[i]]!=undefined){
+          filters = filters.concat(this.selectingFilters[categories[i]]);   
+        }
+      }
       //console.log(filters);
       // this variable helps to set color for each earthquake type
       var earthquakeTypeColor = this.filterColorCollection;
@@ -166,13 +172,7 @@ define(function(require) {
         } 
       }
 
-      var filters =[];
-      var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
-      for(var i=0;i<categories.length;i++){
-        if(this.selectingFilters[categories[i]]!=undefined){
-          filters = filters.concat(this.selectingFilters[categories[i]]);   
-        }
-      }
+      
       var allowErrorbar = false;
       var allowAxisLabel =false;
       var limitNumberOfData =true;

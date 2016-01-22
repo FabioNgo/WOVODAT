@@ -86,7 +86,7 @@ define(function(require) {
     },
     render: function(options) {
       this.filters.reset();
-       $('.filter-field').empty();
+      
       /* get filter from selecting Time Series */
       var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
       for(var i =0;i<categories.length;i++){
@@ -126,7 +126,7 @@ define(function(require) {
           series: this.generateData(category)
         }
         var html = temp(options);
-        $('.filter-field'+'.'+category).append(html);
+        $('.filter-field'+'.'+category).html(html);
       }
       
 
@@ -149,13 +149,13 @@ define(function(require) {
         var groupFilters = this.filters[category][i];
         var serie = {}
         serie.name = groupFilters.timeSerie.attributes.showingName;
-        if(groupFilters.filterAttributes.name== "  "){
+        if(groupFilters.filterAttributes[0].name== "  "){
           serie.nodata = true;
         }else{
           serie.nodata = false;
         }
         
-        if(groupFilters.filterAttributes.name != "  "){
+        if(groupFilters.filterAttributes[0].name != "  "){
           serie.filters = [];
           for(var k = 0;k<groupFilters.filterAttributes.length;k++){
             var filter = groupFilters.filterAttributes[k].name;
@@ -208,7 +208,9 @@ define(function(require) {
         }
       
       }
+
       this.updateSelectingFilters();
+
       this.selectingFilters.trigger('update');
       
       
