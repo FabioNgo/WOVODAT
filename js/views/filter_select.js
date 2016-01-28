@@ -19,6 +19,7 @@ define(function(require) {
       this.observer = options.observer;
       this.selectingTimeSeries = options.selectingTimeSeries;
       this.selectingFilters = options.selectingFilters;
+      this.categories = options.categories
       this.filters = new Filters;
     },
     selectingTimeSeriesChanged: function(selectingTimeSeries){
@@ -49,7 +50,7 @@ define(function(require) {
     updateSelectingFilters: function(){
       /* remove timeseries which are no longer selected*/
       var filters =[];
-      var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
+      var categories=this.categories;
       for(var i=0;i<categories.length;i++){
         if(this.selectingFilters[categories[i]]!=undefined){
           filters = filters.concat(this.selectingFilters[categories[i]]);   
@@ -88,7 +89,7 @@ define(function(require) {
       this.filters.reset();
       
       /* get filter from selecting Time Series */
-      var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
+      var categories=this.categories;
       for(var i =0;i<categories.length;i++){
         delete this.filters[categories[i]];
       }
@@ -179,7 +180,7 @@ define(function(require) {
     hide: function(){
       this.$el.html("");
 
-      var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
+      var categories=this.categories;
       for(var i =0;i<categories.length;i++){
         delete this.selectingFilters[categories[i]];
       }
@@ -192,7 +193,7 @@ define(function(require) {
     showGraph: function(event) {
         
         
-      var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
+      var categories=this.categories;
       for(var i =0;i<categories.length;i++){
         delete this.selectingFilters[categories[i]];
       }

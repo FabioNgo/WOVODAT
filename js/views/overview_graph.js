@@ -19,6 +19,7 @@ define(function(require) {
       this.selectingTimeRange = options.selectingTimeRange;
       this.filterColorCollection = new FilterColorCollection;
       this.filterColorCollection.fetch();
+      this.categories = options.categories;
       //console.log(this.filterColorCollection);
 
     },
@@ -130,7 +131,7 @@ define(function(require) {
 
       
       var filters =[];
-      var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
+      var categories=this.categories;
       for(var i=0;i<categories.length;i++){
         if(this.selectingFilters[categories[i]]!=undefined){
           filters = filters.concat(this.selectingFilters[categories[i]]);   

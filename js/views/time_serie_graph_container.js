@@ -16,6 +16,7 @@ define(function(require) {
   		this.filterObserver = options.filterObserver;
   		// this.listenTo( this.selectingFilter, "add", this.addGraph );
   		// this.listenTo( this.selectingFilter, "remove", this.removeGraph );
+      this.categories = options.categories;
       this.beingShown = false;
   		this.graphs = [];
   	},
@@ -81,7 +82,7 @@ define(function(require) {
       this.graphs.length =0;
       this.$el.html("");
       var filters =[];
-      var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
+      var categories=this.categories;
       for(var i=0;i<categories.length;i++){
         if(selectingFilters[categories[i]]!=undefined){
           filters = filters.concat(selectingFilters[categories[i]]);   

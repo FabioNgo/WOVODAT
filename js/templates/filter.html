@@ -7,7 +7,7 @@
       <p class="label">{{name}}</p>
         {{#list filters}}
           {{#if isSelected}}
-          <input type="checkbox" id="{{value}}" class="filled-in filter-select-option" selected />
+          <input type="checkbox" id="{{value}}" class="filled-in filter-select-option" checked="checked" />
           <label for="{{value}}" class="col s12">{{showingName}}</label>      
       		  <!-- <option class="filter-select-option"  selected value="{{value}}">{{showingName}}</option> -->
           {{else}}

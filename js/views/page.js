@@ -44,7 +44,7 @@ define(function(require) {
       **/
       var 
           observer = new (Backbone.Model.extend())(),
-          
+          categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Fields","Meteology"],
           selectingTimeSeries = new TimeSeries(),
           selectingFilters = new Filters(),
           volcanoes = new Volcanoes(),
@@ -62,24 +62,25 @@ define(function(require) {
 
           volcanoSelect = new VolcanoSelect({
             collection: volcanoes,
-            observer: observer,
+            categories: categories,
             selectingVolcano: selectingVolcano,
             selecting_vd_num: this.selecting_vd_num
           }),
 
           timeSeriesSelect = new TimeSeriesSelect({
-            observer: observer,
+            categories: categories,
             volcano: selectingVolcano,
             selectingTimeSeries: selectingTimeSeries,
             timeSeries: timeSeries,
             selectingFilters: selectingFilters
           }),
           filtersSelect = new FilterSelect({
-            observer: observer,
+            categories: categories,
             selectings: selectingTimeSeries,
             selectingFilters: selectingFilters
           }),
           overviewGraph = new OverviewGraph({
+            categories: categories,
             selectingTimeSeries: this.overviewSelectingTimeSeries,
             serieGraphTimeRange: serieGraphTimeRange,
             selectingTimeRange: selectingTimeRange,
@@ -88,6 +89,7 @@ define(function(require) {
           }),
 
           overviewGraphContainer = new OverviewGraphContainer({
+            categories: categories,
             selectingTimeSeries: selectingTimeSeries,
             serieGraphTimeRange: serieGraphTimeRange,
             observer: observer,
@@ -95,6 +97,7 @@ define(function(require) {
           }),
 
           eruptionSelect = new EruptionSelect({
+            categories: categories,
             eruptions: eruptions,
             eruptionForecasts: eruptionForecasts,
             observer: observer,
@@ -106,6 +109,7 @@ define(function(require) {
           eruptionGraph = new EruptionGraph({
             //eruptions: eruptions,
             observer: observer,
+            categories: categories,
             serieGraphTimeRange: serieGraphTimeRange,
             forecastsGraphTimeRange: forecastsGraphTimeRange,
             eruptionTimeRange: eruptionTimeRange,
@@ -113,11 +117,13 @@ define(function(require) {
           }),
           eruptionForecastsGraph = new EruptionForecastsGraph({
             observer: observer,
+            categories: categories,
             eruptionForecasts: eruptionForecasts
 
           }),
           timeSeriesGraphContainer = new TimeSeriesGraphContainer({
             observer: observer,
+            categories: categories,
             selectingTimeSeries: selectingTimeSeries,
             eruptionTimeRange: eruptionTimeRange,
             serieGraphTimeRange: serieGraphTimeRange,
@@ -136,6 +142,7 @@ define(function(require) {
 
 
           eventHandler = new EventHandler({
+            categories: categories,
             volcanoSelect: volcanoSelect,
             timeSeriesSelect: timeSeriesSelect,
             filtersSelect: filtersSelect,

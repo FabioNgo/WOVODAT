@@ -26,6 +26,7 @@ define(function(require) {
       this.selectingTimeSeries = options.selectingTimeSeries;
       this.observer = options.observer;
       this.timeSeries = options.timeSeries;
+      this.categories = options.categories;
       this.selectingFilters = options.selectingFilters;
 
     },
@@ -76,7 +77,7 @@ define(function(require) {
     //output: [{title,data}]
     generateCategories: function(timeSeries){
       var output=[];
-      var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
+      var categories=this.categories;
       for(var i =0;i<categories.length;i++){
         var category = timeSeries[categories[i]];
         if(category!=undefined){

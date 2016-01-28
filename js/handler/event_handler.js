@@ -98,6 +98,7 @@ define(function(require) {
       this.timeSeriesSelect.changeVolcano(vd_id,this.timeSeries);
       // this.selectingTimeSeries.reset();
       this.eruptionSelect.fetchEruptions(vd_id);
+      // overviewGraph.hide();
     },
     timeSeriesChanged: function(e){
       this.timeSeriesSelect.timeSeriesChanged(this.timeSeries);
