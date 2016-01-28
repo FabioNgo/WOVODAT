@@ -197,12 +197,12 @@ define(function(require) {
         delete this.selectingFilters[categories[i]];
       }
       this.selectingFilters.empty = true;
-      var options = $('.filter-select-option');
+      var checkboxes = $('.filter-select-option');
       // for(var i = 0; i<selects.length;i++){
-      for(var i = 0;i<options.length;i++){
-        var option = options[i];
-        if(option.selected){
-          var temp = option.value.split(".");
+      for(var i = 0;i<checkboxes.length;i++){
+        var checkbox = checkboxes[i];
+        if(checkbox.checked){
+          var temp = checkbox.id.split(".");
           this.selectingFilters.empty = false;
           this.selectingFilters.push(this.selectingTimeSeries.get(temp[0]),temp[1]);
         }

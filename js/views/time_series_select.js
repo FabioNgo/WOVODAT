@@ -14,7 +14,8 @@ define(function(require) {
     el: '',
 
     events: {
-      'change select': 'selectChangedHandler'
+      'change select': 'selectChangedHandler',
+      'change input': 'selectChangedHandler'
     },
 
     // template: _.template(template),

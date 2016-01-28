@@ -46,7 +46,7 @@ class gd_pluManager extends TableManager {
 
 			$attribute = "gd_plu_emit";
 			$errorbar = true;
-			$style = 'horizontalbar';
+			$style = 'dot';
 			$query = "select a.gd_plu_units as unit, a.gd_plu_species as filter, a.gd_plu_emit_err as err, a.gd_plu_time as time, a.$attribute as value from $table as a where (a.gs_id=%s or a.cs_id=%s) and a.$attribute IS NOT NULL";
 		}else if($component == 'Gas Emission Mass'){
 			$unit ="tons";

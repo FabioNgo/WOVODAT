@@ -1,23 +1,22 @@
 {{#list series}}
 {{#if hasfilter}}
 	<div class="input-field col s12 ">
-
-    <select class="filter-select" multiple>
       {{#if nodata}}
-        <option class="filter-select-option"  value="" disabled selected>No Data</option>
+        No Data
       {{else}}
-        <option class="filter-select-option"  value="" disabled selected>Select your filter</option>
+      <p class="label">{{name}}</p>
         {{#list filters}}
-        
           {{#if isSelected}}
-      		  <option class="filter-select-option"  selected value="{{value}}">{{showingName}}</option>
+          <input type="checkbox" id="{{value}}" class="filled-in filter-select-option" selected />
+          <label for="{{value}}" class="col s12">{{showingName}}</label>      
+      		  <!-- <option class="filter-select-option"  selected value="{{value}}">{{showingName}}</option> -->
           {{else}}
-            <option class="filter-select-option" value="{{value}}">{{showingName}} </option>
+          <input type="checkbox" id="{{value}}" class="filled-in filter-select-option"/>
+          <label for="{{value}}" class="col s12">{{showingName}}</label>      
+            <!-- <option class="filter-select-option" value="{{value}}">{{showingName}} </option> -->
           {{/if}}
         {{/list}}
       {{/if}}
-    </select>
-    <label>{{name}}</label>
   </div>
   {{/if}}
 {{/list}}
