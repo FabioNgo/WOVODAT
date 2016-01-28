@@ -16,6 +16,7 @@ define(function(require) {
   		this.filterObserver = options.filterObserver;
   		// this.listenTo( this.selectingFilter, "add", this.addGraph );
   		// this.listenTo( this.selectingFilter, "remove", this.removeGraph );
+      this.categories = options.categories;
       this.beingShown = false;
   		this.graphs = [];
   	},
@@ -80,8 +81,15 @@ define(function(require) {
     selectingFiltersChanged: function(selectingFilters){
       this.graphs.length =0;
       this.$el.html("");
-      for (var i = 0; i < selectingFilters.models.length; i++) {
-        this.addGraph(selectingFilters.models[i]);
+      var filters =[];
+      var categories=this.categories;
+      for(var i=0;i<categories.length;i++){
+        if(selectingFilters[categories[i]]!=undefined){
+          filters = filters.concat(selectingFilters[categories[i]]);   
+        }
+      }
+      for (var i = 0; i < filters.length; i++) {
+        this.addGraph(filters[i]);
       };
     },
     // render: function(selectingTimeSeries) {
@@ -92,6 +100,7 @@ define(function(require) {
     },
     show: function(){
       this.$el.html("");
+      this.$el.addClass("time-series-graph-container");
       for (var i = 0; i < this.graphs.length; i++) {
         this.$el.append(this.graphs[i].$el);
         this.graphs[i].show();

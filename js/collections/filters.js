@@ -9,11 +9,12 @@ define(function(require) {
   return Backbone.Collection.extend({
     model: Filter,
     initialize: function() {
-      
+      this.empty = true;
     },
     indexOfTimeSerie: function(timeSerie){
-      for(var i=0;i<this.models.length;i++){
-        if(timeSerie == this.models[i].timeSerie){
+      var items = this[timeSerie.get("category")];
+      for(var i=0;i<items.length;i++){
+        if(timeSerie == items[i].timeSerie){
           return i;
         }
       }
@@ -23,33 +24,42 @@ define(function(require) {
       if(timeSerie == undefined){
         return;
       }
+      var category = timeSerie.get("category");
+      if(this[category]==undefined){
+        this[category] = [];
+      }
       var index = this.indexOfTimeSerie(timeSerie);
       if(index == -1){
-        this.add(new Filter(timeSerie,filter));
+        this[category].push(new Filter(timeSerie,filter));
       }else{
-        this.models[index].addFilter(filter);
+        this[category][index].addFilter(filter);
       }
       
     },
-    pop: function(timeSerie,filterName){
-      var index = this.indexOfTimeSerie(timeSerie);
-      if(index == -1){
-        return;
+    removeFilter:function(filter){
+      var groupedFilters = this[filter.timeSerie.get('category')];
+      groupedFilters = _.filter(groupedFilters, function(groupedFilter){
+        groupedFilter.name = _.filter(groupedFilter.name, function(name){
+          return name == filter.name;
+        })
+        return groupedFilter.name!=0;
+      })
+      if(groupedFilters.length == 0){
+        delete this[filter.timeSerie.get('category')]
       }else{
-        this.models[index].removeFilter(filterName);
-      }
-      if(this.models[index].name.length == 0){
-        this.remove(this.models[index]);
+       this[filter.timeSerie.get('category')] = groupedFilters;
       }
     },
-    getAllFilters: function(){
+    getAllFilters: function(category){
       var filters = [];
-      for(var i = 0;i<this.models.length;i++){
-        for(var j = 0;j<this.models[i].name.length;j++){
-          filters.push({
-            timeSerie:this.models[i].timeSerie.get('sr_id'),
-            filter: this.models[i].name[j]
-          });
+      if(this[category]!= undefined){
+        for(var i = 0;i<this[category].length;i++){
+          for(var j = 0;j<this[category][i].filterAttributes.length;j++){
+            filters.push({
+              timeSerie:this[category][i].timeSerie.get('sr_id'),
+              filter: this[category][i].filterAttributes[j].name
+            });
+          }
         }
       }
       return filters;

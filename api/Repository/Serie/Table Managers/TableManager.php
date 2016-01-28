@@ -37,7 +37,7 @@ abstract class TableManager implements TableManagerInterface {
 			$query = $query.",a.".$name;
 		}
 		$query = $query." from $this->table_name as a where a.vd_id=$vd_id";
-
+		// echo($query);
 		$db->query( $query);
 
 		// echo($this->monitoryType."   ".$query."\n");
@@ -70,6 +70,7 @@ abstract class TableManager implements TableManagerInterface {
  	}
 
   	public function getStationData($stations){
+  		
   		$id1 = $stations["station_id1"];
   		$id2 = $stations["station_id2"];
 		global $db;
@@ -84,6 +85,7 @@ abstract class TableManager implements TableManagerInterface {
 		$db->query($query, $id1,$id2);
 		// echo($query);
 		// var_dump($this);
+		// // var_dump($this);
 		$res = $db->getList();
 		foreach ($res as $row) {
 			// var_dump($row);
@@ -110,10 +112,13 @@ abstract class TableManager implements TableManagerInterface {
 				$temp["etime"] = floatval(1000*$etime);
 			}
 			//add filter attribute
+			// var_dump($row);
 			if(array_key_exists("filter", $row)){
 				
 				$temp["filter"] = $row["filter"];
-				
+				if($temp["filter"] == null){
+					$temp["filter"] = "NULL";
+				}
 			}else{
 				$temp["filter"] = " ";
 			}

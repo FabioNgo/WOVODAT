@@ -33,7 +33,7 @@ class fd_mgvManager extends TableManager {
 		$unit="";
 		$attribute = "";
 		$query = "";
-		$table = "fd_gra";
+		$table = "fd_mgv";
 		$errorbar = true;
 		$style = "dot";
 		if($component == 'Magnetic Declination'){

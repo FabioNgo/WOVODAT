@@ -33,25 +33,25 @@ class fd_magManager extends TableManager {
 		$unit="";
 		$attribute = "";
 		$query = "";
-		$table = "fd_gra";
+		$table = "fd_mag";
 		$errorbar = true;
 		$style = "dot";
 		if($component == 'Magnetic'){
 			$unit = "nT";
 			$attribute = "fd_mag_f";
-			$query = "select a.fd_mag_ferr as err ,a.fd_mag_time as time, a.$attribute as value $cc from $table as a where a.fs_id=%s and a.fs_id_ref=%s and a.$attribute IS NOT NULL";
+			$query = "select a.fd_mag_ferr as err ,a.fd_mag_time as time, a.$attribute as value from $table as a where a.fs_id=%s and a.fs_id_ref=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'Magnetic X'){
 			$unit = "nT";
 			$attribute = "fd_mag_compx";
-			$query = "select a.fd_mag_errx as err ,a.fd_mag_time as time, a.$attribute as value $cc from $table as a where a.fs_id=%s and a.fs_id_ref=%s and a.$attribute IS NOT NULL";
+			$query = "select a.fd_mag_errx as err ,a.fd_mag_time as time, a.$attribute as value from $table as a where a.fs_id=%s and a.fs_id_ref=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'Magnetic Y'){
 			$unit = "nT";
 			$attribute = "fd_mag_compy";
-			$query = "select a.fd_mag_erry as err ,a.fd_mag_time as time, a.$attribute as value $cc from $table as a where a.fs_id=%s and a.fs_id_ref=%s and a.$attribute IS NOT NULL";
+			$query = "select a.fd_mag_erry as err ,a.fd_mag_time as time, a.$attribute as value from $table as a where a.fs_id=%s and a.fs_id_ref=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'Magnetic Z'){
 			$unit = "nT";
 			$attribute = "fd_mag_compz";
-			$query = "select a.fd_mag_errz as err ,a.fd_mag_time as time, a.$attribute as value $cc from $table as a where a.fs_id=%s and a.fs_id_ref=%s and a.$attribute IS NOT NULL";
+			$query = "select a.fd_mag_errz as err ,a.fd_mag_time as time, a.$attribute as value from $table as a where a.fs_id=%s and a.fs_id_ref=%s and a.$attribute IS NOT NULL";
 		}
 		$result = array("unit" => $unit,
 						"style" => $style,

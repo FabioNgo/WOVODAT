@@ -25,6 +25,7 @@ define(function(require) {
      //hide overview graph from page
     hide: function(){
       this.$el.html("");
+      this.$el.addClass("overview-graph-container");
       this.trigger('hide');
     },
 
@@ -34,7 +35,7 @@ define(function(require) {
     },
     selectingFiltersChanged: function(selectingFilters) {
       this.selectingFilters = selectingFilters;
-      if (this.selectingFilters.length == 0) {
+      if (this.selectingFilters.empty) {
         this.hide();
       }else{
         this.show();

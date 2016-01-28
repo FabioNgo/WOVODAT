@@ -23,7 +23,7 @@ class TimeSeriesManager {
                                       "Gas" => new GasManager,
                                       "Hydrology" => new HydrologyManager,
                                       "Thermal" =>new ThermalManager,
-                                      "Meteo" =>new MeteoManager,
+                                      "Meteology" =>new MeteoManager,
                                       "Fields" => new FieldsManager
                                       );
     
@@ -62,8 +62,8 @@ class TimeSeriesManager {
     $serie['data'] = array();
     $data = array();
     // var_dump($this->timeSeriesManagers);
-    foreach ($this->timeSeriesManagers as $type => $class){
 
+    foreach ($this->timeSeriesManagers as $type => $class){
       if($type == $serie['category']){
         $temp = $class->getStationData($serie);
         // var_dump($type);

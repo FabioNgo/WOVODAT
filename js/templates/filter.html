@@ -1,51 +1,22 @@
-<div class="card-panel">
-<div class>Filters</div>
-<% 
-var count = 0;	
-function isSelecting(timeSerie,filterName,selectings){
-	
-	for(var i = 0;i<selectings.length;i++){
-		
-		var model = selectings.models[i];
-		if(timeSerie.sr_id == model.timeSerie.sr_id){
-			for(var j = 0;j<model.name.length;j++){
-				if(filterName == model.name[j]){
-					return true;
-				}
-			}
-		}
-	}
-	return false;
-}
-if ( filters.length > 0 ) { %>
-	<% for(var i=0;i<filters.length;i++){
-		var filter = filters[i];
-		var serieName = filter.timeSerie.getName();
-		%>
+{{#list series}}
+{{#if hasfilter}}
 	<div class="input-field col s12 ">
-
-    <select class="filter-select" multiple>
-      <option class="filter-select-option"  value="" disabled selected>Select your filter</option>
-      <% 
-      
-      for(var j = 0; j<filter.name.length;j++){
-
-        var filterName = filter.name[j];
-
-        var filterShowingName = filterName;
-        if(filterName == " "){
-        	filterShowingName = "No filter";
-        }
-        if(isSelecting(filter.timeSerie,filterName,selectings)){%>
-    		<option class="filter-select-option"  selected value="<%= filter.timeSerie.sr_id+ "_"+ filterName %>"><%= filterShowingName %> </option>
-        <%} else { %>
-       
-        <option class="filter-select-option" value="<%= filter.timeSerie.sr_id+ "_"+ filterName %>"><%= filterShowingName %> </option>
-      <%}
-      }%>
-    </select>
-    <label><%= serieName%></label>
-    </div>
-    <%}%>
-<% } %>
-</div>
+      {{#if nodata}}
+        No Data
+      {{else}}
+      <p class="label">{{name}}</p>
+        {{#list filters}}
+          {{#if isSelected}}
+          <input type="checkbox" id="{{value}}" class="filled-in filter-select-option" checked="checked" />
+          <label for="{{value}}" class="col s12">{{showingName}}</label>      
+      		  <!-- <option class="filter-select-option"  selected value="{{value}}">{{showingName}}</option> -->
+          {{else}}
+          <input type="checkbox" id="{{value}}" class="filled-in filter-select-option"/>
+          <label for="{{value}}" class="col s12">{{showingName}}</label>      
+            <!-- <option class="filter-select-option" value="{{value}}">{{showingName}} </option> -->
+          {{/if}}
+        {{/list}}
+      {{/if}}
+  </div>
+  {{/if}}
+{{/list}}

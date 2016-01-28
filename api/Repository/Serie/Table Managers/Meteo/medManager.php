@@ -33,7 +33,7 @@ class medManager extends TableManager {
 		$unit="";
 		$attribute = "";
 		$query = "";
-		$table = "hd";
+		$table = "med";
 		$errorbar = false;
 		$style = "dot";
 		if($component == 'Air Temperature'){

@@ -1,7 +1,7 @@
 {
 	"med" : {
 		"time" : "med_time",
-		"data_type" : "Meteo",
+		"data_type" : "Meteo Data",
 		"params" : [ 
 			{
 				"name" : "Temp",

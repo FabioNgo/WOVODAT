@@ -20,6 +20,7 @@ define(function(require) {
         template: ed_phs_forTemplate
       });
       this.eruptionForecasts = options.eruptionForecasts;
+      this.data = this.prepareData();
         
     },
 
@@ -29,7 +30,12 @@ define(function(require) {
     },
     
     onHover: function(event, pos, item) {
-      this.tooltip.update(pos, item);
+      if(item!=undefined){
+       this.tooltip.update(pos, item, this.data.ed_forDataType[item.dataIndex]); 
+     }else{
+      this.tooltip.hide();
+     }
+      
     },
 
     // onDataChange: function() {
@@ -66,10 +72,12 @@ define(function(require) {
       this.startTime = timeRange.get('startTime');
       this.endTime = timeRange.get('endTime');
       this.render();
+      
     },
     
     //show eruption forecast graph
     show: function(){
+     this.data = this.prepareData();
       this.render();
     },
     //hide eruption cast graph
@@ -81,7 +89,8 @@ define(function(require) {
     },
     prepareData: function() {
       var self = this,
-          ed_forData = [];
+          ed_forData = [],
+          ed_forDataType = [];
 
       
       // if(this.eruptionForecasts == undefined){
@@ -90,43 +99,42 @@ define(function(require) {
       var data = this.eruptionForecasts.models;
 
       ed_forData = [];
+      ed_forDataType = [];
       data.forEach(function(ed_for) {
         var ed_for_astime = ed_for.get('ed_for_astime'),
             ed_for_aetime = ed_for.get('ed_for_aetime'),
             ed_for_type = ed_for.get('ed_for_alevel');
-        ed_forData.push({
-          data: [ed_for_astime,0,1], //start time, lower value, upper value
-          stime: ed_for_astime,
-          duration: ed_for_aetime - ed_for_astime,
-          type: ed_for_type
-        });
+        ed_forData.push([ed_for_astime,ed_for_aetime,0,1]);
+        ed_forDataType.push(ed_for_type);
       });
 
       // Saves prepared data to the view object.
       
-      return ed_forData; 
+      return {
+        ed_forData: ed_forData,
+        ed_forDataType: ed_forDataType
+                }; 
       
     },
-    gernerateBarChartFlotData: function(data,color,label,barWidth,dataType,name){
+    gernerateBarChartFlotData: function(data,color,label,dataType,name){
       return {
-        data: [data],
+        data: data,
         color: color,
         label: label,
         bars:{
           show: true,
-          
+          fullparams: true,
+          horizontal:true,
           
 
         },
         dataType: dataType,
         name: name,
-        startTime: data[0],
-        endTime: data[0]+barWidth,
       }
     },
     render: function(options) {
       var el = this.$el,
-          data = this.prepareData(),
+          data = this.data.ed_forData,
           option = {
             grid: {
               hoverable: true
@@ -140,25 +148,24 @@ define(function(require) {
             },
             yaxis: {
               show:true,
+              canvas: false,
               ticks: [0,1],
-              labelWidth: 30,
+              min:0,
+              max:1,
+              labelWidth: 60,
               panRange: false
             }
           };
-      var temp = data;
       var graph_pram_data = [];
-      for(var i =0;i<temp.length;i++){
-        if(i==0){
-          graph_pram_data.push(this.gernerateBarChartFlotData(temp[i].data,'#F44336','Alert Level',temp[i].duration,'ed_for',temp[i].type));
-        }else{
-          graph_pram_data.push(this.gernerateBarChartFlotData(temp[i].data,'#F44336',undefined,temp[i].duration,'ed_for',temp[i].type));
-        }
-      }
+      
+      graph_pram_data.push(this.gernerateBarChartFlotData(data,'#F44336','Alert Level','ed_for',""));
+        
+      
       el.width('auto');
-      el.height(60);
-      el.addClass("eruption-forecasts-graph");
+      el.height(150);
+      el.addClass("eruption-forecasts-graph card-panel");
 
-      // $.plot(el, graph_pram_data, option);
+      $.plot(el, graph_pram_data, option);
       el.bind('plothover', this.onHover);
     },
   });
