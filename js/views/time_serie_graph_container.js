@@ -85,7 +85,7 @@ define(function(require) {
       var categories=this.categories;
       for(var i=0;i<categories.length;i++){
         if(selectingFilters[categories[i]]!=undefined){
-          filters = filters.concat(selectingFilters[categories[i]]);   
+          filters = filters.concat(selectingFilters.getAllFilters(categories[i]));   
         }
       }
       for (var i = 0; i < filters.length; i++) {

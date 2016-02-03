@@ -56,15 +56,17 @@ define(function(require) {
         for(var i = 0;i<this[category].length;i++){
           for(var j = 0;j<this[category][i].filterAttributes.length;j++){
             filters.push({
-              timeSerie:this[category][i].timeSerie.get('sr_id'),
-              filter: this[category][i].filterAttributes[j].name
+              timeSerie:this[category][i].timeSerie,
+              filterAttributes: [this[category][i].filterAttributes[j]]
             });
           }
         }
       }
       return filters;
     },
-    
+    // getSeparatedFilters : function(category){
+
+    // }
     
   });
 });

@@ -79,7 +79,13 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
               max: this.maxY,
               ticks: this.ticks,
               labelWidth: 60,
-
+              tickFormatter: function (val, axis) {
+                var string = val.toString();
+                if(string.length >7){
+                  return val.toPrecision(2);
+                }
+                return val;
+              },
               zoomRange: false,
               axisLabel: unit,
               canvas: true,
