@@ -64,7 +64,7 @@ define(function(require) {
       var html = temp(options);
       this.$el.html(html);
       $('.volcanoes_select').material_select();
-
+      console.log($('.volcanoes_select'));
       
       
     },

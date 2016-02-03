@@ -133,14 +133,14 @@ define(function(require) {
               interactive: true
             }
           };
-      
+      /** Eruption part **/
+      graph_pram_data.push(this.gernerateBarChartFlotData ([data.edData.data], 'Black','Eruption','ed',""));
       /** Phreatic Eruption **/
       var temp = data.ed_phs_data;
       
       graph_pram_data.push(this.gernerateBarChartFlotData(temp,'#F44336','Eruption Phase','ed_phs',""));
         
-      /** Eruption part **/
-      graph_pram_data.push(this.gernerateBarChartFlotData ([data.edData.data], 'Black','Eruption','ed',""));
+      
       el.width('auto');
       el.height(150);
       el.addClass("eruption-graph card-panel");
