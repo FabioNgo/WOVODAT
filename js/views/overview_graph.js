@@ -175,6 +175,7 @@ define(function(require) {
       var allowErrorbar = false;
       var allowAxisLabel =false;
       var limitNumberOfData =true;
+      //var adjustTimeRange = false;
       //formatData: function(graph,filters,allowErrorbar,allowAxisLabel,limitNumberOfData)
       GraphHelper.formatData(this,filters,allowErrorbar,allowAxisLabel,limitNumberOfData); 
       

@@ -53,7 +53,7 @@ define(function(require) {
           var filterName = filter.filterAttributes[j].name;
           //console.log(filter.filterAttributes[j]);
           var list = [];
-          var filterData = filter.timeSerie.getDataFromFilter(filterName)
+          var filterData = filter.timeSerie.getDataFromFilter(filterName);
           var style = filter.timeSerie.get('data').style; // plot style [bar,circle,dot,horizontalbar]
           var errorbar;
           var axisLabel; // show unit on Y-axis
