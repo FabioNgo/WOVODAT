@@ -142,7 +142,7 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
               show: true,
               min: this.minY,
               max: this.maxY,
-              ticks: this.ticks,
+              ticks: 6, //this.ticks
               labelWidth: 60,
               tickFormatter: function (val, axis) {
                 var string = val.toString();
