@@ -265,7 +265,8 @@ define(function(require) {
         // console.log(dataParam);
       }
       else if(styleParams.style == 'circle'){
-        dataParam.points = {show: true, fill: false};
+        dataParam.points.show = true;
+        dataParam.points.fill = false;
         // console.log(dataParam);
       }
       else if(styleParams.style == 'horizontalbar'||styleParams.style == 'bar'){

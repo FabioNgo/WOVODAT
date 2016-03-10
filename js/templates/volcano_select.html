@@ -1,27 +1,19 @@
-<div id="volcano-select" class="card-panel">
+<nav>
+    <div class="nav-wrapper light-blue darken-4">
+      <form>
+        <div class="input-field" >
+          <input id="search" type="search" class="search" placeholder="Please search a volcano..." autocomplete="off" required>
+          <label for="search"><i class="material-icons">search</i></label>
+          <i class="material-icons">close</i>
+        </div>
+      </form>
+    </div>
+  </nav>
+  <div class="search-sugesstion" data-activates='dropdown1'></div>
+  <ul id='dropdown1' class='dropdown-content'>
+  </ul>
+<!-- <div id="volcano-select" class="card-panel"> -->
 
-<div class="input-field col s12">
-<select class="volcanoes_select">
-	{{#if selected}}
-	  	<option value="-1"  disabled>Please select a volcano</option>
-		{{#list volcanoes}}
-			{{#if select}}
-				<option value="{{vd_id}}" selected>{{vd_name}}</option>
-			{{else}}
-				<option value="{{vd_id}}">{{vd_name}}</option>
-			{{/if}}
-		{{/list}}
-  	{{else}}
-  		<option value="-1"  disabled selected>Please select a volcano</option>
-		{{#list volcanoes}}
-			{{#if select}}
-				<option value="{{vd_id}}" selected>{{vd_name}}</option>
-			{{else}}
-				<option value="{{vd_id}}">{{vd_name}}</option>
-			{{/if}}
-		{{/list}}
-	{{/if}}
-</select>
-<label>Select Volcano</label>
-</div>
+<div class="card-panel">
+{{vd_name}}
 </div>
