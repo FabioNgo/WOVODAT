@@ -16,7 +16,7 @@ define(function(require) {
     events: {
       'change select': 'onSelectChange',
       'input input' : 'onChange',
-      'focus input' : 'onChange'
+      'click input' : 'onChange'
     },
     
     initialize: function(options) {
@@ -62,6 +62,12 @@ define(function(require) {
       
       
     },
+    // onClickInput: function(e){
+    //   if(!searchSuggestion.hasClass('active')){
+    //     $('.search-sugesstion').click();  
+    //   }
+
+    // }
     // input search handler
     onChange: function(e){
           // var volcano = this.searchVolcanoes(e.target.value);
@@ -82,15 +88,18 @@ define(function(require) {
           $('.dropdown-content').html(temp(options))
           var searchSuggestion = $('.search-sugesstion');
           //show/hide suggestion part
-          if(e.target.value != ""){
-            if(!searchSuggestion.hasClass('active')){
-              $('.search-sugesstion').click();  
-            }
-          }else{
-            if(searchSuggestion.hasClass('active')){
-              $('.search-sugesstion').click();  
-            }
+          if(!searchSuggestion.hasClass('active')){
+            $('.search-sugesstion').click();  
           }
+          // if(e.target.value != ""){
+          //   if(!searchSuggestion.hasClass('active')){
+          //     $('.search-sugesstion').click();  
+          //   }
+          // }else{
+          //   if(searchSuggestion.hasClass('active')){
+          //     $('.search-sugesstion').click();  
+          //   }
+          // }
           
           // console.log($('.search-sugesstion'));
     },
@@ -152,7 +161,7 @@ define(function(require) {
     },
     searchVolcanoes: function (input){
       if(input == ""){
-        return [];
+        return this.collection.models;
       }
       // console.log(input);
       var output = [];

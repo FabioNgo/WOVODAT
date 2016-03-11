@@ -85,8 +85,8 @@ define(function(require) {
           if(limitNumberOfData&&filterData.length>5000){
             //threshold = 5000 data to be rendered each Overview Graph
             var threshold = parseInt(filterData.length/5000)+1;
-            for(var i=0;i<filterData.length;i+=threshold){
-              requiredData.push(filterData[i]);
+            for(var k=0;k<filterData.length;k+=threshold){
+              requiredData.push(filterData[k]);
             }
           }
           else{
