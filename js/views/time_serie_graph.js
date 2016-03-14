@@ -74,19 +74,19 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
                 if(this.data[j].points.show){
                   if(currentData[0]>=this.minX&&currentData[0]<=this.maxX){
                     if(zoomedDataMinY == undefined){
-                      zoomedDataMinY = currentData[1];
+                      zoomedDataMinY = currentData[1]-currentData[2];
                     }
-                    else if(currentData[1]<zoomedDataMinY){
-                      zoomedDataMinY = currentData[1];
+                    else if(currentData[1]-currentData[2]<zoomedDataMinY){
+                      zoomedDataMinY = currentData[1]-currentData[2];
                     };
                   }
 
                   if(currentData[0]<=this.maxX&&currentData[0]>=this.minX){
                     if(zoomedDataMaxY == undefined){
-                      zoomedDataMaxY = currentData[1];
+                      zoomedDataMaxY = currentData[1]+currentData[2];
                     }
-                    else if(currentData[1]>zoomedDataMaxY){
-                      zoomedDataMaxY = currentData[1];
+                    else if(currentData[1]+currentData[2]>zoomedDataMaxY){
+                      zoomedDataMaxY = currentData[1]+currentData[2];
                     };
                   }
                 }
