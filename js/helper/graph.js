@@ -53,7 +53,7 @@ define(function(require) {
           var filterName = filter.filterAttributes[j].name;
           //console.log(filter.filterAttributes[j]);
           var list = [];
-          var filterData = filter.timeSerie.getDataFromFilter(filterName)
+          var filterData = filter.timeSerie.getDataFromFilter(filterName);
           var style = filter.timeSerie.get('data').style; // plot style [bar,circle,dot,horizontalbar]
           var errorbar;
           var axisLabel; // show unit on Y-axis
@@ -85,8 +85,8 @@ define(function(require) {
           if(limitNumberOfData&&filterData.length>5000){
             //threshold = 5000 data to be rendered each Overview Graph
             var threshold = parseInt(filterData.length/5000)+1;
-            for(var i=0;i<filterData.length;i+=threshold){
-              requiredData.push(filterData[i]);
+            for(var k=0;k<filterData.length;k+=threshold){
+              requiredData.push(filterData[k]);
             }
           }
           else{
@@ -265,7 +265,8 @@ define(function(require) {
         // console.log(dataParam);
       }
       else if(styleParams.style == 'circle'){
-        dataParam.points = {show: true, fill: false};
+        dataParam.points.show = true;
+        dataParam.points.fill = false;
         // console.log(dataParam);
       }
       else if(styleParams.style == 'horizontalbar'||styleParams.style == 'bar'){

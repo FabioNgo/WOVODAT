@@ -24,6 +24,7 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
       this.tooltip = new Tooltip({
         template: serieTooltipTemplate
       });
+      // console.log(this.serieGraphTimeRange);
       this.prepareData();
     },
 
@@ -33,7 +34,10 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
       }
       this.minX = TimeRange.get('startTime');
       this.maxX = TimeRange.get('endTime');
-      // this.render();
+      //this.render();
+      //console.log(this.filters);
+      // put this new time range into filter as attributes. 
+      //this.prepareData();
     },
 
     onHover: function(event, pos, item) {
@@ -45,7 +49,7 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
     },
     show: function(){
       
-      // this.timeRangeChanged(this.timeRange);
+      //this.timeRangeChanged(this.timeRange);
       this.render();
     },
     render: function() {
@@ -59,6 +63,67 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
           unit = this.data[i].yaxis.axisLabel;
         }
       };
+      // change yaxix according to zoomed in data
+      // PROBLEM FOR Fluctuate Data maxY or minY may not be MaxX or MinX they can lie in between
+      var zoomedDataMinY = undefined;
+      var zoomedDataMaxY = undefined;
+      for(var j=0;j<this.data.length;j++){
+        for(var k=0;k<this.data[j].data.length;k++){
+                var currentData = this.data[j].data[k];
+                var previousData = this.data[j].data[k-1];
+                if(this.data[j].points.show){
+                  if(currentData[0]>=this.minX&&currentData[0]<=this.maxX){
+                    if(zoomedDataMinY == undefined){
+                      zoomedDataMinY = currentData[1];
+                    }
+                    else if(currentData[1]<zoomedDataMinY){
+                      zoomedDataMinY = currentData[1];
+                    };
+                  }
+
+                  if(currentData[0]<=this.maxX&&currentData[0]>=this.minX){
+                    if(zoomedDataMaxY == undefined){
+                      zoomedDataMaxY = currentData[1];
+                    }
+                    else if(currentData[1]>zoomedDataMaxY){
+                      zoomedDataMaxY = currentData[1];
+                    };
+                  }
+                }
+                else if(this.data[j].bars.show){
+                  if(currentData[0]>=this.minX&&currentData[1]<=this.maxX){
+                    if(zoomedDataMinY == undefined){
+                      zoomedDataMinY = currentData[3]-currentData[4];
+                    }
+                    else if((currentData[3]-currentData[4])<zoomedDataMinY){
+                      zoomedDataMinY = currentData[3]-currentData[4];
+                    };
+                  }
+
+                  if(currentData[1]<=this.maxX&&currentData[0]>=this.minX){
+                    if(zoomedDataMaxY == undefined){
+                      zoomedDataMaxY = currentData[2]+currentData[4];
+                    }
+                    else if((currentData[2]+currentData[4])>zoomedDataMaxY){
+                      zoomedDataMaxY = currentData[2]+currentData[4];
+                    };
+                  }
+                }
+        }
+      };
+      if(zoomedDataMaxY>=0&&zoomedDataMinY>=0){
+        this.minY = zoomedDataMinY*0.95;
+        this.maxY = zoomedDataMaxY*1.05;
+      }
+      else if(zoomedDataMaxY<0&&zoomedDataMinY<0){
+        this.minY = zoomedDataMinY*1.05;
+        this.maxY = zoomedDataMaxY*0.95;
+      }
+      else if(zoomedDataMaxY>0&&zoomedDataMinY<0){
+        this.minY = zoomedDataMinY*1.05;
+        this.maxY = zoomedDataMaxY*1.05;
+      }
+
       var options = {
             grid:{
               margin: 50,
@@ -77,9 +142,15 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
               show: true,
               min: this.minY,
               max: this.maxY,
-              ticks: this.ticks,
+              ticks: 6, //this.ticks
               labelWidth: 60,
-
+              tickFormatter: function (val, axis) {
+                var string = val.toString();
+                if(string.length >7){
+                  return val.toPrecision(2);
+                }
+                return val;
+              },
               zoomRange: false,
               axisLabel: unit,
               canvas: true,
