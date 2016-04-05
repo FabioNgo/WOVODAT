@@ -27,7 +27,7 @@ class dd_strManager extends TableManager {
 		return $result;
 	} // column names represent stationID1,station ID2
 	protected function setStationCode(){
-		$result = array("ds_code","ds_code");
+		$result = array("sta_code","sta_code");
 		return $result;
 	} // column name represent primary stationCode1, stationCode2.
 	protected function setStationDataParams($component){
