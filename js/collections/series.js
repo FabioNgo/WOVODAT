@@ -19,6 +19,7 @@ define(function(require) {
       for(var i = 0; i<categories.length;i++){
         delete this[categories[i]];
       }
+      this.length = 0;
       this.fetch({
         success: function(collection,response){
           //group Data in categroy
@@ -52,6 +53,7 @@ define(function(require) {
               currentCategory = item.category;
             }
             collection[currentCategory].push(model);
+            collection.length++;
           }
           // console.log(collection);
           collection.trigger("loaded");
@@ -60,12 +62,7 @@ define(function(require) {
       
     },
 
-    updateData: function(){
-        //success: function(collection,response){
-        for(var i=0;i<this.models.length;i++){
-          
-        }
-    },
+    
 
     get: function(sr_id){
       for(var i =0;i<this.models.length;i++){

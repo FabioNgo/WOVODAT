@@ -28,7 +28,9 @@ define(function(require) {
       this.timeSeries = options.timeSeries;
       this.categories = options.categories;
       this.selectingFilters = options.selectingFilters;
-
+      this.selectingTimeSeries.reachLimit = function(){
+        return (this.length >= 5);
+      }
     },
     showLoading: function(){
       this.$el.html(this.loading);
@@ -47,6 +49,7 @@ define(function(require) {
     },
 
     render: function(timeSeries) {
+
       this.$el.html("");
       var container =$("<div></div>");
       container.addClass("time_series_select_container card-panel");
@@ -107,8 +110,12 @@ define(function(require) {
       return output;
     },
     selectChangedHandler: function(event){
+
       if(event.target.classList[0]=="time-serie-select"){
-        this.showFilter();
+        
+       
+          this.showFilter();
+        
       }else{
         this.trigger("filter-select-change");
       }
@@ -117,6 +124,7 @@ define(function(require) {
         
         
       // this.$el.append(this.loading);
+      
       this.selectingTimeSeries.reset();
       
       var options = $('.time-serie-select-option');
@@ -126,11 +134,46 @@ define(function(require) {
           if(option.selected){
             this.selectingTimeSeries.add(this.timeSeries.get(option.value));
           }
+
         
       }
+      // set limitation of 
+      var groupItems = $('.multiple-select-dropdown');
+      for(var i=0;i<groupItems.length;i++){
+        var items = groupItems[i].children;
+        //dont traverse the first item
+        for(var j=1;j<items.length;j++){
+          var item = items[j];
+          //check if item is active or disable or not
+          var isActive = false;
+          var isDisabled = false;
+          for(var k = 0; k < item.classList.length;k++){
+            if(item.classList[k] == 'active'){
+              isActive = true;
+            }
+            if(item.classList[k] == 'disabled'){
+              isDisabled = true;
+            }
+          }
+          if(!isActive && this.selectingTimeSeries.reachLimit()){
+            item.classList.add('disabled');
+            //disable checkbox
+            item.children[0].children[0].disabled = true;
+          }
+          if(isDisabled&& !this.selectingTimeSeries.reachLimit()){
+            item.classList.remove('disabled');
+            //enable checkbox
+            
+            item.children[0].children[0].disabled = false;
+          }
+        }
+        
+        // $('.time-serie-select').remove('.select-dropdown','.caret');
+
+        // $('.time-serie-select').material_select();
+      }
       this.selectingTimeSeries.trigger("change");
-      
-      
+
     },
     
 
