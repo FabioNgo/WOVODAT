@@ -45,6 +45,7 @@ define(function(require) {
     },
 
     update: function(pos, item) {
+      //console.log(item);
       if (item) {
         if (JSON.stringify(this.previous.item) === JSON.stringify(item) ) {
           this.move(pos.pageX, pos.pageY);

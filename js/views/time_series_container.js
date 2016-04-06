@@ -6,6 +6,8 @@ define(function(require) {
       Serie = require('models/serie'),
       TimeSerieGraph = require('views/time_serie_graph'),
       OverviewGraph = require('views/overview_graph'),
+      FilterSelect = require('views/filter_select'),
+      SelectingFilter = require('collections/selecting_filter'),      
       TimeRange = require('models/time_range');
 
   return Backbone.View.extend({
