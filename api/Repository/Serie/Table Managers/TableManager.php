@@ -117,7 +117,7 @@ abstract class TableManager implements TableManagerInterface {
 				
 				$temp["filter"] = $row["filter"];
 				if($temp["filter"] == null){
-					$temp["filter"] = "NULL";
+					$temp["filter"] = " ";
 				}
 			}else{
 				$temp["filter"] = " ";

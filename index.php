@@ -10,6 +10,8 @@
 <html>
   <head>
     <link rel="stylesheet" href="css/materialize.min.css">
+    <link href="css/icon.css"
+      rel="stylesheet">
     <title>WOVOdat :: The World Organization of Volcano Observatories (WOVO): Database of Volcanic Unrest (WOVOdat), by IAVCEI</title>
     <meta http-equiv="content-type" content="text/html;charset=iso-8859-1">
     <meta http-equiv="cache-control" content="no-cache, must-revalidate">

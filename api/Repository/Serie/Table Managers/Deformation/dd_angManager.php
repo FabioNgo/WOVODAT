@@ -26,7 +26,7 @@ class dd_angManager extends TableManager {
 		return $result;
 	} // column names represent stationID1,station ID2
 	protected function setStationCode(){
-		$result = array("ds_code1","ds_code2");
+		$result = array("sta_code1","sta_code2");
 		return $result;
 	} // column name represent primary stationCode1, stationCode2.
 	protected function setStationDataParams($component){

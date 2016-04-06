@@ -146,7 +146,6 @@ define(function(require) {
       var counter = 0;
       for(var i=0;i<filters.length;i++){
         var currentFilter = filters[i];
-        console.log(i);
         for(var k=0;k<currentFilter.filterAttributes.length;k++){
             var currentFilterAttributes = currentFilter.filterAttributes[k];
             // Checking whether the filterAtribute name is an earthquake type (eg.R,v,...).
@@ -176,6 +175,7 @@ define(function(require) {
       var allowErrorbar = false;
       var allowAxisLabel =false;
       var limitNumberOfData =true;
+      //var adjustTimeRange = false;
       //formatData: function(graph,filters,allowErrorbar,allowAxisLabel,limitNumberOfData)
       GraphHelper.formatData(this,filters,allowErrorbar,allowAxisLabel,limitNumberOfData); 
       

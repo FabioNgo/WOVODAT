@@ -21,6 +21,7 @@ define(function(require) {
       return -1;
     },
     push: function(timeSerie,filter){
+
       if(timeSerie == undefined){
         return;
       }
@@ -34,9 +35,12 @@ define(function(require) {
       }else{
         this[category][index].addFilter(filter);
       }
-      
+      this.length++;
     },
     removeFilter:function(filter){
+      if(this.length <=0){
+          return;
+      }
       var groupedFilters = this[filter.timeSerie.get('category')];
       groupedFilters = _.filter(groupedFilters, function(groupedFilter){
         groupedFilter.name = _.filter(groupedFilter.name, function(name){
@@ -49,6 +53,8 @@ define(function(require) {
       }else{
        this[filter.timeSerie.get('category')] = groupedFilters;
       }
+      this.length--;
+      
     },
     getAllFilters: function(category){
       var filters = [];
@@ -56,15 +62,17 @@ define(function(require) {
         for(var i = 0;i<this[category].length;i++){
           for(var j = 0;j<this[category][i].filterAttributes.length;j++){
             filters.push({
-              timeSerie:this[category][i].timeSerie.get('sr_id'),
-              filter: this[category][i].filterAttributes[j].name
+              timeSerie:this[category][i].timeSerie,
+              filterAttributes: [this[category][i].filterAttributes[j]]
             });
           }
         }
       }
       return filters;
     },
-    
+    // getSeparatedFilters : function(category){
+
+    // }
     
   });
 });
