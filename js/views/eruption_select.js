@@ -8,8 +8,6 @@ define(function(require) {
       materialize = require('material');
           
   return Backbone.View.extend({
-    el: '',
-    className : 'eruption-select',  
     template: _.template(template),
 
     events: {
