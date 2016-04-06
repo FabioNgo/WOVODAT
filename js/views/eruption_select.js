@@ -9,7 +9,7 @@ define(function(require) {
           
   return Backbone.View.extend({
     el: '',
-    className : 'eruption-select',  
+
     template: _.template(template),
 
     events: {
