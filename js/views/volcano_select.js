@@ -10,7 +10,7 @@ define(function(require) {
 
   return Backbone.View.extend({
     el: '',
-
+    className : 'volcano-select',
     template: _.template(template),
     loading: _.template(loading),
     events: {
