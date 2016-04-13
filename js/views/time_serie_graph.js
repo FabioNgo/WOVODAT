@@ -34,10 +34,16 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
       }
       this.minX = TimeRange.get('startTime');
       this.maxX = TimeRange.get('endTime');
+      this.overviewGraphMinX = TimeRange.get('overviewGraphMinX');
+      this.overviewGraphMaxX = TimeRange.get('overviewGraphMaxX');
       //this.render();
       //console.log(this.filters);
       // put this new time range into filter as attributes. 
       //this.prepareData();
+    },
+
+    onScroll: function (event, minX, maxX){
+      console.log(event.data);
     },
 
     onHover: function(event, pos, item) {
@@ -63,8 +69,9 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
           unit = this.data[i].yaxis.axisLabel;
         }
       };
-      // change yaxix according to zoomed in data
-      // PROBLEM FOR Fluctuate Data maxY or minY may not be MaxX or MinX they can lie in between
+
+      // change yaxix of timeseriesgraph according to zoomed in data
+
       var zoomedDataMinY = undefined;
       var zoomedDataMaxY = undefined;
       for(var j=0;j<this.data.length;j++){
@@ -163,6 +170,9 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
               interactive: true,
               
             },
+            pan: {
+              interactive: true,
+            },
             tooltip:{
               show: true,
             },
@@ -185,16 +195,20 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
       var eventData = {
         startTime: this.minX,
         endTime: this.maxX,
+        overviewGraphMinX: this.overviewGraphMinX,
+        overviewGraphMaxX: this.overviewGraphMaxX,
         data: this.data,
         graph: this.graph,
         el: this.$el,
         self: this,
-        original_option: options
+        original_option: options,
+        timeRange: this.serieGraphTimeRange
       }
       this.$el.bind('plotzoom',eventData, this.onZoom);
       
     },
     onZoom: function(event,plot){
+      //console.log(event);
       var option = event.data.original_option;
       var xaxis = plot.getXAxes()[0];
       var data = event.data.data;
@@ -205,10 +219,31 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
         option.xaxis.max = event.data.endTime;
 
         event.data.graph = $.plot(event.data.el,data,option);
+
         self.setUpTimeranges(option.xaxis.min,option.xaxis.max);
       }else{
         self.setUpTimeranges(xaxis.min,xaxis.max);
       }
+      /* This part of code below allow the zoom in time series graph to extend maximumly to be the same
+          as the range of the overviewgraph */
+      //Zoom error!!!!
+      // if(xaxis.min < event.data.overviewGraphMinX || xaxis.max > event.data.overviewGraphMaxX){
+      //   option.xaxis.min = this.overviewGraphMinX;
+      //   option.xaxis.min = this.overviewGraphMaxX;
+      //   event.data.graph = $.plot(event.data.el,data,option);
+      // }
+      event.data.timeRange.set({
+        minX: xaxis.min,
+        maxX: xaxis.max
+      })
+      event.data.timeRange.trigger('zoom');
+      //event.data.trigger('update');
+      //console.log(data);
+      //console.log(xaxis.min);
+      //console.log(event.data.data);
+      //console.log(xaxis.min);
+
+      //console.log(event.data.timeRange);
 
     },
     setUpTimeranges: function(startTime, endTime){

@@ -32,7 +32,8 @@ define(function(require) {
         'overviewGraphHidden',
         'eruptionSelectHidden',
         'eruptionGraphHidden',
-        'eruptionGraphShown'
+        'eruptionGraphShown',
+        'highlightOverViewGraphChanged'
 
       );
       //Variable declaration
@@ -71,8 +72,10 @@ define(function(require) {
       this.listenTo(this.serieGraphTimeRange,'update',this.serieGraphTimeRangeChanged);
       this.listenTo(this.forecastsGraphTimeRange,'update',this.forecastsGraphTimeRangeChanged);
       this.listenTo(this.selectingTimeRange,'update',this.selectingTimeRangeChanged);
+      this.listenTo(this.serieGraphTimeRange,'zoom',this.highlightOverViewGraphChanged);
       this.listenTo(this.selectingFilters,'update',this.selectingFiltersChanged);
       this.listenTo(this.eruptionTimeRange,'update',this.eruptionTimeRangeChanged);
+
       /**
       * Events when some part is hidden
       */
@@ -201,10 +204,19 @@ define(function(require) {
       this.serieGraphTimeRange.set({
         'startTime': this.selectingTimeRange.get('startTime'),
         'endTime': this.selectingTimeRange.get('endTime'),
+        'overviewGraphMinX': this.selectingTimeRange.get('overviewGraphMinX'),
+        'overviewGraphMaxX': this.selectingTimeRange.get('overviewGraphMaxX'),
       });
       // this.selectingTimeRange.trigger('update');
       this.serieGraphTimeRangeChanged();
       // this.timeSeriesGraphContainer.selectingTimeRangeChanged(e);
+    },
+    highlightOverViewGraphChanged: function(e){
+      this.selectingTimeRange.set({
+        selectedMinX: this.serieGraphTimeRange.get('minX'),
+        selectedMaxX: this.serieGraphTimeRange.get('maxX')
+      })
+      this.overviewGraph.selectingRegionChanged(this.selectingTimeRange);
     },
     destroy: function() {
       

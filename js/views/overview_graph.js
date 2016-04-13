@@ -35,11 +35,31 @@ define(function(require) {
 
       var startTime = ranges.xaxis.from,
           endTime = ranges.xaxis.to;
-      event.data.set({
+      event.data.data.set({
         'startTime': startTime,
         'endTime': endTime,
+        'overviewGraphMinX': event.data.graphMinX,
+        'overviewGraphMaxX': event.data.graphMaxX
       });
-      event.data.trigger('update');
+      console.log(ranges.xaxis);
+      console.log(event.data);
+      event.data.data.trigger('update');
+    },
+    //selectingRegionChanged: function(selectingTimeRange){
+      //this.$el.bind('plotselected',this.selectingTimeRange,this.plotSelectingRegion);
+      //console.log(2);
+    //},
+    //plotSelectingRegion
+
+    selectingRegionChanged: function(selectingTimeRange){
+      // console.log(selectingTimeRange);
+      this.graph.setSelection({
+        xaxis: {
+          from: selectingTimeRange.get('overviewGraphMinX'),
+          to: selectingTimeRange.get('overviewGraphMaxX'),
+        }
+      })
+      //console.log(1);
     },
     hide: function(){
       this.$el.html("");
@@ -116,7 +136,14 @@ define(function(require) {
       // console.log(this.data);
       this.graph = $.plot(this.$el, this.data, options);
       //To edit the series object, go to GraphHelper used for data in the prepareData method below.
-      this.$el.bind('plotselected', this.selectingTimeRange, this.onSelect);
+      var eventData = {
+        data: this.selectingTimeRange,
+        graphMinX: this.minX,
+        graphMaxX: this.maxX
+      };
+
+      //this.$el.bind('plotselected', this.selectingTimeRange, this.onSelect);
+      this.$el.bind('plotselected', eventData, this.onSelect);
 
     },
 
