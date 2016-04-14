@@ -41,8 +41,8 @@ define(function(require) {
         'overviewGraphMinX': event.data.graphMinX,
         'overviewGraphMaxX': event.data.graphMaxX
       });
-      console.log(ranges.xaxis);
-      console.log(event.data);
+      // console.log(ranges.xaxis);
+      // console.log(event.data);
       event.data.data.trigger('update');
     },
     //selectingRegionChanged: function(selectingTimeRange){
@@ -53,14 +53,30 @@ define(function(require) {
 
     selectingRegionChanged: function(selectingTimeRange){
       // console.log(selectingTimeRange);
+      var selectedMinX = selectingTimeRange.get('selectedMinX');
+      var selectedMaxX = selectingTimeRange.get('selectedMaxX');
+      var minX;
+      var maxX;
+      //set the boundary for the selected region
+      if(selectedMinX<this.minX){
+        minX = this.minX;
+      }else{
+        minX = selectedMinX;
+      }
+      if(selectedMaxX>this.maxX){
+        maxX = this.maxX;
+      }else{
+        maxX = selectedMaxX;
+      }
+      // console.log(this.timeRange);
       this.graph.setSelection({
         xaxis: {
-          from: selectingTimeRange.get('overviewGraphMinX'),
-          to: selectingTimeRange.get('overviewGraphMaxX'),
+          from: minX,
+          to: maxX,
         }
       })
-      //console.log(1);
     },
+
     hide: function(){
       this.$el.html("");
       this.$el.width(0);

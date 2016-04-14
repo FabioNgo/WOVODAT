@@ -140,10 +140,10 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
               timeformat: "%d-%b<br>%Y",
               min: this.minX,
               max: this.maxX,
-
               autoscale: true,
               canvas: true,
-              ticks: 6
+              ticks: 6,
+              zoomRange: [30000000],
             },
             yaxis: {
               show: true,
@@ -168,11 +168,10 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
             },
             zoom: {
               interactive: true,
-              
             },
-            pan: {
-              interactive: true,
-            },
+            // pan: {
+            //   interactive: true,
+            // },
             tooltip:{
               show: true,
             },
@@ -236,6 +235,7 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
         minX: xaxis.min,
         maxX: xaxis.max
       })
+      // console.log(event.data.timeRange);
       event.data.timeRange.trigger('zoom');
       //event.data.trigger('update');
       //console.log(data);

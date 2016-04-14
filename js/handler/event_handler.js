@@ -216,6 +216,7 @@ define(function(require) {
         selectedMinX: this.serieGraphTimeRange.get('minX'),
         selectedMaxX: this.serieGraphTimeRange.get('maxX')
       })
+      // console.log(this.selectingTimeRange);
       this.overviewGraph.selectingRegionChanged(this.selectingTimeRange);
     },
     destroy: function() {
