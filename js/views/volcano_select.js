@@ -85,7 +85,7 @@ define(function(require) {
           var options = {
             volcanoes: this.generateVolcanoes(volcanoes)
           }
-          $('.dropdown-content').html(temp(options))
+          $('#dropdown1').html(temp(options))
           var searchSuggestion = $('.search-sugesstion');
           //show/hide suggestion part
           if(!searchSuggestion.hasClass('active')){
