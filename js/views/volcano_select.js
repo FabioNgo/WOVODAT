@@ -16,7 +16,8 @@ define(function(require) {
     events: {
       'change select': 'onSelectChange',
       'input input' : 'onChange',
-      'click input' : 'onChange'
+      'click input' : 'onChange',
+      'blur input' : 'onBlurSearchBox'
     },
     
     initialize: function(options) {
@@ -62,12 +63,11 @@ define(function(require) {
       
       
     },
-    // onClickInput: function(e){
-    //   if(!searchSuggestion.hasClass('active')){
-    //     $('.search-sugesstion').click();  
-    //   }
-
-    // }
+    onBlurSearchBox: function(e){
+      if(e.target.value != ''){
+        e.target.value = "";
+      }
+    },
     // input search handler
     onChange: function(e){
           // var volcano = this.searchVolcanoes(e.target.value);
@@ -89,8 +89,16 @@ define(function(require) {
           var searchSuggestion = $('.search-sugesstion');
           //show/hide suggestion part
           if(!searchSuggestion.hasClass('active')){
-            $('.search-sugesstion').click();  
+            $('.search-sugesstion').click(); 
+            $('#dropdown1').val("");
+
           }
+          // var a = $('#dropdown1');
+          // var display = $('#dropdown1').css("display");
+          // if(display=="none"){
+          //   // $('#dropdown1').addClass('active');
+          //   $('#dropdown1').css("display","block");
+          // }
           // if(e.target.value != ""){
           //   if(!searchSuggestion.hasClass('active')){
           //     $('.search-sugesstion').click();  
