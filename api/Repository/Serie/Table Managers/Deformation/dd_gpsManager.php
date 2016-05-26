@@ -1,11 +1,11 @@
 <?php
 /**
- *	This class supports query the data from data table dd_tlt 
+ *	This class supports query the data from data table dd_gps 
  * 	
  */
 // DEFINE('HOST', 'localhost');
 // require_once '..//TableManager.php';
-class dd_gpsManager extends TableManager {
+class dd_gpsManager extends DeformationTablesManager {
 	
 	protected function setColumnsName(){
 		$result = array("dd_gps_lat","dd_gps_lon","dd_gps_elev","dd_gps_slope");
@@ -14,9 +14,6 @@ class dd_gpsManager extends TableManager {
 	protected function setTableName(){
 		return "es_dd_gps";
 	}
-	protected function setMonitoryType(){
-		return "Deformation";
-	} // monitory type Deformation, Gas, ....
 	protected function setDataType(){
 		return "GPSPosition&Slope";
 	} // Data type for each data table

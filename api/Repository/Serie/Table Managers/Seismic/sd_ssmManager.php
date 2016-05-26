@@ -5,7 +5,7 @@
  */
 // DEFINE('HOST', 'localhost');
 // require_once '..//TableManager.php';
-class sd_ssmManager extends TableManager {
+class sd_ssmManager extends SeismicTablesManager {
 	
 	protected function setColumnsName(){
 		$result = array("sd_ssm_lowf","sd_ssm_highf","sd_ssm_count");
@@ -14,9 +14,7 @@ class sd_ssmManager extends TableManager {
 	protected function setTableName(){
 		return "es_sd_ssm";
 	}
-	protected function setMonitoryType(){
-		return "Seismic";
-	} // monitory type Deformation, Gas, ....
+	
 	protected function setDataType(){
 		return "SSAM";
 	} // Data type for each data table

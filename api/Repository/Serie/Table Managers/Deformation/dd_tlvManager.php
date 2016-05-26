@@ -1,11 +1,11 @@
 <?php
 /**
- *	This class supports query the data from data table dd_tlt 
+ *	This class supports query the data from data table dd_tlv 
  * 	
  */
 // DEFINE('HOST', 'localhost');
 // require_once '..//TableManager.php';
-class dd_tlvManager extends TableManager {
+class dd_tlvManager extends DeformationTablesManager {
 	
 	protected function setColumnsName(){
 		$result = array("dd_tlv_mag","dd_tlv_azi");
@@ -14,9 +14,6 @@ class dd_tlvManager extends TableManager {
 	protected function setTableName(){
 		return "es_dd_tlv";
 	}
-	protected function setMonitoryType(){
-		return "Deformation";
-	} // monitory type Deformation, Gas, ....
 	protected function setDataType(){
 		return "TitltVector";
 	} // Data type for each data table

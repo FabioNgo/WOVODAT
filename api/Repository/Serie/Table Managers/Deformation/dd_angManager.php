@@ -1,12 +1,12 @@
 <?php
 /**
- *	This class supports query the data from data table dd_tlt 
+ *	This class supports query the data from data table dd_ang 
  * 	
  */
 // DEFINE('HOST', 'localhost');
 // require_once '..//TableManager.php';
-class dd_angManager extends TableManager {
-	
+class dd_angManager extends DeformationTablesManager {
+
 	protected function setColumnsName(){
 		$result = array("dd_ang_hort1","dd_ang_hort2","dd_ang_vert1","dd_ang_vert2");
 		return $result;
@@ -14,9 +14,6 @@ class dd_angManager extends TableManager {
 	protected function setTableName(){
 		return "es_dd_ang";
 	}
-	protected function setMonitoryType(){
-		return "Deformation";
-	} // monitory type Deformation, Gas, ....
 	protected function setDataType(){
 		return "Angle";
 	} // Data type for each data table

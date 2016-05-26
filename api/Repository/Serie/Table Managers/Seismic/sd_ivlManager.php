@@ -5,7 +5,7 @@
  */
 // DEFINE('HOST', 'localhost');
 // require_once '..//TableManager.php';
-class sd_ivlManager extends TableManager {
+class sd_ivlManager extends SeismicTablesManager {
 	
 	protected function setColumnsName(){
 		$result = array(	"sd_ivl_hdist","sd_ivl_avgdepth","sd_ivl_vdispers",
@@ -17,9 +17,7 @@ class sd_ivlManager extends TableManager {
 	protected function setTableName(){
 		return "es_sd_ivl";
 	}
-	protected function setMonitoryType(){
-		return "Seismic";
-	} // monitory type Deformation, Gas, ....
+	
 	protected function setDataType(){
 		return "SeismicInterval";
 	} // Data type for each data table

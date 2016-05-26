@@ -1,11 +1,11 @@
 <?php
 /**
- *	This class supports query the data from data table dd_tlt 
+ *	This class supports query the data from data table gd
  * 	
  */
 // DEFINE('HOST', 'localhost');
 // require_once '..//TableManager.php';
-class gdManager extends TableManager {
+class gdManager extends GasTablesManager {
 	
 	protected function setColumnsName(){
 		$result = array("gd_gtemp","gd_bp","gd_flow","gd_concentration");
@@ -14,9 +14,7 @@ class gdManager extends TableManager {
 	protected function setTableName(){
 		return "es_gd";
 	}
-	protected function setMonitoryType(){
-		return "Gas";
-	} // monitory type Deformation, Gas, ....
+	
 	protected function setDataType(){
 		return "Sampled Gas";
 	} // Data type for each data table

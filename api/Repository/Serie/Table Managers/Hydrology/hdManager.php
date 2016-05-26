@@ -1,11 +1,11 @@
 <?php
 /**
- *	This class supports query the data from data table dd_tlt 
+ *	This class supports query the data from data table hd 
  * 	
  */
 // DEFINE('HOST', 'localhost');
 // require_once '..//TableManager.php';
-class hdManager extends TableManager {
+class hdManager extends HydrologyTablesManager {
 	
 	protected function setColumnsName(){
 		$result = array("hd_temp","hd_wdepth","hd_bp","hd_sdisc","hd_prec","hd_ph","hd_cond","hd_comp_content","hd_atemp","hd_tds");
@@ -14,9 +14,7 @@ class hdManager extends TableManager {
 	protected function setTableName(){
 		return "es_hd";
 	}
-	protected function setMonitoryType(){
-		return "Hydrology";
-	} // monitory type Deformation, Gas, ....
+	
 	protected function setDataType(){
 		return "Hydrology";
 	} // Data type for each data table

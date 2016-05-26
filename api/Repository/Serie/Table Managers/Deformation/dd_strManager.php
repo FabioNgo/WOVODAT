@@ -1,11 +1,11 @@
 <?php
 /**
- *	This class supports query the data from data table dd_tlt 
+ *	This class supports query the data from data table dd_str 
  * 	
  */
 // DEFINE('HOST', 'localhost');
 // require_once '..//TableManager.php';
-class dd_strManager extends TableManager {
+class dd_strManager extends DeformationTablesManager {
 	
 	protected function setColumnsName(){
 		$result = array("dd_str_comp1","dd_str_comp2","dd_str_comp3","dd_str_comp4","dd_str_vdstr","dd_str_sstr_ax1","dd_str_sstr_ax2",
@@ -15,9 +15,7 @@ class dd_strManager extends TableManager {
 	protected function setTableName(){
 		return "es_dd_str";
 	}
-	protected function setMonitoryType(){
-		return "Deformation";
-	} // monitory type Deformation, Gas, ....
+	
 	protected function setDataType(){
 		return "Strain";
 	} // Data type for each data table

@@ -5,7 +5,7 @@
  */
 // DEFINE('HOST', 'localhost');
 // require_once '..//TableManager.php';
-class sd_trmManager extends TableManager {
+class sd_trmManager extends SeismicTablesManager {
 	
 	protected function setColumnsName(){
 		$result = array("sd_trm_domfreq1","sd_trm_domfreq2","sd_trm_maxamp","sd_trm_reddis");
@@ -14,9 +14,7 @@ class sd_trmManager extends TableManager {
 	protected function setTableName(){
 		return "es_sd_trm";
 	}
-	protected function setMonitoryType(){
-		return "Seismic";
-	} // monitory type Deformation, Gas, ....
+	
 	protected function setDataType(){
 		return "SeismicTremor";
 	} // Data type for each data table

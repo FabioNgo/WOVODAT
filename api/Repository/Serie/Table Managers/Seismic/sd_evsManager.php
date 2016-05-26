@@ -5,7 +5,7 @@
  */
 // DEFINE('HOST', 'localhost');
 // require_once '..//TableManager.php';
-class sd_evsManager extends TableManager {
+class sd_evsManager extends SeismicTablesManager {
 	
 	protected function setColumnsName(){
 		$result = array("sd_evs_spint","sd_evs_dist_actven","sd_evs_maxamptrac","sd_evs_domFre","sd_evs_mag","sd_evs_energy");
@@ -14,9 +14,7 @@ class sd_evsManager extends TableManager {
 	protected function setTableName(){
 		return "es_sd_evs";
 	}
-	protected function setMonitoryType(){
-		return "Seismic";
-	} // monitory type Deformation, Gas, ....
+	
 	protected function setDataType(){
 		return "SeismicEventFromSingleStation";
 	} // Data type for each data table

@@ -5,7 +5,7 @@
  */
 // DEFINE('HOST', 'localhost');
 // require_once '..//TableManager.php';
-class tdManager extends TableManager {
+class tdManager extends ThermalTablesManager {
 	
 	protected function setColumnsName(){
 		$result = array("td_temp","td_flux","td_bkgg","td_tcond");
@@ -14,9 +14,7 @@ class tdManager extends TableManager {
 	protected function setTableName(){
 		return "es_td";
 	}
-	protected function setMonitoryType(){
-		return "Thermal";
-	} // monitory type Deformation, Gas, ....
+	
 	protected function setDataType(){
 		return "Thermal";
 	} // Data type for each data table

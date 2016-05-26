@@ -1,11 +1,11 @@
 <?php
 /**
- *	This class supports query the data from data table dd_tlt 
+ *	This class supports query the data from data table dd_gpv 
  * 	
  */
 // DEFINE('HOST', 'localhost');
 // require_once '..//TableManager.php';
-class dd_gpvManager extends TableManager {
+class dd_gpvManager extends DeformationTablesManager {
 	
 	protected function setColumnsName(){
 		$result = array("dd_gpv_dmag","dd_gpv_daz","dd_gpv_vincl","dd_gpv_N","dd_gpv_E","dd_gpv_vert","dd_gpv_staVelNorth","dd_gpv_staVelEast",
@@ -15,9 +15,7 @@ class dd_gpvManager extends TableManager {
 	protected function setTableName(){
 		return "es_dd_gpv";
 	}
-	protected function setMonitoryType(){
-		return "Deformation";
-	} // monitory type Deformation, Gas, ....
+	
 	protected function setDataType(){
 		return "GPSVector";
 	} // Data type for each data table

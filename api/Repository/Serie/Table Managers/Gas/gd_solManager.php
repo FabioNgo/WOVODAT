@@ -1,11 +1,11 @@
 <?php
 /**
- *	This class supports query the data from data table dd_tlt 
+ *	This class supports query the data from data table gd_sol 
  * 	
  */
 // DEFINE('HOST', 'localhost');
 // require_once '..//TableManager.php';
-class gd_solManager extends TableManager {
+class gd_solManager extends GasTablesManager {
 	
 	protected function setColumnsName(){
 		$result = array("gd_sol_tflux","gd_sol_high","gd_sol_htemp");

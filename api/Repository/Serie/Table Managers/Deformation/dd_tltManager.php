@@ -5,7 +5,7 @@
  */
 // DEFINE('HOST', 'localhost');
 // require_once '..//TableManager.php';
-class dd_tltManager extends TableManager {
+class dd_tltManager extends DeformationTablesManager {
 	
 	protected function setColumnsName(){
 		$result = array("dd_tlt1","dd_tlt2","dd_tlt_temp");
@@ -14,9 +14,7 @@ class dd_tltManager extends TableManager {
 	protected function setTableName(){
 		return "es_dd_tlt";
 	}
-	protected function setMonitoryType(){
-		return "Deformation";
-	} // monitory type Deformation, Gas, ....
+	
 	protected function setDataType(){
 		return "ElectronicTilt";
 	} // Data type for each data table

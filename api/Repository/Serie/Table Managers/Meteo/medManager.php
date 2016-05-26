@@ -5,7 +5,7 @@
  */
 // DEFINE('HOST', 'localhost');
 // require_once '..//TableManager.php';
-class medManager extends TableManager {
+class medManager extends MeteoTablesManager {
 	
 	protected function setColumnsName(){
 		$result = array("med_temp","med_stemp","med_bp","med_hd","med_prec","med_wind","med_wsmin","med_wsmax","med_wdir","med_clc");
@@ -14,9 +14,7 @@ class medManager extends TableManager {
 	protected function setTableName(){
 		return "es_med";
 	}
-	protected function setMonitoryType(){
-		return "Meteology";
-	} // monitory type Deformation, Gas, ....
+	
 	protected function setDataType(){
 		return "Meteo Data";
 	} // Data type for each data table

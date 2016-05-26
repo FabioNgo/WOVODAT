@@ -5,7 +5,7 @@
  */
 // DEFINE('HOST', 'localhost');
 // require_once '..//TableManager.php';
-class sd_intManager extends TableManager {
+class sd_intManager extends SeismicTablesManager {
 	
 	protected function setColumnsName(){
 		$result = array("sd_int_maxdist","sd_int_maxrint","sd_int_maxrint_dist");
@@ -14,9 +14,7 @@ class sd_intManager extends TableManager {
 	protected function setTableName(){
 		return "es_sd_int";
 	}
-	protected function setMonitoryType(){
-		return "Seismic";
-	} // monitory type Deformation, Gas, ....
+	
 	protected function setDataType(){
 		return "SeismicIntensity";
 	} // Data type for each data table
