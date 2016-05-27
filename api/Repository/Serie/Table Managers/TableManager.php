@@ -71,7 +71,16 @@ abstract class TableManager implements TableManagerInterface {
 		foreach ($serie_list as $serie) {
 
 			foreach ($this->cols_name as $col_name) {
+
 				if($serie[$col_name]!=""){
+					// print_r($this->table_name);
+				// print_r($this->sta_id_code_dictionary);
+					if(!array_key_exists($serie["sta_id1"], $this->sta_id_code_dictionary[0])){
+						continue;
+					}
+					if(!array_key_exists($serie["sta_id2"], $this->sta_id_code_dictionary[1])){
+						continue;
+					}
 					$x = array('category' => $this->monitoryType ,
 							   'data_type' => $this->dataType,
 							   'station_id1' => $serie["sta_id1"],
