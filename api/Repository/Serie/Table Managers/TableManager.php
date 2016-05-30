@@ -25,7 +25,7 @@ abstract class TableManager implements TableManagerInterface {
 	//must return 1 sta_code column
 	protected function getStationCodeQuery($sta_id){
 		$table_name = $this->getTableNameFromIdName($sta_id);
-		$sta_id_code_query = "SELECT DISTINCT $sta_id, " . $table_name ."_code as sta_code FROM $table_name;";
+		$sta_id_code_query = "SELECT DISTINCT ".$table_name."_id as sta_id, " . $table_name ."_code as sta_code FROM $table_name order by sta_id";
 		return $sta_id_code_query;
 	}
 	protected function getStationIdCodeDictionary(){
@@ -35,12 +35,13 @@ abstract class TableManager implements TableManagerInterface {
 			
 			$sta_id_code = array();
 			$sta_id_code_query = $this->getStationCodeQuery($sta_id);
+			// echo $sta_id_code_query."\n";
 			$db->query($sta_id_code_query);
 			$temp = $db->getList();
 			$sta_id_code[0] = "";
 			// print_r($temp);
 			foreach($temp as $tmp){
-				$sta_id_code[$tmp[$sta_id]]  = $tmp['sta_code'];
+				$sta_id_code[$tmp["sta_id"]]  = $tmp['sta_code'];
 			}
 
 			array_push($sta_id_codes,$sta_id_code);
@@ -78,7 +79,16 @@ abstract class TableManager implements TableManagerInterface {
 		foreach ($serie_list as $serie) {
 
 			foreach ($this->cols_name as $col_name) {
-
+				// print_r($this->table_name);
+				// print_r($this->stationId);
+				// print_r($this->sta_id_code_dictionary);
+				// echo ($this->getStationCodeQuery($this->stationId[0])."\n");
+				if(!array_key_exists($serie["sta_id1"], $this->sta_id_code_dictionary[0])){
+					continue;
+				}
+				if(!array_key_exists($serie["sta_id2"], $this->sta_id_code_dictionary[1])){
+					continue;
+				}
 				if($serie[$col_name]!=""){
 					$x = array('category' => $this->monitoryType ,
 							   'data_type' => $this->dataType,

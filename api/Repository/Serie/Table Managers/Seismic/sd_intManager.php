@@ -17,10 +17,10 @@ class sd_intManager extends SeismicTablesManager {
 	protected function getStationCodeQuery($sta_id){
 		$sta_id_code_query;
 		if($sta_id == "sn_id"){
-			$sta_id_code_query = "SELECT c.sn_id as sn_id, c.sn_code as sta_code FROM sd_int as a, sd_evn as b,sn as c where a.sd_evn_id = b.sd_evn_id and b.sn_id=c.sn_id";
+			$sta_id_code_query = "SELECT c.sn_id as sta_id, c.sn_code as sta_code FROM sd_int as a, sd_evn as b,sn as c where a.sd_evn_id = b.sd_evn_id and b.sn_id=c.sn_id";
 		}
 		if($sta_id == "ss_id"){
-			$sta_id_code_query = "SELECT c.ss_id as ss_id, c.ss_code as sta_code FROM sd_int as a, sd_evs as b,ss as c where a.sd_evs_id = b.sd_evs_id and b.ss_id=c.ss_id";
+			$sta_id_code_query = "SELECT c.ss_id as sta_id, c.ss_code as sta_code FROM sd_int as a, sd_evs as b,ss as c where a.sd_evs_id = b.sd_evs_id and b.ss_id=c.ss_id";
 		}
 		// echo($sta_id_code_query."\n");
 		return $sta_id_code_query;
