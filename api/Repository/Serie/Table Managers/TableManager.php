@@ -65,6 +65,7 @@ abstract class TableManager implements TableManagerInterface {
 			$query = $query.",a.".$name;
 		}
 		$query = $query." from $this->table_name as a where a.vd_id=$vd_id group by a.vd_id, sta_id1, sta_id2 order by vd_id";
+		// echo $query."\n";
 		$db->query( $query);
 		$serie_list = $db->getList();
 		$exsited = array();
@@ -75,12 +76,12 @@ abstract class TableManager implements TableManagerInterface {
 				if($serie[$col_name]!=""){
 					// print_r($this->table_name);
 				// print_r($this->sta_id_code_dictionary);
-					if(!array_key_exists($serie["sta_id1"], $this->sta_id_code_dictionary[0])){
-						continue;
-					}
-					if(!array_key_exists($serie["sta_id2"], $this->sta_id_code_dictionary[1])){
-						continue;
-					}
+					// if(!array_key_exists($serie["sta_id1"], $this->sta_id_code_dictionary[0])){
+					// 	continue;
+					// }
+					// if(!array_key_exists($serie["sta_id2"], $this->sta_id_code_dictionary[1])){
+					// 	continue;
+					// }
 					$x = array('category' => $this->monitoryType ,
 							   'data_type' => $this->dataType,
 							   'station_id1' => $serie["sta_id1"],

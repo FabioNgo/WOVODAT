@@ -6,7 +6,7 @@ class DeformationManager extends MonitoryTypeManager{
 		
 		$prefix = "dd_";
 		$result[$prefix."tlt"] = new dd_tltManager;
-		$result[$prefix."tlv"] = new dd_tlvManager;
+		// $result[$prefix."tlv"] = new dd_tlvManager;
 		$result[$prefix."str"] = new dd_strManager;
 		$result[$prefix."edm"] = new dd_edmManager;
 		$result[$prefix."ang"] = new dd_angManager;
