@@ -14,7 +14,7 @@ class fd_eleManager extends FieldsTablesManager {
 	protected function setTableName(){
 		return "es_fd_ele";
 	}
-	
+
 	protected function setDataType(){
 		return "Electric Fields";
 	} // Data type for each data table
@@ -33,8 +33,9 @@ class fd_eleManager extends FieldsTablesManager {
 		$query = "";
 		$table = "fd_ele";
 		$errorbar = true;
-		$style = "dot";
-		if($component == 'Electric Fields'){
+		$style = "dot";  
+
+		if($component == 'Electric Field'){
 			$unit = "mV";
 			$attribute = "fd_ele_field";
 			$query = "select a.fd_ele_ferr as err ,a.fd_ele_time as time, a.$attribute as value  from $table as a where a.fs_id1=%s and a.fs_id2=%s and a.$attribute IS NOT NULL";

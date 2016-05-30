@@ -22,18 +22,25 @@ abstract class TableManager implements TableManagerInterface {
 		$this->stationId = $this->setStationID();
 		$this->sta_id_code_dictionary = $this->getStationIdCodeDictionary();
 	}
-	private function getStationIdCodeDictionary(){
+	//must return 1 sta_code column
+	protected function getStationCodeQuery($sta_id){
+		$table_name = $this->getTableNameFromIdName($sta_id);
+		$sta_id_code_query = "SELECT DISTINCT $sta_id, " . $table_name ."_code as sta_code FROM $table_name;";
+		return $sta_id_code_query;
+	}
+	protected function getStationIdCodeDictionary(){
 		global $db;
 		$sta_id_codes = array();
 		foreach($this->stationId as $sta_id){
-			$table_name = $this->getTableNameFromIdName($sta_id);
+			
 			$sta_id_code = array();
-			$sta_id_code_query = "SELECT DISTINCT $sta_id, " . $table_name ."_code FROM $table_name;";
+			$sta_id_code_query = $this->getStationCodeQuery($sta_id);
 			$db->query($sta_id_code_query);
 			$temp = $db->getList();
 			$sta_id_code[0] = "";
+			// print_r($temp);
 			foreach($temp as $tmp){
-				$sta_id_code[$tmp[$sta_id]]  = $tmp[$table_name.'_code'];
+				$sta_id_code[$tmp[$sta_id]]  = $tmp['sta_code'];
 			}
 
 			array_push($sta_id_codes,$sta_id_code);
@@ -65,7 +72,6 @@ abstract class TableManager implements TableManagerInterface {
 			$query = $query.",a.".$name;
 		}
 		$query = $query." from $this->table_name as a where a.vd_id=$vd_id group by a.vd_id, sta_id1, sta_id2 order by vd_id";
-		// echo $query."\n";
 		$db->query( $query);
 		$serie_list = $db->getList();
 		$exsited = array();
@@ -74,14 +80,6 @@ abstract class TableManager implements TableManagerInterface {
 			foreach ($this->cols_name as $col_name) {
 
 				if($serie[$col_name]!=""){
-					// print_r($this->table_name);
-				// print_r($this->sta_id_code_dictionary);
-					// if(!array_key_exists($serie["sta_id1"], $this->sta_id_code_dictionary[0])){
-					// 	continue;
-					// }
-					// if(!array_key_exists($serie["sta_id2"], $this->sta_id_code_dictionary[1])){
-					// 	continue;
-					// }
 					$x = array('category' => $this->monitoryType ,
 							   'data_type' => $this->dataType,
 							   'station_id1' => $serie["sta_id1"],

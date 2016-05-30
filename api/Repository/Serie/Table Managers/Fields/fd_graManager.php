@@ -9,9 +9,9 @@ class fd_graManager extends FieldsTablesManager {
 	
 	protected function setColumnsName(){
 		$result = array("fd_gra_fstr");
-		return $result;
+		return $result;          
 	}
-	protected function setTableName(){
+	protected function setTableName(){  
 		return "es_fd_gra";
 	}
 	

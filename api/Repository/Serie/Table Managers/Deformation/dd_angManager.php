@@ -19,7 +19,7 @@ class dd_angManager extends DeformationTablesManager {
 	} // Data type for each data table
 	//if there is 1 station, station1 is the same as station2
 	protected function setStationID(){
-		$result = array("ds_id1","ds_id2");
+		$result = array("ds_id","ds_id");
 		return $result;
 	} // column names represent stationID1,station ID2
 	protected function setStationCode(){
@@ -32,31 +32,26 @@ class dd_angManager extends DeformationTablesManager {
 		$query = "";
 		$table = "dd_ang";
 		$errorbar = true;
-		$style = "dot";
-		if($component == 'Horizontal Angle Target-1'){
+		$style = "dot";  
+		if($component == 'Horizontal Angle Target-1'){ 
 			$unit = "o";
 			$attribute = "dd_ang_hort1";
-			$query = "select a.ds_id2 as filter, a.dd_ang_herr1 as err ,a.dd_ang_time as time, a.$attribute as value  from $table as a where a.ds_id1=$id1 and a.$attribute IS NOT NULL";
+			$query = "select a.ds_id2 as filter, a.dd_ang_herr1 as err ,a.dd_ang_time as time, a.$attribute as value from $table as a where a.ds_id=%s and a.ds_id1=%s and a.$attribute IS NOT NULL";
 		}
 		else if($component == 'Horizontal Angle Target-2'){
 			$unit = "o";
 			$attribute = "dd_ang_hort2";
-			$query = "select a.ds_id2 as filter,a.dd_ang_herr2 as err ,a.dd_ang_time as time, a.$attribute as value  from $table as a where a.ds_id1=$id1 and a.$attribute IS NOT NULL";
+			$query = "select a.ds_id2 as filter,a.dd_ang_herr2 as err ,a.dd_ang_time as time, a.$attribute as value from $table as a where a.ds_id=%s and a.ds_id1=%s and a.$attribute IS NOT NULL";
 		}
 		else if($component == 'Vertical Angle Target-1'){
 			$unit = "o";
 			$attribute = "dd_ang_vert1";
-			$query = "select a.ds_id2 as filter,a.dd_ang_verr1 as err ,a.dd_ang_time as time, a.$attribute as value  from $table as a where a.ds_id1=$id1  and a.$attribute IS NOT NULL";
+			$query = "select a.ds_id2 as filter,a.dd_ang_verr1 as err ,a.dd_ang_time as time, a.$attribute as value from $table as a where a.ds_id=%s and a.ds_id1=%s and a.$attribute IS NOT NULL";
 		}
 		else if($component == 'Vertical Angle Target-2'){
 			$unit = "o";
 			$attribute = "dd_ang_vert2";
-			$query = "select a.ds_id2 as filter,a.dd_ang_verr2 as err ,a.dd_ang_time as time, a.$attribute as value  from $table as a where a.ds_id1=$id1  and a.$attribute IS NOT NULL";
-		}
-		else if($component == 'Horizontal Angle Target-2'){
-			$unit = "o";
-			$attribute = "dd_ang_vert1";
-			$query = "select a.ds_id2 as filter,a.dd_ang_verr1 as err ,a.dd_ang_time as time, a.$attribute as value  from $table as a where a.ds_id1=$id1 and a.$attribute IS NOT NULL";
+			$query = "select a.ds_id2 as filter,a.dd_ang_verr2 as err ,a.dd_ang_time as time, a.$attribute as value from $table as a where a.ds_id=%s and a.ds_id1=%s and a.$attribute IS NOT NULL";
 		}
 		$result = array("unit" => $unit,
 						"style" => $style,

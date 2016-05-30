@@ -13,7 +13,7 @@ class gdManager extends GasTablesManager {
 	}
 	protected function setTableName(){
 		return "es_gd";
-	}
+	}  
 	
 	protected function setDataType(){
 		return "Sampled Gas";
@@ -50,7 +50,7 @@ class gdManager extends GasTablesManager {
 			$errorbar = true;
 			$query = "select a.gd_species as filter, a.gd_time as time, a.gd_concentration_err as err, a.gd_units as unit, a.$attribute as value  from $table as a where  a.gs_id=%s and a.$attribute IS NOT NULL";
 		}
-		else if($component == 'Gas Emission Rate'){
+		else if($component == 'Gas Emission'){  
 			$unit = "";
 			$attribute = "gd_flow";
 			$query = "select a.gd_time as time, a.$attribute as value  from $table as a where a.gs_id=%s and a.$attribute IS NOT NULL";

@@ -11,7 +11,7 @@ class gd_solManager extends GasTablesManager {
 		$result = array("gd_sol_tflux","gd_sol_high","gd_sol_htemp");
 		return $result;
 	}
-	protected function setTableName(){
+	protected function setTableName(){  
 		return "es_gd_sol";
 	}
 	protected function setMonitoryType(){
@@ -36,7 +36,7 @@ class gd_solManager extends GasTablesManager {
 		$table = "gd_sol";
 		$errorbar = false;
 		$style = "dot";
-		if($component == 'Total Gas Flux'){
+		if($component == 'Total Gas Flux'){      
 
 			$attribute = "gd_sol_tflux";
 			$errorbar = true;

@@ -12,7 +12,7 @@ class dd_levManager extends DeformationTablesManager {
 		return $result;
 	}
 	protected function setTableName(){
-		return "es_dd_lev";
+		return "es_dd_lev";  
 	}
 	
 	protected function setDataType(){
@@ -31,7 +31,7 @@ class dd_levManager extends DeformationTablesManager {
 		$unit="";
 		$attribute = "";
 		$query = "";
-		$table = "dd_lev";
+		$table = "dd_lev";    
 		$errorbar = true;
 		$style = "dot";
 		if($component == 'Elevation Change'){
