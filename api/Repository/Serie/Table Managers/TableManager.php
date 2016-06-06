@@ -128,6 +128,7 @@ abstract class TableManager implements TableManagerInterface {
 		$errorbar = $stationDataParams["errorbar"];
 		$query = $stationDataParams["query"];
 		$db->query($query, $id1,$id2);
+
 		$res = $db->getList();
 		foreach ($res as $row) {
 			//add value attributes
@@ -154,11 +155,16 @@ abstract class TableManager implements TableManagerInterface {
 			}
 			//add filter attribute
 			// var_dump($row);
+
 			if(array_key_exists("filter", $row)){
 				
 				$temp["filter"] = $row["filter"];
-				if($temp["filter"] == null){
+				if($temp["filter"] === null){
+					// echo("a\n");
 					$temp["filter"] = " ";
+				}
+				if($temp["filter"] == ""){
+					$temp["filter"] = "Others";
 				}
 			}else{
 				$temp["filter"] = " ";
