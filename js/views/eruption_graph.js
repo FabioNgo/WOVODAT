@@ -35,6 +35,10 @@ define(function(require) {
       this.edphsTooltip = new Tooltip({
         template: edphsTemplate
       });
+      this.selecting_vd_num = options.selecting_vd_num;
+      this.ed_stime_num = options.ed_stime_num;
+      this.ed_etime_num = options.ed_etime_num;
+     
     },
     eruptionTimeRangeChanged: function(timeRange){
       this.startTime = timeRange.get('startTime');

@@ -33,8 +33,10 @@ define(function(require) {
   return Backbone.View.extend({
     el: '#main',
     
-    initialize: function(selecting_vd_num) {
+    initialize: function(selecting_vd_num,ed_stime_num,ed_etime_num) {
       this.selecting_vd_num = selecting_vd_num;
+      this.ed_stime_num = ed_stime_num;
+      this.ed_etime_num = ed_etime_num;
       this.$el.html("");
       this.render();
     },
@@ -101,7 +103,11 @@ define(function(require) {
             eruptions: eruptions,
             eruptionForecasts: eruptionForecasts,
             observer: observer,
-            selectingEruptions: selectingEruptions
+            selectingEruptions: selectingEruptions,
+            selecting_vd_num: this.selecting_vd_num,
+            ed_stime_num: this.ed_stime_num,
+            ed_etime_num: this.ed_etime_num,
+            selectingTimeRange: selectingTimeRange,
           }),
 
           
@@ -113,8 +119,12 @@ define(function(require) {
             serieGraphTimeRange: serieGraphTimeRange,
             forecastsGraphTimeRange: forecastsGraphTimeRange,
             eruptionTimeRange: eruptionTimeRange,
-            overviewGraphTimeRange: overviewGraphTimeRange
+            overviewGraphTimeRange: overviewGraphTimeRange,
+            selecting_vd_num: this.selecting_vd_num,
+            ed_stime_num: this.ed_stime_num,
+            ed_etime_num: this.ed_etime_num
           }),
+
           eruptionForecastsGraph = new EruptionForecastsGraph({
             observer: observer,
             categories: categories,

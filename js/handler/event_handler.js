@@ -103,6 +103,8 @@ define(function(require) {
       this.eruptionSelect.fetchEruptions(vd_id);
       this.selectingTimeSeries.reset();
       this.selectingTimeSeriesChanged();
+      //this.eruptionSelect.show();
+      console.log(vd_id);
     },
     timeSeriesChanged: function(e){
       this.timeSeriesSelect.timeSeriesChanged(this.timeSeries);
@@ -139,13 +141,11 @@ define(function(require) {
       // }
     },
     selectingFiltersChanged: function(e){
-
       this.overviewGraphContainer.selectingFiltersChanged(this.selectingFilters);
       this.overviewGraph.selectingFiltersChanged(this.selectingFilters);
       this.timeSeriesGraphContainer.selectingFiltersChanged(this.selectingFilters);
       this.eruptionSelect.selectingFiltersChanged(this.selectingFilters);
-      
-      
+      console.log(this.eruptionSelect);
     },
     timeSeriesChanged: function(e){
       this.timeSeriesSelect.render(this.timeSeries);
@@ -166,11 +166,12 @@ define(function(require) {
     },
     filtersSelectHidden: function(e){
       this.overviewGraph.hide();
-      this.eruptionSelect.hide();
+      // this.eruptionSelect.hide();
+      this.eruptionSelect.show();
     },
     overviewGraphHidden: function(e){
-      this.eruptionSelect.hide();
-
+      // this.eruptionSelect.hide();
+      this.eruptionSelect.show();
     },
     eruptionGraphHidden: function(e){
       this.timeSeriesGraphContainer.hide();

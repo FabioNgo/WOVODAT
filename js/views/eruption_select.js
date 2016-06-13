@@ -22,13 +22,28 @@ define(function(require) {
       this.eruptions = options.eruptions;
       this.eruptionForecasts = options.eruptionForecasts;
       this.availableEruptions = [];
+      this.selecting_vd_num = options.selecting_vd_num;
+      this.ed_stime_num = options.ed_stime_num;
+      this.ed_etime_num = options.ed_etime_num;
+      this.selectingTimeRange = options.selectingTimeRange;
+      // this.setUpTimeRange(this.ed_stime_num,this.ed_etime_num);
+      //this.showEruption();
+      //console.log(this.selectingEruptions);
+
     },
     
+    setUpTimeRange: function(ed_stime_num,ed_etime_num){
+      //console.log(this.selectingTimeRange);
+      this.selectingTimeRange.attributes.endTime = ed_etime_num;
+      this.selectingTimeRange.attributes.startTime = ed_stime_num;
+    },
+
     fetchEruptions: function(vd_id) {
       this.eruptions.changeVolcano(vd_id);
       this.eruptionForecasts.changeVolcano(vd_id);
-      this.availableEruptions = this.eruptions.getAvailableEruptions();
-      
+      this.availableEruptions = this.eruptions.getAvailableEruptions(this.selectingTimeRange);
+      //console.log(this.eruptions);
+      //this.show(); // newly changed
     },
 
     changeEruption: function(selectingEruption) {
@@ -64,7 +79,10 @@ define(function(require) {
       }else{
         this.selectingEruptions.add(this.eruptions.get(ed_id));  
       }
-      
+      //console.log(this.selectingEruptions);
+      var ed_etime = this.selectingEruptions.models[0].attributes.ed_etime;
+      var ed_stime = this.selectingEruptions.models[0].attributes.ed_stime;
+      Backbone.history.navigate("vnum="+this.selecting_vd_num+"/ed_stime="+ed_stime+"/ed_etime="+ed_etime);
       // this.selectingEruption.set('ed_id', ed_id);
       // this.selectingEruption.trigger('change');
       // this.observer.trigger('change', this.selectingEruption);
@@ -84,19 +102,26 @@ define(function(require) {
       // this.fetchEruptions();
       this.selectingEruptions.length = 0;
       this.selectingEruptions.add(new Eruption({'ed_id':-1})); // select ----
+      //console.log(this.selectingEruptions);
       this.render();
     },
 
     //when no filter select, eruption not appear
     selectingFiltersChanged: function(selectingFilters) {
       this.availableEruptions = this.eruptions.getAvailableEruptions();
-      if (selectingFilters.length == 0) {
-        this.hide();
-      }else{
-        this.show();
-      }
-      
+      //console.log(this.eruptions);
+      // if (selectingFilters.length == 0) {
+      //   this.hide();
+      // }else{
+      //   this.show();
+      // }
+      this.show();
     },
+
+    // showEruption: function(){
+    //   this.availableEruptions = this.eruptions.getAvailableEruptions();
+    //   console.log(this.eruptions);
+    // },
 
     destroy: function() {
       // From StackOverflow with love.
