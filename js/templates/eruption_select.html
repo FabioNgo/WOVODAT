@@ -1,18 +1,42 @@
 <div class = "card-panel">
-<% if (eruptions.length == 0){ %>
-	<div class="message">No eruption found.</div>
+<% if (eruptionsNotAvailable == 1){ %>
+	<!-- <div class="message">No eruption found.</div> -->
+	<select class="eruption-select" >
+			<option value="-1" selected>NO ERUPTION FOUND</option>
+			<% _.each(eruptions, function(eruption) {
+				var temp = new Date('0001-01-01');
+				
+				if(eruption.get('ed_stime')>temp.getTime()){
+				%>
+			  <option value="<%= eruption.get('ed_id') %>" ><%= eruption.getDate() %></option>
+			<% }}); %>
+		</select>
 <% } else{ %>
-<div class="input-field col s12">
-<select class="eruption-select" >
-	<option value="-1" selected>Please select an eruption</option>
-	<% _.each(eruptions, function(eruption) {
-		var temp = new Date('0001-01-01');
-		
-		if(eruption.get('ed_stime')>temp.getTime()){
-		%>
-	  <option value="<%= eruption.get('ed_id') %>" ><%= eruption.getDate() %></option>
-	<% }}); %>
-</select>
+	<% if (selectingEruption.id == -1){ %>
+		<div class="input-field col s12">
+		<select class="eruption-select" >
+			<option value="-1" selected>Please select an eruption</option>
+			<% _.each(eruptions, function(eruption) {
+				var temp = new Date('0001-01-01');
+				
+				if(eruption.get('ed_stime')>temp.getTime()){
+				%>
+			  <option value="<%= eruption.get('ed_id') %>" ><%= eruption.getDate() %></option>
+			<% }}); %>
+		</select>
+	<% } else{ %>
+		<div class="input-field col s12">
+		<select class="eruption-select" >
+			<option value="<%= selectingEruption.attributes.formatted_ed_stime %>"><%= selectingEruption.attributes.formatted_ed_stime %></option>
+			<% _.each(eruptions, function(eruption) {
+				var temp = new Date('0001-01-01');
+				
+				if(eruption.get('ed_stime')>temp.getTime()){
+				%>
+			  <option value="<%= eruption.get('ed_id') %>" ><%= eruption.getDate() %></option>
+			<% }}); %>
+		</select>
+	<% } %>
 <label>Select Eruption</label>
 </div>
 <% } %>

@@ -32,11 +32,6 @@ define(function(require) {
 
     },
     
-    setUpTimeRange: function(ed_stime_num,ed_etime_num){
-      //console.log(this.selectingTimeRange);
-      this.selectingTimeRange.attributes.endTime = ed_etime_num;
-      this.selectingTimeRange.attributes.startTime = ed_stime_num;
-    },
 
     fetchEruptions: function(vd_id) {
       this.eruptions.changeVolcano(vd_id);
@@ -51,22 +46,48 @@ define(function(require) {
       this.$el.find('select').change();
     },
     selectingTimeRangeChanged: function(timeRange){
-      this.availableEruptions = this.eruptions.getAvailableEruptions(timeRange);
+      // only show eruptions within that timeRange
+      console.log(timeRange);
+      this.availableEruptions = this.eruptions.getAvailableEruptions();
+      var eruptionsWithinTimeRange = this.eruptions.getAvailableEruptions(timeRange);
+      if(eruptionsWithinTimeRange.length == 0){
+        this.availableEruptions.notAvailable = 1;
+      }
+      else{
+        this.availableEruptions = eruptionsWithinTimeRange;
+        this.availableEruptions.notAvailable = 0;
+      }
       this.show();
     },
     eruptionsFetched : function(){
+      var ed_stime = this.ed_stime_num;
+      var ed_etime = this.ed_etime_num;
       this.availableEruptions = this.eruptions.getAvailableEruptions();
-      this.show();
+      if(ed_stime == undefined && ed_etime == undefined){
+        this.show();
+      }
+      else{
+        var ed_id;
+        for(var i = 0; i<this.availableEruptions.length; i++){
+          var current_model = this.availableEruptions[i];
+          if(current_model.attributes.ed_stime == ed_stime || current_model.attributes.ed_etime == ed_etime){
+            ed_id = current_model.id;
+            break;
+          }
+        }
+        this.selectingEruptions.reset();
+        this.selectingEruptions.add(this.eruptions.get(ed_id));
+        this.render();
+      }
     },
     render: function() {
       this.$el.html("");
 
       var selectingEruption = this.selectingEruptions.models[0];
       
-      
-      // console.log(this.availableEruptions);
       this.$el.html(this.template({
         eruptions: this.availableEruptions,
+        eruptionsNotAvailable: this.availableEruptions.notAvailable,
         selectingEruption: selectingEruption
       }));
       $('.eruption-select').material_select();
@@ -105,7 +126,6 @@ define(function(require) {
       // this.fetchEruptions();
       this.selectingEruptions.length = 0;
       this.selectingEruptions.add(new Eruption({'ed_id':-1})); // select ----
-      //console.log(this.selectingEruptions);
       this.render();
     },
 

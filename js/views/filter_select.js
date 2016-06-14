@@ -211,7 +211,6 @@ define(function(require) {
       }
 
       this.updateSelectingFilters();
-      console.log(this.selectingFilters);
       this.selectingFilters.trigger('update');
       
       

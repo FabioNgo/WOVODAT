@@ -106,7 +106,6 @@ define(function(require) {
       this.selectingTimeSeries.reset();
       this.selectingTimeSeriesChanged();
       //this.eruptionSelect.show();
-      console.log(vd_id);
     },
     timeSeriesChanged: function(e){
       this.timeSeriesSelect.timeSeriesChanged(this.timeSeries);
@@ -147,8 +146,6 @@ define(function(require) {
       this.overviewGraphContainer.selectingFiltersChanged(this.selectingFilters);
       this.overviewGraph.selectingFiltersChanged(this.selectingFilters);
       this.timeSeriesGraphContainer.selectingFiltersChanged(this.selectingFilters);
-      
-      console.log(this.eruptionSelect);
     },
     timeSeriesChanged: function(e){
       this.timeSeriesSelect.render(this.timeSeries);
