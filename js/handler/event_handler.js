@@ -27,6 +27,7 @@ define(function(require) {
         'selectingTimeRangeChanged',
         'selectingFiltersChanged',
         'eruptionTimeRangeChanged',
+        'eruptionsFetched',
         'timeSeriesSelectHidden',
         'filtersSelectHidden',
         'overviewGraphHidden',
@@ -55,6 +56,7 @@ define(function(require) {
       this.filtersSelect = options.filtersSelect;
       this.selectingFilters = options.selectingFilters;
       this.eruptionForecastsGraph = options.eruptionForecastsGraph;
+      this.eruptions = options.eruptions
       //event listeners
       // this.listenTo(this.volcanoSelect,'change',this.onSelectVolcanoChanged)
       this.listenTo(this.selectingVolcano, 'update', this.changeVolcano);
@@ -75,7 +77,7 @@ define(function(require) {
       this.listenTo(this.serieGraphTimeRange,'zoom',this.highlightOverViewGraphChanged);
       this.listenTo(this.selectingFilters,'update',this.selectingFiltersChanged);
       this.listenTo(this.eruptionTimeRange,'update',this.eruptionTimeRangeChanged);
-
+      this.listenTo(this.eruptions,'fetched',this.eruptionsFetched);
       /**
       * Events when some part is hidden
       */
@@ -121,6 +123,7 @@ define(function(require) {
     selectingTimeSeriesChanged: function(e){
       
       this.filtersSelect.selectingTimeSeriesChanged(this.selectingTimeSeries); // filter is rendered out.
+
     },
     selectingTimeSeriesChangedCheck: function(e){
       // this.filtersSelect.showLoading();
@@ -144,7 +147,7 @@ define(function(require) {
       this.overviewGraphContainer.selectingFiltersChanged(this.selectingFilters);
       this.overviewGraph.selectingFiltersChanged(this.selectingFilters);
       this.timeSeriesGraphContainer.selectingFiltersChanged(this.selectingFilters);
-      this.eruptionSelect.selectingFiltersChanged(this.selectingFilters);
+      
       console.log(this.eruptionSelect);
     },
     timeSeriesChanged: function(e){
@@ -167,11 +170,11 @@ define(function(require) {
     filtersSelectHidden: function(e){
       this.overviewGraph.hide();
       // this.eruptionSelect.hide();
-      this.eruptionSelect.show();
+      // this.eruptionSelect.show();
     },
     overviewGraphHidden: function(e){
       // this.eruptionSelect.hide();
-      this.eruptionSelect.show();
+      // this.eruptionSelect.show();
     },
     eruptionGraphHidden: function(e){
       this.timeSeriesGraphContainer.hide();
@@ -219,6 +222,9 @@ define(function(require) {
       })
       // console.log(this.selectingTimeRange);
       this.overviewGraph.selectingRegionChanged(this.selectingTimeRange);
+    },
+    eruptionsFetched : function(e){
+    	this.eruptionSelect.eruptionsFetched();
     },
     destroy: function() {
       

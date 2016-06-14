@@ -43,7 +43,7 @@ define(function(require) {
       this.eruptionForecasts.changeVolcano(vd_id);
       this.availableEruptions = this.eruptions.getAvailableEruptions(this.selectingTimeRange);
       //console.log(this.eruptions);
-      //this.show(); // newly changed
+      // this.show(); // newly changed
     },
 
     changeEruption: function(selectingEruption) {
@@ -54,7 +54,10 @@ define(function(require) {
       this.availableEruptions = this.eruptions.getAvailableEruptions(timeRange);
       this.show();
     },
-   
+    eruptionsFetched : function(){
+      this.availableEruptions = this.eruptions.getAvailableEruptions();
+      this.show();
+    },
     render: function() {
       this.$el.html("");
 

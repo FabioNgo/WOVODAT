@@ -170,7 +170,8 @@ define(function(require) {
             forecastsGraphTimeRange: forecastsGraphTimeRange,
             selectingTimeRange: selectingTimeRange,
             selectingFilters: selectingFilters,
-            eruptionForecastsGraph: eruptionForecastsGraph
+            eruptionForecastsGraph: eruptionForecastsGraph,
+            eruptions: eruptions
           });
           //console.log(volcanoes);
           // console.log(filterColorCollection);

@@ -14,7 +14,11 @@ define(function(require) {
 
     changeVolcano: function(vd_id, handler) {
       this.url = 'api/?data=eruption_list&vd_id=' + vd_id;
-      this.fetch().done(handler);
+      this.fetch({
+        success: function(e){
+          e.trigger("fetched");
+        }
+      });
     },
     getAvailableEruptions: function(timeRange){
       
