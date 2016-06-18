@@ -64,9 +64,9 @@ define(function(require) {
 
     
 
-    get: function(sr_id){
+    get: function(serie){
       for(var i =0;i<this.models.length;i++){
-        if(this.models[i].sr_id == sr_id){
+        if(this.models[i].sr_id == serie.sr_id){
           
           if(!this.models[i].loaded){
             this.models[i].fetch({

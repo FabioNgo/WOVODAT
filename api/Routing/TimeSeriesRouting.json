@@ -13,7 +13,7 @@
             "request": "time_serie",
             "method": "loadTimeSerie",
             "params": [
-                "sr_id"
+                "serie"
             ]
         }
     ]

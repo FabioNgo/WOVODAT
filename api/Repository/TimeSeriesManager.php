@@ -29,9 +29,9 @@ class TimeSeriesManager {
     
   }
 
-  private function saveSerie($series) {
-    file_put_contents('Serie/Series.json', json_encode($series), FILE_USE_INCLUDE_PATH);
-  }
+  // private function saveSerie($series) {
+  //   file_put_contents('Serie/Series.json', json_encode($series), FILE_USE_INCLUDE_PATH);
+  // }
 
   private function getSerieInfo($sr_id) {
     $series = json_decode(file_get_contents('Serie/Series.json', true), true);
@@ -49,16 +49,16 @@ class TimeSeriesManager {
       $series = $class->getTimeSeriesList($vd_id);
       $result = array_merge($result,$series);
     }
-    self::saveSerie($result);
+    // self::saveSerie($result);
 		return $result;
 	}	
 
 
-  public function getTimeSerie($sr_id) {
+  public function getTimeSerie($serie) {
 
-    $serie = $this->getSerieInfo($sr_id);
-    if (!$serie)
-      return null;
+    // $serie = $this->getSerieInfo($sr_id);
+    // if (!$serie)
+    //   return null;
     $serie['data'] = array();
     $data = array();
     // var_dump($this->timeSeriesManagers);

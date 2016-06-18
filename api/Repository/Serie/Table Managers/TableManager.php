@@ -127,11 +127,13 @@ abstract class TableManager implements TableManagerInterface {
 		$stationDataParams = $this->setStationDataParams($stations['component']);
 		$errorbar = $stationDataParams["errorbar"];
 		$query = $stationDataParams["query"];
+		
 		$db->query($query, $id1,$id2);
 
 		$res = $db->getList();
 		foreach ($res as $row) {
 			//add value attributes
+			
 			$temp = array("value" => floatval($row["value"]));
 			//add time value attributes (time or (etime, stime))
 			if(array_key_exists("time", $row)){
