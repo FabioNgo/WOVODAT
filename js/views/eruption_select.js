@@ -106,7 +106,7 @@ define(function(require) {
       //console.log(this.selectingEruptions);
       var ed_etime = this.selectingEruptions.models[0].attributes.ed_etime;
       var ed_stime = this.selectingEruptions.models[0].attributes.ed_stime;
-      Backbone.history.navigate("vnum="+this.selecting_vd_num+"/ed_stime="+ed_stime+"/ed_etime="+ed_etime);
+      Backbone.history.navigate("vnum="+this.selecting_vd_num+"&ed_stime="+ed_stime+"&ed_etime="+ed_etime);
       // this.selectingEruption.set('ed_id', ed_id);
       // this.selectingEruption.trigger('change');
       // this.observer.trigger('change', this.selectingEruption);

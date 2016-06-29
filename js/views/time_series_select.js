@@ -28,6 +28,7 @@ define(function(require) {
       this.timeSeries = options.timeSeries;
       this.categories = options.categories;
       this.selectingFilters = options.selectingFilters;
+      this.selectedTimeSeries = options.selectedTimeSeries;
       this.selectingTimeSeries.reachLimit = function(){
         return (this.length >= 5);
       }
@@ -74,6 +75,9 @@ define(function(require) {
       var html = temp(options);
       $('.time_series_select_container').append(html);
       $('.time-serie-select').material_select();
+      if(this.selectedTimeSeries != undefined){
+        this.showFilter();
+      }
       
     },
     //generate Categories for html template
@@ -128,15 +132,31 @@ define(function(require) {
       this.selectingTimeSeries.reset();
       
       var options = $('.time-serie-select-option');
-      
+      var temp =[];
+      for(var i = 0; i<this.selectedTimeSeries.length;i++){
+        temp.push(this.timeSeries.get(this.selectedTimeSeries[i]));
+      }
       for(var i = 0;i<options.length;i++){
           var option = options[i];
-          if(option.selected){
-            this.selectingTimeSeries.add(this.timeSeries.get(option.value));
+          //check the timeseries selected from url
+          var pos = undefined;
+          for(var j = 0; j<temp.length;j++){
+            if(temp[j]!=undefined){
+              if(temp[j].get('sr_id') == option.value){
+                option.selected = true;
+                pos = i;
+              }
+            }
           }
-
-        
+          if(option.selected){
+            if(pos!=undefined){
+              this.selectingTimeSeries.add(temp[pos]);
+            }else{
+              this.selectingTimeSeries.add(this.timeSeries.get({sr_id:option.value}));
+            }
+          }
       }
+      
       // set limitation of 
       var groupItems = $('.multiple-select-dropdown');
       for(var i=0;i<groupItems.length;i++){
@@ -173,6 +193,8 @@ define(function(require) {
         // $('.time-serie-select').material_select();
       }
       this.selectingTimeSeries.trigger("change");
+      $('.time-serie-select').material_select('destroy');
+      $('.time-serie-select').material_select();
 
     },
     

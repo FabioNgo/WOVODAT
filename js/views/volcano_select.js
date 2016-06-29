@@ -5,6 +5,8 @@ define(function(require) {
       _ = require('underscore'),
       template = require('text!templates/volcano_select.html'),
       loading = require('text!templates/loading.html'),
+      offline_dialog = require('text!templates/make_it_offline.html'),
+      word_distance = require('helper/word-distance'),
       Handlebars = require('handlebars'),
       materialize = require('material');
 
@@ -13,11 +15,13 @@ define(function(require) {
     className : 'volcano-select',
     template: _.template(template),
     loading: _.template(loading),
+    offline_dialog : _.template(offline_dialog),
     events: {
       'change select': 'onSelectChange',
       'input input' : 'onChange',
       'click input' : 'onChange',
-      'blur input' : 'onBlurSearchBox'
+      'blur input' : 'onBlurSearchBox',
+      'click a' : 'makeItOffline'
     },
     
     initialize: function(options) {
@@ -40,7 +44,7 @@ define(function(require) {
       var temp = Handlebars.compile(template);
       // this.$el.html(template);
       /** selecting volcano from url **/
-      var options ={};
+      var options ={no_volcano : true};
       if(this.selecting_vd_num != undefined ){
         for(var i=0;i<this.collection.models.length;i++){
           var model = this.collection.models[i];
@@ -48,6 +52,7 @@ define(function(require) {
             this.selectingVolcano.set('vd_id', model.id);
              // this.selectingVolcano.set('vd_id', model.id);
             this.selectingVolcano.trigger("update");
+            options.no_volcano = false;
             options.vd_name = model.get("vd_name");
             var a = $('.search');
             
@@ -60,8 +65,13 @@ define(function(require) {
       this.$el.html(html);
       $('.volcanoes_select').material_select();
       $('.search-sugesstion').dropdown();
+      // $('.modal-trigger').leanModal();
       
-      
+    },
+    makeItOffline: function(e){
+      if(e.currentTarget.id == 'offline-button'){
+        this.trigger('make-offline');
+      }
     },
     onBlurSearchBox: function(e){
       if(e.target.value != ''){
@@ -70,103 +80,31 @@ define(function(require) {
     },
     // input search handler
     onChange: function(e){
-          // var volcano = this.searchVolcanoes(e.target.value);
-          // var listVolcanoTemplate = _.template();
-          // $('.search').attr("placeholder",model.get("vd_name"));
-          var temp = Handlebars.compile("{{#list volcanoes}}<li><a href=\"#vnum={{vd_num}}\">{{vd_name}}</a></li><li class=\"divider\"></li>{{/list}}");
-          Handlebars.registerHelper('list', function(items, options) {
-            var ret = "";
-            for(var i=0, j=items.length; i<j; i++) {
-              ret = ret+options.fn(items[i]);
-            }
-            return ret;
-          });
-          var volcanoes = this.searchVolcanoes(e.target.value);
-          var options = {
-            volcanoes: this.generateVolcanoes(volcanoes)
-          }
-          $('#dropdown1').html(temp(options))
-          var searchSuggestion = $('.search-sugesstion');
-          //show/hide suggestion part
-          if(!searchSuggestion.hasClass('active')){
-            $('.search-sugesstion').click(); 
-            $('#dropdown1').val("");
+      // var volcano = this.searchVolcanoes(e.target.value);
+      // var listVolcanoTemplate = _.template();
+      // $('.search').attr("placeholder",model.get("vd_name"));
+      var temp = Handlebars.compile("{{#list volcanoes}}<li><a href=\"#vnum={{vd_num}}\">{{vd_name}}</a></li><li class=\"divider\"></li>{{/list}}");
+      Handlebars.registerHelper('list', function(items, options) {
+        var ret = "";
+        for(var i=0, j=items.length; i<j; i++) {
+          ret = ret+options.fn(items[i]);
+        }
+        return ret;
+      });
+      var volcanoes = this.searchVolcanoes(e.target.value);
+      var options = {
+        volcanoes: this.generateVolcanoes(volcanoes)
+      }
+      $('#dropdown1').html(temp(options));
+      var searchSuggestion = $('.search-sugesstion');
+      //show/hide suggestion part
+      if(!searchSuggestion.hasClass('active')){
+        $('.search-sugesstion').click(); 
+        $('#dropdown1').val("");
 
-          }
-          // var a = $('#dropdown1');
-          // var display = $('#dropdown1').css("display");
-          // if(display=="none"){
-          //   // $('#dropdown1').addClass('active');
-          //   $('#dropdown1').css("display","block");
-          // }
-          // if(e.target.value != ""){
-          //   if(!searchSuggestion.hasClass('active')){
-          //     $('.search-sugesstion').click();  
-          //   }
-          // }else{
-          //   if(searchSuggestion.hasClass('active')){
-          //     $('.search-sugesstion').click();  
-          //   }
-          // }
-          
-          // console.log($('.search-sugesstion'));
-    },
-    Levenshtein : function( str_m, str_n ) { 
-      var previous, current, matrix
-    // Constructor
-      matrix = this._matrix = []
-
-    // Sanity checks
-      if ( str_m == str_n )
-        return this.distance = 0
-      else if ( str_m == '' )
-        return this.distance = str_n.length
-      else if ( str_n == '' )
-        return this.distance = str_m.length
-      else {
-        // Danger Will Robinson
-        previous = [ 0 ]
-        _.forEach( str_m, function( v, i ) { i++, previous[ i ] = i } )
-
-        matrix[0] = previous
-        _.forEach( str_n, function( n_val, n_idx ) {
-          current = [ ++n_idx ]
-          _.forEach( str_m, function( m_val, m_idx ) {
-            m_idx++
-            if ( str_m.charAt( m_idx - 1 ) == str_n.charAt( n_idx - 1 ) )
-              current[ m_idx ] = previous[ m_idx - 1 ]
-            else
-              current[ m_idx ] = Math.min
-                ( previous[ m_idx ]     + 1   // Deletion
-                , current[  m_idx - 1 ] + 1   // Insertion
-                , previous[ m_idx - 1 ] + 1   // Subtraction
-                )
-          })
-          previous = current
-          matrix[ matrix.length ] = previous
-        })
-
-        return this.distance = current[ current.length - 1 ]
       }
     },
-    hammingDistance: function(str1,str2) {
-      var dist = 0;
-      // console.log(str1);
-      str1 = str1.toLowerCase();
-      str2 = str2.toLowerCase();
-
-       for(var i = 0; i < str1.length; i++) {
-
-          if(str2[i] && str2[i] !== str1[i]) {
-              dist += Math.abs(str1.charCodeAt(i) - str2.charCodeAt(i)) + Math.abs(str2.indexOf( str1[i] )) * 2;
-          } 
-          else if(!str2[i]) {
-              //  If there's no letter in the comparing string
-              dist += dist;
-          }
-      }
-      return dist;
-    },
+    
     searchVolcanoes: function (input){
       if(input == ""){
         return this.collection.models;
@@ -176,10 +114,10 @@ define(function(require) {
       for(var i = 0 ;i < this.collection.models.length ; i++){
         var volcano = this.collection.models[i];
         // console.log(volcano)
-        if(this.hammingDistance (input,volcano.get("vd_name"))<3){
+        if(word_distance.hammingDistance (input,volcano.get("vd_name"))<3){
           output.push(volcano);
         }else{
-          if(this.Levenshtein (input,volcano.get("vd_name"))<3){
+          if(word_distance.Levenshtein (input,volcano.get("vd_name"))<3){
             output.push(volcano);
           }
         }

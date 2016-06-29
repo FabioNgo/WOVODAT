@@ -66,21 +66,45 @@ define(function(require) {
 
     get: function(serie){
       for(var i =0;i<this.models.length;i++){
-        if(this.models[i].sr_id == serie.sr_id){
-          
-          if(!this.models[i].loaded){
-            this.models[i].fetch({
-              success: function(model, response) {
+        if(serie.sr_id != undefined){
+          if(this.models[i].get('sr_id') == serie.sr_id){
+            
+            if(!this.models[i].loaded){
+              this.models[i].fetch({
+                success: function(model, response) {
 
-                
-                model.loaded = true;
-                
-              }
-            })
-          }  
-          return this.models[i];           
- 
-          
+                  
+                  model.loaded = true;
+                  
+                }
+              })
+            }  
+            return this.models[i];           
+   
+            
+          }
+        }else{
+          if(this.models[i].get('category') == serie.category
+            && this.models[i].get('component') == serie.component
+            && this.models[i].get('data_type') == serie.data_type
+            && this.models[i].get('station_id2')== serie.sta_id1
+            && this.models[i].get('station_id2') == serie.sta_id2
+            ){
+            
+            if(!this.models[i].loaded){
+              this.models[i].fetch({
+                success: function(model, response) {
+
+                  
+                  model.loaded = true;
+                  
+                }
+              })
+            }  
+            return this.models[i];           
+   
+            
+          }
         }
       }
     },

@@ -28,15 +28,17 @@ define(function(require) {
       TimeSeriesContainer = require('views/time_series_container'),
       Tooltip = require('views/series_tooltip'),
       TimeSeriesGraphContainer = require('views/time_serie_graph_container'),
-      EventHandler = require('handler/event_handler');
+      EventHandler = require('handler/event_handler'),
+      Offline = require('views/offline');
 
   return Backbone.View.extend({
     el: '#main',
     
-    initialize: function(selecting_vd_num,ed_stime_num,ed_etime_num) {
+    initialize: function(selecting_vd_num,ed_stime_num,ed_etime_num,selectedTimeSeries) {
       this.selecting_vd_num = selecting_vd_num;
       this.ed_stime_num = ed_stime_num;
       this.ed_etime_num = ed_etime_num;
+      this.selectedTimeSeries = selectedTimeSeries;
       this.$el.html("");
       this.render();
     },
@@ -73,6 +75,7 @@ define(function(require) {
             categories: categories,
             volcano: selectingVolcano,
             selectingTimeSeries: selectingTimeSeries,
+            selectedTimeSeries: this.selectedTimeSeries,
             timeSeries: timeSeries,
             selectingFilters: selectingFilters
           }),
@@ -148,7 +151,9 @@ define(function(require) {
           //   eruptions: eruptions,
           //   selectingEruptions: selectingEruptions
           // }),
-
+          offline = new Offline({
+            selectingVolcano : selectingVolcano
+          }),
 
 
           eventHandler = new EventHandler({
@@ -171,7 +176,8 @@ define(function(require) {
             selectingTimeRange: selectingTimeRange,
             selectingFilters: selectingFilters,
             eruptionForecastsGraph: eruptionForecastsGraph,
-            eruptions: eruptions
+            eruptions: eruptions,
+            offline: offline,
           });
           //console.log(volcanoes);
           // console.log(filterColorCollection);
@@ -184,6 +190,7 @@ define(function(require) {
       //   }
       // });
       volcanoSelect.$el.appendTo(this.$el);
+      offline.$el.appendTo(this.$el);
       timeSeriesSelect.$el.appendTo(this.$el);
       filtersSelect.$el.appendTo(this.$el);
       overviewGraphContainer.$el.appendTo(this.$el);
