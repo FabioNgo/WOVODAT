@@ -22,7 +22,7 @@ define(function(require) {
     },
     loadPage: function(number){
       var selecting_vd_num = parseInt(number);
-      var a = new Page(selecting_vd_num,undefined,undefined,undefined);
+      var a = new Page(selecting_vd_num,undefined,undefined,[]);
     },
     loadPage1: function(e){
       var b =this;
@@ -30,6 +30,7 @@ define(function(require) {
     },
     loadPage3: function(vnum,timeSeriesStrings){
       timeSeriesStrings = timeSeriesStrings.replace("%2F","/");
+      timeSeriesStrings = timeSeriesStrings.replace("%20"," ");
       var filterDivider = '|';
       var infoDivider = '.';
       var timeSeriesStrings = timeSeriesStrings.split(filterDivider);
