@@ -40,15 +40,20 @@ define(function(require) {
       console.log(time_series_list.length);
       for(var i=0;i<time_series_list.length;i++){
         var time_serie = time_series_list[i];
-        var url = 'api/?data=time_serie';
+        var url = 'api';
+        var data = {
+          data: 'time_serie',
+          serie: time_serie,
+          offline: true
+        }
         for (var property in time_serie) {
             if (time_serie.hasOwnProperty(property)) {
                 // do stuff
-                url = url + "&serie[" + property + "]=" + time_serie[property];
+                // url = url + "&serie[" + property + "]=" + time_serie[property];
             }
         }
         (function(i) { // protects i in an immediately called function
-          $.getJSON(url,function(json){
+          $.getJSON(url,data,function(json){
             var percentage = Math.round((i+1)/time_series_list.length*100);
             // console.log(percentage);
             $('#progressbar').css('width',(percentage + '%'));

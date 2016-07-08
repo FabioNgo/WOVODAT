@@ -14,9 +14,12 @@
 		}	
 
 
-		public static function loadTimeSerie($serie) {
+		public static function loadTimeSerie($serie,$offline) {
 			$instance = TimeSeriesManager::getInstance();
 			$result = $instance->getTimeSerie($serie);
+			if($offline){
+				file_put_contents('../offline-data/'.$serie['sr_id'].'.json', json_encode($result));
+			}
 			return $result;
 		}
 

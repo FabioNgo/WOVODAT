@@ -46,6 +46,13 @@ define(function(require) {
       /**
       * Variables declaration
       **/
+      //check offline mode
+      var offline = false;
+      if($('#offline').length > 0){
+        offline = true;
+      }else{
+        offline = false;
+      }
       var 
           observer = new (Backbone.Model.extend())(),
           categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Fields","Meteology"],
@@ -56,7 +63,9 @@ define(function(require) {
           eruptions = new Eruptions(),
           eruptionForecasts = new EruptionForecasts,
           selectingVolcano = new Volcano(),
-          timeSeries = new TimeSeries(),
+          timeSeries = new TimeSeries({
+            offline: offline
+          }),
           serieGraphTimeRange = new TimeRange(),
           forecastsGraphTimeRange = new TimeRange(),
           selectingTimeRange = new TimeRange(),
