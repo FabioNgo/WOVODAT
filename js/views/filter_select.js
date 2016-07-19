@@ -166,7 +166,7 @@ define(function(require) {
             }
             serie.hasfilter = true;
             var object = {
-              value: groupFilters.timeSerie.sr_id+ "."+ filter,
+              value: groupFilters.timeSerie.get('sr_id')+ "."+ filter,
               showingName: filter,
             }
             object.isSelected  = this.isSelected(groupFilters.timeSerie,filter);
@@ -205,7 +205,7 @@ define(function(require) {
         if(checkbox.checked){
           var temp = checkbox.id.split(".");
           this.selectingFilters.empty = false;
-          this.selectingFilters.push(this.selectingTimeSeries.get(temp[0]),temp[1]);
+          this.selectingFilters.push(this.selectingTimeSeries.get({sr_id: temp[0]}),temp[1]);
         }
       
       }
