@@ -144,7 +144,7 @@ define(function(require) {
             if(temp[j]!=undefined){
               if(temp[j].get('sr_id') == option.value){
                 option.selected = true;
-                pos = i;
+                pos = j;
               }
             }
           }

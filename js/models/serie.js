@@ -9,13 +9,19 @@ define(['jquery', 'backbone'], function($, Backbone) {
         // Your server goes below
         //options.url = 'http://localhost:8000' + options.url;
       // this.sr
-      this.url = 'api/?data=time_serie';
-      for (var property in options) {
+      if(!options.offline){
+        this.url = 'api/?offline=false&data=time_serie'; 
+        for (var property in options) {
           if (options.hasOwnProperty(property)) {
               // do stuff
               this.url = this.url + "&serie[" + property + "]=" + options[property];
           }
+        }
+      }else{
+        this.url = 'offline-data/'+options.sr_id+'.json';
       }
+      
+      
     	this.loaded = false;
       
     },

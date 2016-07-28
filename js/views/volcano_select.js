@@ -30,7 +30,10 @@ define(function(require) {
       this.observer = options.observer;
       this.selectingVolcano = options.selectingVolcano;
       this.collection = options.collection;
-      this.collection.fetch();
+      
+      this.collection.fetch();  
+      
+      
       //console.log(this.collection);
       this.listenTo(this.collection, 'sync', this.render);
       this.selecting_vd_num = options.selecting_vd_num;

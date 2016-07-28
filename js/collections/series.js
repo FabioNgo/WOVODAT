@@ -8,13 +8,18 @@ define(function(require) {
     model: Serie,
     
 
-    initialize: function() {
+    initialize: function(options) {
       // this.isVocalnoChanged = false;
+      this.offline = options.offline;
     },
     
     changeVolcano: function(vd_id, handler) {
-
-      this.url = 'api/?data=time_series_list&vd_id=' + vd_id;
+      if(this.offline){
+        this.url = 'offline-data/serie-list.json';
+      }else{
+        this.url = 'api/?data=time_series_list&vd_id=' + vd_id;
+      }
+      
       var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
       for(var i = 0; i<categories.length;i++){
         delete this[categories[i]];

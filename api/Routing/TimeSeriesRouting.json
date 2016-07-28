@@ -13,7 +13,8 @@
             "request": "time_serie",
             "method": "loadTimeSerie",
             "params": [
-                "serie"
+                "serie",
+                "offline"
             ]
         }
     ]
