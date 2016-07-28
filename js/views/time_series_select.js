@@ -133,9 +133,12 @@ define(function(require) {
       
       var options = $('.time-serie-select-option');
       var temp =[];
-      for(var i = 0; i<this.selectedTimeSeries.length;i++){
-        temp.push(this.timeSeries.get(this.selectedTimeSeries[i]));
+      if(this.selectedTimeSeries!=undefined){
+        for(var i = 0; i<this.selectedTimeSeries.length;i++){
+          temp.push(this.timeSeries.get(this.selectedTimeSeries[i]));
+        }
       }
+      
       for(var i = 0;i<options.length;i++){
           var option = options[i];
           //check the timeseries selected from url
