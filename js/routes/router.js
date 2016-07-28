@@ -12,23 +12,28 @@ define(function(require) {
     },
 
     routes: {
-     
-
-      "vnum=*:vnum&ed_stime=*:edstimeNum&ed_etime=*:edetimeNum" : 'loadPage2',
-      "vnum=*:vnum&timeSeries=*:timeSeriesStrings" : 'loadPage3',
-       "vnum=*:number" : 'loadPage',
-      '*anything': 'loadPage1',
+      '*anything': 'loadPage',
       
     },
-    loadPage: function(number){
-      var selecting_vd_num = parseInt(number);
-      var a = new Page(selecting_vd_num,undefined,undefined,[]);
+    loadPage: function(queryString){
+      var paramsDivider = '&';
+      var keyValDivider = '=';
+      var options ={};
+      var params=queryString.split(paramsDivider);
+      var options = {};
+      for(var i = 0 ;i< params.length;i++){
+        var keyVal = params[i].split(keyValDivider);
+        
+        options[keyVal[0]] = keyVal[1];  
+        
+        if(keyVal[0] == "timeSeries"){
+          options[keyVal[0]] = this.timeSeriesAnalyze(keyVal[1]);
+        }
+        
+      }
+      new Page(options);
     },
-    loadPage1: function(e){
-      var b =this;
-      var a = new Page();
-    },
-    loadPage3: function(vnum,timeSeriesStrings){
+    timeSeriesAnalyze: function(timeSeriesStrings){
       timeSeriesStrings = timeSeriesStrings.replace("%2F","/");
       timeSeriesStrings = timeSeriesStrings.replace("%20"," ");
       var filterDivider = '|';
@@ -49,13 +54,7 @@ define(function(require) {
         }
         timeSeries.push(value);
       }
-      var a = new Page(vnum,undefined,undefined,timeSeries);
-    },
-    loadPage2: function(vnum,edstimeNum,edetimeNum){
-      var selecting_vd_num = parseInt(vnum);
-      var ed_stime_num = parseFloat(edstimeNum);
-      var ed_etime_num = parseFloat(edetimeNum);
-      var a = new Page(selecting_vd_num,ed_stime_num,ed_etime_num,undefined);
+      return timeSeries;
     }
   });
 });

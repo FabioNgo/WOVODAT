@@ -34,11 +34,11 @@ define(function(require) {
   return Backbone.View.extend({
     el: '#main',
     
-    initialize: function(selecting_vd_num,ed_stime_num,ed_etime_num,selectedTimeSeries) {
-      this.selecting_vd_num = selecting_vd_num;
-      this.ed_stime_num = ed_stime_num;
-      this.ed_etime_num = ed_etime_num;
-      this.selectedTimeSeries = selectedTimeSeries;
+    initialize: function(options) {
+      this.selecting_vd_num = options.vnum;
+      this.ed_stime_num = options.ed_stime;
+      this.ed_etime_num = options.ed_etime;
+      this.selectedTimeSeries = options.timeSeries;
       this.$el.html("");
       this.render();
     },
