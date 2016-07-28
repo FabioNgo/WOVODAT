@@ -31,13 +31,18 @@ define(function(require) {
       this.selectingVolcano = selectingVolcano;
       this.render();
       var self = this;
-      $.getJSON("api/?data=time_series_list&vd_id=583",function(json){
+      $.getJSON("api/?data=volcano_list&offline=true");
+      $.getJSON("api/?data=filter_color_list&offline=true");
+      $.getJSON("api/?offline=true&data=eruption_list&vd_id=583");
+      $.getJSON("api/?data=eruption_forecast_list&offline=true&vd_id=583")
+      $.getJSON("api/?data=time_series_list&offline=true&vd_id=583",function(json){
         // console.log(json);
         self.getData(json);
       });
+
     },
     getData : function(time_series_list){
-      console.log(time_series_list.length);
+      
       for(var i=0;i<time_series_list.length;i++){
         var time_serie = time_series_list[i];
         var url = 'api';

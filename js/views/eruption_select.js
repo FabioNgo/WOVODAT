@@ -113,7 +113,7 @@ define(function(require) {
       for(var i = 0 ;i< params.length;i++){
         var keyVal = params[i].split('=');
         
-        if(keyVal[0] != "ed_stime" || keyVal[0] != 'ed_etime'){
+        if(!(keyVal[0] == "ed_stime" || keyVal[0] == 'ed_etime')){
           options.push(params[i]);
         }
         

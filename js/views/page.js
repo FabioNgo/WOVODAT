@@ -63,9 +63,15 @@ define(function(require) {
           volcanoes = new Volcanoes({
             offline: offline
           }),
-          selectingEruptions = new Eruptions(),
-          eruptions = new Eruptions(),
-          eruptionForecasts = new EruptionForecasts,
+          selectingEruptions = new Eruptions({
+            offline: offline
+          }),
+          eruptions = new Eruptions({
+            offline: offline
+          }),
+          eruptionForecasts = new EruptionForecasts({
+            offline: offline
+          }),
           selectingVolcano = new Volcano(),
           timeSeries = new TimeSeries({
             offline: offline
@@ -88,6 +94,7 @@ define(function(require) {
           timeSeriesSelect = new TimeSeriesSelect({
             categories: categories,
             volcano: selectingVolcano,
+            offline:offline,
             selectingTimeSeries: selectingTimeSeries,
             selectedTimeSeries: this.selectedTimeSeries,
             timeSeries: timeSeries,
