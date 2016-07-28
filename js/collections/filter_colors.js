@@ -7,7 +7,10 @@ define(function(require) {
   return Backbone.Collection.extend({
     model: filterColor,
     url: 'api/?data=filter_color_list',
-    initialize: function(){
+    initialize: function(options){
+      if(options.offline){
+        this.url = 'offline-data/filter-color.json';
+      }
     }
     });
 });

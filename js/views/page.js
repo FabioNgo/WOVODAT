@@ -56,9 +56,13 @@ define(function(require) {
       var 
           observer = new (Backbone.Model.extend())(),
           categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Fields","Meteology"],
-          selectingTimeSeries = new TimeSeries(),
+          selectingTimeSeries = new TimeSeries({
+            offline: offline
+          }),
           selectingFilters = new Filters(),
-          volcanoes = new Volcanoes(),
+          volcanoes = new Volcanoes({
+            offline: offline
+          }),
           selectingEruptions = new Eruptions(),
           eruptions = new Eruptions(),
           eruptionForecasts = new EruptionForecasts,
@@ -76,6 +80,7 @@ define(function(require) {
           volcanoSelect = new VolcanoSelect({
             collection: volcanoes,
             categories: categories,
+            offline: offline,
             selectingVolcano: selectingVolcano,
             selecting_vd_num: this.selecting_vd_num
           }),
@@ -99,6 +104,7 @@ define(function(require) {
             serieGraphTimeRange: serieGraphTimeRange,
             selectingTimeRange: selectingTimeRange,
             overviewGraphTimeRange: overviewGraphTimeRange,
+            offline: offline
             // collection: filterColorCollection
           }),
 
