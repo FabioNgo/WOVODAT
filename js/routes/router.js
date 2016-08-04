@@ -16,21 +16,25 @@ define(function(require) {
       
     },
     loadPage: function(queryString){
-      var paramsDivider = '&';
-      var keyValDivider = '=';
-      var options ={};
-      var params=queryString.split(paramsDivider);
       var options = {};
-      for(var i = 0 ;i< params.length;i++){
-        var keyVal = params[i].split(keyValDivider);
+      if(queryString!=null){
+        var paramsDivider = '&';
+        var keyValDivider = '=';
+        var options ={};
+        var params=queryString.split(paramsDivider);
         
-        options[keyVal[0]] = keyVal[1];  
-        
-        if(keyVal[0] == "timeSeries"){
-          options[keyVal[0]] = this.timeSeriesAnalyze(keyVal[1]);
+        for(var i = 0 ;i< params.length;i++){
+          var keyVal = params[i].split(keyValDivider);
+          
+          options[keyVal[0]] = keyVal[1];  
+          
+          if(keyVal[0] == "timeSeries"){
+            options[keyVal[0]] = this.timeSeriesAnalyze(keyVal[1]);
+          }
+          
         }
-        
       }
+      
       new Page(options);
     },
     timeSeriesAnalyze: function(timeSeriesStrings){

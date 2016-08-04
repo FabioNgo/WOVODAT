@@ -7,7 +7,8 @@
             "method": "loadEruptionList",
             "params": 
                 [
-                    "vd_id"
+                    "vd_id",
+                    "offline"
                 ]
                 
         },
@@ -16,7 +17,8 @@
             "method": "loadEruptionForecastList",
             "params":
                 [
-                    "vd_id"
+                    "vd_id",
+                    "offline"
                 ]
         }
     ]

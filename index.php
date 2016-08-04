@@ -25,11 +25,7 @@
     <link href="/css/tooltip.css" rel="stylesheet">
   </head>
   <body>
-    <?php
-      if(file_exists('isOffline')){
-        echo('<div id="offline" class="display:none"><div>');
-      }
-    ?>
+    
     <div>
     <div id="" class="blue lighten-4 main" >
       

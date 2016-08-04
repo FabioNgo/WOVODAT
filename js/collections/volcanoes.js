@@ -6,10 +6,10 @@ define(function(require) {
 
   return Backbone.Collection.extend({
     model: Volcano,
-    url: 'api/?data=volcano_list',
+    url: 'api/?data=volcano_list&offline=false',
     initialize: function(options) {
       if(options.offline){
-      	this.url = 'offline-data/volcano-list.json'
+      	this.url = 'offline-data/volcano_list.json'
       }
     },
     
