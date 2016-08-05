@@ -25,6 +25,7 @@ define(function(require) {
         delete this[categories[i]];
       }
       this.length = 0;
+      var self = this;
       this.fetch({
         success: function(collection,response){
           //group Data in categroy
@@ -53,6 +54,9 @@ define(function(require) {
               }
             }
             model.attributes.showingName = station1 + station2 + "(" + item.component + ")";
+            if(self.offline){
+              model.url ='offline-data/'+model.attributes.sr_id+'.json';
+            }
             if(currentCategory == "" | currentCategory != item.category){
               collection[item.category] = [];
               currentCategory = item.category;

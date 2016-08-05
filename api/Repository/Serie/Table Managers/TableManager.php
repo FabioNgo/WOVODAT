@@ -64,7 +64,7 @@ abstract class TableManager implements TableManagerInterface {
 		$temp = explode("_", $id);
 		return $temp[0];
 	}
-	public function getTimeSeriesList($vd_id,$stations){
+	public function getTimeSeriesList($vd_id){
   		$result = array();
 		global $db;
 		$query_format = 'select a.%s as sta_id1,  a.%s as sta_id2 ';

@@ -9,20 +9,17 @@ abstract class MonitoryTypeManager implements MonitoryTypeManagerInterface {
 
 		$this->tableManagers = $this->setTableManagers();
 		$this->type = $this->setMonitoryType();
-		$this->timeSeriesListQuery = "select vd_id,sta_code as ds_code from jjcn_sta as a where a.vd_id = %s AND a.type=$this->type ";
 		$this->infor = json_decode( file_get_contents($this->type."/".$this->type.".json", true) , true);
 	}
 	abstract protected function setMonitoryType();
 	abstract protected function setTableManagers();
 	public function getTimeSeriesList($vd_id){
 		$result = array();
-		global $db;
-		$db->query($this->timeSeriesListQuery,$vd_id);
-		$stations = $db->getList();
+
 		// var_dump($this->tableManagers);
 		foreach ($this->tableManagers as $col => $tableManager) {
 			// var_dump($tableManager);	
-			$result = array_merge($result,$tableManager->getTimeSeriesList($vd_id,$stations));
+			$result = array_merge($result,$tableManager->getTimeSeriesList($vd_id));
 			// var_dump($result);
 		}
 		// var_dump($result);

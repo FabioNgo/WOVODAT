@@ -29,6 +29,7 @@ define(function(require) {
       Tooltip = require('views/series_tooltip'),
       TimeSeriesGraphContainer = require('views/time_serie_graph_container'),
       EventHandler = require('handler/event_handler'),
+      FilterColorCollection = require('collections/filter_colors'),
       Offline = require('views/offline');
 
   return Backbone.View.extend({
@@ -57,6 +58,9 @@ define(function(require) {
           observer = new (Backbone.Model.extend())(),
           categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Fields","Meteology"],
           selectingTimeSeries = new TimeSeries({
+            offline: offline
+          }),
+          filterColorCollection = new FilterColorCollection({
             offline: offline
           }),
           selectingFilters = new Filters(),
@@ -111,8 +115,8 @@ define(function(require) {
             serieGraphTimeRange: serieGraphTimeRange,
             selectingTimeRange: selectingTimeRange,
             overviewGraphTimeRange: overviewGraphTimeRange,
-            offline: offline
-            // collection: filterColorCollection
+            offline: offline,
+            filterColorCollection: filterColorCollection
           }),
 
           overviewGraphContainer = new OverviewGraphContainer({
@@ -174,7 +178,12 @@ define(function(require) {
           //   selectingEruptions: selectingEruptions
           // }),
           offline = new Offline({
-            selectingVolcano : selectingVolcano
+            selectingVolcano : selectingVolcano,
+            volcanoes: volcanoes,
+            eruptions: eruptions,
+            timeSeries: timeSeries,
+            eruptionForecasts: eruptionForecasts,
+            filterColorCollection: filterColorCollection
           }),
 
 

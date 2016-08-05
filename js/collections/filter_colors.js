@@ -10,6 +10,8 @@ define(function(require) {
     initialize: function(options){
       if(options.offline){
         this.url = 'offline-data/filter_color_list.json';
+      }else{
+        this.fetch();
       }
     }
     });
