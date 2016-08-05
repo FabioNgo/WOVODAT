@@ -53,11 +53,21 @@ define(function(require) {
       xhr.zip = options.zip;
       xhr.success = options.success;
       xhr.responseType = options.dataType;
+      // xhr.pos = options.pos;
+      xhr.target = options.target;
       xhr.onreadystatechange = function(){
         if (this.readyState == 4 && this.status == 200){
           //this.response is what you're looking for
           var data = this.response;
           this.success(data);
+          var length = this.target.gettingFiles.length;
+          this.target.pos++;
+          // console.log(this.target.pos);
+
+          var percentage = Math.round((this.target.pos)*100/length);
+              // // console.log(percentage);
+          $('#progressbar').css('width',(percentage + '%'));
+          $('#progress-detail').html(percentage + '%');
           deferredObject.resolve("success");
         }
       }
@@ -69,22 +79,26 @@ define(function(require) {
     makeZipFile: function (){
       // console.log(options);
       var zip = new JSZip();
+      zip.file(this.selectingVolcano.get('vd_name')+'.bat','start miniweb.exe \nstart chrome http://localhost:8000/offline.html#vnum='+this.selectingVolcano.get('vd_num'));
       zip.file('htdocs/offline-data/volcano_list.json',JSON.stringify(this.volcano_list));
       zip.file('htdocs/offline-data/eruption_list.json',JSON.stringify(this.eruption_list));
       zip.file('htdocs/offline-data/eruption_forecast.json',JSON.stringify(this.eruption_forecast_list));
       zip.file('htdocs/offline-data/time_series_list.json',JSON.stringify(this.time_series_list));
       zip.file('htdocs/offline-data/filter_color_list.json',JSON.stringify(this.filter_color_list));
       var self = this;
-      var gettingFiles = [];
+      this.gettingFiles = [];
+      this.pos = 0;
       // $.when(
       for(var i = 0 ; i<this.listFile.length;i++){
         
         var url = this.listFile[i];
-        gettingFiles.push(
+        this.gettingFiles.push(
           this.getFile({
             url: url,
             zip: zip,
             dataType: 'blob',
+            // pos: pos,
+            target: this,
             success: function(data){
               if (this.url.indexOf(".exe") !== -1){
                 this.zip.file(this.url,data);
@@ -96,17 +110,20 @@ define(function(require) {
           })
           
         );
+        // pos++;
       }
       for(var i=0;i<this.time_series_list.length;i++){
         var time_serie = this.time_series_list[i];
         var url = time_serie.url;
         // console.log(data);
         // (function(i) { // protects i in an immediately called function
-        gettingFiles.push(
+        this.gettingFiles.push(
           this.getFile({
             url:url,
             zip:zip,
             dataType: 'json',
+            // pos: pos,
+            target: this,
             success: function(data){
               zip.file("htdocs/offline-data/"+data.sr_id+".json",JSON.stringify(data));
             }
@@ -119,9 +136,10 @@ define(function(require) {
             
           })
         );
+        // pos++;
       }
 
-      $.when.apply(this,gettingFiles).then(function(){
+      $.when.apply(this,this.gettingFiles).then(function(){
         zip.generateAsync({type:"blob"}).then(function (blob) {
           saveAs(blob, "eruption.zip");
         });

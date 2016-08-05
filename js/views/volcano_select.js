@@ -17,7 +17,7 @@ define(function(require) {
     loading: _.template(loading),
     offline_dialog : _.template(offline_dialog),
     events: {
-      'change select': 'onSelectChange',
+      // 'change select': 'onSelectChange',
       'input input' : 'onChange',
       'click input' : 'onChange',
       'blur input' : 'onBlurSearchBox',
@@ -30,7 +30,7 @@ define(function(require) {
       this.observer = options.observer;
       this.selectingVolcano = options.selectingVolcano;
       this.collection = options.collection;
-      
+      this.offline = options.offline;
       this.collection.fetch();  
       
       
@@ -47,12 +47,12 @@ define(function(require) {
       var temp = Handlebars.compile(template);
       // this.$el.html(template);
       /** selecting volcano from url **/
-      var options ={no_volcano : true};
+      var options ={no_volcano : true, offline: this.offline};
       if(this.selecting_vd_num != undefined ){
         for(var i=0;i<this.collection.models.length;i++){
           var model = this.collection.models[i];
           if(this.selecting_vd_num == model.get("vd_num")){
-            this.selectingVolcano.set('vd_id', model.id);
+            this.selectingVolcano.attributes = model.attributes;
              // this.selectingVolcano.set('vd_id', model.id);
             this.selectingVolcano.trigger("update");
             options.no_volcano = false;
@@ -148,21 +148,21 @@ define(function(require) {
       
     },
     
-    onSelectChange: function() {
-      var vd_id = this.$el.find('select').val();
-      for(var i=0;i<this.collection.models.length;i++){
-        var model = this.collection.models[i];
-        if(vd_id == model.id){
-          this.selectingVolcano.set('vd_id',model.id);
-          this.selectingVolcano.trigger("update");
-          var state = {
-            id:vd_id,
-            a: model
-          }
-          Backbone.history.navigate("vnum="+model.get('vd_num'))
+    // onSelectChange: function() {
+    //   var vd_id = this.$el.find('select').val();
+    //   for(var i=0;i<this.collection.models.length;i++){
+    //     var model = this.collection.models[i];
+    //     if(vd_id == model.id){
+    //       this.selectingVolcano.set('vd_id',model.id);
+    //       this.selectingVolcano.trigger("update");
+    //       var state = {
+    //         id:vd_id,
+    //         a: model
+    //       }
+    //       Backbone.history.navigate("vnum="+model.get('vd_num'))
 
-        }
-      }
-    }
+    //     }
+    //   }
+    // }
   });
 });
