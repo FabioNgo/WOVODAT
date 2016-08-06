@@ -47,7 +47,6 @@ define(function(require) {
     },
     selectingTimeRangeChanged: function(timeRange){
       // only show eruptions within that timeRange
-      console.log(timeRange);
       this.availableEruptions = this.eruptions.getAvailableEruptions();
       var eruptionsWithinTimeRange = this.eruptions.getAvailableEruptions(timeRange);
       if(eruptionsWithinTimeRange.length == 0){

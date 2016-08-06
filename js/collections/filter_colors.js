@@ -6,7 +6,7 @@ define(function(require) {
   //1
   return Backbone.Collection.extend({
     model: filterColor,
-    url: 'api/?data=filter_color_list&offline=false',
+    url: 'api/?data=filter_color_list',
     initialize: function(options){
       if(options.offline){
         this.url = 'offline-data/filter_color_list.json';

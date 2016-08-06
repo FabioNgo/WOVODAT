@@ -5,8 +5,7 @@
             "request": "time_series_list",
             "method": "loadDataList",
             "params": [
-                "vd_id",
-                "offline"
+                "vd_id"
             ]
                 
         },
@@ -14,8 +13,7 @@
             "request": "time_serie",
             "method": "loadTimeSerie",
             "params": [
-                "serie",
-                "offline"
+                "serie"
             ]
         }
     ]

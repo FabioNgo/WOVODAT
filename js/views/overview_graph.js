@@ -20,7 +20,6 @@ define(function(require) {
       this.filterColorCollection = new FilterColorCollection({
         offline: options.offline
       });
-      this.filterColorCollection.fetch();
       this.categories = options.categories;
       //console.log(this.filterColorCollection);
 

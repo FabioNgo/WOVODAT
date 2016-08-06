@@ -6,7 +6,6 @@
             "request": "volcano_list",
             "method": "loadVolcanoList",
             "params": [
-            	"offline"
             ]
         }
     ]

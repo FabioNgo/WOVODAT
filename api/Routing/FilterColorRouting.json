@@ -5,7 +5,7 @@
         {
             "request": "filter_color_list",
             "method": "loadFilterColor",
-            "params": ["offline"]
+            "params": []
         }
     ]
 }

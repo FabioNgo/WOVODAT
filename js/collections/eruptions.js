@@ -15,7 +15,7 @@ define(function(require) {
       if(this.offline){
         this.url = 'offline-data/eruption_list.json';
       }else{
-        this.url = 'api/?offline=false&data=eruption_list&vd_id=' + vd_id;
+        this.url = 'api/?data=eruption_list&vd_id=' + vd_id;
       }
       
       this.fetch({
