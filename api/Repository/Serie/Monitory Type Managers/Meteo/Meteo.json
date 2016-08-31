@@ -4,44 +4,44 @@
 		"data_type" : "Meteo Data",
 		"params" : [ 
 			{
-				"name" : "Temp",
+				"name" : "Air Temperature",
 				"cols" : "med_temp"	
 			},
 			{
-				"name" : "Stemp",
+				"name" : "Soil Temperature",
 				"cols" : "med_stemp"	
 			},
 			{
-				"name" : "Bp",
+				"name" : "Barometric Pressure",
 				"cols" : "med_bp"
 			},
 			{
-				"name" : "Prec",
+				"name" : "Precipitation",
 				"cols" : "med_prec",
 				"filter" : "med_tprec"
 			},
 			{
-				"name" : "Hd",
+				"name" : "Humidity",
 				"cols" : "med_hd"
 			},
 			{
-				"name" : "Wind",
+				"name" : "Wind Speed",
 				"cols" : "med_wind"
 			},
 			{
-				"name" : "Wsmin",
+				"name" : "Minimum Wind Speed",
 				"cols" : "med_wsmin"
 			},
 			{
-				"name" : "Wsmax",
+				"name" : "Maximum Wind Speed",
 				"cols" : "med_wsmax"
 			},
 			{
-				"name" : "Wdir",
+				"name" : "Wind Direction",
 				"cols" : "med_wdir"
 			},
 			{
-				"name" : "Clc",
+				"name" : "Cloud Coverage",
 				"cols" : "med_clc"
 			}
 		]

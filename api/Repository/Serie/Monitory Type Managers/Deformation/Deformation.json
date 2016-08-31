@@ -4,15 +4,15 @@
 		"params" : [
 			{
 				"cols" : "dd_tlt1",
-				"name" : "Tilt1"
+				"name" : "Radial/X-axis Tilt"
 			},
 			{
 				"cols" : "dd_tlt2",
-				"name" : "Tilt2"
+				"name" : "Tangential/Y-axis Tilt"
 			},
 			{
 				"cols" : "dd_tlt_temp",
-				"name" : "Temp"
+				"name" : "Tilt Temperature"
 			}
 		]
 	},
@@ -23,7 +23,7 @@
 		"params" : [
 			{
 				"cols" : "dd_edm_line",
-				"name" : "Line"
+				"name" : "EDM Line Length"
 			}
 		]	
 	},
@@ -35,11 +35,11 @@
 		"params" : [
 			{
 				"cols" : "dd_tlv_mag",
-				"name" : "Mag"
+				"name" : "Tilt Vector"
 			},
 			{
 				"cols" : "dd_tlv_azi",
-				"name" : "Azi"
+				"name" : "Tilt Azimuth"
 			}
 		]
 	},
@@ -50,67 +50,67 @@
 		"params" : [
 			{
 				"cols" : "dd_str_comp1",
-				"name" : "Comp1"
+				"name" : "Strain Component 1"
 			},
 			{
 				"cols" : "dd_str_comp2",
-				"name" : "Comp2"
+				"name" : "Strain Component 2"
 			},
 			{
 				"cols" : "dd_str_comp3",
-				"name" : "Comp3"
+				"name" : "Strain Component 3"
 			},
 			{
 				"cols" : "dd_str_comp4",
-				"name" : "Comp4"
+				"name" : "Strain Component 4"
 			},
 			{
 				"cols" : "dd_str_vdstr",
-				"name" : "Vdstr"
-			},
-			{
-				"cols" : "dd_str_comp1",
-				"name" : "Comp1"
+				"name" : "Volumetric Strain Change"
 			},
 			{
 				"cols" : "dd_str_sstr_ax1",
-				"name" : "Sstr-ax1"
+				"name" : "Shear Strain Axis 1"
 			},
 			{
 				"cols" : "dd_str_azi_ax1",
-				"name" : "Azi-ax1"
+				"name" : "Strain Azimuth Axis 1"
 			},
 			{
 				"cols" : "dd_str_sstr_ax2",
-				"name" : "Sstr_ax2"
+				"name" : "Shear Strain Axis 2"
 			},
 			{
 				"cols" : "dd_str_azi_ax2",
-				"name" : "Azi-ax2"
+				"name" : "Strain Azimuth Axis 2"
 			},
 			{
 				"cols" : "dd_str_sstr_ax3",
-				"name" : "Sstr-ax3"
+				"name" : "Shear Strain Axis 3"
 			},
 			{
 				"cols" : "dd_str_azi_ax3",
-				"name" : "Azi-ax3"
+				"name" : "Strain Azimuth Axis 3"
 			},
 			{
 				"cols" : "dd_str_pmax",
-				"name" : "Pmax"
+				"name" : "Maximum Strain"
 			},
 			{
 				"cols" : "dd_str_pmin",
-				"name" : "Pmin"
+				"name" : "Minimum Strain"
 			},
 			{
 				"cols" : "dd_str_pmax_dir",
-				"name" : "Pmax-dir"
+				"name" : "Maximum Strain Direction"
 			},
 			{
-				"cols" : "dd_str_pmin_dir",
-				"name" : "Pmin-dir"
+				"cols" : "dd_str_pmax_dir",
+				"name" : "Maximum Strain Direction"
+			},
+			{
+				"cols" : "dd_str_bpres",
+				"name" : "Barometric Pressure"
 			}
 		]
 	},
@@ -121,19 +121,19 @@
 		"params" : [
 			{
 				"cols" : "dd_ang_hort1",
-				"name" : "Hort1"
+				"name" : "Horizontal Angle Target-1"
 			},
 			{
 				"cols" : "dd_ang_hort2",
-				"name" : "Hort2"
+				"name" : "Horizontal Angle Target-2"
 			},
 			{
 				"cols" : "dd_ang_vert1",
-				"name" : "Vert1"
+				"name" : "Vertical Angle Target-1"
 			},
 			{
 				"cols" : "dd_ang_vert2",
-				"name" : "Vert2"
+				"name" : "Vertical Angle Target-2"
 			}
 		]
 	},
@@ -144,15 +144,19 @@
 		"params" : [
 			{
 				"cols" : "dd_gps_lat",
-				"name" : "Lat"
+				"name" : "GPS Latitude"
 			},
 			{
 				"cols" : "dd_gps_lon",
-				"name" : "Lon"
+				"name" : "GPS Longitude"
+			},
+			{
+				"cols" : "dd_gps_slope",
+				"name" : "GPS Baseline/Slope"
 			},
 			{
 				"cols" : "dd_gps_elev",
-				"name" : "Elev"
+				"name" : "GPS Elevation"
 			}
 		]
 	}, 
@@ -164,23 +168,39 @@
 		"params" : [
 			{
 				"cols" : "dd_gpv_dmag",
-				"name" : "Dmag"
+				"name" : "GPS Displacement"
 			},
 			{
 				"cols" : "dd_gpv_daz", 
-				"name" : "Daz"
+				"name" : "GPS Displ-azimuth"
 			},
 			{
 				"cols" : "dd_gpv_N",
-				"name" : "N"
+				"name" : "GPS N-S Displacement"
 			},
 			{
 				"cols" : "dd_gpv_E",
-				"name" : "E"
+				"name" : "GPS E-W Displacement"
+			},
+			{
+				"cols" : "dd_gpv_vincl",
+				"name" : "GPS Displ-inclination"
+			},
+			{
+				"cols" : "dd_gpv_staVelNorth",
+				"name" : "GPS N-S Velocity"
+			},
+			{
+				"cols" : "dd_gpv_staVelEast",
+				"name" : "GPS E-W Velocity"
+			},
+			{
+				"cols" : "dd_gpv_staVelVert",
+				"name" : "GPS Vertical Velocity"
 			},
 			{
 				"cols" : "dd_gpv_vert",
-				"name" : "Vert"
+				"name" : "GPS Vertical Displacement"
 			}
 		]
 	},
@@ -191,7 +211,7 @@
 		"params" : [
 			{
 				"cols" : "dd_lev_delev",
-				"name" : "Delev"
+				"name" : "Elevation Change"
 			}
 		]
 	}

@@ -79,6 +79,9 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
                 var currentData = this.data[j].data[k];
                 var previousData = this.data[j].data[k-1];
                 if(this.data[j].points.show){
+                  if(currentData[2] == undefined){
+                    currentData[2] = 0;
+                  }
                   if(currentData[0]>=this.minX&&currentData[0]<=this.maxX){
                     if(zoomedDataMinY == undefined){
                       zoomedDataMinY = currentData[1]-currentData[2];
@@ -98,26 +101,30 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
                   }
                 }
                 else if(this.data[j].bars.show){
+                  if(currentData[4] == undefined){
+                    currentData[4] = 0;
+                  }
                   if(currentData[0]>=this.minX&&currentData[1]<=this.maxX){
                     if(zoomedDataMinY == undefined){
-                      zoomedDataMinY = currentData[3]-currentData[4];
+                      zoomedDataMinY = currentData[2]-currentData[4];
                     }
-                    else if((currentData[3]-currentData[4])<zoomedDataMinY){
-                      zoomedDataMinY = currentData[3]-currentData[4];
+                    else if((currentData[2]-currentData[4])<zoomedDataMinY){
+                      zoomedDataMinY = currentData[2]-currentData[4];
                     };
                   }
 
                   if(currentData[1]<=this.maxX&&currentData[0]>=this.minX){
                     if(zoomedDataMaxY == undefined){
-                      zoomedDataMaxY = currentData[2]+currentData[4];
+                      zoomedDataMaxY = currentData[3]+currentData[4];
                     }
-                    else if((currentData[2]+currentData[4])>zoomedDataMaxY){
-                      zoomedDataMaxY = currentData[2]+currentData[4];
+                    else if((currentData[3]+currentData[4])>zoomedDataMaxY){
+                      zoomedDataMaxY = currentData[3]+currentData[4];
                     };
                   }
                 }
         }
       };
+      
       if(zoomedDataMaxY>=0&&zoomedDataMinY>=0){
         this.minY = zoomedDataMinY*0.95;
         this.maxY = zoomedDataMaxY*1.05;

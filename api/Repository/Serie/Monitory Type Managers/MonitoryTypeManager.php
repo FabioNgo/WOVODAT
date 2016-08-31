@@ -27,12 +27,25 @@ abstract class MonitoryTypeManager implements MonitoryTypeManagerInterface {
 	}
 	public function getStationData($serie ){
 		$result = array();
+		// var_dump($this->infor);
 		// var_dump($serie);
 		$table = "";
-		foreach ($this->infor as $key => $type) if ( $type["data_type"] == $serie["data_type"] ){
-			$table = $key;
+		foreach ($this->infor as $key => $type) {
+			if ( $type["data_type"] == $serie["data_type"] ){
+				foreach ($type["params"] as $params) {
+					if($params["name"] == $serie["component"]){
+						$table =$key;
+						break;
+					}
+				}
+				if($table != ""){
+					break;
+				}
+			}
 		}
+			
 		foreach ($this->tableManagers as $tableName=> $tableManager) {
+			// var_dump($table);
 			if($table == $tableName){
 				$result = array_merge($result,$tableManager->getStationData($serie));
 			}

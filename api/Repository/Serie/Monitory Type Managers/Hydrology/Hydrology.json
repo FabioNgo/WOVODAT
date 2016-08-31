@@ -4,58 +4,53 @@
 		"data_type" : "Hydrology",
 		"params" : [ 
 			{
-				"name" : "Temp",
+				"name" : "Water Temperature",
 				"cols" : "hd_temp"	
 			},
 			{
-				"name" : "Welev",
+				"name" : "Water Elevation",
 				"cols" : "hd_welev"	
 			},
 			{
-				"name" : "Wdepth",
+				"name" : "Water Depth",
 				"cols" : "hd_wdepth"
 			},
 			{
-				"name" : "Dwlev",
+				"name" : "Water Level Changes",
 				"cols" : "hd_dwlev"
 			},
 			{
-				"name" : "Bp",
+				"name" : "Barometric Pressure",
 				"cols" : "hd_bp"
 			},
 			{
-				"name" : "Sdisc",
+				"name" : "Spring Discharge Rate",
 				"cols" : "hd_sdisc"
 			},
 			{
-				"name" : "Prec",
+				"name" : "Precipitation",
 				"cols" : "hd_prec",
 				"filter" : "hd_tprec"
 			},
 			{
-				"name" : "Dprec",
-				"cols" : "hd_dprec",
-				"filter" : "hd_tprec"
-			},
-			{
-				"name" : "Ph",
+				"name" : "Water PH",
 				"cols" : "hd_ph"
 			},
 			{
-				"name" : "Cond",
+				"name" : "Conductivity",
 				"cols" : "hd_cond"
 			},
 			{
-				"name" : "Comp_content",
+				"name" : "Content Of Compound",
 				"cols" : "hd_comp_content",
 				"filter" : "hd_comp_species"
 			},
 			{
-				"name" : "Atemp",
+				"name" : "Air Temperature",
 				"cols" : "hd_atemp"
 			},
 			{
-				"name" : "Tds",
+				"name" : "TDS",
 				"cols" : "hd_tds"
 			}
 		]

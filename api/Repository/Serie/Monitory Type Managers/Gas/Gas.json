@@ -4,19 +4,19 @@
 		"data_type" : "Sampled Gas",
 		"params" : [
 			{
-				"name" : "Gtemp",
+				"name" : "Gas Temperature",
 				"cols" : "gd_gtemp"
 			},
 			{
-				"name" : "Bp",
+				"name" : "Atmospheric Pressure",
 				"cols" : "gd_bp"
 			},
 			{
-				"name" : "Flow",
+				"name" : "Gas Emission",
 				"cols" : "gd_flow"
 			},
 			{
-				"name" : "Concentration",
+				"name" : "Gas Concentration",
 				"cols" : "gd_concentration",
 				"filter" : "gd_species"
 			}
@@ -28,13 +28,17 @@
 		"data_type" : "Gas Plume",
 		"params" : [
 			{
-				"name" : "Emit",
+				"name" : "Gas Emission Rate",
 				"cols" : "gd_plu_emit",
 				"filter" : "gd_plu_species"
  			},
  			{
- 				"name" : "Height",
+ 				"name" : "Plume Height",
  				"cols" : "gd_plu_height"
+ 			},
+ 			{
+ 				"name" : "Total Gas Emission",
+ 				"cols" : "gd_plu_etot"
  			}
 		]
 	},
@@ -44,16 +48,16 @@
 		"data_type" : "SoilEfflux",
 		"params" : [
 			{
-				"name" : "Tflux",
+				"name" : "Total Gas Flux",
 				"cols" : "gd_sol_tflux",
 				"filter" : "gd_sol_species"
 			},
 			{
-				"name" : "High",
+				"name" : "Highest Gas Flux",
 				"cols" : "gd_sol_high"
 			},
 			{
-				"name" : "Htemp",
+				"name" : "Highest Temperature",
 				"cols" : "gd_sol_htemp"
 			}
 		]

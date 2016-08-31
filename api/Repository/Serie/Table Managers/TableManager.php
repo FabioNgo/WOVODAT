@@ -14,6 +14,8 @@ abstract class TableManager implements TableManagerInterface {
 	protected $stationCode;
 	protected $sta_table;
 	protected $sta_id_code_dictionary;
+	protected $vd_long;
+	protected $vd_lat;
 	public function TableManager(){
 		$this->cols_name = $this->setColumnsName();
 		$this->table_name = $this->setTableName();
@@ -21,6 +23,7 @@ abstract class TableManager implements TableManagerInterface {
 		$this->dataType = $this->setDataType();
 		$this->stationId = $this->setStationID();
 		$this->sta_id_code_dictionary = $this->getStationIdCodeDictionary();
+		
 	}
 	//must return 1 sta_code column
 	protected function getStationCodeQuery($sta_id){
@@ -64,20 +67,26 @@ abstract class TableManager implements TableManagerInterface {
 		$temp = explode("_", $id);
 		return $temp[0];
 	}
-	public function getTimeSeriesList($vd_id){
-  		$result = array();
-		global $db;
-		$query_format = 'select a.%s as sta_id1,  a.%s as sta_id2 ';
+	protected function getTimeSeriesListQuery($vd_id){
+		$query_format = 'select b.vd_inf_slat as vd_lat, b.vd_inf_slon as vd_long, a.%s as sta_id1,  a.%s as sta_id2 ';
 		$query = sprintf($query_format,$this->stationId[0],$this->stationId[1]);
 		foreach ($this->cols_name as $name) {
 			$query = $query.",a.".$name;
 		}
-		$query = $query." from $this->table_name as a where a.vd_id=$vd_id group by a.vd_id, sta_id1, sta_id2 order by vd_id";
+		$query = $query." from $this->table_name as a, vd_inf as b where a.vd_id=$vd_id and b.vd_id = $vd_id group by a.vd_id, sta_id1, sta_id2 order by a.vd_id";
+		return $query;
+	}
+	public function getTimeSeriesList($vd_id){
+		
+  		$result = array();
+		global $db;
+		$query = $this->getTimeSeriesListQuery($vd_id);
 		$db->query( $query);
+		// echo $query."\n";
 		$serie_list = $db->getList();
 		$exsited = array();
 		foreach ($serie_list as $serie) {
-
+			// var_dump($serie);
 			foreach ($this->cols_name as $col_name) {
 				// print_r($this->table_name);
 				// print_r($this->stationId);
@@ -97,6 +106,8 @@ abstract class TableManager implements TableManagerInterface {
 							   'station_id2' => $serie["sta_id2"],
 							   'station_code2' => $this->sta_id_code_dictionary[1][$serie["sta_id2"]],
 						       'component' => $serie[$col_name],
+						       'vd_lat' => $serie["vd_lat"],
+						       'vd_long' => $serie["vd_long"],
 						   		);
 
 					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_id1"].$x["station_id2"].$x["component"] );
@@ -116,7 +127,10 @@ abstract class TableManager implements TableManagerInterface {
  	}
 
   	public function getStationData($stations){
+  		// var_dump($this);
   		
+		$this->vd_long = $stations["vd_long"];
+		$this->vd_lat = $stations["vd_lat"];
   		$id1 = $stations["station_id1"];
   		$id2 = $stations["station_id2"];
 		global $db;
@@ -131,6 +145,7 @@ abstract class TableManager implements TableManagerInterface {
 		$db->query($query, $id1,$id2);
 
 		$res = $db->getList();
+		// var_dump($res);
 		foreach ($res as $row) {
 			//add value attributes
 			

@@ -1,14 +1,66 @@
 {
 	"fd_ele" : {
-		"data_type" : "Electric Fields"
+		"data_type" : "Electric Fields",
+		"params" : [
+			{
+				"name" : "Temperature",
+				"cols" : "fd_ele_field"
+			},
+			{
+				"name" : "Self Potential",
+				"cols" : "fd_ele_spot"
+			},
+			{
+				"cols" : "fd_ele_ares",
+				"name" : "Apparent Resistivity"
+			},
+			{
+				"cols" : "fd_ele_dres",
+				"name" : "Direct Resistivity"
+			}
+		]
 	},
 	"fd_gra" : {
-		"data_type" : "Gravity Fields"
+		"data_type" : "Gravity Fields",
+		"params" : [
+			{
+				"name" : "Gravity",
+				"cols" : "fd_gra_fstr"
+			}
+		]
 	},
 	"fd_mag" : {
-		"data_type" : "Magnetic Fields"
+		"data_type" : "Magnetic Fields",
+		"params" : [
+			{
+				"name" : "Magnetic F",
+				"cols" : "fd_mag_f"
+			},
+			{
+				"name" : "Magnetic X",
+				"cols" : "fd_mag_compx"
+			},
+			{
+				"name" : "Magnetic Y",
+				"cols" : "fd_mag_compy"
+			},
+			{
+				"name" : "Magnetic Z",
+				"cols" : "fd_mag_compz"
+			},
+		]
 	},
 	"fd_mgv" : {
-		"data_type" : "Magnetic Vector"
+		"data_type" : "Magnetic Vector",
+		"params" : [
+			{
+				"name" : "Magnetic Declination",
+				"cols" : "fd_mgv_dec"
+			},
+			{
+				"name" : "Magnetic Inclination",
+				"cols" : "fd_mgv_incl"
+			}
+		]
 	}
 }

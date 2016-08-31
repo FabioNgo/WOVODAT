@@ -52,12 +52,19 @@ define(function(require) {
         } else {
           this.previous.item = item;
           switch(item.datapoint.length){
+
             case 5: case 4:
+              var value;
+              if(item.datapoint[2]==0){
+                value = item.datapoint[3];
+              }else{ // horizontalbar
+                value = (item.datapoint[2]+ item.datapoint[3])/2;
+              } 
               this.html = this.template({
                 type: "bar",
                 stime: DateHelper.formatDate(item.datapoint[0]),
                 etime: DateHelper.formatDate(item.datapoint[1]),
-                value: (item.datapoint[2] + item.datapoint[3])/2,
+                value: value,
                 error: item.datapoint[4]
               })
               break;

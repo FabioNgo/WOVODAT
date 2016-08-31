@@ -12,6 +12,7 @@ class SeismicManager extends MonitoryTypeManager{
 		$result[$prefix."ivl"] = new sd_ivlManager;
 		$result[$prefix."rsm"] = new sd_rsmManager;
 		$result[$prefix."ssm"] = new sd_ssmManager;
+		$result[$prefix."evn_loc_eq_counts"] = new sd_evn_loc_eq_countsManager;
 		return $result;
 	}
 	protected function setMonitoryType(){
