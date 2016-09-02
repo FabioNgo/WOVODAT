@@ -223,7 +223,7 @@ define(function(require) {
       for(var i = 0;i<selectingFilters.length;i++){
         
         var model = selectingFilters[i];
-        if(timeSerie.sr_id == model.timeSerie.sr_id){
+        if(timeSerie.get('sr_id') == model.timeSerie.get('sr_id')){
           for(var j = 0;j<model.filterAttributes.length;j++){
             if(filterName == model.filterAttributes[j].name){
               return true;

@@ -1,0 +1,11 @@
+{
+    "controller": "OfflineFilesController",
+    "routing":
+    [
+        {
+            "request": "offline_files_list",
+            "method": "loadOfflineFiles",
+            "params": []
+        }
+    ]
+}

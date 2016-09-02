@@ -59,6 +59,7 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
       this.render();
     },
     render: function() {
+      var options;
       if(this.data==undefined){
         return;
       }
@@ -138,52 +139,50 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
         this.maxY = zoomedDataMaxY*1.05;
       }
 
-      var options = {
-            grid:{
-              margin: 50,
-            },
-            xaxis: { 
-              mode:'time',
-              timeformat: "%d-%b<br>%Y",
-              min: this.minX,
-              max: this.maxX,
-              autoscale: true,
-              canvas: true,
-              ticks: 6,
-              zoomRange: [30000000],
-            },
-            yaxis: {
-              show: true,
-              min: this.minY,
-              max: this.maxY,
-              ticks: 6, //this.ticks
-              labelWidth: 60,
-              tickFormatter: function (val, axis) {
-                var string = val.toString();
-                if(string.length >7){
-                  return val.toPrecision(2);
-                }
-                return val;
-              },
-              zoomRange: false,
-              axisLabel: unit,
-              canvas: true,
-              autoscaleMargin: 5,
-            },
-            grid: {
-              hoverable: true,
-            },
-            zoom: {
-              interactive: true,
-            },
-            // pan: {
-            //   interactive: true,
-            // },
-            tooltip:{
-              show: true,
-            },
-            
-          }; 
+      options = {
+        grid: {
+          margin: 50,
+          hoverable: true,
+        },
+        xaxis: {
+          mode: 'time',
+          timeformat: "%d-%b<br>%Y",
+          min: this.minX,
+          max: this.maxX,
+          autoscale: true,
+          canvas: true,
+          ticks: 6,
+          zoomRange: [30000000],
+        },
+        yaxis: {
+          show: true,
+          min: this.minY,
+          max: this.maxY,
+          ticks: 6, //this.ticks
+          labelWidth: 60,
+          tickFormatter: function (val, axis) {
+            var string = val.toString();
+            if (string.length > 7) {
+              return val.toPrecision(2);
+            }
+            return val;
+          },
+          zoomRange: false,
+          axisLabel: unit,
+          canvas: true,
+          autoscaleMargin: 5,
+        },
+        zoom: {
+          interactive: true,
+        },
+        // pan: {
+        //   interactive: true,
+        // },
+        tooltip: {
+          show: true,
+        },
+
+      };
       if (!this.data || !this.data.length) {
         this.$el.html('');
         return;
