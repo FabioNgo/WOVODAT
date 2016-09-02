@@ -19,7 +19,7 @@ define(function(require) {
       this.observer = options.observer;
       this.selectingTimeSeries = options.selectingTimeSeries;
       this.selectingFilters = options.selectingFilters;
-      this.categories = options.categories
+      this.categories = options.categories;
       this.filters = new Filters;
     },
     selectingTimeSeriesChanged: function(selectingTimeSeries){
@@ -98,8 +98,8 @@ define(function(require) {
       for (var i = 0; i < models.length; i++) {
         this.getFilter(models[i]);
 
-      };
-      this.showGraph();
+      }
+        this.showGraph();
       // var categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Field","Meteology"];
       // var selectingFilters = [];
       // for(var i = 0;i<categories.length;i++){
@@ -125,7 +125,7 @@ define(function(require) {
         var category = categories[i];
         var options = {
           series: this.generateData(category)
-        }
+        };
         var html = temp(options);
         $('.filter-field'+'.'+category).html(html);
       }
@@ -148,13 +148,9 @@ define(function(require) {
       }
       for(var i = 0 ;i<this.filters[category].length;i++){
         var groupFilters = this.filters[category][i];
-        var serie = {}
+        var serie = {};
         serie.name = groupFilters.timeSerie.attributes.showingName;
-        if(groupFilters.filterAttributes[0].name== "  "){
-          serie.nodata = true;
-        }else{
-          serie.nodata = false;
-        }
+        serie.nodata = groupFilters.filterAttributes[0].name == "  ";
         
         if(groupFilters.filterAttributes[0].name != "  "){
           serie.filters = [];
@@ -167,8 +163,8 @@ define(function(require) {
             serie.hasfilter = true;
             var object = {
               value: groupFilters.timeSerie.get('sr_id')+ "."+ filter,
-              showingName: filter,
-            }
+              showingName: filter
+            };
             object.isSelected  = this.isSelected(groupFilters.timeSerie,filter);
             serie.filters.push(object);
           }

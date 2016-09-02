@@ -45,9 +45,9 @@ define(function(require) {
       groupedFilters = _.filter(groupedFilters, function(groupedFilter){
         groupedFilter.name = _.filter(groupedFilter.name, function(name){
           return name == filter.name;
-        })
+        });
         return groupedFilter.name!=0;
-      })
+      });
       if(groupedFilters.length == 0){
         delete this[filter.timeSerie.get('category')]
       }else{
@@ -69,7 +69,7 @@ define(function(require) {
         }
       }
       return filters;
-    },
+    }
     // getSeparatedFilters : function(category){
 
     // }

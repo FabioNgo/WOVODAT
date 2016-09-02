@@ -21,7 +21,7 @@ define(function(require) {
     move: function(x, y) {
       this.$el.css({
         top: y + 5,
-        left: x + 20,
+        left: x + 20
       });
       this.show();
     },
@@ -47,12 +47,12 @@ define(function(require) {
     update: function(pos, item,name) {
       if (item) {
         this.html = this.template({
-              name:name,
-              startTime: DateHelper.formatDate(item.datapoint[0]),
-              endTime: DateHelper.formatDate(item.datapoint[1]),
-              value: item.datapoint[3]
-            })
-            this.render(pos.pageX, pos.pageY, this.html);
+          name:name,
+          startTime: DateHelper.formatDate(item.datapoint[0]),
+          endTime: DateHelper.formatDate(item.datapoint[1]),
+          value: item.datapoint[3]
+        });
+        this.render(pos.pageX, pos.pageY, this.html);
       } else {
         this.hide();
       }

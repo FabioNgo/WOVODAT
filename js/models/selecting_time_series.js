@@ -4,8 +4,8 @@ define(['jquery', 'backbone'], function($, Backbone) {
   return Backbone.Model.extend({
     initialize: function() {
       this.set({
-        selectings: [],
-        //MAX_N_SERIES: 
+        selectings: []
+          //MAX_N_SERIES:
       });
     },
     // @params: sr_id: id of time serie

@@ -25,7 +25,7 @@ require.config({
     'jquery.flot.errorbars': 'vendor/jquery-flot/src/plugins/jquery.flot.errorbars',
     'jquery.flot.axislabels': 'vendor/jquery-flot/src/plugins/jquery.flot.axislabels',
     'jquery.flot.legendoncanvas' :'vendor/jquery-flot/src/plugins/jquery.flot.legendoncanvas',
-    'handlebars' : 'vendor/handlebars/handlebars.amd.min',
+    'handlebars' : 'vendor/handlebars/handlebars.amd.min'
   },
   shim: {
     'jquery' : {
@@ -68,7 +68,7 @@ require.config({
     },
     'jquery.flot.legendoncanvas': {
       deps: ['jquery.flot']
-    },
+    }
   },
   config: {
       moment: {
@@ -81,4 +81,4 @@ define(function(require) {
     'use strict';
     new App();
   });
-})
+});

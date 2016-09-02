@@ -71,7 +71,7 @@ define(function(require) {
 
       var options = {
         timeserie: this.generateCategories(timeSeries)
-      }
+      };
       var html = temp(options);
       $('.time_series_select_container').append(html);
       $('.time-serie-select').material_select();
@@ -196,8 +196,8 @@ define(function(require) {
         // $('.time-serie-select').material_select();
       }
       this.selectingTimeSeries.trigger("change");
-      $('.time-serie-select').material_select('destroy');
-      $('.time-serie-select').material_select();
+      $(".time-serie-select").material_select('destroy');
+      $(".time-serie-select").material_select();
 
     },
     

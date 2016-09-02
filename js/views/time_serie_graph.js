@@ -69,8 +69,7 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
         if(this.data[i].yaxis.axisLabel != undefined){
           unit = this.data[i].yaxis.axisLabel;
         }
-      };
-
+      }
       // change yaxix of timeseriesgraph according to zoomed in data
 
       var zoomedDataMinY = undefined;
@@ -89,7 +88,7 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
                     }
                     else if(currentData[1]-currentData[2]<zoomedDataMinY){
                       zoomedDataMinY = currentData[1]-currentData[2];
-                    };
+                    }
                   }
 
                   if(currentData[0]<=this.maxX&&currentData[0]>=this.minX){
@@ -98,7 +97,7 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
                     }
                     else if(currentData[1]+currentData[2]>zoomedDataMaxY){
                       zoomedDataMaxY = currentData[1]+currentData[2];
-                    };
+                    }
                   }
                 }
                 else if(this.data[j].bars.show){
@@ -111,7 +110,7 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
                     }
                     else if((currentData[2]-currentData[4])<zoomedDataMinY){
                       zoomedDataMinY = currentData[2]-currentData[4];
-                    };
+                    }
                   }
 
                   if(currentData[1]<=this.maxX&&currentData[0]>=this.minX){
@@ -120,12 +119,11 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
                     }
                     else if((currentData[3]+currentData[4])>zoomedDataMaxY){
                       zoomedDataMaxY = currentData[3]+currentData[4];
-                    };
+                    }
                   }
                 }
         }
-      };
-      
+      }
       if(zoomedDataMaxY>=0&&zoomedDataMinY>=0){
         this.minY = zoomedDataMinY*0.95;
         this.maxY = zoomedDataMaxY*1.05;
@@ -142,7 +140,7 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
       options = {
         grid: {
           margin: 50,
-          hoverable: true,
+          hoverable: true
         },
         xaxis: {
           mode: 'time',
@@ -152,7 +150,7 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
           autoscale: true,
           canvas: true,
           ticks: 6,
-          zoomRange: [30000000],
+          zoomRange: [30000000]
         },
         yaxis: {
           show: true,
@@ -170,17 +168,17 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
           zoomRange: false,
           axisLabel: unit,
           canvas: true,
-          autoscaleMargin: 5,
+          autoscaleMargin: 5
         },
         zoom: {
-          interactive: true,
+          interactive: true
         },
         // pan: {
         //   interactive: true,
         // },
         tooltip: {
-          show: true,
-        },
+          show: true
+        }
 
       };
       if (!this.data || !this.data.length) {
@@ -208,7 +206,7 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
         self: this,
         original_option: options,
         timeRange: this.serieGraphTimeRange
-      }
+      };
       this.$el.bind('plotzoom',eventData, this.onZoom);
       
     },
@@ -240,7 +238,7 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
       event.data.timeRange.set({
         minX: xaxis.min,
         maxX: xaxis.max
-      })
+      });
       // console.log(event.data.timeRange);
       event.data.timeRange.trigger('zoom');
       //event.data.trigger('update');

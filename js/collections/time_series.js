@@ -6,8 +6,8 @@ define(function(require) {
 
   return Backbone.Collection.extend({
     initialize: function() {
-    },
+    }
 
-    
+
   });
 });

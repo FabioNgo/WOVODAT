@@ -11,7 +11,7 @@ define(function(require) {
       if(options.offline){
       	this.url = 'offline-data/volcano_list.json'
       }
-    },
-    
+    }
+
   });
 });

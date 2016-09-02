@@ -50,7 +50,7 @@ define(function(require) {
         filters: filters,
         eruptionTimeRange: this.eruptionTimeRange,
         serieGraphTimeRange: this.serieGraphTimeRange,
-        forecastsGraphTimeRange: this.forecastsGraphTimeRange,
+        forecastsGraphTimeRange: this.forecastsGraphTimeRange
       });
       this.graphs.push(timeSerieGraph);
       // this.show();
@@ -75,8 +75,8 @@ define(function(require) {
     serieGraphTimeRangeChanged: function(timeRange){
       for (var i = 0; i < this.graphs.length; i++) {
         this.graphs[i].timeRangeChanged(timeRange);
-      };
-      this.show();
+      }
+        this.show();
     },
     selectingFiltersChanged: function(selectingFilters){
       this.graphs.length =0;
@@ -90,7 +90,7 @@ define(function(require) {
       }
       for (var i = 0; i < filters.length; i++) {
         this.addGraph(filters[i]);
-      };
+      }
     },
     // render: function(selectingTimeSeries) {
     //   this.overviewGraph.$el.appendTo(this.$el);
@@ -104,8 +104,8 @@ define(function(require) {
       for (var i = 0; i < this.graphs.length; i++) {
         this.$el.append(this.graphs[i].$el);
         this.graphs[i].show();
-        
-      };
+
+}
     },
     destroy: function() {
       // From StackOverflow with love.

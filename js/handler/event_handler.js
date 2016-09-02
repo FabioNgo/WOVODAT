@@ -57,8 +57,8 @@ define(function(require) {
       this.filtersSelect = options.filtersSelect;
       this.selectingFilters = options.selectingFilters;
       this.eruptionForecastsGraph = options.eruptionForecastsGraph;
-      this.eruptions = options.eruptions,
-      this.offline = options.offline,
+      this.eruptions = options.eruptions;
+      this.offline = options.offline;
       //event listeners
       // this.listenTo(this.volcanoSelect,'change',this.onSelectVolcanoChanged)
       this.listenTo(this.selectingVolcano, 'update', this.changeVolcano);
@@ -211,7 +211,7 @@ define(function(require) {
         'startTime': this.selectingTimeRange.get('startTime'),
         'endTime': this.selectingTimeRange.get('endTime'),
         'overviewGraphMinX': this.selectingTimeRange.get('overviewGraphMinX'),
-        'overviewGraphMaxX': this.selectingTimeRange.get('overviewGraphMaxX'),
+        'overviewGraphMaxX': this.selectingTimeRange.get('overviewGraphMaxX')
       });
       // this.selectingTimeRange.trigger('update');
       this.serieGraphTimeRangeChanged();
@@ -221,7 +221,7 @@ define(function(require) {
       this.selectingTimeRange.set({
         selectedMinX: this.serieGraphTimeRange.get('minX'),
         selectedMaxX: this.serieGraphTimeRange.get('maxX')
-      })
+      });
       // console.log(this.selectingTimeRange);
       this.overviewGraph.selectingRegionChanged(this.selectingTimeRange);
     },

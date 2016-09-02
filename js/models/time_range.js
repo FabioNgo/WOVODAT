@@ -7,7 +7,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
     initialize: function(options) {
       this.set({
         'startTime': options ? options.startTime : undefined,
-        'endTime': options ? options.endTime : undefined,
+        'endTime': options ? options.endTime : undefined
       });
     }
   });
