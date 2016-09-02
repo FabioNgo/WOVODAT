@@ -57,7 +57,7 @@ define(function(require) {
             if(self.offline){
               model.url ='offline-data/'+model.attributes.sr_id+'.json';
             }
-            if(currentCategory == "" || currentCategory != item.category){
+            if(currentCategory == "" | currentCategory != item.category){
               collection[item.category] = [];
               currentCategory = item.category;
             }
@@ -116,6 +116,6 @@ define(function(require) {
           }
         }
       }
-    }
+    },
   });
 });

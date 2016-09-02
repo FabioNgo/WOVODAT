@@ -37,8 +37,8 @@ define(['jquery', 'backbone'], function($, Backbone) {
     	if(index > -1){
 		    this.filterAttributes.splice(index, 1);
     	}
-    }
-      /** return timeSerie with respective filter**/
+    },
+    /** return timeSerie with respective filter**/
 
   });
 });

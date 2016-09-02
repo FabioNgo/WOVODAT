@@ -21,7 +21,6 @@
 					}
 				}
 			}
-			return null;
 		}
 
 		public static function register($controller) {

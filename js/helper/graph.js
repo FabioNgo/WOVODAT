@@ -7,7 +7,7 @@ define(function(require) {
       var ticks = [];
       var numStep = 7;
       /** compute exponential Degree **/
-      var expDeg = undefined;
+      var expDeg = undefined
       if(this.exponentialDegree(min) < this.exponentialDegree(max)){
         expDeg = this.exponentialDegree(max);
       }else{
@@ -74,7 +74,8 @@ define(function(require) {
           }
           else{
             axisLabel = filter.timeSerie.get('data').unit;
-          }
+          };
+
           /*Limit number of data to be rendered
           this to prevent the overload of data in Overview Graph 
           when the number of data is too large.
@@ -90,7 +91,8 @@ define(function(require) {
           }
           else{
             requiredData = filterData;
-          }
+          };
+
           //requiredData is the array of filterData that has been restricted in amount.
           requiredData.forEach(function(d) {
             var maxTime;
@@ -102,10 +104,10 @@ define(function(require) {
               error = d.error;
             }else{
               error = 0;
-            }
-            var value = d.value;
+            };
+            var value = d.value
             if(style == 'bar' || style == 'horizontalbar'){
-              maxTime = d.etime;
+              maxTime = d.etime
               minTime = d.stime;
             }
             else if(style == 'dot' || style == 'circle'){
@@ -136,7 +138,8 @@ define(function(require) {
             }
             else if(style == 'dot' || style == 'circle'){
               tempData.push(d['time'],d['value']);
-            }
+            };
+
             if(errorbar){
               tempData.push(error);
             }
@@ -149,7 +152,7 @@ define(function(require) {
             errorbar: errorbar,
             axisLabel: axisLabel,
             filterColor: filterColor // Pre-coded color for certain earthquake type
-          };
+          }
           data.push(this.formatGraphAppearance(list,filter.timeSerie.getName(),filterName,styleParams));
           
           
@@ -177,12 +180,12 @@ define(function(require) {
         }
         graph.ticks = this.generateTick(minY,maxY);
         graph.minY = graph.ticks[0];
-        graph.maxY = graph.ticks[graph.ticks.length-1];
+        graph.maxY = graph.ticks[graph.ticks.length-1]
         graph.ticks.push();
       }
       graph.timeRange.set({
         'startTime': graph.minX,
-        'endTime': graph.maxX
+        'endTime': graph.maxX,
       });
       // graph.timeRange.trigger('change');
       graph.data = data;
@@ -212,8 +215,8 @@ define(function(require) {
           lineWidth: 2, // in pixels
           fill: false,
           fillColor: null,
-          symbol: "circle"
-
+          symbol: "circle",
+          
         },
         bars: {
           // wovodat: true;
@@ -232,7 +235,8 @@ define(function(require) {
       // Set up for special earthquake type Colors
       if(styleParams.filterColor){
         dataParam.color = styleParams.filterColor;
-      }
+      };
+
       if(styleParams.errorbar){
         dataParam.points.errorbars = "y";
         dataParam.points.yerr = {
@@ -240,13 +244,15 @@ define(function(require) {
             color: "#D50000",
             upperCap: "-",
             lowerCap: "-",
-            radius:2
+            radius:2,
         }
-      }
+      };
+
       if(styleParams.axisLabel){
         dataParam.yaxis.axisLabel = styleParams.axisLabel;
         //console.log(dataParam.yaxis.axisLabel);
-      }
+      };
+
       if(styleParams.earthquakeTypeColor != null){
         dataParam.color = styleParams.earthquakeTypeColor;
         console.log(dataParam.earthquakeTypeColor);
@@ -282,7 +288,7 @@ define(function(require) {
     // Round the number to expDegree
     roundNumber: function(numberStr,desExpDegree){
       var desCoe; // destination Coefficient
-      var number = parseFloat(numberStr);
+      var number = parseFloat(numberStr)
       number = number/ Math.pow(10,desExpDegree);
      //   var sourceExpDegree = this.exponentialDegree(number); //expoential Degree of this number
 
@@ -299,7 +305,8 @@ define(function(require) {
     exponentialDegree: function(value){
         value = value.toExponential();
         var a =  value.toString().split("e")[1];
-      return parseInt(a);
+        var exp = parseInt(a);
+        return exp;
     },
     /** no decimal place **/
     coefficient: function(value){ 

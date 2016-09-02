@@ -47,7 +47,7 @@
 			{
 				"name" : "Magnetic Z",
 				"cols" : "fd_mag_compz"
-			}
+			},
 		]
 	},
 	"fd_mgv" : {

@@ -17,24 +17,8 @@
 		private $sql = '';
 		private $resource = null;
 		private $cursor = null;
-        private $_cursor;
-        private $_cursor;
-        private $_cursor;
-        private $_cursor;
-        private $_cursor;
-        private $_cursor;
-        private $_cursor;
-        private $_cursor;
-        private $_cursor;
-        private $_cursor;
-        private $_cursor;
-        private $_sql;
-        private $_cursor;
-        private $_sql;
-        private $_cursor;
-        private $_sql;
-
-        /**
+		
+		/**
 		 * Create a new connection
 		 * 
 		 * @param $host

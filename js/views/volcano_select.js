@@ -97,7 +97,7 @@ define(function(require) {
       var volcanoes = this.searchVolcanoes(e.target.value);
       var options = {
         volcanoes: this.generateVolcanoes(volcanoes)
-      };
+      }
       $('#dropdown1').html(temp(options));
       var searchSuggestion = $('.search-sugesstion');
       //show/hide suggestion part
@@ -134,7 +134,7 @@ define(function(require) {
       for(var i = 0 ;i < volcanoes.length ; i++){
         output.push({
           vd_num: volcanoes[i].get("vd_num"),
-          vd_name: volcanoes[i].get("vd_name")
+          vd_name: volcanoes[i].get("vd_name"),
         })
       }
       return output;
@@ -146,8 +146,8 @@ define(function(require) {
       //   $('select').material_select();
       // });
       
-    }
-
+    },
+    
     // onSelectChange: function() {
     //   var vd_id = this.$el.find('select').val();
     //   for(var i=0;i<this.collection.models.length;i++){

@@ -20,7 +20,7 @@ define(function(require) {
       // console.log(x,y);
       this.$el.css({
         top: y + 5,
-        left: x + 20
+        left: x + 20,
       });
       this.$el.show();
     },
@@ -66,7 +66,7 @@ define(function(require) {
                 etime: DateHelper.formatDate(item.datapoint[1]),
                 value: value,
                 error: item.datapoint[4]
-              });
+              })
               break;
             case 3: case 2:
               this.html = this.template({

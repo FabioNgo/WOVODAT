@@ -70,7 +70,7 @@ define(function(require) {
           $('#progress-detail').html(percentage + '%');
           deferredObject.resolve("success");
         }
-      };
+      }
       
       xhr.open('GET', xhr.url);
       xhr.send();  

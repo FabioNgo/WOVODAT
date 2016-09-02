@@ -91,11 +91,11 @@ define(function(require) {
           fullparams: true,
           horizontal:true,
           fill: false,
-          fillcolor: null
+          fillcolor: null,
 
         },
         dataType: dataType,
-        name: name
+        name: name,
       }
     },
     render: function() {
@@ -111,14 +111,14 @@ define(function(require) {
           graph_pram_data = [],         
           option = {
             grid: {
-              hoverable: true
+              hoverable: true,
             },
             xaxis: {
               min: this.startTime,
               max: this.endTime,
               autoscale: true,
               mode: 'time',
-              timeformat: "%d-%b-%Y"
+              timeformat: "%d-%b-%Y",
             },
             yaxis: {
               min: 0,
@@ -222,14 +222,14 @@ define(function(require) {
     setUpTimeranges: function(startTime, endTime){
       this.serieGraphTimeRange.set({
         'startTime': startTime,
-        'endTime': endTime
+        'endTime': endTime,
       });
       // console.log(this.serieGraphTimeRange);
       
       this.serieGraphTimeRange.trigger('update',this.serieGraphTimeRange);
       this.forecastsGraphTimeRange.set({
         'startTime': startTime,
-        'endTime': endTime
+        'endTime': endTime,
       });
       this.forecastsGraphTimeRange.trigger('update',this.forecastsGraphTimeRange);
 

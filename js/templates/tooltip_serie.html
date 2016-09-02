@@ -1,5 +1,5 @@
 <%if(type == "bar"){%>
-	<div style="text-align: center;">
+	<center>
 	<% if (stime == etime){%>
 		<%= stime %><br/>
 	<%}else{%>
@@ -9,13 +9,13 @@
 	<%= value %>
 	<% if(error != undefined) %>
 		&plusmn <%= error %>
-	</div>
+	</center>
 <%}%>
 <%if(type == "point"){%>
-	<div style="text-align: center;">
+	<center>
 	<%= time %><br/>
 	<%= value %>
 	<% if(error != undefined) %>
 		&plusmn <%= error %>
-	</div>
+	</center>
 <%}%>

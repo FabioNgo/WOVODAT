@@ -12,8 +12,8 @@ define(function(require) {
     },
 
     routes: {
-      '*anything': 'loadPage'
-
+      '*anything': 'loadPage',
+      
     },
     loadPage: function(queryString){
       var options = {};
@@ -55,7 +55,7 @@ define(function(require) {
           sta_id1 : values[3],
           sta_id2 : values[4]
           
-        };
+        }
         timeSeries.push(value);
       }
       return timeSeries;

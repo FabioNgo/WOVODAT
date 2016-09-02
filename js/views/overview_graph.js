@@ -73,7 +73,7 @@ define(function(require) {
       this.graph.setSelection({
         xaxis: {
           from: minX,
-          to: maxX
+          to: maxX,
         }
       })
     },
@@ -103,7 +103,7 @@ define(function(require) {
           min: this.minX,
           max: this.maxX,
           // minTickSize: [1, "month"],
-          ticks: 6
+          ticks: 6,
         },
         yaxis: {
           show: true,
@@ -130,11 +130,11 @@ define(function(require) {
           color: '#451A2B' 
         },
         zoom: {
-          interactive: false
+          interactive: false,
         },
         legend :{
           type: 'canvas'
-        }
+        },
       };
           //pass color into options
       options.colors = ["#000000", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"];
@@ -142,8 +142,9 @@ define(function(require) {
       if (!this.data || !this.data.length) {
         this.$el.html(''); //$(this) = this.$el
         return;
-      }
-        this.$el.width('auto');
+      };
+
+      this.$el.width('auto');
       this.$el.height(200);
       this.$el.addClass("overview-graph card-panel");
 

@@ -1,43 +1,42 @@
 /** Use for overview and time serie graph only **/
 define(function(require) {
-  var _ = require("vendor/underscore/underscore-min");
   'use strict';
   // var this = require('helper/math');
   return {
     Levenshtein : function( str_m, str_n ) { 
-      var previous, current, matrix;
+      var previous, current, matrix
     // Constructor
-      matrix = this._matrix = [];
+      matrix = this._matrix = []
 
     // Sanity checks
       if ( str_m == str_n )
-        return this.distance = 0;
+        return this.distance = 0
       else if ( str_m == '' )
-        return this.distance = str_n.length;
+        return this.distance = str_n.length
       else if ( str_n == '' )
-        return this.distance = str_m.length;
+        return this.distance = str_m.length
       else {
         // Danger Will Robinson
-        previous = [ 0 ];
-        _.forEach( str_m, function( v, i ) { i++; previous[ i ] = i } );
+        previous = [ 0 ]
+        _.forEach( str_m, function( v, i ) { i++, previous[ i ] = i } )
 
-        matrix[0] = previous;
+        matrix[0] = previous
         _.forEach( str_n, function( n_val, n_idx ) {
-          current = [ ++n_idx ];
+          current = [ ++n_idx ]
           _.forEach( str_m, function( m_val, m_idx ) {
-            m_idx++;
+            m_idx++
             if ( str_m.charAt( m_idx - 1 ) == str_n.charAt( n_idx - 1 ) )
-              current[ m_idx ] = previous[ m_idx - 1 ];
+              current[ m_idx ] = previous[ m_idx - 1 ]
             else
               current[ m_idx ] = Math.min
                 ( previous[ m_idx ]     + 1   // Deletion
                 , current[  m_idx - 1 ] + 1   // Insertion
                 , previous[ m_idx - 1 ] + 1   // Subtraction
                 )
-          });
-          previous = current;
+          })
+          previous = current
           matrix[ matrix.length ] = previous
-        });
+        })
 
         return this.distance = current[ current.length - 1 ]
       }
@@ -59,6 +58,6 @@ define(function(require) {
           }
       }
       return dist;
-    }
+    },
   };
 });

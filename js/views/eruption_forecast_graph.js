@@ -124,12 +124,12 @@ define(function(require) {
         bars:{
           show: true,
           fullparams: true,
-          horizontal:true
-
+          horizontal:true,
+          
 
         },
         dataType: dataType,
-        name: name
+        name: name,
       }
     },
     render: function(options) {
@@ -167,6 +167,6 @@ define(function(require) {
 
       $.plot(el, graph_pram_data, option);
       el.bind('plothover', this.onHover);
-    }
+    },
   });
 });

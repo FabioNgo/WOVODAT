@@ -173,8 +173,9 @@
             elems.splice(i, 1);
             break;
           }
-      }
-        // Remove any data stored on the element.
+      };
+      
+      // Remove any data stored on the element.
       elem.removeData( str_data );
       
       // If this is the last element removed, stop the polling loop.
@@ -217,8 +218,9 @@
         data.h = h !== undefined ? h : elem.height();
         
         old_handler.apply( this, arguments );
-      }
-        // This may seem a little complicated, but it normalizes the special event
+      };
+      
+      // This may seem a little complicated, but it normalizes the special event
       // .add method between jQuery 1.4/1.4.1 and 1.4.2+
       if ( $.isFunction( handleObj ) ) {
         // 1.4, 1.4.1
@@ -263,7 +265,8 @@
           data.w = 0;
           data.h = 0;
         }
-      }
+      };
+
       // Poll gently until there is a change, then requestAnimationFrame until
       // a second passes without a resize event, at which point we switch back.
       if (timeout_id !== null) {
@@ -274,7 +277,8 @@
           active = false;
         }
       }
-  }
+  };
+  
     /**
      * Provides requestAnimationFrame in a cross browser way.
      * http://paulirish.com/2011/requestanimationframe-for-smart-animating/

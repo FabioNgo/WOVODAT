@@ -49,7 +49,11 @@ define(function(require) {
       **/
       //check offline mode
       var offline = false;
-      offline = $('#offline').length > 0;
+      if($('#offline').length > 0){
+        offline = true;
+      }else{
+        offline = false;
+      }
       var 
           observer = new (Backbone.Model.extend())(),
           categories=["Seismic","Deformation","Gas","Hydrology","Thermal","Fields","Meteology"],
@@ -132,7 +136,7 @@ define(function(require) {
             selecting_vd_num: this.selecting_vd_num,
             ed_stime_num: this.ed_stime_num,
             ed_etime_num: this.ed_etime_num,
-            selectingTimeRange: selectingTimeRange
+            selectingTimeRange: selectingTimeRange,
           }),
 
           
@@ -162,7 +166,7 @@ define(function(require) {
             selectingTimeSeries: selectingTimeSeries,
             eruptionTimeRange: eruptionTimeRange,
             serieGraphTimeRange: serieGraphTimeRange,
-            forecastsGraphTimeRange: forecastsGraphTimeRange
+            forecastsGraphTimeRange: forecastsGraphTimeRange,
             // timeRange: timeRange
 
           }),
@@ -204,7 +208,7 @@ define(function(require) {
             selectingFilters: selectingFilters,
             eruptionForecastsGraph: eruptionForecastsGraph,
             eruptions: eruptions,
-            offline: offline
+            offline: offline,
           });
           //console.log(volcanoes);
           // console.log(filterColorCollection);
