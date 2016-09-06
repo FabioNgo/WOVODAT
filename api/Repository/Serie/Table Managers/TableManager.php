@@ -23,7 +23,7 @@ abstract class TableManager implements TableManagerInterface {
 		$this->dataType = $this->setDataType();
 		$this->stationId = $this->setStationID();
 		$this->sta_id_code_dictionary = $this->getStationIdCodeDictionary();
-		
+		$this->shortDataType = $this->setShortDataType();
 	}
 	//must return 1 sta_code column
 	protected function getStationCodeQuery($sta_id){
@@ -58,6 +58,7 @@ abstract class TableManager implements TableManagerInterface {
 	abstract protected function setTableName(); // name of es table
 	abstract protected function setMonitoryType(); // monitory type Deformation, Gas, ....
 	abstract protected function setDataType(); // Data type for each data table
+    abstract protected function setShortDataType();
 	//if there is 1 station, station1 is the same as station2
 	abstract protected function setStationID(); // column names represent stationID1,station ID2
 
@@ -101,6 +102,7 @@ abstract class TableManager implements TableManagerInterface {
 				if($serie[$col_name]!=""){
 					$x = array('category' => $this->monitoryType ,
 							   'data_type' => $this->dataType,
+                                'short_data_type' => $this->shortDataType,
 							   'station_id1' => $serie["sta_id1"],
 							   'station_code1' => $this->sta_id_code_dictionary[0][$serie["sta_id1"]],
 							   'station_id2' => $serie["sta_id2"],
@@ -108,6 +110,7 @@ abstract class TableManager implements TableManagerInterface {
 						       'component' => $serie[$col_name],
 						       'vd_lat' => $serie["vd_lat"],
 						       'vd_long' => $serie["vd_long"],
+
 						   		);
 
 					$x["sr_id"] = md5( $x["category"].$x["data_type"].$x["station_id1"].$x["station_id2"].$x["component"] );

@@ -29,7 +29,6 @@ class sd_evsManager extends SeismicTablesManager {
 	} // column name represent primary stationCode1, stationCode2.
 	protected function setStationDataParams($component){
 		$unit="";
-		$attribute = "";
 		$query = "";
 		$table = "sd_evs";
 		$errorbar = false;
@@ -66,4 +65,10 @@ class sd_evsManager extends SeismicTablesManager {
 						);
 		return $result;
 	} // params to get data station [unit,flot_style,errorbar,query]
-} 
+
+    protected function setShortDataType()
+    {
+        // TODO: Implement setShortDataType() method.
+        return "Single Station Events";
+    }
+}

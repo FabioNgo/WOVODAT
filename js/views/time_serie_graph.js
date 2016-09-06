@@ -141,7 +141,6 @@ define(['require','views/series_tooltip','text!templates/tooltip_serie.html'],
 
       options = {
         grid: {
-          margin: 50,
           hoverable: true,
         },
         xaxis: {

@@ -29,9 +29,7 @@ class sd_ssmManager extends SeismicTablesManager {
 	} // column name represent primary stationCode1, stationCode2.
 	protected function setStationDataParams($component){
 		$unit="";
-		$attribute = "";
 		$query = "";
-		$table = "sd_ssm";
 		$errorbar = false;
 		$style = "bar";
 		if($component == 'SSAM Low Frequency Limit'){
@@ -54,4 +52,10 @@ class sd_ssmManager extends SeismicTablesManager {
 						);
 		return $result;
 	} // params to get data station [unit,flot_style,errorbar,query]
-} 
+
+    protected function setShortDataType()
+    {
+        // TODO: Implement setShortDataType() method.
+        return "SSAM";
+    }
+}

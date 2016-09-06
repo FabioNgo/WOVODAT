@@ -30,9 +30,7 @@ class sd_rsmManager extends SeismicTablesManager {
 	protected function setStationDataParams($component){
 		global $db;
 		$unit="";
-		$attribute = "";
 		$query = "";
-		$table = "sd_rsm";
 		$errorbar = false;
 		$style = "bar";
 		$query1 = "select a.sd_sam_id from sd_rsm as a";
@@ -44,7 +42,6 @@ class sd_rsmManager extends SeismicTablesManager {
 
 		if($component == 'RSAM Count'){
 			$unit = "counts";
-			$attribute = "sd_rsm_count";
 			$query = "select a.sd_rsm_stime as stime, a.sd_rsm_count as value from sd_rsm as a, sd_sam as b where a.sd_sam_id=b.sd_sam_id and b.ss_id=%s and a.sd_rsm_count IS NOT NULL";
 		}
 		$result = array("unit" => $unit,
@@ -54,4 +51,10 @@ class sd_rsmManager extends SeismicTablesManager {
 						);
 		return $result;
 	} // params to get data station [unit,flot_style,errorbar,query]
-} 
+
+    protected function setShortDataType()
+    {
+        // TODO: Implement setShortDataType() method.
+        return "RSAM";
+    }
+}

@@ -32,7 +32,6 @@ class sd_ivlManager extends SeismicTablesManager {
 	} // column name represent primary stationCode1, stationCode2.
 	protected function setStationDataParams($component){
 		$unit="";
-		$attribute = "";
 		$query = "";
 		$table = "sd_ivl";
 		$errorbar = false;
@@ -94,4 +93,10 @@ class sd_ivlManager extends SeismicTablesManager {
 						);
 		return $result;
 	} // params to get data station [unit,flot_style,errorbar,query]
-} 
+
+    protected function setShortDataType()
+    {
+        // TODO: Implement setShortDataType() method.
+        return "Interval";
+    }
+}

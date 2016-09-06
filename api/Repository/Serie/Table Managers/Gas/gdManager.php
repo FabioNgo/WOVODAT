@@ -63,4 +63,10 @@ class gdManager extends GasTablesManager {
 						);
 		return $result;
 	} // params to get data station [unit,flot_style,errorbar,query]
-} 
+
+    protected function setShortDataType()
+    {
+        // TODO: Implement setShortDataType() method.
+        return "Sampled Gas Events";
+    }
+}

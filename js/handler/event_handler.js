@@ -110,9 +110,6 @@ define(function(require) {
       this.selectingTimeSeriesChanged();
       //this.eruptionSelect.show();
     },
-    timeSeriesChanged: function(e){
-      this.timeSeriesSelect.timeSeriesChanged(this.timeSeries);
-    },
    
     // updateTimeSeriesData: function(e){
     //   var vd_id = this.selectingVolcano.get('vd_id');

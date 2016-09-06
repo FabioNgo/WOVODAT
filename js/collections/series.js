@@ -62,7 +62,7 @@ define(function(require) {
               currentCategory = item.category;
             }
             collection[currentCategory].push(model);
-            collection.length++;
+            // collection.length++;
           }
           // console.log(collection);
           collection.trigger("loaded");

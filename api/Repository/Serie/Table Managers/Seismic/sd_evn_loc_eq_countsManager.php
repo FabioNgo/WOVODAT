@@ -32,7 +32,7 @@ class sd_evn_loc_eq_countsManager extends sd_evnManager {
 		return $query;
 	}
 	protected function setStationDataParams($component){
-		$unit="times";
+		$unit="counts";
 		$attribute = "";
 		$query = "";
 		$table = "sd_evn";
@@ -42,7 +42,7 @@ class sd_evn_loc_eq_countsManager extends sd_evnManager {
 		$vd_lat = $this->vd_lat;
 		// var_dump($this);
 		if($component == 'Located Earthquake Counts'){
-			$query = 'select count(sd_evn_edep) as value,  concat(DATE(sd_evn_time)," 00:00:00") as stime, concat(DATE(sd_evn_time), " 23:59:59") as etime, sd_evn_eqtype, cc_id, sd_evn_derr FROM sd_evn WHERE cc_id = %s AND sd_evn_pmag IS NOT NULL AND sd_evn_pubdate <= now() and sd_evn_edep BETWEEN -10 AND 40 GROUP BY DATE(sd_evn_time) order by sd_evn_time desc';
+			$query = 'select count(sd_evn_edep) as value,  concat(DATE(sd_evn_time)," 00:00:00") as stime, concat(DATE(sd_evn_time), " 23:59:59") as etime, sd_evn_eqtype, cc_id, sd_evn_derr FROM sd_evn WHERE cc_id =%s AND sd_evn_pmag IS NOT NULL AND sd_evn_pubdate <= now() and sd_evn_edep BETWEEN -10 AND 40 GROUP BY DATE(sd_evn_time) order by sd_evn_time desc';
 		}
 
 		// echo $query;
@@ -53,4 +53,8 @@ class sd_evn_loc_eq_countsManager extends sd_evnManager {
 						);
 		return $result;
 	} // params to get data station [unit,flot_style,errorbar,query]
+    protected function setShortDataType()
+    {
+        return "";
+    }
 } 

@@ -46,4 +46,10 @@ class dd_edmManager extends DeformationTablesManager {
 						);
 		return $result;
 	} // params to get data station [unit,flot_style,errorbar,query]
-} 
+
+    protected function setShortDataType()
+    {
+        // TODO: Implement setShortDataType() method.
+        return "EDM";
+    }
+}

@@ -29,7 +29,6 @@ class sd_evnManager extends SeismicTablesManager {
 	} // column name represent primary stationCode1, stationCode2.
 	protected function setStationDataParams($component){
 		$unit="";
-		$attribute = "";
 		$query = "";
 		$table = "sd_evn";
 		$errorbar = true;
@@ -40,9 +39,9 @@ class sd_evnManager extends SeismicTablesManager {
 		if($component == 'Earthquake Depth'){
 			$unit = "km";
 			$style = "circle";
-			$errorbar = true;
+			$errorbar = false;
 			$attribute = "sd_evn_edep";
-			$query = "select a.sd_evn_eqtype  as filter, a.sd_evn_derr as err ,a.sd_evn_time as time, 0 - a.$attribute as value  from $table  as a where ABS($vd_lat - sd_evn_elat) < 1 AND ABS($vd_long - sd_evn_elon) < 6 AND (6371*2*ATAN2(SQRT(SIN((RADIANS(sd_evn_elat)-RADIANS($vd_lat))/2)*SIN((RADIANS(sd_evn_elat)-RADIANS($vd_lat))/2)+SIN((RADIANS(sd_evn_elon)-RADIANS($vd_long))/2)*SIN((RADIANS(sd_evn_elon)-RADIANS($vd_long))/2)*COS(RADIANS($vd_lat))*COS(RADIANS(sd_evn_elat))),SQRT(1-(SIN((RADIANS(sd_evn_elat)-RADIANS($vd_lat))/2)*SIN((RADIANS(sd_evn_elat)-RADIANS($vd_lat))/2)+SIN((RADIANS(sd_evn_elon)-RADIANS($vd_long))/2)*SIN((RADIANS(sd_evn_elon)-RADIANS($vd_long))/2)*COS(RADIANS($vd_lat))*COS(RADIANS(sd_evn_elat)))))) < 100 AND sd_evn_pmag IS NOT NULL AND sd_evn_pubdate <= now() and sd_evn_edep BETWEEN -10 AND 40 and a.sn_id=%s and a.$attribute IS NOT NULL";
+			$query = "select a.sd_evn_eqtype  as filter, a.sd_evn_time as time, 0 - a.$attribute as value  from $table  as a where ABS($vd_lat - sd_evn_elat) < 1 AND ABS($vd_long - sd_evn_elon) < 6 AND (6371*2*ATAN2(SQRT(SIN((RADIANS(sd_evn_elat)-RADIANS($vd_lat))/2)*SIN((RADIANS(sd_evn_elat)-RADIANS($vd_lat))/2)+SIN((RADIANS(sd_evn_elon)-RADIANS($vd_long))/2)*SIN((RADIANS(sd_evn_elon)-RADIANS($vd_long))/2)*COS(RADIANS($vd_lat))*COS(RADIANS(sd_evn_elat))),SQRT(1-(SIN((RADIANS(sd_evn_elat)-RADIANS($vd_lat))/2)*SIN((RADIANS(sd_evn_elat)-RADIANS($vd_lat))/2)+SIN((RADIANS(sd_evn_elon)-RADIANS($vd_long))/2)*SIN((RADIANS(sd_evn_elon)-RADIANS($vd_long))/2)*COS(RADIANS($vd_lat))*COS(RADIANS(sd_evn_elat)))))) < 100 AND sd_evn_pmag IS NOT NULL AND sd_evn_pubdate <= now() and sd_evn_edep BETWEEN -10 AND 40 and a.sn_id=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'Earthquake Magnitude'){
 			$style = "circle";
 			$errorbar = false;
@@ -58,4 +57,10 @@ class sd_evnManager extends SeismicTablesManager {
 						);
 		return $result;
 	} // params to get data station [unit,flot_style,errorbar,query]
-} 
+
+    protected function setShortDataType()
+    {
+        // TODO: Implement setShortDataType() method.
+        return "Network Events";
+    }
+}

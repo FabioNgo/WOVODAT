@@ -83,7 +83,9 @@ define(function(require) {
       this.$el.html("");
 
       var selectingEruption = this.selectingEruptions.models[0];
-      
+      if(selectingEruption == undefined){
+        selectingEruption = new Eruption({'ed_id':-1});
+      }
       this.$el.html(this.template({
         eruptions: this.availableEruptions,
         eruptionsNotAvailable: this.availableEruptions.notAvailable,

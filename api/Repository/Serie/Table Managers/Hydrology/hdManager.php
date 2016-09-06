@@ -92,4 +92,10 @@ class hdManager extends HydrologyTablesManager {
 						);
 		return $result;
 	} // params to get data station [unit,flot_style,errorbar,query]
-} 
+
+    protected function setShortDataType()
+    {
+        // TODO: Implement setShortDataType() method.
+        return "Hydrologic";
+    }
+}

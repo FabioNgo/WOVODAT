@@ -69,4 +69,10 @@ class gd_pluManager extends GasTablesManager {
 						);
 		return $result;
 	} // params to get data station [unit,flot_style,errorbar,query]
-} 
+
+    protected function setShortDataType()
+    {
+        // TODO: Implement setShortDataType() method.
+        return "Plume";
+    }
+}

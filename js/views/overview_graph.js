@@ -4,11 +4,8 @@ define(function(require) {
       Backbone = require('backbone'),
       _ = require('underscore'),
       flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection','excanvas','jquery.flot.errorbars','jquery.flot.legendoncanvas','jquery.flot.axislabels']),
-      TimeRange = require('models/time_range'),
       GraphHelper = require('helper/graph'),
-      //Filter Color for each earthquake type configuration
       loading = require('text!templates/loading.html'),
-      FilterColor = require('models/filter_color'),
       FilterColorCollection = require('collections/filter_colors');
   return Backbone.View.extend({
     loading: _.template(loading),
@@ -20,6 +17,8 @@ define(function(require) {
       this.filterColorCollection = new FilterColorCollection({
         offline: options.offline
       });
+      this.initialDataMaxTime = options.initialDataMaxTime;
+      this.initialDataMinTime = options.initialDataMinTime;
       this.categories = options.categories;
       //console.log(this.filterColorCollection);
 
@@ -89,6 +88,13 @@ define(function(require) {
     },
     render: function() {
       // this.showLoading();
+      if(this.initialDataMinTime != undefined){
+        this.minX = this.initialDataMinTime;
+      }
+      if(this.initialDataMaxTime != undefined){
+        this.maxX = this.initialDataMaxTime;
+      }
+
       var options = {
         grid:{
           // margin: 20,
@@ -161,7 +167,7 @@ define(function(require) {
 
       //this.$el.bind('plotselected', this.selectingTimeRange, this.onSelect);
       this.$el.bind('plotselected', eventData, this.onSelect);
-
+      this.initialDataMinTime = this.initialDataMaxTime = undefined;
     },
 
     update: function() {
