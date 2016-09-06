@@ -37,8 +37,8 @@ define(function (require) {
 
         initialize: function (options) {
             this.selecting_vd_num = options.vnum;
-            this.ed_stime_num = new Date(options.ed_stime).getTime();
-            this.ed_etime_num = new Date(options.ed_etime).getTime();
+            this.ed_stime_num = new Date(options.ed_stime.replace(" ","T")).getTime();
+            this.ed_etime_num = new Date(options.ed_etime).replace(" ","T").getTime();
             this.selectedTimeSeries = {};
             if(options.dataType != undefined){
                 var temp = options.dataType.split(" (");
@@ -50,8 +50,8 @@ define(function (require) {
                 this.selectedTimeSeries = {
                     dataType: temp[0],
                     filter: temp[1],
-                    dataMinTime: new Date(options.dataMinTime).getTime(),
-                    dataMaxTime: new Date(options.dataMaxTime).getTime(),
+                    dataMinTime: new Date(options.dataMinTime.replace(" ","T")).getTime(),
+                    dataMaxTime: new Date(options.dataMaxTime.replace(" ","T")).getTime(),
                 };
             }
 
