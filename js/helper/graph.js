@@ -4,6 +4,9 @@ define(function (require) {
     // var this = require('helper/math');
     return {
         generateTick: function (min, max) {
+            if(min == undefined || max == undefined){
+                return [-0.5,0,0.5];
+            }
             if(min == max){
                 var temp = this.exponentialDegree(min);
                 if(temp == 0){
