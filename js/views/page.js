@@ -37,8 +37,11 @@ define(function (require) {
 
         initialize: function (options) {
             this.selecting_vd_num = options.vnum;
-            this.ed_stime_num = new Date(options.ed_stime.replace(" ","T")).getTime();
-            this.ed_etime_num = new Date(options.ed_etime.replace(" ","T")).getTime();
+            if(options.ed_etime != undefined&&options.ed_stime != undefined ){
+                this.ed_stime_num = new Date(options.ed_stime.replace(" ","T")).getTime();
+                this.ed_etime_num = new Date(options.ed_etime.replace(" ","T")).getTime();
+            }
+
             this.selectedTimeSeries = {};
             if(options.dataType != undefined){
                 var temp = options.dataType.split(" (");

@@ -43,7 +43,9 @@ define(function(require) {
     },
 
     render: function() {
-      
+      this.$el.append("<div id = \"overview-title\" style = \"padding-left: 50px;display:none;\">" +
+          "<a style = \" font-weight: bold; color : black;\">Overview Graph.</a> <br>" +
+          "<a style = \" padding-left : 10px;color : black; \">Highlight selected time range using mouse</a></div>");
       this.overviewGraph.$el.appendTo(this.$el);
     }
   });
