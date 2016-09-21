@@ -152,7 +152,7 @@ define(function(require) {
 
       this.$el.width('auto');
       this.$el.height(200);
-      this.$el.addClass("overview-graph card-panel");
+      this.$el.addClass("overview-graph");
 
       //limit data to be rendered
       

@@ -12,7 +12,6 @@ define(function (require) {
 
     return Backbone.View.extend({
         el: '',
-        className: 'mgt20',
         events: {
             'change select': 'selectChangedHandler',
             'change input': 'selectChangedHandler'

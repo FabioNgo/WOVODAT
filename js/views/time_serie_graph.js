@@ -197,7 +197,7 @@ define(['require', 'views/series_tooltip', 'text!templates/tooltip_serie.html'],
                 // console.log(this.data);
                 this.$el.width('auto');
                 this.$el.height(200);
-                this.$el.addClass('time-serie-graph card-panel');
+                this.$el.addClass('time-serie-graph');
                 // plot the time series graph after being selected (eg. onSelect in OverViewGraph).
                 // config graph theme colors
                 options.colors = ["#000000", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"];

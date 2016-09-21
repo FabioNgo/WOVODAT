@@ -4,6 +4,14 @@ define(function (require) {
     // var this = require('helper/math');
     return {
         generateTick: function (min, max) {
+            if(min == max){
+                var temp = this.exponentialDegree(min);
+                if(temp == 0){
+                    temp = 1;
+                }
+                var diff = 0.5*temp;
+                return [min - diff,min,min+diff];
+            }
             var ticks = [];
             var numStep = 7;
             /** compute exponential Degree **/
@@ -306,7 +314,7 @@ define(function (require) {
             // }else{
             //    desCoe = 0;
             //  }
-            number = Math.round(number);
+            number = Math.ceil(number);
             return number * Math.pow(10, desExpDegree);
         },
         exponentialDegree: function (value) {
