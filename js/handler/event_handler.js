@@ -205,8 +205,8 @@ define(function(require) {
       
       this.eruptionSelect.selectingTimeRangeChanged(this.selectingTimeRange);
       this.serieGraphTimeRange.set({
-        'startTime': this.selectingTimeRange.get('startTime'),
-        'endTime': this.selectingTimeRange.get('endTime'),
+        'minX': this.selectingTimeRange.get('minX'),
+        'maxX': this.selectingTimeRange.get('maxX'),
         'overviewGraphMinX': this.selectingTimeRange.get('overviewGraphMinX'),
         'overviewGraphMaxX': this.selectingTimeRange.get('overviewGraphMaxX'),
       });
@@ -216,8 +216,8 @@ define(function(require) {
     },
     highlightOverViewGraphChanged: function(e){
       this.selectingTimeRange.set({
-        selectedMinX: this.serieGraphTimeRange.get('minX'),
-        selectedMaxX: this.serieGraphTimeRange.get('maxX')
+        minX: this.serieGraphTimeRange.get('minX'),
+        maxX: this.serieGraphTimeRange.get('maxX')
       })
       // console.log(this.selectingTimeRange);
       this.overviewGraph.selectingRegionChanged(this.selectingTimeRange);

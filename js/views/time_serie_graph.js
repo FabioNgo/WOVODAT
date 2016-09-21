@@ -26,17 +26,18 @@ define(['require', 'views/series_tooltip', 'text!templates/tooltip_serie.html'],
                 });
                 // console.log(this.serieGraphTimeRange);
                 this.prepareData();
+                this.zoomBounded = false;
             },
 
             timeRangeChanged: function (TimeRange) {
                 if (TimeRange == undefined) {
                     return;
                 }
-                this.minX = TimeRange.get('startTime');
-                this.maxX = TimeRange.get('endTime');
+                this.minX = TimeRange.get('minX');
+                this.maxX = TimeRange.get('maxX');
                 this.overviewGraphMinX = TimeRange.get('overviewGraphMinX');
                 this.overviewGraphMaxX = TimeRange.get('overviewGraphMaxX');
-                //this.render();
+                // this.render();
                 //console.log(this.filters);
                 // put this new time range into filter as attributes.
                 //this.prepareData();
@@ -216,7 +217,22 @@ define(['require', 'views/series_tooltip', 'text!templates/tooltip_serie.html'],
                     original_option: options,
                     timeRange: this.serieGraphTimeRange
                 }
+                // if(!this.zoomBounded){
+                this.$el.unbind('plotzoom');
                 this.$el.bind('plotzoom', eventData, this.onZoom);
+                this.zoomBounded = true;
+                // }
+
+
+            },
+            update: function() {
+
+                if(this.data==undefined){
+                    return;
+                }
+                options.
+                this.graph = $.plot(this.$el, this.data, options);
+
 
             },
             onZoom: function (event, plot) {
@@ -226,15 +242,15 @@ define(['require', 'views/series_tooltip', 'text!templates/tooltip_serie.html'],
                 var data = event.data.data;
                 var self = event.data.self;
                 /* The zooming range cannot wider than the original range */
-                if (xaxis.min < event.data.startTime || xaxis.max > event.data.endTime) {
-                    option.xaxis.min = event.data.startTime;
-                    option.xaxis.max = event.data.endTime;
+                if (xaxis.min < event.data.overviewGraphMinX || xaxis.max > event.data.overviewGraphMaxX) {
+                    xaxis.min = event.data.overviewGraphMinX;
+                    xaxis.max = event.data.overviewGraphMaxX;
 
-                    event.data.graph = $.plot(event.data.el, data, option);
+                    // event.data.graph = $.plot(event.data.el, data, option);
 
-                    self.setUpTimeranges(option.xaxis.min, option.xaxis.max);
+                    // self.setUpTimeranges(xaxis.min, xaxis.max);
                 } else {
-                    self.setUpTimeranges(xaxis.min, xaxis.max);
+                    // self.setUpTimeranges(xaxis.min, xaxis.max);
                 }
                 /* This part of code below allow the zoom in time series graph to extend maximumly to be the same
                  as the range of the overviewgraph */
@@ -250,6 +266,7 @@ define(['require', 'views/series_tooltip', 'text!templates/tooltip_serie.html'],
                 })
                 // console.log(event.data.timeRange);
                 event.data.timeRange.trigger('zoom');
+                event.data.timeRange.trigger('update');
                 //event.data.trigger('update');
                 //console.log(data);
                 //console.log(xaxis.min);
@@ -257,27 +274,6 @@ define(['require', 'views/series_tooltip', 'text!templates/tooltip_serie.html'],
                 //console.log(xaxis.min);
 
                 //console.log(event.data.timeRange);
-
-            },
-            setUpTimeranges: function (startTime, endTime) {
-                // this.serieGraphTimeRange.set({
-                //   'startTime': startTime,
-                //   'endTime': endTime,
-                // });
-                // // console.log(this.serieGraphTimeRange);
-
-                // this.serieGraphTimeRange.trigger('update',this.serieGraphTimeRange);
-                // this.forecastsGraphTimeRange.set({
-                //   'startTime': startTime,
-                //   'endTime': endTime,
-                // });
-                // this.forecastsGraphTimeRange.trigger('update',this.forecastsGraphTimeRange);
-                // this.eruptionTimeRange.set({
-                //   'startTime': startTime,
-                //   'endTime': endTime,
-                // });
-                // this.eruptionTimeRange.trigger('update',this.eruptionTimeRange);
-
 
             },
             prepareData: function () {

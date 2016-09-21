@@ -20,6 +20,7 @@ define(function (require) {
             this.categories = options.categories;
             this.beingShown = false;
             this.graphs = [];
+            this.$el.append('<div class = "individual-graph-title" style = "font-weight: bold; color : black; background-color:white; padding-left: 50px; display: none">INDIVIDUAL GRAPHS');
         },
 
         // addGraph : function( filter ) {
@@ -53,6 +54,7 @@ define(function (require) {
                 serieGraphTimeRange: this.serieGraphTimeRange,
                 forecastsGraphTimeRange: this.forecastsGraphTimeRange,
             });
+            this.$el.append(timeSerieGraph.$el);
             this.graphs.push(timeSerieGraph);
             // this.show();
 
@@ -60,25 +62,13 @@ define(function (require) {
 
             // this.filterObserver.trigger("filter-change");
         },
-
-        // removeGraph : function( timeSerie ) {
-        // 	// var val = filter.get("filter");
-        // 	// this.graphs[val].destroy();
-        //    for (var i = 0; i < this.graphs.length; i++) {
-        //      if(this.graphs[i].timeSerie.id == timeSerie.id){
-        //        this.graphs[i].destroy();
-        //        this.graphs.splice(i,i+1); //remove graph
-        //        break;
-        //      }
-        //    };
-        // 	// this.filterObserver.trigger("filter-change");
-        // },
         serieGraphTimeRangeChanged: function (timeRange) {
+
             for (var i = 0; i < this.graphs.length; i++) {
                 this.graphs[i].timeRangeChanged(timeRange);
             }
-            ;
             this.show();
+
         },
         selectingFiltersChanged: function (selectingFilters) {
             this.graphs.length = 0;
@@ -101,31 +91,19 @@ define(function (require) {
         hide: function () {
             this.$el.html("");
             this.$el.removeClass("card-panel");
+            $('#individual-graph-title').css({display: "none"});
         },
         show: function () {
-            this.$el.html("");
-            this.$el.append("<div class = \"individual-graph-title\" style = \"font-weight: bold; color : black; background-color:white; padding-left: 50px; \">INDIVIDUAL GRAPHS");
+            // this.$el.html("");
+            $('#individual-graph-title').css({display: "block"});
             this.$el.addClass("card-panel");
             for (var i = 0; i < this.graphs.length; i++) {
-                this.$el.append(this.graphs[i].$el);
+
                 this.graphs[i].show();
 
             }
             ;
         },
-        destroy: function () {
-            // From StackOverflow with love.
-            //console.log("destroy");
-            for (var g in this.graphs) {
-                if (this.graphs.hasOwnProperty(g)) {
-                    this.graphs[g].destroy();
-                }
-            }
-            this.undelegateEvents();
-            this.$el.removeData().unbind();
-            this.remove();
-            Backbone.View.prototype.remove.call(this);
-        }
 
     });
 

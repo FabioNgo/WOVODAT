@@ -25,7 +25,7 @@ define(function (require) {
         Filters = require('collections/filters'),
         TimeRange = require('models/time_range'),
         TimeSeries = require('collections/series'),
-        TimeSeriesContainer = require('views/time_series_container'),
+        // TimeSeriesContainer = require('views/time_series_container'),
         Tooltip = require('views/series_tooltip'),
         TimeSeriesGraphContainer = require('views/time_serie_graph_container'),
         EventHandler = require('handler/event_handler'),
