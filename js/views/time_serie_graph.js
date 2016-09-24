@@ -8,6 +8,7 @@ define(['require', 'views/series_tooltip', 'text!templates/tooltip_serie.html'],
             // flot = require(['jquery.flot', 'jquery.flot.time', 'jquery.flot.navigate', 'jquery.flot.selection', 'jquery.flot.errorbars', 'jquery.flot.axislabels','jquery.flot.legendoncanvas']),
 
             serieTooltipTemplate = require('text!templates/tooltip_serie.html'),
+            // template = require('text!templates/time_serie_graph.html'),
             Tooltip = require('views/series_tooltip'),
             TimeRange = require('models/time_range'),
             GraphHelper = require('helper/graph');
@@ -25,8 +26,12 @@ define(['require', 'views/series_tooltip', 'text!templates/tooltip_serie.html'],
                     template: serieTooltipTemplate
                 });
                 // console.log(this.serieGraphTimeRange);
+
+                this.id = this.filters.timeSerie.get("sr_id")+"."+this.filters.filterAttributes[0].name;
+                this.$el.attr('id',this.id);
+                this.$el.html('<div id="allowErrorBar.'+this.id+'" style="padding-left: 50px">  </div> <div id="graph.'+this.id+'"> </div>');
+                this.allowErrorBar = true;
                 this.prepareData();
-                this.zoomBounded = false;
             },
 
             timeRangeChanged: function (TimeRange) {
@@ -59,12 +64,32 @@ define(['require', 'views/series_tooltip', 'text!templates/tooltip_serie.html'],
                 //this.timeRangeChanged(this.timeRange);
                 this.render();
             },
+            showCheckbox : function(){
+                //checkbox
+                var checkboxRegion =$('[id="allowErrorBar.'+this.id+'"]');
+                checkboxRegion.html('<form action="#"> <input type="checkbox" id="checkbox.'+this.id+'" checked="'+ String(!this.allowErrorBar)+'" class="filled-in"/> <label for="checkbox.'+this.id+'">Disable error bar</label> </form>');
+                var checkbox = $('[id="checkbox.'+this.id+'"]');
+                var self = this;
+                // checkbox.
+                checkbox[0].checked = !this.allowErrorBar;
+                checkbox.change(self,function(e){
+                    self.allowErrorBar = !this.checked;
+                    var oldMinX = self.minX;
+                    var oldMaxX = self.maxX;
+                    self.prepareData();
+                    self.minX = oldMinX;
+                    self.maxX = oldMaxX;
+                    self.render();
+                });
+            },
             render: function () {
+
                 var options;
                 if (this.data == undefined) {
                     return;
                 }
-                this.$el.html("");
+
+                this.showCheckbox();
                 var unit = undefined;
                 for (var i = 0; i < this.data.length; i++) {
                     if (this.data[i].yaxis.axisLabel != undefined) {
@@ -197,13 +222,18 @@ define(['require', 'views/series_tooltip', 'text!templates/tooltip_serie.html'],
                 }
                 // console.log(this.data);
                 this.$el.width('auto');
-                this.$el.height(200);
+                this.$el.height('auto');
+                var graphHolder = $('[id="graph.'+this.id+'"]');
+                graphHolder.height('200');
+                graphHolder.width('auto');
                 this.$el.addClass('time-serie-graph');
                 // plot the time series graph after being selected (eg. onSelect in OverViewGraph).
                 // config graph theme colors
                 options.colors = ["#000000", "#afd8f8", "#cb4b4b", "#4da74d", "#9440ed"];
                 //console.log(this.data);
-                this.graph = $.plot(this.$el, this.data, options);
+                var temp = this.$el.children();
+                // console.log(this.minX+" "+this.maxX);
+                this.graph = $.plot(graphHolder, this.data, options);
                 this.$el.bind('plothover', this.tooltip, this.onHover);
                 var eventData = {
                     startTime: this.minX,
@@ -225,56 +255,20 @@ define(['require', 'views/series_tooltip', 'text!templates/tooltip_serie.html'],
 
 
             },
-            update: function() {
-
-                if(this.data==undefined){
-                    return;
-                }
-                options.
-                this.graph = $.plot(this.$el, this.data, options);
-
-
-            },
             onZoom: function (event, plot) {
-                //console.log(event);
-                var option = event.data.original_option;
                 var xaxis = plot.getXAxes()[0];
-                var data = event.data.data;
-                var self = event.data.self;
                 /* The zooming range cannot wider than the original range */
                 if (xaxis.min < event.data.overviewGraphMinX || xaxis.max > event.data.overviewGraphMaxX) {
                     xaxis.min = event.data.overviewGraphMinX;
                     xaxis.max = event.data.overviewGraphMaxX;
-
-                    // event.data.graph = $.plot(event.data.el, data, option);
-
-                    // self.setUpTimeranges(xaxis.min, xaxis.max);
                 } else {
-                    // self.setUpTimeranges(xaxis.min, xaxis.max);
                 }
-                /* This part of code below allow the zoom in time series graph to extend maximumly to be the same
-                 as the range of the overviewgraph */
-                //Zoom error!!!!
-                // if(xaxis.min < event.data.overviewGraphMinX || xaxis.max > event.data.overviewGraphMaxX){
-                //   option.xaxis.min = this.overviewGraphMinX;
-                //   option.xaxis.min = this.overviewGraphMaxX;
-                //   event.data.graph = $.plot(event.data.el,data,option);
-                // }
                 event.data.timeRange.set({
                     minX: xaxis.min,
                     maxX: xaxis.max
                 })
-                // console.log(event.data.timeRange);
                 event.data.timeRange.trigger('zoom');
                 event.data.timeRange.trigger('update');
-                //event.data.trigger('update');
-                //console.log(data);
-                //console.log(xaxis.min);
-                //console.log(event.data.data);
-                //console.log(xaxis.min);
-
-                //console.log(event.data.timeRange);
-
             },
             prepareData: function () {
                 if (this.filters == undefined) {
@@ -282,19 +276,10 @@ define(['require', 'views/series_tooltip', 'text!templates/tooltip_serie.html'],
                     return;
                 }
                 var filters = [this.filters];
-                var allowErrorbar = true;
+                var allowErrorbar = this.allowErrorBar;
                 var allowAxisLabel = true;
                 var limitNumberOfData = false;
-                //formatData: function(graph,filters,allowErrorbar,allowAxisLabel,limitNumberOfData)
                 GraphHelper.formatData(this, filters, allowErrorbar, allowAxisLabel, limitNumberOfData);
-            },
-
-            destroy: function () {
-                // From StackOverflow with love.
-                this.undelegateEvents();
-                this.$el.removeData().unbind();
-                this.remove();
-                Backbone.View.prototype.remove.call(this);
             }
         });
     });

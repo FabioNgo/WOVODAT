@@ -26,7 +26,7 @@ define(function(require) {
     
     selectingFiltersChanged: function(selectingFilters) {
       this.selectingFilters = selectingFilters;
-      if(selectingFilters.length == 0){
+      if(selectingFilters.empty){
         this.hide();
       }
       this.update();
@@ -69,7 +69,7 @@ define(function(require) {
       //   maxX = selectedMaxX;
       // }
       // console.log(this.timeRange);
-        console.log(selectedMinX + " "+ selectedMaxX);
+      //   console.log(selectedMinX + " "+ selectedMaxX);
       this.graph.setSelection({
         xaxis: {
           from: selectedMinX,

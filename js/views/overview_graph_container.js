@@ -21,13 +21,11 @@ define(function (require) {
             this.observer = options.observer;
             this.overviewSelectingTimeSeries = options.selectingTimeSeries;
             this.overviewGraph = options.graph;
-            this.$el.append("<div id = \"overview-title\" style = \"padding-left: 50px;display:none;\">" +
-                "<a style = \" font-weight: bold; color : black;\">Overview Graph.</a> <br>" +
-                "<a style = \" padding-left : 10px;color : black; \">Highlight selected time range using mouse</a></div>");
+            this.$el.append('<div id = "overview-title" style = "padding-left: 50px;display:none;"> <a style = " font-weight: bold; color : black;">Overview Graph.</a> <br><a style = "padding-left : 10px;color : black;">Highlight selected time range using mouse</a></div><div id="graph"></div>');
         },
         //hide overview graph from page
         hide: function () {
-            this.$el.html("");
+            // this.$el.html("");
             this.$el.removeClass("card-panel");
             this.trigger('hide');
             $('#overview-title').css({display:"none"});
@@ -40,7 +38,7 @@ define(function (require) {
         },
         selectingFiltersChanged: function (selectingFilters) {
             this.selectingFilters = selectingFilters;
-            if (this.selectingFilters.empty) {
+            if (selectingFilters.empty) {
                 this.hide();
             } else {
                 this.show();
@@ -50,7 +48,7 @@ define(function (require) {
         render: function () {
             this.$el.addClass("card-panel");
 
-            this.overviewGraph.$el.appendTo(this.$el);
+            this.overviewGraph.$el.appendTo(this.$el.children("#graph"));
         }
     });
 });

@@ -164,10 +164,14 @@ define(function(require) {
     },
     timeSeriesSelectHidden: function(e){
       this.filtersSelect.hide();
+
       
     },
     filtersSelectHidden: function(e){
       this.overviewGraph.hide();
+      this.overviewGraphContainer.hide();
+      this.overviewGraph.hide();
+      this.timeSeriesGraphContainer.hide();
       // this.eruptionSelect.hide();
       // this.eruptionSelect.show();
     },

@@ -20,7 +20,7 @@ define(function (require) {
             this.categories = options.categories;
             this.beingShown = false;
             this.graphs = [];
-            this.$el.append('<div class = "individual-graph-title" style = "font-weight: bold; color : black; background-color:white; padding-left: 50px; display: none">INDIVIDUAL GRAPHS');
+            this.$el.append('<div id = "individual-graph-title" style = "font-weight: bold; color : black; background-color:white; padding-left: 50px; display: none">INDIVIDUAL GRAPHS</div><div id="graph"></div>');
         },
 
         // addGraph : function( filter ) {
@@ -54,7 +54,7 @@ define(function (require) {
                 serieGraphTimeRange: this.serieGraphTimeRange,
                 forecastsGraphTimeRange: this.forecastsGraphTimeRange,
             });
-            this.$el.append(timeSerieGraph.$el);
+            this.$el.children("#graph").append(timeSerieGraph.$el);
             this.graphs.push(timeSerieGraph);
             // this.show();
 
@@ -72,7 +72,7 @@ define(function (require) {
         },
         selectingFiltersChanged: function (selectingFilters) {
             this.graphs.length = 0;
-            this.$el.html("");
+            this.$el.children("#graph").html("");
             var filters = [];
             var categories = this.categories;
             for (var i = 0; i < categories.length; i++) {
@@ -83,13 +83,13 @@ define(function (require) {
             for (var i = 0; i < filters.length; i++) {
                 this.addGraph(filters[i]);
             }
-            ;
+            this.hide();
         },
         // render: function(selectingTimeSeries) {
         //   this.overviewGraph.$el.appendTo(this.$el);
         // },
         hide: function () {
-            this.$el.html("");
+            // this.$el.html("");
             this.$el.removeClass("card-panel");
             $('#individual-graph-title').css({display: "none"});
         },

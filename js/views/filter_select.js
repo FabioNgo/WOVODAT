@@ -26,11 +26,9 @@ define(function (require) {
         selectingTimeSeriesChanged: function (selectingTimeSeries) {
             this.selectingTimeSeries = selectingTimeSeries;
             // this.filters.reset();
-            if (this.selectingTimeSeries.length == 0) {
-                this.hide();
-            } else {
-                this.render(this.filters);
-            }
+
+            this.render(this.filters);
+
 
         },
         //this.filter is grouped by timeSerie and category
