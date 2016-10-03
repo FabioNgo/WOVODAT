@@ -5,6 +5,8 @@ define(function(require) {
       _ = require('underscore'),
       template = require('text!templates/volcano_select.html'),
       loading = require('text!templates/loading.html'),
+      // template1 = require('text!templates/time_serie_graph.html'),
+
       offline_dialog = require('text!templates/make_it_offline.html'),
       word_distance = require('helper/word-distance'),
       Handlebars = require('handlebars'),
@@ -15,6 +17,7 @@ define(function(require) {
     className : 'volcano-select',
     template: _.template(template),
     loading: _.template(loading),
+      // temp: _.template(template1),
     offline_dialog : _.template(offline_dialog),
     events: {
       // 'change select': 'onSelectChange',

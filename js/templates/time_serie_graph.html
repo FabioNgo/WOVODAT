@@ -1,9 +1,10 @@
-<div id="allowErrorBar">
-    <form action="#">
-        <input type="checkbox" id="test5"/>
-        <label for="test5">Red</label>
-    </form>
+<div id="functions.{{id}}" style="padding-left: 50px; display: none">
+    {{#if hasErrorBar}}
+        <input type="checkbox" id="checkbox.{{id}}" class="filled-in"/>
+        <label for="checkbox.{{id}}">Disable error bar</label>
+    {{/if}}
+    <a id="csv.{{id}}" style="display: none" class="waves-effect waves-light btn">Export to CSV</a>
 </div>
-<div id="graph">
+<div id="graph.{{id}}">
 
 </div>
