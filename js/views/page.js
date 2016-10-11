@@ -187,6 +187,7 @@ define(function (require) {
                     eruptionTimeRange: eruptionTimeRange,
                     serieGraphTimeRange: serieGraphTimeRange,
                     forecastsGraphTimeRange: forecastsGraphTimeRange,
+                    selectedVolcano : selectingVolcano,
                     // timeRange: timeRange
 
                 }),

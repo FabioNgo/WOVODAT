@@ -10,6 +10,7 @@ define(function (require) {
         el: '',
         className: "time-series-graph-container",
         initialize: function (options) {
+            this.selectedVolcano = options.selectedVolcano;
             this.selectingTimeSeries = options.selectingTimeSeries;
             this.serieGraphTimeRange = options.serieGraphTimeRange;
             this.eruptionTimeRange = options.eruptionTimeRange;
@@ -53,6 +54,7 @@ define(function (require) {
                 eruptionTimeRange: this.eruptionTimeRange,
                 serieGraphTimeRange: this.serieGraphTimeRange,
                 forecastsGraphTimeRange: this.forecastsGraphTimeRange,
+                selectedVolcano: this.selectedVolcano
             });
             this.$el.children("#graph").append(timeSerieGraph.$el);
             this.graphs.push(timeSerieGraph);

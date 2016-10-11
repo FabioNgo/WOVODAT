@@ -23,6 +23,7 @@ define(function (require) {
         },
         initialize: function (options) {
             this.filters = options.filters;
+            this.selectedVolcano = options.selectedVolcano;
             this.eruptionTimeRange = options.eruptionTimeRange;
             this.serieGraphTimeRange = options.serieGraphTimeRange;
             this.forecastsGraphTimeRange = options.forecastsGraphTimeRange;
@@ -308,33 +309,51 @@ define(function (require) {
             var listContent = [];
 
             var content =[];
+            var volcanoName = this.selectedVolcano.get("vd_name");
             var stationName =  this.filters.timeSerie.attributes.station_code1;
-            var volcanoName = this.filters.timeSerie.attributes.volcanoName;
             var showingName = this.data[0].label;
             var filterName =  this.filters.filterAttributes[0].name;
 
-            var data = this.data.filters.timeSerie.attributes.data;
+            var data = this.filters.timeSerie.attributes.data.data;
             for (var p = 0 ; p  < data.length; p++){
                 if (data[p].filter != filterName) continue;
-                var time =  data[p].time;
+                var startTimeStr;
+                var endTimeStr;
+                var startTime
+                var dateFormat = {year: "numeric", month: "short",
+                    day: "numeric", hour: "2-digit", minute: "2-digit"}
+                if(data[p].time != undefined){
+                    startTime = data[p].time;
+                    startTimeStr = new Date(data[p].time).toDateString();
+                    endTimeStr = "";
+                }else{
+                    startTime = data[p].stime;
+                    startTimeStr = new Date(data[p].stime).toLocaleTimeString();
+                    endTimeStr = new Date(data[p].etime).toLocaleTimeString();
+                }
+
                 var value = data[p].value;
-                var dataOwner  =   data[p].data_owner.join(",");
+                // var dataOwner  =   data[p].data_owner.join(",");
+                var dataOwner  =   "";
+                var station = this.filters.timeSerie.get("station_code1");
                 var dataCode = data[p].data_code;
+                var network =  this.filters.timeSerie.get("short_data_type");
+                var monitoringData = this.filters.timeSerie.get("component")+" (" + filterName + ")";
                 var uncertainty = data[p].error;
                 if (uncertainty == undefined) uncertainty = "";
-                var dateTime = new Date(time);
-                var dateStr = dateTime.getDate() + "-" + dateTime.getMonth() + "-" + dateTime.getYear() + " " + dateTime.getHours() + ":" + dateTime.getMinutes() + ":" +  dateTime.getSeconds();
-                if (time >= this.serieGraphTimeRange.attributes.startTime && time <= this.serieGraphTimeRange.attributes.endTime){
+                if (startTime >= this.minX && startTime <= this.maxX){
                     //console.log (value);
                     var d = {
-                        showName: showingName,
-                        time: dateStr,
-                        value : value,
+                        volcano: volcanoName,
+                        network: network,
+                        station: station,
+                        monitoringData: monitoringData,
+                        data : value,
+                        startTime: startTimeStr,
+                        endTime: endTimeStr,
                         uncertainty : uncertainty,
-                        stationName : stationName,
-                        volcanoName : volcanoName,
                         dataOwner : dataOwner,
-                        dataCode : dataCode,
+                        showingName: showingName
                     }
                     content.push(d);
                 }
@@ -343,31 +362,31 @@ define(function (require) {
 
             if (this.data == undefined) return;
 
-            var headers = ['Volcano Name', 'Station/Seismic Network Name', 'Date time', 'Code of data',
-                'Data','Data-uncertainty', 'Data Owner'];
+            var headers = ['Volcano','Network', 'Station','Monitoring Data (Type)','Data','Start Time','End Time',
+                            'Data Uncertainty','Data Owner'];
             //var z = new Zip();
             //console.log(z);
             var zip =  new JSZip();
-            for (var i = 0 ; i < listContent.length; i++){
+            // for (var i = 0 ; i < listContent.length; i++){
                 var csvContent = "data:text/csv;charset=utf-8,";
                 var total = 0;
 
-                var content = listContent[i];
-                if (content == undefined) continue;
+                // var content = listContent[i];
+                // if (content == undefined) continue;
                 var dataString = "";
                 for (var p = 0 ; p < content.length; p++){
                     total++;
                     var d = content[p];
-                    dataString += d.volcanoName + ",\"" + d.stationName + "\",\"" + d.time + "\",\"" + d.dataCode + " \",\"" + d.value + "\",\""
-                        + d.uncertainty + "\",\"" + d.dataOwner + " \"\n";
+                    dataString += d.volcano + ",\"" + d.network + "\",\"" + d.station + "\",\"" + d.monitoringData + " \",\"" + d.data + "\",\""
+                        + d.startTime + "\",\"" + d.endTime + " \",\"" + d.uncertainty + " \",\"" + d.dataOwner + " \"\n";
                 }
 
                 csvContent += "Total number of earthquakes: " + total + " \n";
                 csvContent += "(100 km from volcanic vent)\n";
                 csvContent += headers.join(",") + "\n";
                 csvContent += dataString + "\n";
-                zip.file(content[0].showName +".csv", csvContent);
-            }
+                zip.file(content[0].showingName +".csv", csvContent);
+            // }
             zip.generateAsync({type:"blob"})
                 .then(function (blob) {
                     saveAs(blob, "data.zip");
