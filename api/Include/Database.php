@@ -197,10 +197,12 @@
 		 *   The result of this SQL query
 		 */
 		function query($sql) {
+//		    echo("ads");
 			$args = func_get_args();
 			array_shift($args);
+            echo $sql."\n";
 			$this->_sql = $this->replacePrefix($this->parseArgument($sql, $args));
-			
+			echo $this->sql;
 			$this->_cursor = mysql_query($this->_sql, $this->_resource);
 			return $this->_cursor;
 		}

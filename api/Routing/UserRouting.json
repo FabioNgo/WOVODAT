@@ -1,0 +1,18 @@
+{
+    "controller": "UserController",
+    "routing":
+    [
+        {
+            "request": "add_user",
+            "method": "addUser",
+            "params": 
+                [
+                    "id",
+                    "name",
+                    "email",
+                    "institution"
+                ]
+                
+        }
+    ]
+}
