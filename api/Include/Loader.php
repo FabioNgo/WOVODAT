@@ -13,6 +13,7 @@
 				if (is_dir($path . $file)) {
 					// self::loadFolder($path . $file . '/');
 				} else if (substr($file, -4) === '.php') {
+//				    echo ($path.$file."\n");
 					require_once($path . $file);
 				}
 			}
