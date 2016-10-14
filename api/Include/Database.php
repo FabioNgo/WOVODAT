@@ -145,7 +145,7 @@
 			if ($startPos < $n) {
 				$literal .= substr($sql, $startPos, $n - $startPos);
 			}
-				
+
 			return $literal;
 		}
 		
@@ -159,7 +159,6 @@
 		 *   The good query
 		 */
 		function parseArgument($sql, $args = array()) {
-			
 			$temp = '';
 			$offset = 0;
 			$i = 0;
@@ -200,9 +199,9 @@
 			$args = func_get_args();
 			array_shift($args);
 			$this->_sql = $this->replacePrefix($this->parseArgument($sql, $args));
-
+//            echo($this->_sql);
 			$this->_cursor = mysql_query($this->_sql, $this->_resource);
-			return $this->_cursor;
+			return $this->_sql;
 		}
 		
 		/**
