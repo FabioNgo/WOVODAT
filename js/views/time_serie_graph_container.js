@@ -4,7 +4,8 @@ define(function (require) {
         Backbone = require('backbone'),
         _ = require('underscore');
 
-    var TimeSerieGraph = require("views/time_serie_graph");
+    var TimeSerieGraph = require("views/time_serie_graph"),
+        template = require('text!templates/time_serie_graph_container.html');
 
     return Backbone.View.extend({
         el: '',
@@ -21,7 +22,8 @@ define(function (require) {
             this.categories = options.categories;
             this.beingShown = false;
             this.graphs = [];
-            this.$el.append('<div id = "individual-graph-title" style = "font-weight: bold; color : black; background-color:white; padding-left: 50px; display: none">INDIVIDUAL GRAPHS</div><div id="graph"></div>');
+            this.$el.append(template);
+
         },
 
         // addGraph : function( filter ) {
@@ -95,6 +97,7 @@ define(function (require) {
             this.$el.removeClass("card-panel");
             $('#individual-graph-title').css({display: "none"});
         },
+
         show: function () {
             // this.$el.html("");
             $('#individual-graph-title').css({display: "block"});

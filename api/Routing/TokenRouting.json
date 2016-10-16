@@ -1,0 +1,25 @@
+{
+    "controller": "TokenController",
+    "routing":
+    [
+        {
+            "request": "check_token",
+            "method": "checkToken",
+            "params":
+            [
+                "token"
+            ]
+
+        },
+        {
+            "request": "gen_token",
+            "method": "generateToken",
+            "params":
+            [
+                "name",
+                "email"
+            ]
+
+        }
+    ]
+}

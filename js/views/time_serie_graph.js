@@ -19,7 +19,7 @@ define(function (require) {
         // template: _.template(template),
         events: {
             'change input': 'onChange',
-            'click a' : 'onClick'
+            'click a': 'onClick'
         },
         initialize: function (options) {
             this.filters = options.filters;
@@ -27,6 +27,7 @@ define(function (require) {
             this.eruptionTimeRange = options.eruptionTimeRange;
             this.serieGraphTimeRange = options.serieGraphTimeRange;
             this.forecastsGraphTimeRange = options.forecastsGraphTimeRange;
+
             this.timeRange = new TimeRange();
             // console.log(Tooltip);
             this.tooltip = new Tooltip({
@@ -37,15 +38,17 @@ define(function (require) {
             this.id = this.filters.timeSerie.get("sr_id") + "." + this.filters.filterAttributes[0].name;
             this.$el.attr('id', this.id);
             this.hasErrorBar = this.filters.timeSerie.get('data').errorbar;
+            // this.owner = this.filters.timeSerie.get('data').
             var preHtml = Handlebars.compile(template);
             var options = {
                 id: this.id,
-                hasErrorBar: this.hasErrorBar
+                hasErrorBar: this.hasErrorBar,
+                owner: ""
             };
             var html = preHtml(options);
             this.$el.html(html);
             this.allowErrorBar = true;
-
+            this.token = "";
             this.prepareData();
         },
 
@@ -79,8 +82,8 @@ define(function (require) {
             //this.timeRangeChanged(this.timeRange);
             this.render();
         },
-        onChange : function(e){
-            if(e.currentTarget.id == ("checkbox."+this.id)){
+        onChange: function (e) {
+            if (e.currentTarget.id == ("checkbox." + this.id)) {
                 this.allowErrorBar = !e.currentTarget.checked;
                 var oldMinX = this.minX;
                 var oldMaxX = this.maxX;
@@ -91,10 +94,11 @@ define(function (require) {
             }
 
         },
-        onClick : function(e){
-            if(e.currentTarget.id == ("csv."+this.id)){
-                this.generateCSV();
+        onClick: function (e) {
+            if (e.currentTarget.id == ("csv." + this.id)) {
+                this.popUpInfoForm();
             }
+            // if(e.currentTarget.id == )
         },
         showFunctions: function () {
             //checkbox
@@ -103,7 +107,7 @@ define(function (require) {
             var checkbox = $('[id="checkbox.' + this.id + '"]');
             var self = this;
             // checkbox.
-            if(checkbox[0] != undefined){
+            if (checkbox[0] != undefined) {
                 checkbox[0].checked = !this.allowErrorBar;
             }
 
@@ -324,12 +328,16 @@ define(function (require) {
                     day: "numeric", hour: "2-digit", minute: "2-digit"}
                 if(data[p].time != undefined){
                     startTime = data[p].time;
-                    startTimeStr = new Date(data[p].time).toDateString();
+                    var startDateTime = new Date(startTime);
+                    startTimeStr = startDateTime.getDate() + "-" + (startDateTime.getMonth() + 1) + "-" + startDateTime.getFullYear() + " " + startDateTime.getHours() + ":" + startDateTime.getMinutes() + ":" + startDateTime.getSeconds();
                     endTimeStr = "";
                 }else{
                     startTime = data[p].stime;
-                    startTimeStr = new Date(data[p].stime).toLocaleTimeString();
-                    endTimeStr = new Date(data[p].etime).toLocaleTimeString();
+                    var startDateTime = new Date(startTime);
+                    var startTimeStr = startDateTime.getDate() + "-" + (startDateTime.getMonth() + 1) + "-" + startDateTime.getFullYear() + " " + startDateTime.getHours() + ":" + startDateTime.getMinutes() + ":" + startDateTime.getSeconds();
+                    var endTime = data[p].etime;
+                    var endDateTime = new Date(endTime);
+                    endTimeStr = endDateTime.getDate() + "-" + (endDateTime.getMonth() + 1) + "-" + endDateTime.getFullYear() + " " + endDateTime.getHours() + ":" + endDateTime.getMinutes() + ":" + endDateTime.getSeconds();
                 }
 
                 var value = data[p].value;
@@ -363,35 +371,132 @@ define(function (require) {
             if (this.data == undefined) return;
 
             var headers = ['Volcano','Network', 'Station','Monitoring Data (Type)','Data','Start Time','End Time',
-                            'Data Uncertainty','Data Owner'];
+                'Data Uncertainty','Data Owner'];
             //var z = new Zip();
             //console.log(z);
             var zip =  new JSZip();
             // for (var i = 0 ; i < listContent.length; i++){
-                var csvContent = "data:text/csv;charset=utf-8,";
-                var total = 0;
+            var csvContent = "data:text/csv;charset=utf-8,";
+            var total = 0;
 
-                // var content = listContent[i];
-                // if (content == undefined) continue;
-                var dataString = "";
-                for (var p = 0 ; p < content.length; p++){
-                    total++;
-                    var d = content[p];
-                    dataString += d.volcano + ",\"" + d.network + "\",\"" + d.station + "\",\"" + d.monitoringData + " \",\"" + d.data + "\",\""
-                        + d.startTime + "\",\"" + d.endTime + " \",\"" + d.uncertainty + " \",\"" + d.dataOwner + " \"\n";
-                }
+            // var content = listContent[i];
+            // if (content == undefined) continue;
+            var dataString = "";
+            for (var p = 0 ; p < content.length; p++){
+                total++;
+                var d = content[p];
+                dataString += d.volcano + ",\"" + d.network + "\",\"" + d.station + "\",\"" + d.monitoringData + " \",\"" + d.data + "\",\""
+                    + d.startTime + "\",\"" + d.endTime + " \",\"" + d.uncertainty + " \",\"" + d.dataOwner + " \"\n";
+            }
 
-                csvContent += "Total number of earthquakes: " + total + " \n";
-                csvContent += "(100 km from volcanic vent)\n";
-                csvContent += headers.join(",") + "\n";
-                csvContent += dataString + "\n";
-                zip.file(content[0].showingName +".csv", csvContent);
+            csvContent += "Total number of earthquakes: " + total + " \n";
+            csvContent += "(100 km from volcanic vent)\n";
+            csvContent += headers.join(",") + "\n";
+            csvContent += dataString + "\n";
+            zip.file(content[0].showingName +".csv", csvContent);
             // }
             zip.generateAsync({type:"blob"})
                 .then(function (blob) {
                     saveAs(blob, "data.zip");
                 });
 
+
+        },
+        /**
+         * Display a pop up to make user fill in their information
+         * If user have been keyed in information, just donwload, no popup
+         */
+        popUpInfoForm : function(){
+            var token = this.token;
+
+            var dataToken = {
+                data : "check_token",
+                token : token,
+            }
+
+            var volcanoName = this.filters.timeSerie.attributes.volcanoName;
+            var filterName =  this.filters.filterAttributes[0].name;
+            var dataType = this.filters.timeSerie.attributes.component +" (" + filterName + ")";
+            var dataDownload = {
+                data : "add_user",
+                id : new Date(),
+                name : name,
+                email : "",
+                institution: "",
+                vd_name : volcanoName,
+                dataType  : dataType
+            }
+            var URL = "/eruption/api/";
+            var tokenExists;
+            $.get(URL,dataToken,function(data,status,xhr){
+                tokenExists = data;
+                if (tokenExists){
+                    $.get(URL, dataDownload );
+                    this.generateCSV();
+                }else{
+                    $('#formPopup').openModal();
+
+                }
+            },"json")
+            $('.submit-form').click(this,this.submitDownloadForm);
+        },
+        submitDownloadForm : function(e) {
+            var self = e.data;
+            var name = $('#name')[0].value.trim();
+            var email = $('#email')[0].value.trim();
+            var institution = $('#institution')[0].value.trim();
+            var filterName =  self.filters.filterAttributes[0].name;
+            var volcanoName = self.filters.timeSerie.attributes.volcanoName;
+            var dataType = self.filters.timeSerie.attributes.component +" (" + filterName + ")";
+            var agreeTerm = $("#agree-term")[0].checked;
+            var atpos = email.indexOf("@");
+            var dotpos = email.lastIndexOf(".");
+            if (name === "") {
+                return false;
+            }
+            if (institution === "") {
+                return false;
+            }
+            if (email == "") {
+                return false;
+            }
+            if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= email.length) {
+                return false;
+            }
+            if (!agreeTerm){
+                return false;
+            }
+
+            var dataToken = {
+                data : "gen_token",
+                name : name,
+                email : email,
+            }
+            var URL = "/eruption/api/";
+            var a = this;
+            $.getJSON(URL,dataToken, function(data){
+                a.token =  data.token;
+                $("#token").append(data);
+            });
+
+
+            var data = {
+                data : "add_user",
+                id : new Date(),
+                name : name,
+                email : email,
+                institution: institution,
+                vd_name : volcanoName,
+                dataType  : dataType
+
+
+            }
+            $.get(URL, data );
+            self.generateCSV();
+            $('#formPopup').closeModal();
+
+            //document.getElementById("download").appendChild(input);
+            //document.getElementById("download").submit();
 
         },
     });

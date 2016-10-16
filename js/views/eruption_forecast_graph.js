@@ -162,7 +162,7 @@ define(function(require) {
         
       
       el.width('auto');
-      el.height(150);
+      el.height(200);
       el.addClass("eruption-forecasts-graph card-panel");
 
       $.plot(el, graph_pram_data, option);
