@@ -42,7 +42,7 @@ define(function (require) {
                 this.filters.push(timeSerie, "  "); //no data
             }
             for (var i = 0; i < data.length; i++) {
-                this.filters.push(timeSerie, data[i].filter);
+                this.filters.push(timeSerie, data[i].filter,data[i].dataOwner);
             }
         },
 

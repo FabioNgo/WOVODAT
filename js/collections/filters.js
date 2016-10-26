@@ -20,7 +20,7 @@ define(function(require) {
       }
       return -1;
     },
-    push: function(timeSerie,filter){
+    push: function(timeSerie,filter,dataOwner){
 
       if(timeSerie == undefined){
         return;
@@ -31,7 +31,7 @@ define(function(require) {
       }
       var index = this.indexOfTimeSerie(timeSerie);
       if(index == -1){
-        this[category].push(new Filter(timeSerie,filter));
+        this[category].push(new Filter(timeSerie,filter,dataOwner));
       }else{
         this[category][index].addFilter(filter);
       }

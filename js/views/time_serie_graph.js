@@ -98,7 +98,9 @@ define(function (require) {
             if (e.currentTarget.id == ("csv." + this.id)) {
                 this.popUpInfoForm();
             }
-            // if(e.currentTarget.id == )
+            if (e.currentTarget.id == "submit-form." + this.id) {
+                this.submitDownloadForm()
+            }
         },
         showFunctions: function () {
             //checkbox
@@ -299,6 +301,62 @@ define(function (require) {
             var limitNumberOfData = false;
             GraphHelper.formatData(this, filters, allowErrorbar, allowAxisLabel, limitNumberOfData);
         },
+        getDataForSendingEmail: function (URL, name, email, institution) {
+            var dataType = [];
+            var startTimeList = [];
+            var endTimeList = [];
+            var volcanoName = this.filters.timeSerie.attributes.volcanoName;
+            var startTimeStr = "";
+            var endTimeStr = "";
+            var filterName = this.filters.filterAttributes[0].name;
+            var monitoringData = this.filters.timeSerie.attributes.component + " (" + filterName + ")";
+            dataType.push(monitoringData);
+            var data = this.filters.timeSerie.attributes.data.data;
+            for (var p = 0; p < data.length; p++) {
+
+                if (data[p].filter != filterName) continue;
+                var data = this.filters.timeSerie.attributes.data.data;
+                var stime = data[p].time;
+                var etime = 0;
+                if (stime == undefined) {
+                    stime = data[p].stime;
+                    etime = data[p].etime;
+                }
+
+
+                if (stime >= this.serieGraphTimeRange.attributes.startTime && stime <= this.serieGraphTimeRange.attributes.endTime) {
+                    if (startTimeStr == "") {
+                        var startDateTime = new Date(stime);
+                        startTimeStr = startDateTime.getDate() + "-" + (startDateTime.getMonth() + 1) + "-" + startDateTime.getFullYear() + " " + startDateTime.getHours() + ":" + startDateTime.getMinutes() + ":" + startDateTime.getSeconds();
+
+                    }
+                    if (etime != 0) {
+                        var endDateTime = new Date(etime);
+                        endTimeStr = endDateTime.getDate() + "-" + (endDateTime.getMonth() + 1) + "-" + endDateTime.getFullYear() + " " + endDateTime.getHours() + ":" + endDateTime.getMinutes() + ":" + endDateTime.getSeconds();
+                    }
+                }
+
+            }
+            if (endTimeStr == "") endTimeStr = startTimeStr;
+            startTimeList.push(startTimeStr);
+            endTimeList.push(endTimeStr);
+
+
+            var volcanoName = this.filters.timeSerie.attributes.volcanoName;
+            //var dataTypeStr = dataType.join(",");
+            this.generateCSV();
+            var dataDownload = {
+                data: "add_user",
+                name: name,
+                email: email,
+                institution: institution,
+                vd_name: volcanoName,
+                dataType: dataType,
+                startTimeStr: startTimeList,
+                endTimeStr: endTimeList
+            }
+            $.get(URL, dataDownload);
+        },
         /**
          *Generate CSV file when click CSV button
          volcano-name (vd_name),
@@ -309,58 +367,57 @@ define(function (require) {
          data-uncertainty (dd_tlt_err1),
          data owner (cc_code).
          */
-        generateCSV : function (){
-            var listContent = [];
-
-            var content =[];
-            var volcanoName = this.selectedVolcano.get("vd_name");
-            var stationName =  this.filters.timeSerie.attributes.station_code1;
+        generateCSV: function () {
+            var content = [];
+            var stationName = this.filters.timeSerie.attributes.station_code1;
+            var volcanoName = this.filters.timeSerie.attributes.volcanoName;
             var showingName = this.data[0].label;
-            var filterName =  this.filters.filterAttributes[0].name;
+            var filterName = this.filters.filterAttributes[0].name;
+            var network = this.filters.timeSerie.attributes.short_data_type;
+            var monitoringData = this.filters.timeSerie.attributes.component + " (" + filterName + ")";
+
 
             var data = this.filters.timeSerie.attributes.data.data;
-            for (var p = 0 ; p  < data.length; p++){
+            for (var p = 0; p < data.length; p++) {
                 if (data[p].filter != filterName) continue;
                 var startTimeStr;
-                var endTimeStr;
+                var endTimeStr = "";
                 var startTime
-                var dateFormat = {year: "numeric", month: "short",
-                    day: "numeric", hour: "2-digit", minute: "2-digit"}
-                if(data[p].time != undefined){
-                    startTime = data[p].time;
-                    var startDateTime = new Date(startTime);
-                    startTimeStr = startDateTime.getDate() + "-" + (startDateTime.getMonth() + 1) + "-" + startDateTime.getFullYear() + " " + startDateTime.getHours() + ":" + startDateTime.getMinutes() + ":" + startDateTime.getSeconds();
-                    endTimeStr = "";
-                }else{
-                    startTime = data[p].stime;
-                    var startDateTime = new Date(startTime);
-                    var startTimeStr = startDateTime.getDate() + "-" + (startDateTime.getMonth() + 1) + "-" + startDateTime.getFullYear() + " " + startDateTime.getHours() + ":" + startDateTime.getMinutes() + ":" + startDateTime.getSeconds();
-                    var endTime = data[p].etime;
-                    var endDateTime = new Date(endTime);
+                var data = this.filters.timeSerie.attributes.data.data;
+                var stime = data[p].time;
+                var etime = 0;
+                if (stime == undefined) {
+                    stime = data[p].stime;
+                    etime = data[p].etime;
+                }
+
+                var startDateTime = new Date(stime);
+                var startTimeStr = startDateTime.getDate() + "-" + (startDateTime.getMonth() + 1) + "-" + startDateTime.getFullYear() + " " + startDateTime.getHours() + ":" + startDateTime.getMinutes() + ":" + startDateTime.getSeconds();
+                if (etime != 0) {
+                    var endDateTime = new Date(etime);
                     endTimeStr = endDateTime.getDate() + "-" + (endDateTime.getMonth() + 1) + "-" + endDateTime.getFullYear() + " " + endDateTime.getHours() + ":" + endDateTime.getMinutes() + ":" + endDateTime.getSeconds();
                 }
 
                 var value = data[p].value;
-                // var dataOwner  =   data[p].data_owner.join(",");
-                var dataOwner  =   "";
-                var station = this.filters.timeSerie.get("station_code1");
-                var dataCode = data[p].data_code;
-                var network =  this.filters.timeSerie.get("short_data_type");
-                var monitoringData = this.filters.timeSerie.get("component")+" (" + filterName + ")";
+                var dataOwner = [];
+                for (var i = 0; i < data[p].data_owner.length; i = i + 2) {
+                    dataOwner.push(data[p].data_owner[i]);
+                }
+                var dataOwner = dataOwner.join(",");
                 var uncertainty = data[p].error;
                 if (uncertainty == undefined) uncertainty = "";
-                if (startTime >= this.minX && startTime <= this.maxX){
+                if (stime >= this.serieGraphTimeRange.attributes.startTime && stime <= this.serieGraphTimeRange.attributes.endTime) {
                     //console.log (value);
                     var d = {
                         volcano: volcanoName,
                         network: network,
-                        station: station,
+                        station: stationName,
                         monitoringData: monitoringData,
-                        data : value,
+                        data: value,
                         startTime: startTimeStr,
                         endTime: endTimeStr,
-                        uncertainty : uncertainty,
-                        dataOwner : dataOwner,
+                        uncertainty: uncertainty,
+                        dataOwner: dataOwner,
                         showingName: showingName
                     }
                     content.push(d);
@@ -370,19 +427,21 @@ define(function (require) {
 
             if (this.data == undefined) return;
 
-            var headers = ['Volcano','Network', 'Station','Monitoring Data (Type)','Data','Start Time','End Time',
-                'Data Uncertainty','Data Owner'];
+            var headers = ['Volcano', 'Network', 'Station', 'Monitoring Data (Type)', 'Data', 'Start Time', 'End Time',
+                'Data Uncertainty', 'Data Owner'];
             //var z = new Zip();
             //console.log(z);
-            var zip =  new JSZip();
+            var zip = new JSZip();
             // for (var i = 0 ; i < listContent.length; i++){
             var csvContent = "data:text/csv;charset=utf-8,";
+            // for (var ii = 0; ii < listContent.length; ii++) {
+            //     var content = listContent[ii];
             var total = 0;
 
             // var content = listContent[i];
             // if (content == undefined) continue;
             var dataString = "";
-            for (var p = 0 ; p < content.length; p++){
+            for (var p = 0; p < content.length; p++) {
                 total++;
                 var d = content[p];
                 dataString += d.volcano + ",\"" + d.network + "\",\"" + d.station + "\",\"" + d.monitoringData + " \",\"" + d.data + "\",\""
@@ -393,9 +452,17 @@ define(function (require) {
             csvContent += "(100 km from volcanic vent)\n";
             csvContent += headers.join(",") + "\n";
             csvContent += dataString + "\n";
-            zip.file(content[0].showingName +".csv", csvContent);
+            var filename = "";
+            if (content.length != 0) {
+                filename = content[0].showingName;
+            } else {
+                filename = "Blank"
+            }
+            zip.file(filename + ".csv", csvContent);
             // }
-            zip.generateAsync({type:"blob"})
+
+            //}
+            zip.generateAsync({type: "blob"})
                 .then(function (blob) {
                     saveAs(blob, "data.zip");
                 });
@@ -406,49 +473,37 @@ define(function (require) {
          * Display a pop up to make user fill in their information
          * If user have been keyed in information, just donwload, no popup
          */
-        popUpInfoForm : function(){
+        popUpInfoForm: function () {
             var token = this.token;
 
             var dataToken = {
-                data : "check_token",
-                token : token,
-            }
-
-            var volcanoName = this.filters.timeSerie.attributes.volcanoName;
-            var filterName =  this.filters.filterAttributes[0].name;
-            var dataType = this.filters.timeSerie.attributes.component +" (" + filterName + ")";
-            var dataDownload = {
-                data : "add_user",
-                id : new Date(),
-                name : name,
-                email : "",
-                institution: "",
-                vd_name : volcanoName,
-                dataType  : dataType
+                data: "check_token",
+                token: token,
             }
             var URL = "/eruption/api/";
             var tokenExists;
-            $.get(URL,dataToken,function(data,status,xhr){
+            var self = this;
+            $.get(URL, dataToken, function (data, status, xhr) {
                 tokenExists = data;
-                if (tokenExists){
-                    $.get(URL, dataDownload );
-                    this.generateCSV();
-                }else{
-                    $('#formPopup').openModal();
+                if (tokenExists) {
+                    self.getDataForSendingEmail(URL, "", "", "");
+
+                } else {
+                    $('[id="formPopup.' + self.id + '"]').openModal();
 
                 }
-            },"json")
-            $('.submit-form').click(this,this.submitDownloadForm);
+            }, "json")
+
         },
-        submitDownloadForm : function(e) {
-            var self = e.data;
-            var name = $('#name')[0].value.trim();
-            var email = $('#email')[0].value.trim();
-            var institution = $('#institution')[0].value.trim();
-            var filterName =  self.filters.filterAttributes[0].name;
-            var volcanoName = self.filters.timeSerie.attributes.volcanoName;
-            var dataType = self.filters.timeSerie.attributes.component +" (" + filterName + ")";
-            var agreeTerm = $("#agree-term")[0].checked;
+        submitDownloadForm: function (e) {
+            // var a= this.$el.find('#name');
+            var name = this.$el.find('#name')[0].value.trim();
+            var email = this.$el.find('#email')[0].value.trim();
+            var institution = this.$el.find('#institution')[0].value.trim();
+            var filterName = this.filters.filterAttributes[0].name;
+            var volcanoName = this.filters.timeSerie.attributes.volcanoName;
+            var dataType = this.filters.timeSerie.attributes.component + " (" + filterName + ")";
+            var agreeTerm = this.$el.find("#agree-term")[0].checked;
             var atpos = email.indexOf("@");
             var dotpos = email.lastIndexOf(".");
             if (name === "") {
@@ -463,37 +518,23 @@ define(function (require) {
             if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= email.length) {
                 return false;
             }
-            if (!agreeTerm){
+            if (!agreeTerm) {
                 return false;
             }
 
             var dataToken = {
-                data : "gen_token",
-                name : name,
-                email : email,
+                data: "gen_token",
+                name: name,
+                email: email,
             }
             var URL = "/eruption/api/";
             var a = this;
-            $.getJSON(URL,dataToken, function(data){
-                a.token =  data.token;
-                $("#token").append(data);
+            $.getJSON(URL, dataToken, function (data) {
+                a.token = data.token;
             });
-
-
-            var data = {
-                data : "add_user",
-                id : new Date(),
-                name : name,
-                email : email,
-                institution: institution,
-                vd_name : volcanoName,
-                dataType  : dataType
-
-
-            }
-            $.get(URL, data );
-            self.generateCSV();
-            $('#formPopup').closeModal();
+            this.getDataForSendingEmail(URL, email, name, institution);
+            $('[id="formPopup.' + this.id + '"]').closeModal();
+            return false;
 
             //document.getElementById("download").appendChild(input);
             //document.getElementById("download").submit();

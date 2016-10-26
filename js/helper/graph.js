@@ -320,8 +320,8 @@ define(function (require) {
             number = Math.ceil(number);
             return number * Math.pow(10, desExpDegree);
         },
-        exponentialDegree: function (value) {
-            value = value.toExponential();
+        exponentialDegree: function (v) {
+            var value = v.toExponential();
             var a = value.toString().split("e")[1];
             var exp = parseInt(a);
             return exp;

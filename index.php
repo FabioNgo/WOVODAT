@@ -27,7 +27,7 @@ session_start();
     <link href="/css/tooltip.css" rel="stylesheet">
 </head>
 <body>
-    <?php include "../header_beta.php"?>
+    <?php include "header_beta.php"?>
     <div id="" class="blue lighten-4 main">
 
 
@@ -39,6 +39,6 @@ session_start();
     </div>
 
     <script type="text/javascript" src="js/vendor/requirejs/require.js" data-main="js/main"></script>
-    <?php include "../footer_main_beta.php" ?>
+    <?php include "footer_main_beta.php" ?>
 </body>
 </html>

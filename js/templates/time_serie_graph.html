@@ -5,7 +5,48 @@
     {{/if}}
     <a id="csv.{{id}}" class="waves-effect waves-light btn">Export to CSV</a>
 </div>
+<div class="modal" id ="formPopup.{{id}}">
+    <div class = "modal-content ">
+        <form class="col s6">
+            <div class = "row">
+                <label style = "font-size: 1.5rem; text-align: center;">Please provide information before starting data download.</label>
+            </div>
+            <div class = "row">
+                <div class="input-field col s12">
+                    <input placeholder="Name" id="name" type="text" class="validate" required = "" aria-required="true">
+                    <label for="name">Name</label>
+                </div>
+            </div>
+            <div class = "row">
+                <div class="input-field col s12">
+                    <input id="email" type="email" class="validate" required = "" aria-required="true">
+                    <label for="email">Email</label>
+                </div>
+            </div>
+            <div class = "row">
+                <div class="input-field col s12">
+                    <input id="institution" type="text" class="validate" required = "" aria-required="true">
+                    <label for="institution">Institution/Observatory</label>
+                </div>
+            </div>
+            <div class = "row">
+                <div class="input-field col s12">
+                    <input type="checkbox" id="agree-term" required = "" aria-required="true"/>
+                    <label for="agree-term">I agree to <a href = "http://wovodat.org/populate/dataPolicy.php" target = "_blank">WOVOdat Data Policy</a></label>
+                </div>
+            </div>
+            <div class = "row">
+                <div class="input-field col s12">
+                    <a class="btn waves-effect waves-light submit-form" id="submit-form.{{id}}">Submit</a>
+                </div>
+            </div>
+
+
+        </form>
+    </div>
+</div>
 <div id="graph.{{id}}">
+
 </div>
 <div id="owner.{{id}}">
     {{owner}}

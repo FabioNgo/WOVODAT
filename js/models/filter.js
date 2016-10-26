@@ -3,14 +3,16 @@ define(['jquery', 'backbone'], function($, Backbone) {
   /* Format
   	filter = {
   				timeSerie: timeSerie,
-  				name = []
+  				name = [],
+  				dataOwner = []
   				}
 	*/
   return Backbone.Model.extend({
     idAttribute: 'filter',
     //Note: single filter only
-    initialize: function(timeSerie,filter) {
+    initialize: function(timeSerie,filter,dataOwner) {
     	this.timeSerie = timeSerie;
+        this.dataOwner = dataOwner;
     	this.filterAttributes = [];
     	this.filterAttributes.push({name:filter});
     	this.isChecked = false;

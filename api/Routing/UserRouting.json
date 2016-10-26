@@ -5,14 +5,17 @@
         {
             "request": "add_user",
             "method": "addUser",
-            "params": 
-                [
-                    "id",
-                    "name",
-                    "email",
-                    "institution"
-                ]
-                
+            "params":
+            [
+                "name",
+                "email",
+                "institution",
+                "vd_name",
+                "dataType",
+                "startTimeStr",
+                "endTimeStr"
+            ]
+
         }
     ]
 }
