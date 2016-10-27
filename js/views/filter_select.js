@@ -42,7 +42,7 @@ define(function (require) {
                 this.filters.push(timeSerie, "  "); //no data
             }
             for (var i = 0; i < data.length; i++) {
-                this.filters.push(timeSerie, data[i].filter,data[i].dataOwner);
+                this.filters.push(timeSerie, data[i].filter,data[i].data_owner);
             }
         },
 
@@ -76,7 +76,7 @@ define(function (require) {
                     for (var j = 0; j < groupedFilters.length; j++) {
                         var filter = groupedFilters[j];
                         if (filter.filterAttributes[0].name == " ") {
-                            this.selectingFilters.push(filter.timeSerie, " ");
+                            this.selectingFilters.push(filter.timeSerie, " ",filter.dataOwner);
                             this.selectingFilters.empty = false;
                         }
                     }

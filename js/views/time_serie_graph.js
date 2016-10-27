@@ -43,7 +43,7 @@ define(function (require) {
             var options = {
                 id: this.id,
                 hasErrorBar: this.hasErrorBar,
-                owner: ""
+                owner: this.filters.filterAttributes[0].dataOwner[0]
             };
             var html = preHtml(options);
             this.$el.html(html);
@@ -106,6 +106,8 @@ define(function (require) {
             //checkbox
             var functions = $('[id="functions.' + this.id + '"]');
             functions.css({display: "block"});
+            var dataOwner = $('[id="owner.' + this.id + '"]');
+            dataOwner.css({display: "block"});
             var checkbox = $('[id="checkbox.' + this.id + '"]');
             var self = this;
             // checkbox.
@@ -234,6 +236,7 @@ define(function (require) {
                 tooltip: {
                     show: true,
                 },
+
 
             };
             if (!this.data || !this.data.length) {

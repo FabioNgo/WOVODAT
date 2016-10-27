@@ -106,50 +106,22 @@ define(function (require) {
             }
 
             var maxVEI = 7;
-            var self = this,
+            var self = this;
 
-                el = this.$el,
-                data = this.prepareData(),
-                graph_pram_data = [],
-                option = {
-                    grid: {
-                        hoverable: true,
-                    },
-                    xaxis: {
-                        min: this.startTime,
-                        max: this.endTime,
-                        autoscale: true,
-                        mode: 'time',
-                        timeformat: "%d-%b-%Y",
-                    },
-                    yaxis: {
-                        min: 0,
-                        max: maxVEI + 1,
-                        tickSize: 1,
-                        zoomRange: false,
-                        labelWidth: 60,
-                        panRange: false
-                    },
+            var el = this.$el;
+            var data = this.prepareData();
+            var graph_pram_data = [];
 
-                    pan: {
-                        interactive: true
-                    },
-                    zoom: {
-                        interactive: true
-                    }
-                };
             /** Eruption part **/
             graph_pram_data.push(this.gernerateBarChartFlotData([data.edData.data], 'Black', 'Eruption', 'ed', ""));
             /** Phreatic Eruption **/
             var ed_phs_data = data.ed_phs_data;
-            if(ed_phs_data.types != undefined){
-                for(var i = 0 ; i < ed_phs_data.types.length;i++){
+            if (ed_phs_data.types != undefined) {
+                for (var i = 0; i < ed_phs_data.types.length; i++) {
                     var type = ed_phs_data.types[i];
                     graph_pram_data.push(this.gernerateBarChartFlotData(ed_phs_data[type].data, ed_phs_data[type].color, type, 'ed_phs', ""));
                 }
             }
-
-
 
 
             el.width('auto');
@@ -183,6 +155,39 @@ define(function (require) {
             el.bind('plotzoom', eventDataZoom, this.onZoom);
             el.unbind('plotpan');
             el.bind('plotpan', eventDataPan, this.onPan);
+            var option = {
+                grid: {
+                    hoverable: true,
+                },
+                xaxis: {
+                    min: this.startTime,
+                    max: this.endTime,
+                    autoscale: true,
+                    mode: 'time',
+                    timeformat: "%d-%b-%Y",
+                },
+                yaxis: {
+                    min: 0,
+                    max: maxVEI + 1,
+                    tickSize: 1,
+                    zoomRange: false,
+                    labelWidth: 60,
+                    panRange: false
+                },
+
+                pan: {
+                    interactive: true
+                },
+                zoom: {
+                    interactive: true
+                },
+                legend: {
+                    show: true, //show or hide legend
+                    horizontal: true,
+                    backgroundOpacity: 0,
+                    // container: this.$el.find('#legend')[0]
+                }
+            };
             this.graph = $.plot(el, graph_pram_data, option);
         },
         onPan: function (event, plot) {
@@ -321,12 +326,12 @@ define(function (require) {
                     flag = true;
                 }
                 if (flag) {
-                    if(ed_phs_data.types == undefined){
+                    if (ed_phs_data.types == undefined) {
                         ed_phs_data.types = [];
                     }
                     if (ed_phs_data[ed_phs_type] == undefined) {
                         ed_phs_data.types.push(ed_phs_type);
-                        ed_phs_data[ed_phs_type]= {
+                        ed_phs_data[ed_phs_type] = {
                             //left,right,bottom,up
                             data: [],
 

@@ -14,7 +14,7 @@ define(['jquery', 'backbone'], function($, Backbone) {
     	this.timeSerie = timeSerie;
         this.dataOwner = dataOwner;
     	this.filterAttributes = [];
-    	this.filterAttributes.push({name:filter});
+    	this.filterAttributes.push({name:filter, dataOwner:dataOwner});
     	this.isChecked = false;
     	// console.log(this);
     },
