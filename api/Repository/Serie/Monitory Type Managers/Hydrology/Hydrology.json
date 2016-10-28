@@ -2,14 +2,14 @@
 	"hd" : {
 		"time" : "hd_time",
 		"data_type" : "Hydrology",
-		"params" : [ 
+		"params" : [
 			{
 				"name" : "Water Temperature",
-				"cols" : "hd_temp"	
+				"cols" : "hd_temp"
 			},
 			{
 				"name" : "Water Elevation",
-				"cols" : "hd_welev"	
+				"cols" : "hd_welev"
 			},
 			{
 				"name" : "Water Depth",
@@ -33,7 +33,7 @@
 				"filter" : "hd_tprec"
 			},
 			{
-				"name" : "Water PH",
+				"name" : "Water ph",
 				"cols" : "hd_ph"
 			},
 			{
@@ -41,7 +41,7 @@
 				"cols" : "hd_cond"
 			},
 			{
-				"name" : "Content Of Compound",
+				"name" : "Content of Compound",
 				"cols" : "hd_comp_content",
 				"filter" : "hd_comp_species"
 			},
@@ -54,5 +54,5 @@
 				"cols" : "hd_tds"
 			}
 		]
- 	}
+	}
 }

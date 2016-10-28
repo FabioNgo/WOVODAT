@@ -37,73 +37,73 @@ class dd_strManager extends DeformationTablesManager {
 		if($component == 'Strain Component 1'){
 			$unit = "ustrain";
 			$attribute = "dd_str_comp1";
-			$query = "select a.dd_str_err1 as err ,a.dd_str_time as time, a.$attribute as value $cc from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
+			$query = "select a.dd_str_err1 as err ,a.dd_str_time as time, a.$attribute as value  from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'Strain Component 2'){
 			$unit = "ustrain";
 			$attribute = "dd_str_comp2";
-			$query = "select a.dd_str_err2 as err ,a.dd_str_time as time, a.$attribute as value $cc from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
+			$query = "select a.dd_str_err2 as err ,a.dd_str_time as time, a.$attribute as value  from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'Strain Component 3'){
 			$unit = "ustrain";
 			$attribute = "dd_str_comp3";
-			$query = "select a.dd_str_err3 as err ,a.dd_str_time as time, a.$attribute as value $cc from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
+			$query = "select a.dd_str_err3 as err ,a.dd_str_time as time, a.$attribute as value  from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'Strain Component 4'){
 			$unit = "ustrain";
 			$attribute = "dd_str_comp4";
-			$query = "select a.dd_str_err4 as err ,a.dd_str_time as time, a.$attribute as value $cc from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
+			$query = "select a.dd_str_err4 as err ,a.dd_str_time as time, a.$attribute as value  from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'Volumetric Strain Change'){
 			$unit = "ustrain";
 			$attribute = "dd_str_vdstr";
-			$query = "select a.dd_str_vdstr_err as err ,a.dd_str_time as time, a.$attribute as value $cc from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
+			$query = "select a.dd_str_vdstr_err as err ,a.dd_str_time as time, a.$attribute as value  from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'Shear Strain Axis 1'){
 			$unit = "ustrain";
 			$attribute = "dd_str_sstr_ax1";
-			$query = "select a.dd_str_stderr1 as err ,a.dd_str_time as time, a.$attribute as value $cc from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
+			$query = "select a.dd_str_stderr1 as err ,a.dd_str_time as time, a.$attribute as value  from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
 		}
 		else if($component == 'Shear Strain Axis 2'){
 			$unit = "ustrain";
 			$attribute = "dd_str_sstr_ax2";
-			$query = "select a.dd_str_stderr2 as err ,a.dd_str_time as time, a.$attribute as value $cc from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
+			$query = "select a.dd_str_stderr2 as err ,a.dd_str_time as time, a.$attribute as value  from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'Shear Strain Axis 3'){
 			$unit = "ustrain";
 			$attribute = "dd_str_sstr_ax3";
-			$query = "select a.dd_str_stderr3 as err ,a.dd_str_time as time, a.$attribute as value $cc from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
+			$query = "select a.dd_str_stderr3 as err ,a.dd_str_time as time, a.$attribute as value  from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'Strain Azimuth Axis 1'){
 			$unit = "o";
 			$attribute = "dd_str_azi_ax1";
 			$errorbar = false;
-			$query = "select a.dd_str_time as time, a.$attribute as value $cc from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
+			$query = "select a.dd_str_time as time, a.$attribute as value  from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'Strain Azimuth Axis 2'){
 			$unit = "o";
 			$attribute = "dd_str_azi_ax2";
 			$errorbar = false;
-			$query = "select a.dd_str_time as time, a.$attribute as value $cc from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
+			$query = "select a.dd_str_time as time, a.$attribute as value  from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'Strain Azimuth Axis 3'){
 			$unit = "o";
 			$attribute = "dd_str_azi_ax3";
 			$errorbar = false;
-			$query = "select a.dd_str_time as time, a.$attribute as value $cc from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
+			$query = "select a.dd_str_time as time, a.$attribute as value  from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'Maximum Strain'){
 			$unit = "ustrain";
 			$attribute = "dd_str_pmax";
-			$query = "select a.dd_str_pmaxerr as err ,a.dd_str_time as time, a.$attribute as value $cc from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
+			$query = "select a.dd_str_pmaxerr as err ,a.dd_str_time as time, a.$attribute as value  from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'Minimum Strain'){
 			$unit = "ustrain";
 			$attribute = "dd_str_pmin";
-			$query = "select a.dd_str_pminerr as err ,a.dd_str_time as time, a.$attribute as value $cc from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
+			$query = "select a.dd_str_pminerr as err ,a.dd_str_time as time, a.$attribute as value  from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
 		}
 		else if($component == 'Maximum Strain Direction'){
 			$unit = "o";
 			$attribute = "dd_str_pmax_dir";
-			$query = "select a.dd_str_pmax_direrr as err ,a.dd_str_time as time, a.$attribute as value $cc from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
+			$query = "select a.dd_str_pmax_direrr as err ,a.dd_str_time as time, a.$attribute as value  from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'Minimum Strain Direction'){
 			$unit = "o";
 			$attribute = "dd_str_pmin_dir";
-			$query = "select a.dd_str_pmin_direrr as err ,a.dd_str_time as time, a.$attribute as value $cc from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
+			$query = "select a.dd_str_pmin_direrr as err ,a.dd_str_time as time, a.$attribute as value  from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'Barometric Pressure'){
 			$unit = "bars";
 			$attribute = "dd_str_bpres";
 			$errorbar = false;
-			$query = "select a.dd_str_time as time, a.$attribute as value $cc from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
+			$query = "select a.dd_str_time as time, a.$attribute as value  from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
 		}
 		$result = array("unit" => $unit,
 						"style" => $style,

@@ -48,16 +48,16 @@ class dd_gpvManager extends DeformationTablesManager {
 			$unit = "o";
 			$attribute = "dd_gpv_vincl";
 			$query = "select a.dd_gpv_stime as stime,a.dd_gpv_etime as etime,a.$attribute as value   from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
-		}else if($component == 'GPS N-S Displacement'){
+		}else if($component == 'GPS N-S Displ.'){  
 			$unit = "mm";
 			$attribute = "dd_gpv_N";
 			$query = "select a.dd_gpv_dnerr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime, a.$attribute as value from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
-		}else if($component == 'GPS E-W Displacement'){
+		}else if($component == 'GPS E-W Displ.'){
 			$unit = "mm";
 			$attribute = "dd_gpv_E";
 			$query = "select a.dd_gpv_deerr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime, a.$attribute as value from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";
 		}
-		else if($component == 'GPS Vertical Displacement'){
+		else if($component == 'GPS Vertical Displ.'){
 			$unit = "mm";
 			$attribute = "dd_gpv_vert";
 			$query = "select a.dd_gpv_dverr as err ,a.dd_gpv_stime as stime,a.dd_gpv_etime as etime,a.$attribute as value   from $table as a where a.ds_id=%s and a.$attribute IS NOT NULL";

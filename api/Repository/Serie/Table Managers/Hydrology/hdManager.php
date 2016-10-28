@@ -62,7 +62,7 @@ class hdManager extends HydrologyTablesManager {
 			$attribute = "hd_prec";
 			$unit ="mm";
 			$query = "select a.hd_tprec  as filter, a.hd_time as time, a.$attribute as value  from $table as a where a.hs_id=%s and a.$attribute IS NOT NULL";
-		}else if($component == 'Water PH'){
+		}else if($component == 'Water ph'){  
 			$errorbar = true;
 			$attribute = "hd_ph";
 			$query = "select a.hd_ph_err as err,a.hd_time as time, a.$attribute as value  from $table as a where a.hs_id=%s and a.$attribute IS NOT NULL";
@@ -70,7 +70,7 @@ class hdManager extends HydrologyTablesManager {
 			$errorbar = true;  
 			$attribute = "hd_cond";
 			$query = "select a.hd_cond_err as err,a.hd_time as time, a.$attribute as value  from $table as a where a.hs_id=%s and a.$attribute IS NOT NULL";
-		}else if($component == 'Content Of Compound'){
+		}else if($component == 'Content of Compound'){  
 			$errorbar = true;
 			$attribute = "hd_comp_content";
 			$query = "select a.hd_comp_species  as filter,a.hd_comp_units as unit,a.hd_comp_content_err as err,a.hd_time as time, a.$attribute as value  from $table as a where a.hs_id=%s and a.$attribute IS NOT NULL";

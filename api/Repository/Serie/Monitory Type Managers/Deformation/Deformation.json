@@ -25,7 +25,7 @@
 				"cols" : "dd_edm_line",
 				"name" : "EDM Line Length"
 			}
-		]	
+		]
 	},
 
 	"dd_tlv" : {
@@ -159,7 +159,7 @@
 				"name" : "GPS Elevation"
 			}
 		]
-	}, 
+	},
 
 	"dd_gpv" : {
 		"stime" : "dd_gpv_stime",
@@ -171,16 +171,16 @@
 				"name" : "GPS Displacement"
 			},
 			{
-				"cols" : "dd_gpv_daz", 
+				"cols" : "dd_gpv_daz",
 				"name" : "GPS Displ-azimuth"
 			},
 			{
 				"cols" : "dd_gpv_N",
-				"name" : "GPS N-S Displacement"
+				"name" : "GPS N-S Displ."
 			},
 			{
 				"cols" : "dd_gpv_E",
-				"name" : "GPS E-W Displacement"
+				"name" : "GPS E-W Displ."
 			},
 			{
 				"cols" : "dd_gpv_vincl",
@@ -200,7 +200,7 @@
 			},
 			{
 				"cols" : "dd_gpv_vert",
-				"name" : "GPS Vertical Displacement"
+				"name" : "GPS Vertical Displ."
 			}
 		]
 	},
