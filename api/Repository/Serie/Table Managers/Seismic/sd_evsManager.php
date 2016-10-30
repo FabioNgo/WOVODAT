@@ -51,11 +51,11 @@ class sd_evsManager extends SeismicTablesManager {
 			$query = "select a.sd_evs_eqtype as filter,a.sd_evs_time as time, a.$attribute as value from $table as a where a.ss_id=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'Earthquake Magnitude'){
 			$unit = "Hz";
-			$attribute = "sd_evs_mag";  
+			$attribute = "sd_evs_mag";
 			$query = "select a.sd_evs_eqtype as filter,a.sd_evs_time as time, a.$attribute as value from $table as a where a.ss_id=%s and a.$attribute IS NOT NULL";
 		}else if($component == 'Earthquake Energy'){
 			$unit = "Erg";
-			$attribute = "sd_evs_energy";  
+			$attribute = "sd_evs_energy";
 			$query = "select a.sd_evs_eqtype as filter,a.sd_evs_time as time,a.$attribute as value from $table as a where a.ss_id=%s and a.$attribute IS NOT NULL";
 		}
 		$result = array("unit" => $unit,

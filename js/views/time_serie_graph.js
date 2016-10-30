@@ -43,13 +43,18 @@ define(function (require) {
             var options = {
                 id: this.id,
                 hasErrorBar: this.hasErrorBar,
-                owner: this.filters.filterAttributes[0].dataOwner[0]
+                owner: ""
             };
-            var html = preHtml(options);
-            this.$el.html(html);
+
             this.allowErrorBar = true;
             this.token = "";
             this.prepareData();
+            if(this.filters.filterAttributes[0].dataOwner != undefined){
+                this.owner = this.filters.filterAttributes[0].dataOwner[0];
+            }
+            options.owner = this.owner;
+            var html = preHtml(options);
+            this.$el.html(html);
         },
 
         timeRangeChanged: function (TimeRange) {
@@ -104,10 +109,8 @@ define(function (require) {
         },
         showFunctions: function () {
             //checkbox
-            var functions = $('[id="functions.' + this.id + '"]');
-            functions.css({display: "block"});
-            var dataOwner = $('[id="owner.' + this.id + '"]');
-            dataOwner.css({display: "block"});
+            var container = $('[id="graph-container.' + this.id + '"]');
+            container.css({display: "block"});
             var checkbox = $('[id="checkbox.' + this.id + '"]');
             var self = this;
             // checkbox.
@@ -302,6 +305,7 @@ define(function (require) {
             var allowErrorbar = this.allowErrorBar;
             var allowAxisLabel = true;
             var limitNumberOfData = false;
+
             GraphHelper.formatData(this, filters, allowErrorbar, allowAxisLabel, limitNumberOfData);
         },
         getDataForSendingEmail: function (URL, name, email, institution) {
@@ -309,8 +313,8 @@ define(function (require) {
             var startTimeList = [];
             var endTimeList = [];
             var volcanoName = this.filters.timeSerie.attributes.volcanoName;
-            var startTimeStr = "";
-            var endTimeStr = "";
+            var startDateTime = 0;
+            var endDateTime = 0;
             var filterName = this.filters.filterAttributes[0].name;
             var monitoringData = this.filters.timeSerie.attributes.component + " (" + filterName + ")";
             dataType.push(monitoringData);
@@ -319,30 +323,25 @@ define(function (require) {
 
                 if (data[p].filter != filterName) continue;
                 var data = this.filters.timeSerie.attributes.data.data;
-                var stime = data[p].time;
+                var stime =  data[p].time;
                 var etime = 0;
                 if (stime == undefined) {
                     stime = data[p].stime;
                     etime = data[p].etime;
                 }
-
-
-                if (stime >= this.serieGraphTimeRange.attributes.startTime && stime <= this.serieGraphTimeRange.attributes.endTime) {
-                    if (startTimeStr == "") {
-                        var startDateTime = new Date(stime);
-                        startTimeStr = startDateTime.getDate() + "-" + (startDateTime.getMonth() + 1) + "-" + startDateTime.getFullYear() + " " + startDateTime.getHours() + ":" + startDateTime.getMinutes() + ":" + startDateTime.getSeconds();
-
+                if (stime >= this.serieGraphTimeRange.attributes.startTime && stime <= this.serieGraphTimeRange.attributes.endTime){
+                    if (startDateTime == 0){
+                        startDateTime = stime;
                     }
-                    if (etime != 0) {
-                        var endDateTime = new Date(etime);
-                        endTimeStr = endDateTime.getDate() + "-" + (endDateTime.getMonth() + 1) + "-" + endDateTime.getFullYear() + " " + endDateTime.getHours() + ":" + endDateTime.getMinutes() + ":" + endDateTime.getSeconds();
+                    endDateTime = stime
+                    if (etime != 0 ){
+                        endDateTime = etime;
                     }
                 }
 
             }
-            if (endTimeStr == "") endTimeStr = startTimeStr;
-            startTimeList.push(startTimeStr);
-            endTimeList.push(endTimeStr);
+            startTimeList.push(startDateTime);
+            endTimeList.push(endDateTime);
 
 
             var volcanoName = this.filters.timeSerie.attributes.volcanoName;
@@ -396,6 +395,7 @@ define(function (require) {
 
                 var startDateTime = new Date(stime);
                 var startTimeStr = startDateTime.getDate() + "-" + (startDateTime.getMonth() + 1) + "-" + startDateTime.getFullYear() + " " + startDateTime.getHours() + ":" + startDateTime.getMinutes() + ":" + startDateTime.getSeconds();
+                endTimeStr= startTimeStr;
                 if (etime != 0) {
                     var endDateTime = new Date(etime);
                     endTimeStr = endDateTime.getDate() + "-" + (endDateTime.getMonth() + 1) + "-" + endDateTime.getFullYear() + " " + endDateTime.getHours() + ":" + endDateTime.getMinutes() + ":" + endDateTime.getSeconds();
@@ -535,7 +535,7 @@ define(function (require) {
             $.getJSON(URL, dataToken, function (data) {
                 a.token = data.token;
             });
-            this.getDataForSendingEmail(URL, email, name, institution);
+            this.getDataForSendingEmail(URL, name, email, institution);
             $('[id="formPopup.' + this.id + '"]').closeModal();
             return false;
 

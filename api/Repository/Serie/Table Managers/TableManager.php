@@ -190,7 +190,7 @@ abstract class TableManager implements TableManagerInterface
         $errorbar = $stationDataParams["errorbar"];
         $query = $stationDataParams["query"];
         //Add select data code from query. Add in this tableManager to apply all data.
-        $temp = "select a." . $this->data_code . " as data_code, cc_id, cc_id2, cc_id3, cb_ids,";
+        $temp = "select cc_id, cc_id2, cc_id3, cb_ids,";
 
         $query = str_replace("select", $temp, $query);
 
@@ -256,7 +256,7 @@ abstract class TableManager implements TableManagerInterface
                     $temp["error"] = 0;
                 }
             }
-            $temp["data_code"] = $row["data_code"];
+//            $temp["data_code"] = $row["data_code"];
             $cc_ids = array();
             $cc_ids[0] = $row["cc_id"];
             $cc_ids[1] = $row["cc_id2"];

@@ -65,6 +65,9 @@ define(function (require) {
                     //console.log(filter.filterAttributes[j]);
                     var list = [];
                     var filterData = filter.timeSerie.getDataFromFilter(filterName);
+                    var owner = filterData.owner;
+                    graph.owner = owner;
+                    filterData = filterData.data;
                     var style = filter.timeSerie.get('data').style; // plot style [bar,circle,dot,horizontalbar]
                     var errorbar;
                     var axisLabel; // show unit on Y-axis

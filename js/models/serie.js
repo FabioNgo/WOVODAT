@@ -52,15 +52,17 @@ define(['jquery', 'backbone'], function($, Backbone) {
     /** return the data of time serie in term of filter**/
     getDataFromFilter: function(filterName){
       var data = [];
+      var owner = "";
       var serieDatas = this.get('data').data;
       for(var i=0; i< serieDatas.length;i++ ){
         var serieData = serieDatas[i];
         if(filterName == serieData.filter){
+          owner = serieData.data_owner;
           data.push(serieData);
         }
         
       }
-      return data;
+      return {data: data, owner:owner};
     }
 
   });
