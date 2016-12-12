@@ -214,6 +214,8 @@ define(function(require) {
         'overviewGraphMinX': this.selectingTimeRange.get('overviewGraphMinX'),
         'overviewGraphMaxX': this.selectingTimeRange.get('overviewGraphMaxX'),
       });
+      this.eruptionGraph.eruptionTimeRangeChanged(this.selectingTimeRange);
+      this.eruptionForecastsGraph.forecastsGraphTimeRangeChanged(this.selectingTimeRange);
       // this.selectingTimeRange.trigger('update');
       this.serieGraphTimeRangeChanged();
       // this.timeSeriesGraphContainer.selectingTimeRangeChanged(e);

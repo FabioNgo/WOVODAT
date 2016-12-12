@@ -40,7 +40,7 @@ class gd_solManager extends GasTablesManager {
 
 			$attribute = "gd_sol_tflux";
 			$errorbar = true;
-			$query = "select a.gd_sol_units as unit, a.gd_sol_species as filter, a.gd_sol_time as time,  a.gd_sol_tflux_err as err, a.$attribute as value from $table as a where a.gs_id=%s and a.$attribute IS NOT NULL";
+			$query = "select a.gd_sol_units as unit, a.gd_sol_species as filter, a.gd_sol_time as time,  a.gd_sol_flux_err as err, a.$attribute as value from $table as a where a.gs_id=%s and a.$attribute IS NOT NULL";
 	
 		}else if($component == 'Highest Gas Flux'){
 			$unit ="g/m2/d";

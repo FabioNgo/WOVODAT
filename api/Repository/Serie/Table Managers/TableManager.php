@@ -21,7 +21,8 @@ abstract class TableManager implements TableManagerInterface
     protected $data_code;
     private $cc_id_table = array();
     private $cb_ids_table = array();
-
+    // The relationship between 2 ids
+    private $idsRelationship = "and"; //
     public function TableManager()
     {
         $this->cols_name = $this->setColumnsName();
@@ -31,11 +32,14 @@ abstract class TableManager implements TableManagerInterface
         $this->stationId = $this->setStationID();
         $this->sta_id_code_dictionary = $this->getStationIdCodeDictionary();
         $this->shortDataType = $this->setShortDataType();
-
+        $this->idsRelationship = $this->setIdsRelationship();
         $this->data_code = $this->setDataCode();
 
     }
-
+    //Return 'and' or 'or'
+    protected function setIdsRelationship(){
+        return "and";
+    }
     //must return 1 sta_code column
     protected function getStationCodeQuery($sta_id)
     {
@@ -48,22 +52,27 @@ abstract class TableManager implements TableManagerInterface
     {
         global $db;
         $sta_id_codes = array();
+        $old_sta_id = "";
         foreach ($this->stationId as $sta_id) {
+            if ($sta_id == $old_sta_id) {
 
-            $sta_id_code = array();
-            $sta_id_code_query = $this->getStationCodeQuery($sta_id);
-            // echo $sta_id_code_query."\n";
-            $db->query($sta_id_code_query);
-            $temp = $db->getList();
-            $sta_id_code[0] = "";
-            // print_r($temp);
-            foreach ($temp as $tmp) {
-                $sta_id_code[$tmp["sta_id"]] = $tmp['sta_code'];
+            } else {
+
+                $old_sta_id = $sta_id;
+                $sta_id_code = array();
+                $sta_id_code_query = $this->getStationCodeQuery($sta_id);
+//                echo $sta_id_code_query . "\n";
+                $db->query($sta_id_code_query);
+                $temp = $db->getList();
+                $sta_id_code[0] = "";
+                // print_r($temp);
+                foreach ($temp as $tmp) {
+                    $sta_id_code[$tmp["sta_id"]] = $tmp['sta_code'];
+                }
             }
 
             array_push($sta_id_codes, $sta_id_code);
         }
-
 
         return $sta_id_codes;
     }
@@ -118,24 +127,38 @@ abstract class TableManager implements TableManagerInterface
         $result = array();
         global $db;
         $query = $this->getTimeSeriesListQuery($vd_id);
-        $query = $db->query($query);
-//         echo $query."\n";
+//        $query = $db->query($query);
+//        echo $query."\n";
+//        return [];
         $serie_list = $db->getList();
         $exsited = array();
         $v = "";
 
         foreach ($serie_list as $serie) {
 
-
+//            var_dump($serie);
+//            var_dump($this->sta_id_code_dictionary);
             foreach ($this->cols_name as $col_name) {
-
+                /*
+                 * if station id is not valid, set it to be zero
+                 */
                 if (!array_key_exists($serie["sta_id1"], $this->sta_id_code_dictionary[0])) {
-                    continue;
+                    $serie["sta_id1"] = "0";
                 }
                 if (!array_key_exists($serie["sta_id2"], $this->sta_id_code_dictionary[1])) {
+                    $serie["sta_id2"] = "0";
+                }
+                if ($serie["sta_id1"] == "0" && $serie["sta_id2"] == "0") {
                     continue;
                 }
-
+                /*
+                 * In "Or" relationship, the first id has more priority
+                 */
+                if($this->idsRelationship == "or"){
+                    if($serie["sta_id1"]!="0"){
+                        $serie["sta_id2"] = "0";
+                    }
+                }
                 if (array_key_exists("vd_name", $serie)) {
                     $v = $serie["vd_name"];
                 } else {
@@ -262,7 +285,7 @@ abstract class TableManager implements TableManagerInterface
             $cc_ids[1] = $row["cc_id2"];
             $cc_ids[2] = $row["cc_id3"];
             $cb_ids = $row["cb_ids"];
-            //echo $cc_ids[2];
+//            echo $cc_ids[2];
             $dataOwner = $this->getCCUrl($cc_ids);
             $temp["data_owner"] = $dataOwner;
 
@@ -295,9 +318,12 @@ abstract class TableManager implements TableManagerInterface
 
                 } else {
                     $sql = "SELECT cc_code,cc_url, cc_email FROM cc WHERE cc_id=" . $cc_id;
+
                     $db->query($sql);
                     $result = $db->getList();
-                    $result = $result[0];
+                    if (count($result) != 0) {
+                        $result = $result[0];
+                    }
                     $this->cc_id_table[$cc_id] = $result;
                 }
 
@@ -331,6 +357,7 @@ abstract class TableManager implements TableManagerInterface
                 $query = $db->query($sql);
 //            echo $query."\n";
                 $result = $db->getList();
+
                 $this->cb_ids_table[$cb_ids] = $result;
             }
             foreach ($result as $row) {

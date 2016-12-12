@@ -24,8 +24,7 @@ define(function (require) {
             this.observer = options.observer;
             //this.eruptions = options.eruptions;
             this.timeRange = options.eruptionTimeRange;
-            this.overviewGraphTimeRange = options.overviewGraphTimeRange;
-            this.serieGraphTimeRange = options.serieGraphTimeRange;
+            this.selectingTimeRange = options.selectingTimeRange;
             this.forecastsGraphTimeRange = options.forecastsGraphTimeRange;
             // this.eruptions = new Array();
             this.selectingEruption = options.selectingEruption;
@@ -38,12 +37,14 @@ define(function (require) {
             this.selecting_vd_num = options.selecting_vd_num;
             this.ed_stime_num = options.ed_stime_num;
             this.ed_etime_num = options.ed_etime_num;
+            this.isShowing = false;
 
         },
         eruptionTimeRangeChanged: function (timeRange) {
-            this.startTime = timeRange.get('startTime');
-            this.endTime = timeRange.get('endTime');
+            this.startTime = timeRange.get('minX');
+            this.endTime = timeRange.get('maxX');
             this.render();
+
         },
         onHover: function (event, pos, item) {
             if (!item) {
@@ -72,12 +73,20 @@ define(function (require) {
         },
         //show eruption graph
         show: function () {
+            this.isShowing = true;
             this.render();
-            this.trigger('show');
+
+            this.trigger('show')
+            this.selectingTimeRange.set({
+                'minX': this.startTime,
+                'maxX': this.endTime
+            });
+            this.selectingTimeRange.trigger("update");
         },
         //hide eruption graph
         hide: function () {
             this.selectingEruption = undefined;
+            this.isShowing = false;
             this.$el.html("");
             this.$el.height(0);
             this.$el.width(0);
@@ -101,6 +110,9 @@ define(function (require) {
             }
         },
         render: function () {
+            if(!this.isShowing){
+                return;
+            }
             if (this.selectingEruption == undefined) {
                 return;
             }
@@ -129,22 +141,22 @@ define(function (require) {
             el.addClass("eruption-graph card-panel");
 
             var eventDataZoom = {
-                startTime: this.startTime,
-                endTime: this.endTime,
-                data: graph_pram_data,
-                graph: this.graph,
-                el: this.$el,
-                self: this,
-                original_option: option
+                // startTime: this.startTime,
+                // endTime: this.endTime,
+                // data: graph_pram_data,
+                // graph: this.graph,
+                // el: this.$el,
+                // self: this,
+                // original_option: option
             };
             var eventDataPan = {
-                minX: Math.min(this.startTime, this.overviewGraphTimeRange.get('startTime')),
-                maxX: Math.max(this.endTime, this.overviewGraphTimeRange.get('endTime')),
-                data: graph_pram_data,
-                graph: this.graph,
-                el: this.$el,
-                self: this,
-                original_option: option
+                // minX: Math.min(this.startTime, this.overviewGraphTimeRange.get('startTime')),
+                // maxX: Math.max(this.endTime, this.overviewGraphTimeRange.get('endTime')),
+                // data: graph_pram_data,
+                // graph: this.graph,
+                // el: this.$el,
+                // self: this,
+                // original_option: option
             };
             var eventDataHover = {
                 // ed_phs_data_type: data.ed_phs_data_type
@@ -189,43 +201,47 @@ define(function (require) {
                 }
             };
             this.graph = $.plot(el, graph_pram_data, option);
+
         },
         onPan: function (event, plot) {
-            var option = event.data.original_option;
+            // var option = event.data.original_option;
             var xaxis = plot.getXAxes()[0];
-            var data = event.data.data;
-            var self = event.data.self;
-            var minX = Math.min(self.startTime, self.overviewGraphTimeRange.get('startTime'));
-            var maxX = Math.max(self.endTime, self.overviewGraphTimeRange.get('endTime'));
-            if (xaxis.min < minX) {
-                option.xaxis.min = minX;
-                option.xaxis.max = minX + Const.ONE_YEAR;
-                self.setUpTimeranges(option.xaxis.min, option.xaxis.max);
-                event.data.graph = $.plot(event.data.el, data, option);
-            } else {
-                if (xaxis.max > maxX) {
-                    option.xaxis.min = maxX - Const.ONE_YEAR;
-                    option.xaxis.max = maxX;
-                    self.setUpTimeranges(option.xaxis.min, option.xaxis.max);
-                    event.data.graph = $.plot(event.data.el, data, option);
-                }
-                self.setUpTimeranges(xaxis.min, xaxis.max);
-            }
+            // var data = event.data.data;
+            // var self = event.data.self;
+            // var minX = Math.min(self.startTime, self.overviewGraphTimeRange.get('startTime'));
+            // var maxX = Math.max(self.endTime, self.overviewGraphTimeRange.get('endTime'));
+            // if (xaxis.min < minX) {
+            //     option.xaxis.min = minX;
+            //     option.xaxis.max = minX + Const.ONE_YEAR;
+            //     self.setUpTimeranges(option.xaxis.min, option.xaxis.max);
+            //     event.data.graph = $.plot(event.data.el, data, option);
+            // } else {
+            //     if (xaxis.max > maxX) {
+            //         option.xaxis.min = maxX - Const.ONE_YEAR;
+            //         option.xaxis.max = maxX;
+            //         self.setUpTimeranges(option.xaxis.min, option.xaxis.max);
+            //         event.data.graph = $.plot(event.data.el, data, option);
+            //         self.setUpTimeranges(xaxis.min, xaxis.max);
+            //     }
+            //
+            // }
+            self.setUpTimeranges(xaxis.min, xaxis.max);
         },
         onZoom: function (event, plot) {
             var option = event.data.original_option;
             var xaxis = plot.getXAxes()[0];
-            var data = event.data.data;
-            var self = event.data.self;
-            /* The zooming range cannot wider than the original range */
-            if (xaxis.min < event.data.startTime || xaxis.max > event.data.endTime) {
-                option.xaxis.min = event.data.startTime;
-                option.xaxis.max = event.data.endTime;
-                self.setUpTimeranges(option.xaxis.min, option.xaxis.max);
-                event.data.graph = $.plot(event.data.el, data, option);
-            } else {
-                self.setUpTimeranges(xaxis.min, xaxis.max);
-            }
+            // var data = event.data.data;
+            // var self = event.data.self;
+            // /* The zooming range cannot wider than the original range */
+            // if (xaxis.min < event.data.startTime || xaxis.max > event.data.endTime) {
+            //     option.xaxis.min = event.data.startTime;
+            //     option.xaxis.max = event.data.endTime;
+            //     self.setUpTimeranges(option.xaxis.min, option.xaxis.max);
+            //     event.data.graph = $.plot(event.data.el, data, option);
+            // } else {
+            //     self.setUpTimeranges(xaxis.min, xaxis.max);
+            // }
+            self.setUpTimeranges(xaxis.min, xaxis.max);
         },
         getStartingTime: function (ed_stime) {
             var date = new Date(ed_stime);
@@ -236,18 +252,13 @@ define(function (require) {
         },
 
         setUpTimeranges: function (startTime, endTime) {
-            this.serieGraphTimeRange.set({
-                'startTime': startTime,
-                'endTime': endTime,
+            this.selectingTimeRange.set({
+                'minX': startTime,
+                'maxX': endTime,
             });
             // console.log(this.serieGraphTimeRange);
 
-            this.serieGraphTimeRange.trigger('update', this.serieGraphTimeRange);
-            this.forecastsGraphTimeRange.set({
-                'startTime': startTime,
-                'endTime': endTime,
-            });
-            this.forecastsGraphTimeRange.trigger('update', this.forecastsGraphTimeRange);
+            this.selectingTimeRange.trigger('update');
 
         },
         prepareData: function () {

@@ -166,9 +166,8 @@ define(function (require) {
                     observer: observer,
                     categories: categories,
                     serieGraphTimeRange: serieGraphTimeRange,
-                    forecastsGraphTimeRange: forecastsGraphTimeRange,
+                    selectingTimeRange: selectingTimeRange,
                     eruptionTimeRange: eruptionTimeRange,
-                    overviewGraphTimeRange: overviewGraphTimeRange,
                     selecting_vd_num: this.selecting_vd_num,
                     ed_stime_num: this.ed_stime_num,
                     ed_etime_num: this.ed_etime_num
@@ -177,7 +176,8 @@ define(function (require) {
                 eruptionForecastsGraph = new EruptionForecastsGraph({
                     observer: observer,
                     categories: categories,
-                    eruptionForecasts: eruptionForecasts
+                    eruptionForecasts: eruptionForecasts,
+                    selectingTimeRange: selectingTimeRange,
 
                 }),
                 timeSeriesGraphContainer = new TimeSeriesGraphContainer({

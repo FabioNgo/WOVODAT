@@ -14,8 +14,12 @@ class gd_pluManager extends GasTablesManager {
 	protected function setTableName(){
 		return "es_gd_plu";
 	}
+    protected function setIdsRelationship()
+    {
+        return "or";
+    }
 
-	protected function setDataType(){
+    protected function setDataType(){
 		return "Gas Plume";
 	} // Data type for each data table
 	//if there is 1 station, station1 is the same as station2
